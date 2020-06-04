@@ -6,8 +6,6 @@ using System;
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.Channel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -79,10 +77,14 @@ namespace Mmm.Iot.Common.Services
                     new OpenIdConnectConfiguration());
             }
 
+            var clientHandler = new System.Net.Http.HttpClientHandler();
+            clientHandler.ServerCertificateCustomValidationCallback = (a, b, c, d) => true;
+            var client = new System.Net.Http.HttpClient(clientHandler);
+
             return new ConfigurationManager<OpenIdConnectConfiguration>(
                 config.Global.ClientAuth.Jwt.AuthIssuer + "/.well-known/openid-configuration",
                 new OpenIdConnectConfigurationRetriever(),
-                new HttpDocumentRetriever { RequireHttps = config.Global.ClientAuth.OpenIdConnect.ConfigurationEndpoint.RequireHttps })
+                client)
             {
                 // How often the list of keys in memory is refreshed. Default is 24 hours.
                 AutomaticRefreshInterval = TimeSpan.FromHours(6),

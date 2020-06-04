@@ -1,41 +1,51 @@
 imageTag: &imageTag replace_this_imageTag
 appVersion: &appVersion replace_this_appVersion
+secretsRef: &secretsRef
+  - Global__ClientAuth__Jwt__AuthIssuer
+  - AppConfigurationConnectionString
+  - Global__AzureB2cBaseUri
 asa-manager:
   nameOverride: asa-manager
   appVersion: *appVersion
   deployment:
     image:
       tag: *imageTag
+    secretsRef: *secretsRef
 config:
   nameOverride: config
   appVersion: *appVersion
   deployment:
     image:
       tag: *imageTag
+    secretsRef: *secretsRef
 device-telemetry:
   nameOverride: device-telemetry
   appVersion: *appVersion
   deployment:
     image:
       tag: *imageTag
+    secretsRef: *secretsRef
 diagnostics:
   nameOverride: diagnostics
   appVersion: *appVersion
   deployment:
     image:
       tag: *imageTag
+    secretsRef: *secretsRef
 identity-gateway:
   nameOverride: identity-gateway
   appVersion: *appVersion
   deployment:
     image:
       tag: *imageTag
+    secretsRef: *secretsRef
 iothub-manager:
   nameOverride: iothub-manager
   appVersion: *appVersion
   deployment:
     image:
       tag: *imageTag
+    secretsRef: *secretsRef
 reverse-proxy:
   nameOverride: reverse-proxy
   appVersion: *appVersion
@@ -44,6 +54,7 @@ reverse-proxy:
   deployment:
     image:
       tag: *imageTag
+    secretsRef: *secretsRef
     port:
       http: 10080
     probes:
@@ -54,12 +65,14 @@ storage-adapter:
   deployment:
     image:
       tag: *imageTag
+    secretsRef: *secretsRef
 tenant-manager:
   nameOverride: tenant-manager
   appVersion: *appVersion
   deployment:
     image:
       tag: *imageTag
+    secretsRef: *secretsRef
 webui:
   nameOverride: webui
   appVersion: *appVersion
@@ -68,6 +81,7 @@ webui:
   deployment:
     image:
       tag: *imageTag
+    secretsRef: *secretsRef
     port:
       http: 10080
     probes:
