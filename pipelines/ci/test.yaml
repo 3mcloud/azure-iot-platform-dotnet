@@ -110,6 +110,8 @@ variables:
     value: 0c1d6d57-adc2-4d44-abd6-d1927516288d
   - name: azureAdB2cTenantUsername
     value: pipeline-nonprod@crsltestab2c.onmicrosoft.com
+  - name: dependenciesReportArtifactName
+    value: dependenciesReport
 resources:
   repositories:
     - repository: azure-iot-functional-tests
@@ -495,7 +497,7 @@ stages:
               scriptType: pscore
               scriptLocation: inlineScript
               inlineScript: |-
-                az aks get-credentials --resource-group $(resourceGroupName) --name $(aksName)
+                az aks get-credentials --name $(aksName) --resource-group $(resourceGroupName) --overwrite-existing
                 $ingressControllerIpAddress = kubectl get services --namespace $(kubernetesNamespace) --selector=app=nginx-ingress,component=controller --output=jsonpath='{.items[*].status.loadBalancer.ingress[*].ip}'
                 $tagsHashtable = Get-Content $(tagsFile) | ConvertFrom-Json -Depth 100 -AsHashtable
                 $tags = ($tagsHashtable.Keys | ForEach-Object { "$_=`"$($tagsHashtable[$_])`"" }) -join ','
@@ -635,7 +637,7 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |-
                 set -Eeuxo pipefail
-                az aks get-credentials -n $(aksName) -g $(resourceGroupName)
+                az aks get-credentials --name $(aksName) --resource-group $(resourceGroupName) --overwrite-existing
                 kubectl wait pods --for=condition=Ready --selector app.kubernetes.io/name=webui -n $(kubernetesNamespace)
 
           - task: DotNetCoreCLI@2
@@ -645,6 +647,81 @@ stages:
               arguments: >-
                 --configuration $(dotnetBuildConfiguration)
                 --logger trx
+
+  - stage: enumerateDependencies
+    displayName: Enumerate dependencies
+    dependsOn:
+      - deployIngress
+      - deployServices
+    jobs:
+      - job: enumerateDependencies
+        displayName: Enumerate dependencies
+        steps:
+          - checkout: self
+            displayName: Checkout repository
+
+          - pwsh: |-
+              if (!(Test-Path $(dependenciesReportArtifactName))) {
+                New-Item $(dependenciesReportArtifactName) -Type Directory
+              }
+            displayName: Create artifact directory
+
+          - task: AzureCLI@2
+            displayName: Enumerate NuGet packages
+            inputs:
+              azureSubscription: $(subscriptionName)
+              scriptType: pscore
+              scriptLocation: inlineScript
+              inlineScript: |-
+                Get-ChildItem -Recurse |
+                  Select-String -Pattern '(?<=PackageReference Include=")[^"]+' |
+                  Select-Object -ExpandProperty Matches |
+                  Select-Object -ExpandProperty Value -Unique |
+                  Sort-Object |
+                  Set-Content (Join-Path $(dependenciesReportArtifactName) nuget.txt)
+
+          - task: AzureCLI@2
+            displayName: Enumerate NPM packages
+            inputs:
+              azureSubscription: $(subscriptionName)
+              scriptType: pscore
+              scriptLocation: inlineScript
+              inlineScript: |-
+                Get-Content src/webui/package.json |
+                  ConvertFrom-Json -Depth 100 |
+                  Select-Object -ExpandProperty dependencies |
+                  Get-Member -MemberType NoteProperty |
+                  Select-Object -ExpandProperty Name -Unique |
+                  Sort-Object |
+                  Set-Content (Join-Path $(dependenciesReportArtifactName) npm.txt)
+
+          - template: ../templates/steps-install-helm.yaml
+            parameters:
+              helmVersion: $(helmVersion)
+              subscriptionName: $(subscriptionName)
+              resourceGroupName: $(resourceGroupName)
+              aksName: $(aksName)
+              kubernetesNamespace: $(kubernetesNamespace)
+
+          - task: AzureCLI@2
+            displayName: Enumerate Helm chart dependencies
+            inputs:
+              azureSubscription: $(subscriptionName)
+              scriptType: pscore
+              scriptLocation: inlineScript
+              inlineScript: |-
+                az aks get-credentials --name $(aksName) --resource-group $(resourceGroupName) --overwrite-existing
+                helm list --output json --all --namespace $(kubernetesNamespace) |
+                  ConvertFrom-Json -Depth 100 |
+                  Select-Object -ExpandProperty Releases |
+                  Select-Object -ExpandProperty Chart -Unique |
+                  Where-Object { $_ -notmatch 'mmm-iot' } |
+                  Sort-Object |
+                  Set-Content (Join-Path $(dependenciesReportArtifactName) helm.txt)
+
+          - publish: $(dependenciesReportArtifactName)
+            artifact: $(dependenciesReportArtifactName)
+            displayName: Publish dependencies report
 
   - stage: tagImages
     displayName: Tag images
