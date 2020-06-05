@@ -2,4 +2,3 @@
 
 export * from "./ruleStatus.container";
 export * from "./ruleStatus";
-export * from "./ruleSummary";

@@ -6,11 +6,10 @@ import moment from "moment";
 import { schema, normalize } from "normalizr";
 import update from "immutability-helper";
 import { createSelector } from "reselect";
-import { TelemetryService, IoTHubManagerService } from "services";
+import { TelemetryService } from "services";
 import {
     getActiveDeviceGroupId,
     getActiveDeviceGroupConditions,
-    getDeviceGroupEntities,
 } from "./appReducer";
 import {
     createReducerScenario,
@@ -40,7 +39,6 @@ export const epics = createEpicScenario({
                 .flatMap((rules) =>
                     Observable.from(rules)
                         .flatMap(({ id, groupId }) => [
-                            epics.actions.fetchRuleCounts({ id, groupId }),
                             epics.actions.fetchRuleLastTriggered(id),
                         ])
                         .startWith(
@@ -48,32 +46,6 @@ export const epics = createEpicScenario({
                         )
                 )
                 .catch(handleError(fromAction)),
-    },
-
-    fetchRuleCounts: {
-        type: "RULES_COUNT_FETCH",
-        epic: (fromAction, store, action$) =>
-            Observable.of(getDeviceGroupEntities(store.getState()))
-                .map((entities) => entities[fromAction.payload.groupId])
-                .flatMap(({ conditions }) =>
-                    IoTHubManagerService.getDevices(conditions)
-                )
-                .map((devices) => devices.length)
-                .map((count) =>
-                    redux.actions.updateRuleCount({
-                        id: fromAction.payload.id,
-                        count: cellResponse(count),
-                    })
-                )
-                .takeUntil(action$.ofType(epics.actionTypes.fetchRules))
-                .catch((error) =>
-                    Observable.of(
-                        redux.actions.updateRuleCount({
-                            id: fromAction.payload.id,
-                            count: cellResponse(undefined, error),
-                        })
-                    )
-                ),
     },
 
     fetchRuleLastTriggered: {

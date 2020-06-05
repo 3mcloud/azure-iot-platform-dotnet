@@ -9,9 +9,9 @@ import { svgs } from "utilities";
 import { TelemetryService } from "services";
 import { permissions, toEditRuleRequestModel } from "services/models";
 import Flyout from "components/shared/flyout";
+import { RuleSummaryContainer as RuleSummary } from "../ruleSummary";
 
 import "./ruleStatus.scss";
-import { RuleSummary } from "./ruleSummary";
 
 export class RuleStatus extends Component {
     constructor(props) {
@@ -120,6 +120,7 @@ export class RuleStatus extends Component {
                                 rule={rule}
                                 isPending={isPending}
                                 completedSuccessfully={completedSuccessfully}
+                                includeSummaryStatus={true}
                                 t={t}
                             />
                         ))}

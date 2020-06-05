@@ -8,16 +8,11 @@ import {
     PropertyGridHeader as GridHeader,
     PropertyRow as Row,
     PropertyCell as Cell,
-    SectionDesc,
-    SectionHeader,
-    SummaryBody,
-    SummaryCount,
-    SummarySection,
 } from "components/shared";
 import { SeverityRenderer } from "components/shared/cellRenderers";
 import Flyout from "components/shared/flyout";
-import { IoTHubManagerService } from "services";
 import { ruleCalculations, getRuleTimePeriodLabel } from "services/models";
+import { RuleSummaryContainer as RuleSummary } from "../ruleSummary";
 
 import "./ruleViewer.scss";
 
@@ -32,39 +27,10 @@ export class RuleViewer extends Component {
         };
     }
 
-    componentDidMount() {
-        const { rule } = this.props;
-        if (rule) {
-            this.getDeviceCount(rule.groupId);
-        }
-    }
-
     componentWillUnmount() {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
-    }
-
-    getDeviceCount(groupId) {
-        this.props.deviceGroups.some((group) => {
-            if (group.id === groupId) {
-                if (this.subscription) {
-                    this.subscription.unsubscribe();
-                }
-                this.subscription = IoTHubManagerService.getDevices(
-                    group.conditions
-                ).subscribe(
-                    (groupDevices) => {
-                        this.setState({
-                            devicesAffected: groupDevices.length,
-                        });
-                    },
-                    (error) => this.setState({ error })
-                );
-                return true;
-            }
-            return false;
-        });
     }
 
     getDeviceGroupName(groupId) {
@@ -76,7 +42,6 @@ export class RuleViewer extends Component {
 
     render() {
         const { rule, t } = this.props,
-            { devicesAffected } = this.state,
             calculation = t(
                 `rules.flyouts.ruleEditor.calculationOptions.${rule.calculation.toLowerCase()}`
             );
@@ -221,18 +186,11 @@ export class RuleViewer extends Component {
                         </div>
                     </Section.Content>
                 </Section.Container>
-
-                <SummarySection>
-                    <SectionHeader>
-                        {t("rules.flyouts.ruleEditor.summaryHeader")}
-                    </SectionHeader>
-                    <SummaryBody>
-                        <SummaryCount>{devicesAffected}</SummaryCount>
-                        <SectionDesc>
-                            {t("rules.flyouts.ruleEditor.devicesAffected")}
-                        </SectionDesc>
-                    </SummaryBody>
-                </SummarySection>
+                <RuleSummary
+                    rule={rule}
+                    includeSummaryStatus={false}
+                    includeRuleInfo={false}
+                />
             </div>
         );
     }

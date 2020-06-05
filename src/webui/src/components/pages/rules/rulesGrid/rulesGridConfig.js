@@ -8,7 +8,6 @@ import { compareByProperty } from "utilities";
 import {
     SeverityRenderer,
     RuleStatusRenderer,
-    CountRenderer,
     LastTriggerRenderer,
     LinkRenderer,
     SoftSelectLinkRenderer,
@@ -81,12 +80,6 @@ export const rulesColumnDefs = {
         field: "status",
         filter: "text",
         cellClass: "capitalize-cell",
-    },
-    count: {
-        headerName: "rules.grid.count",
-        field: "count",
-        cellRendererFramework: CountRenderer,
-        comparator: compareByProperty("response", true),
     },
     lastTrigger: {
         headerName: "rules.grid.lastTrigger",

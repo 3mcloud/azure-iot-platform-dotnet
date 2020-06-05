@@ -19,15 +19,9 @@ import {
     FormGroup,
     FormLabel,
     Hyperlink,
-    Indicator,
     PillGroup,
     Radio,
     SectionDesc,
-    SectionHeader,
-    SummaryBody,
-    SummaryCount,
-    SummarySection,
-    Svg,
     ThemedSvgContainer,
 } from "components/shared";
 import { ActionEmailSetupContainer } from "./actionEmailSetup.container";
@@ -50,6 +44,7 @@ import {
     toDiagnosticsModel,
     toSinglePropertyDiagnosticsModel,
 } from "services/models";
+import { RuleSummaryContainer as RuleSummary } from "../ruleSummary";
 
 import "./ruleEditor.scss";
 
@@ -364,17 +359,17 @@ export class RuleEditor extends LinkedComponent {
         const conditions = new Set(); // use a set to avoid searching the array multiple times
 
         /* Expected schema for field options
-    "reported": {
-      "Telemetry": {
-        "MessageSchema": {
-          "Fields": {
-            "temperature": "Double",
-            ...
-          }
+        "reported": {
+            "Telemetry": {
+                "MessageSchema": {
+                    "Fields": {
+                        "temperature": "Double",
+                        ...
+                    }
+                }
+            }
         }
-      }
-    }
-    */
+        */
         devices.forEach(
             ({ telemetry: { messageSchema: { fields = {} } = {} } = {} }) => {
                 Object.keys(fields).forEach((field) => {
@@ -1046,21 +1041,14 @@ export class RuleEditor extends LinkedComponent {
                     </div>
                 )}
 
-                <SummarySection>
-                    <SectionHeader>
-                        {t("rules.flyouts.ruleEditor.summaryHeader")}
-                    </SectionHeader>
-                    <SummaryBody>
-                        <SummaryCount>{devicesAffected}</SummaryCount>
-                        <SectionDesc>
-                            {t("rules.flyouts.ruleEditor.devicesAffected")}
-                        </SectionDesc>
-                        {isPending && <Indicator />}
-                        {completedSuccessfully && (
-                            <Svg className="summary-icon" path={svgs.apply} />
-                        )}
-                    </SummaryBody>
-                </SummarySection>
+                <RuleSummary
+                    isPending={isPending}
+                    completedSuccessfully={completedSuccessfully}
+                    t={t}
+                    includeSummaryStatus={true}
+                    includeRuleInfo={false}
+                    deviceCount={devicesAffected}
+                />
 
                 {error && (
                     <AjaxError

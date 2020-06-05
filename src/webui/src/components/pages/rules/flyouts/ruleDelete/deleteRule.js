@@ -10,7 +10,7 @@ import { svgs } from "utilities";
 import { TelemetryService } from "services";
 import { toEditRuleRequestModel } from "services/models";
 import Flyout from "components/shared/flyout";
-import { RuleSummary } from "..";
+import { RuleSummaryContainer as RuleSummary } from "../ruleSummary";
 
 import "./deleteRule.scss";
 
@@ -129,6 +129,7 @@ export class DeleteRule extends Component {
                                 isPending={isPending}
                                 completedSuccessfully={completedSuccessfully}
                                 t={t}
+                                includeSummaryStatus={true}
                                 className="rule-details"
                             />
                         )}

@@ -41,7 +41,6 @@ export class RulesGrid extends Component {
             rulesColumnDefs.trigger,
             rulesColumnDefs.notificationType,
             rulesColumnDefs.status,
-            rulesColumnDefs.count,
             rulesColumnDefs.lastTrigger,
         ];
 
