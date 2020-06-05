@@ -162,14 +162,19 @@ export class DeploymentNew extends LinkedComponent {
             })
         );
         if (this.formIsValid()) {
-            const packageContent = packages.find(
+            const packageData = packages.find(
                 (packageObj) => packageObj.id === packageId
-            ).content;
+            );
+
+            const packageName = packageData.version
+                ? `${packageData.name}(${packageData.version})`
+                : packageData.name;
+
             createDeployment({
                 packageType,
                 configType,
-                packageName,
-                packageContent,
+                packageName: packageName,
+                packageContent: packageData.content,
                 packageId,
                 deviceGroupName,
                 deviceGroupQuery,
