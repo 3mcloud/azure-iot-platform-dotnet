@@ -1187,10 +1187,10 @@ jobs:
             spec:
               tls:
               - hosts:
-                - $(aksName).centralus.cloudapp.azure.com
+                - $(aksName).$(locationName).cloudapp.azure.com
                 secretName: tls-prod
               rules:
-              - host: $(aksName).centralus.cloudapp.azure.com
+              - host: $(aksName).$(locationName).cloudapp.azure.com
                 http:
                   paths:
                   - backend:
