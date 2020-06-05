@@ -167,13 +167,13 @@ export class DeploymentNew extends LinkedComponent {
             );
 
             const packageName = packageData.version
-                ? `${packageData.name}(${packageData.version})`
+                ? `${packageData.name} (${packageData.version})`
                 : packageData.name;
 
             createDeployment({
                 packageType,
                 configType,
-                packageName: packageName,
+                packageName,
                 packageContent: packageData.content,
                 packageId,
                 deviceGroupName,
