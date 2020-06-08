@@ -1,5 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-const baseUrl = process.env.REACT_APP_BASE_SERVICE_URL || "",
+// Copyright (c) Microsoft. All rights reserved
+const baseUrl = "https://crsliot-aks-dev.centralus.cloudapp.azure.com",
     validExtensions = [".png", ".jpeg", ".jpg", ".svg"],
     Config = {
         limitedAccessUrls: [],

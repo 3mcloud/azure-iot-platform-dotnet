@@ -6,13 +6,12 @@
   .upload-logo-name-container {
     .upload-logo-container {
       .image-preview {
-        @include square-px-rem(24px);
         @include rem-fallback(margin-bottom, 8px);
 
         .logo-svg,
         .logo-img  {
-          justify-content: flex-start;
-          @include square-px-rem(24px);
+          max-height: 24px;
+          vertical-align: middle;
         }
       }
 
@@ -94,7 +93,8 @@
 
     .current-logo {
       @include rem-fallback(margin-right, 12px);
-      @include square-px-rem(24px);
+      max-height: 24px;
+      //@include square-px-rem(24px);
     }
 
     .edit-button {
@@ -104,7 +104,11 @@
     }
   }
 
-  .logo-svg svg { @include square-px-rem(24px); }
+  .logo-svg svg { 
+    //@include square-px-rem(24px); 
+    max-height: 24px;
+    vertical-align: middle;
+  }
 
   @include themify($themes) {
     .logo-svg,
