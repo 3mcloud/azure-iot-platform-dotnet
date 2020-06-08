@@ -10,7 +10,10 @@ resources:
 pool:
   vmImage: ubuntu-latest
 variables:
-  _imageTag: $[coalesce(variables.resources.pipeline.test.runID, variables.imageTag)]
+  ${{ if eq(variables['Build.Reason'], 'ResourceTrigger') }}:
+    _imageTag: $(resources.pipeline.test.runID)
+  ${{ if ne(variables['Build.Reason'], 'ResourceTrigger') }}:
+    _imageTag: $(imageTag)
 stages:
   - stage: checkParameters
     displayName: Check parameters
@@ -48,7 +51,7 @@ stages:
     displayName: CRSL dev
     dependsOn:
       - checkParameters
-    condition: eq(variables['runCrslDevStage'], 'true')
+    condition: and(succeeded(), eq(variables['runCrslDevStage'], 'true'))
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
