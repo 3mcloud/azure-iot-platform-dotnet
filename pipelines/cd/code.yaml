@@ -3,7 +3,7 @@ pr: none
 resources:
   pipelines:
     - pipeline: test
-      source: azure-iot-services-dotnet.ci.test
+      source: azure-iot-platform-dotnet.ci.test
       trigger:
         branches:
           - master
