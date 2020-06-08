@@ -9,6 +9,8 @@ import { AdvancedPivotMenu } from "./advancedPivotMenu.js";
 import { toDiagnosticsModel } from "services/models";
 
 import "./telemetryChart.scss";
+var jstz = require("jstz");
+var timezone = jstz.determine().name();
 
 const maxDatums = 1000; // Max telemetry messages for the telemetry graph
 
@@ -182,6 +184,7 @@ export class TelemetryChart extends Component {
                         yAxisState: "shared", // Default to all values being on the same axis
                         grid: false,
                         legend: "compact",
+                        offset: timezone,
                     },
                     this.props.colors
                 );
