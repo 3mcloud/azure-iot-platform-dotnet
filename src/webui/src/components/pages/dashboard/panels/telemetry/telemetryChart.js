@@ -224,6 +224,7 @@ export class TelemetryChart extends Component {
                     active={this.state.telemetryKey}
                 />
                 <div className="chart-container" id={this.chartId} />
+                <p>Displaying in local timezone: {timezone}</p>
             </div>
         );
     }
