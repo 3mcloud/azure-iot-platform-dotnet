@@ -8,6 +8,8 @@ namespace Mmm.Iot.IoTHubManager.Services.Helpers
 {
     public interface ITenantConnectionHelper
     {
+        string TenantId { get; }
+
         string GetIotHubName();
 
         RegistryManager GetRegistry();

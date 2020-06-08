@@ -31,25 +31,18 @@ namespace Mmm.Iot.IoTHubManager.Services.Helpers
         }
 
         // Gets the tenant name from the threads current token.
-        private string TenantName
+        public string TenantId
         {
             get
             {
-                try
-                {
-                    return this.httpContextAccessor.HttpContext.Request.GetTenant();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"A valid tenant Id was not included in the Claim. " + ex);
-                }
+                return this.httpContextAccessor.HttpContext.Request.GetTenant();
             }
         }
 
         public string GetIotHubConnectionString()
         {
-            var appConfigurationKey = TenantKey + this.TenantName + IotHubConnectionKey;
-            this.logger.LogDebug("App Configuration key for IoT Hub connection string for tenant {tenant} is {appConfigurationKey}", this.TenantName, appConfigurationKey);
+            var appConfigurationKey = TenantKey + this.TenantId + IotHubConnectionKey;
+            this.logger.LogDebug("App Configuration key for IoT Hub connection string for tenant {tenant} is {appConfigurationKey}", this.TenantId, appConfigurationKey);
             return this.appConfig.GetValue(appConfigurationKey);
         }
 

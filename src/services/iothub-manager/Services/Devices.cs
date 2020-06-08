@@ -31,8 +31,13 @@ namespace Mmm.Iot.IoTHubManager.Services
         private const string DevicesConnectedQuery = "connectionState = 'Connected'";
         private readonly ITenantConnectionHelper tenantConnectionHelper;
         private readonly IAsaManagerClient asaManager;
+        private readonly IDeviceQueryCache deviceQueryCache;
 
-        public Devices(AppConfig config, ITenantConnectionHelper tenantConnectionHelper, IAsaManagerClient asaManagerClient)
+        public Devices(
+            AppConfig config,
+            ITenantConnectionHelper tenantConnectionHelper,
+            IAsaManagerClient asaManagerClient,
+            IDeviceQueryCache deviceQueryCache)
         {
             if (config == null)
             {
@@ -41,12 +46,18 @@ namespace Mmm.Iot.IoTHubManager.Services
 
             this.tenantConnectionHelper = tenantConnectionHelper;
             this.asaManager = asaManagerClient;
+            this.deviceQueryCache = deviceQueryCache;
         }
 
-        public Devices(ITenantConnectionHelper tenantConnectionHelper, string ioTHubHostName, IAsaManagerClient asaManagerClient)
+        public Devices(
+            ITenantConnectionHelper tenantConnectionHelper,
+            string ioTHubHostName,
+            IAsaManagerClient asaManagerClient,
+            IDeviceQueryCache deviceQueryCache)
         {
             this.tenantConnectionHelper = tenantConnectionHelper ?? throw new ArgumentNullException("tenantConnectionHelper " + ioTHubHostName);
             this.asaManager = asaManagerClient;
+            this.deviceQueryCache = deviceQueryCache;
         }
 
         // Ping the registry to see if the connection is healthy
@@ -75,6 +86,13 @@ namespace Mmm.Iot.IoTHubManager.Services
                 query = QueryConditionTranslator.ToQueryString(query);
             }
 
+            var resultModel = await this.deviceQueryCache.GetCachedQueryResultAsync(this.tenantConnectionHelper.TenantId, query);
+
+            if (resultModel != null)
+            {
+                return resultModel;
+            }
+
             var twins = await this.GetTwinByQueryAsync(
                 QueryPrefix,
                 query,
@@ -83,12 +101,20 @@ namespace Mmm.Iot.IoTHubManager.Services
 
             var connectedEdgeDevices = await this.GetConnectedEdgeDevices(twins.Result);
 
-            var resultModel = new DeviceServiceListModel(
+            resultModel = new DeviceServiceListModel(
                 twins.Result.Select(azureTwin => new DeviceServiceModel(
                     azureTwin,
                     this.tenantConnectionHelper.GetIotHubName(),
                     connectedEdgeDevices.ContainsKey(azureTwin.DeviceId))),
                 twins.ContinuationToken);
+            this.deviceQueryCache.SetTenantQueryResult(
+                this.tenantConnectionHelper.TenantId,
+                query,
+                new DeviceQueryCacheResultServiceModel
+                {
+                    Result = resultModel,
+                    ResultTimestamp = DateTimeOffset.Now,
+                });
 
             return resultModel;
         }
