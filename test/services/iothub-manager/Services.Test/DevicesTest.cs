@@ -26,6 +26,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
         private readonly string ioTHubHostName = "ioTHubHostName";
         private readonly Mock<ITenantConnectionHelper> mockTenantHelper;
         private readonly Mock<IAsaManagerClient> mockAsaManager;
+        private readonly Mock<IDeviceQueryCache> mockCache;
 
         public DevicesTest()
         {
@@ -36,12 +37,22 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
             MockIdentity.MockClaims("one");
 
             this.mockAsaManager = new Mock<IAsaManagerClient>();
-
             this.mockAsaManager
                 .Setup(x => x.BeginDeviceGroupsConversionAsync())
                 .ReturnsAsync(new BeginConversionApiModel());
 
-            this.devices = new Devices(this.mockTenantHelper.Object, this.ioTHubHostName, this.mockAsaManager.Object);
+            this.mockCache = new Mock<IDeviceQueryCache>();
+            this.mockCache
+                .Setup(x => x.GetCachedQueryResultAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((DeviceServiceListModel)null);
+            this.mockCache
+                .Setup(
+                    x => x.SetTenantQueryResult(
+                        It.IsAny<string>(),
+                        It.IsAny<string>(),
+                        It.IsAny<DeviceQueryCacheResultServiceModel>()));
+
+            this.devices = new Devices(this.mockTenantHelper.Object, this.ioTHubHostName, this.mockAsaManager.Object, this.mockCache.Object);
         }
 
         [Theory]
@@ -192,6 +203,13 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
 
             // Act
             var allDevices = await this.devices.GetListAsync(string.Empty, string.Empty);
+
+            this.mockCache
+                .Verify(
+                    x => x.GetCachedQueryResultAsync(
+                        It.IsAny<string>(),
+                        It.IsAny<string>()),
+                    Times.Once);
 
             // Assert
             Assert.Equal(4, allDevices.Items.Count);
