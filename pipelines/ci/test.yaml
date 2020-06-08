@@ -112,6 +112,8 @@ variables:
     value: pipeline-nonprod@crsltestab2c.onmicrosoft.com
   - name: dependenciesReportArtifactName
     value: dependenciesReport
+  - name: commitsSinceLastReleaseArtifactName
+    value: commitsSinceLastRelease
 resources:
   repositories:
     - repository: azure-iot-functional-tests
@@ -189,6 +191,35 @@ stages:
           - publish: $(publishedFilesArtifactName)
             artifact: $(publishedFilesArtifactName)
             displayName: Publish file artifacts
+
+  - stage: listCommitsSinceLastRelease
+    displayName: List commits since last release
+    dependsOn: []
+    jobs:
+      - job: listCommitsSinceLastRelease
+        displayName: List commits since last release
+        steps:
+          - checkout: self
+            displayName: Checkout repository
+
+          - pwsh: |-
+              if (!(Test-Path $(commitsSinceLastReleaseArtifactName))) {
+                New-Item $(commitsSinceLastReleaseArtifactName) -Type Directory
+              }
+
+              $previousReleaseTag = git for-each-ref --sort=creatordate --format '%(tag)' refs/tags |
+                Select-String -Pattern '^\d+\.\d+\.\d+$' |
+                Select-String -Pattern '^$(serenityMajorVersion)\.$(serenityMinorVersion)\.$(serenityPatchVersion)$' -NotMatch |
+                Select-Object -First 1
+              $logFilePath = (Join-Path $(commitsSinceLastReleaseArtifactName) git-log.txt)
+              Write-Host 'Commits since last release:' | Set-Content $logFilePath
+              git log --oneline --no-decorate --topo-order $previousReleaseTag..$(Build.SourceVersion) |
+                Add-Content $logFilePath
+            displayName: List commits since last release
+
+          - publish: $(commitsSinceLastReleaseArtifactName)
+            artifact: $(commitsSinceLastReleaseArtifactName)
+            displayName: Publish list of commits since last release
 
   - stage: microsoftSecurityCodeAnalysis
     displayName: Microsoft Security Code Analysis
