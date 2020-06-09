@@ -24,7 +24,7 @@ variables:
   - name: serenityMinorVersion
     value: 0
   - name: serenityPatchVersion
-    value: 1
+    value: 2
   - name: serenityVersion
     value: $(serenityMajorVersion).$(serenityMinorVersion).$(serenityPatchVersion)
   - name: buildId
