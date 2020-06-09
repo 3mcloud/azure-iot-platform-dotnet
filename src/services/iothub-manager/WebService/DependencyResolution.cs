@@ -15,6 +15,7 @@ namespace Mmm.Iot.IoTHubManager.WebService
         {
             var assembly = typeof(StatusService).GetTypeInfo().Assembly;
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
+            builder.RegisterType<DeviceQueryCache>().As<IDeviceQueryCache>().SingleInstance();
         }
     }
 }
