@@ -210,11 +210,13 @@ stages:
               $previousReleaseTag = git for-each-ref --sort=creatordate --format '%(tag)' refs/tags |
                 Select-String -Pattern '^\d+\.\d+\.\d+$' |
                 Select-String -Pattern '^$(serenityMajorVersion)\.$(serenityMinorVersion)\.$(serenityPatchVersion)$' -NotMatch |
-                Select-Object -First 1
+                Select-Object -ExpandProperty Matches -First 1 |
+                Select-Object -ExpandProperty Value
               $logFilePath = (Join-Path $(commitsSinceLastReleaseArtifactName) git-log.txt)
-              Write-Host 'Commits since last release:' | Set-Content $logFilePath
-              git log --oneline --no-decorate --topo-order $previousReleaseTag..$(Build.SourceVersion) |
-                Add-Content $logFilePath
+              "Commits since ${previousReleaseTag}:" | Set-Content $logFilePath
+              git log --oneline --no-decorate --topo-order ^$previousReleaseTag $(Build.SourceVersion) |
+                Tee-Object $logFilePath -Append
+
             displayName: List commits since last release
 
           - publish: $(commitsSinceLastReleaseArtifactName)
