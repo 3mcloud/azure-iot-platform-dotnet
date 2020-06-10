@@ -19,20 +19,15 @@ $companySvgSize: 23px;
   padding: 0;
   margin: 0;
 
-  @include rem-fallback(height, $navItemHeight);
+  @include rem-fallback(height, $navItemHeight); 
 
   .nav-item-icon {
-    @include square-px-rem($navItemHeight);
-
     img {
-      @include square-px-rem($svgSize);
+      max-height: 24px;
+      vertical-align: middle;
       @include rem-fallback(margin, 10px);
     }
   }
-
-  .nav-item-icon img { @include square-px-rem($companySvgSize); }
-
-  .nav-item-icon svg { @include square-px-rem($companySvgSize); }
 
   .nav-item-text { text-transform: capitalize; }
 
