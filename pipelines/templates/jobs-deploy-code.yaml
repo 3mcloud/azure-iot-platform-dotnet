@@ -66,6 +66,8 @@ jobs:
         parameters:
           pipelineResourceName: infra
 
+      - download: none
+
       - script: |-
           echo "subscriptionName: ${{parameters.subscriptionName}}"
           echo "environmentName: ${{parameters.environmentName}}"
