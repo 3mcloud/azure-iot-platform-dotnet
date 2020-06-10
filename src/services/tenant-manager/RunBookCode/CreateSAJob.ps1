@@ -511,7 +511,7 @@ $SAJobQuery = @"
         FROM
             CombineAlarms CA PARTITION BY __partitionid
         WHERE
-            CA.ruleActions IS NOT NULLL"
+            CA.ruleActions IS NOT NULL"
     }
 }
 "@
