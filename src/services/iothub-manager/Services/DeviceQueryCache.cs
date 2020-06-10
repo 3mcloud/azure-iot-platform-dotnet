@@ -52,7 +52,7 @@ namespace Mmm.Iot.IoTHubManager.Services
                     queryString,
                     out cachedResult);
 
-                if (cachedResult.ResultTimestamp.AddMinutes(1) > DateTimeOffset.Now)
+                if (cachedResult.ResultTimestamp.AddMinutes(1) < DateTimeOffset.Now)
                 {
                     // remove the cached result if it is older than a single minute - this is our TTL
                     cachedTenantValue.QueryStringCache.Remove(queryString);
