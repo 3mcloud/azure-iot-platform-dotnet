@@ -39,6 +39,8 @@ namespace Mmm.Iot.IoTHubManager.Services
 
         public async Task<DeviceServiceListModel> GetCachedQueryResultAsync(string tenantId, string queryString)
         {
+            queryString ??= string.Empty; // null cannot be a dict key, so set to empty string if null
+
             DeviceQueryCacheResultServiceModel cachedResult;
             bool tenantHasCache = this.cache.TryGetValue(
                 tenantId,
@@ -47,8 +49,15 @@ namespace Mmm.Iot.IoTHubManager.Services
             if (tenantHasCache)
             {
                 bool cacheHasQuery = cachedTenantValue.QueryStringCache.TryGetValue(
-                    queryString ?? string.Empty,
+                    queryString,
                     out cachedResult);
+
+                if (cachedResult.ResultTimestamp.AddMinutes(1) > DateTimeOffset.Now)
+                {
+                    // remove the cached result if it is older than a single minute - this is our TTL
+                    cachedTenantValue.QueryStringCache.Remove(queryString);
+                    return null;
+                }
 
                 if (!cacheHasQuery)
                 {
@@ -119,6 +128,7 @@ namespace Mmm.Iot.IoTHubManager.Services
 
         public void SetTenantQueryResult(string tenantId, string queryString, DeviceQueryCacheResultServiceModel result)
         {
+            queryString ??= string.Empty; // null cannot be a dict key, so set to empty string if null
             var tenantHasCache = this.cache.TryGetValue(
                 tenantId,
                 out DeviceQueryCacheServiceModel tenantCache);
@@ -133,7 +143,7 @@ namespace Mmm.Iot.IoTHubManager.Services
                 {
                     QueryStringCache = new Dictionary<string, DeviceQueryCacheResultServiceModel>
                     {
-                        { queryString ?? string.Empty, result },
+                        { queryString, result },
                     },
                 };
             }
