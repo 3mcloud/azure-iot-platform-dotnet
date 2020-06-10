@@ -233,7 +233,6 @@ $SAJobQuery = @"
         (
             SELECT
                 *,
-                GetMetadataPropertyValue(DeviceTelemetry, '[User].[tenant]') AS __tenantId,
                 GetMetadataPropertyValue(DeviceTelemetry, '[User].[batchedTelemetry]') AS __isbatched,
                 DeviceTelemetry.IotHub.ConnectionDeviceId AS __deviceId,
                 udf.getTelemetryDataArrayIfExists(DeviceTelemetry, GetMetadataPropertyValue(DeviceTelemetry, '[User].[batchedTelemetry]')) AS __dataArray
@@ -246,7 +245,6 @@ $SAJobQuery = @"
                 *, -- This value is selected 'AS Message' When using ProcessedTelemetry later in the query
                 Message.PartitionId,
                 Message.__isBatched,
-                Message.__tenantId,
                 Message.__deviceId,
                 DataPoints.ArrayValue AS __batchedDataPoints,
                 udf.getReceivedTime(Message, DataPoints.ArrayValue, Message.__isBatched) AS __receivedTime
@@ -257,7 +255,6 @@ $SAJobQuery = @"
         TelemetryAndRules AS
         (
             SELECT
-                T.__tenantId,
                 T.__deviceId,
                 T.__receivedTime,
                 T.PartitionId,
@@ -281,7 +278,6 @@ $SAJobQuery = @"
         ),
         AggregateMultipleWindows AS (
             SELECT
-                TR.__tenantId,
                 TR.__deviceid,
                 TR.__ruleid,
                 TR.PartitionId,
@@ -296,7 +292,6 @@ $SAJobQuery = @"
             WHERE
                 TR.AggregationWindow = 'tumblingwindow1minutes'
             GROUP BY
-                TR.__tenantId,
                 TR.__deviceid,
                 TR.__ruleid,
                 TR.PartitionId,
@@ -306,7 +301,6 @@ $SAJobQuery = @"
             UNION
         
             SELECT
-                TR.__tenantId,
                 TR.__deviceid,
                 TR.__ruleid,
                 TR.PartitionId,
@@ -321,7 +315,6 @@ $SAJobQuery = @"
             WHERE
                 TR.AggregationWindow = 'tumblingwindow5minutes'
             GROUP BY
-                TR.__tenantId,
                 TR.__deviceid,
                 TR.__ruleid,
                 TR.PartitionId,
@@ -331,7 +324,6 @@ $SAJobQuery = @"
             UNION
         
             SELECT
-                TR.__tenantId,
                 TR.__deviceid,
                 TR.__ruleid,
                 TR.PartitionId,
@@ -346,7 +338,6 @@ $SAJobQuery = @"
             WHERE
                 TR.AggregationWindow = 'tumblingwindow10minutes'
             GROUP BY
-                TR.__tenantId,
                 TR.__deviceid,
                 TR.__ruleid,
                 TR.PartitionId,
@@ -355,7 +346,6 @@ $SAJobQuery = @"
         ),
         GroupAggregatedMeasurements AS (
             SELECT
-                AM.__tenantId,
                 AM.__deviceid,
                 AM.__ruleid,
                 AM.PartitionId,
@@ -364,7 +354,6 @@ $SAJobQuery = @"
             FROM
                 AggregateMultipleWindows AM PARTITION BY PartitionId
             GROUP BY
-                AM.__tenantId,
                 AM.__deviceid,
                 AM.__ruleid,
                 AM.PartitionId,
@@ -373,7 +362,6 @@ $SAJobQuery = @"
         ),
         FlatAggregatedMeasurements AS (
             SELECT
-                GA.__tenantId,
                 GA.__deviceid,
                 GA.__ruleid,
                 GA.__lastReceivedTime,
@@ -383,7 +371,6 @@ $SAJobQuery = @"
         ),
         CombineAggregatedMeasurementsAndRules AS (
             SELECT
-                FA.__tenantId,
                 FA.__deviceid,
                 FA.__ruleid,
                 FA.__aggregates,
@@ -406,7 +393,6 @@ $SAJobQuery = @"
         ),
         GroupInstantMeasurements AS (
             SELECT
-                TR.__tenantId,
                 TR.__deviceid,
                 TR.__ruleid,
                 TR.PartitionId,
@@ -417,7 +403,6 @@ $SAJobQuery = @"
             WHERE
                 TR.AggregationWindow = 'instant'
             GROUP BY
-                TR.__tenantId,
                 TR.__deviceid,
                 TR.__ruleid,
                 TR.PartitionId,
@@ -426,7 +411,6 @@ $SAJobQuery = @"
         ),
         FlatInstantMeasurements AS (
             SELECT
-                GI.__tenantId,
                 GI.__deviceid,
                 GI.__ruleid,
                 GI.__receivedTime,
@@ -437,7 +421,6 @@ $SAJobQuery = @"
         CombineInstantMeasurementsAndRules as
         (
             SELECT
-                FI.__tenantId,
                 FI.__deviceid,
                 FI.__ruleid,
                 FI.__receivedtime,
@@ -474,7 +457,6 @@ $SAJobQuery = @"
                 AA.__deviceId as deviceId,
                 AA.__aggregates,
                 AA.__lastReceivedTime as deviceMsgReceived,
-                AA.__tenantId
             FROM
                 ApplyAggregatedRuleFilters AA PARTITION BY PartitionId
         
@@ -494,7 +476,6 @@ $SAJobQuery = @"
                 AI.__deviceId as deviceId,
                 AI.__aggregates,
                 DATEDIFF(millisecond, '1970-01-01T00:00:00Z', AI.__receivedTime) as deviceMsgReceived,
-                AI.__tenantId
             FROM
                 ApplyInstantRuleFilters AI PARTITION BY PartitionId
         )
@@ -517,7 +498,6 @@ $SAJobQuery = @"
             CombineAlarms CA PARTITION BY PartitionId
         
         SELECT
-            CA.__tenantId as tenantId,
             CA.created,
             CA.modified,
             CA.ruleDescription,
