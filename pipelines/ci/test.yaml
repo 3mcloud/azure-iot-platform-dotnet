@@ -734,6 +734,7 @@ stages:
     displayName: Cleanup
     dependsOn:
       - functionalTest
+      - enumerateDepenencies
     condition: and(succeededOrFailed(), eq(variables['runCleanupStage'], 'true'))
     jobs:
       - job: getPipelineVariables
