@@ -383,8 +383,9 @@ export class PackageNew extends LinkedComponent {
 
             if (!contentFormat) {
                 e.target.value.error = true;
-                e.target.value.errorMessage =
-                    "Unsupported desired properties format in 'content.deviceContent'";
+                e.target.value.errorMessage = this.props.t(
+                    "packages.flyouts.new.validation.unsupportedProperty"
+                );
             } else {
                 const propertiesContent =
                     deviceContent[contentFormat.desiredPropertiesKey];
