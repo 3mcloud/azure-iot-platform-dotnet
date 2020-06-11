@@ -20,6 +20,7 @@ import { svgs } from "utilities";
 import "./packages.scss";
 import { DeviceGroupDropdownContainer as DeviceGroupDropdown } from "../../shell/deviceGroupDropdown";
 import { ManageDeviceGroupsBtnContainer as ManageDeviceGroupsBtn } from "../../shell/manageDeviceGroupsBtn";
+import { PackageJSONContainer } from "./flyouts/packageJSON";
 
 const closedFlyoutState = { openFlyoutName: undefined };
 
@@ -29,6 +30,7 @@ export class Packages extends Component {
         this.state = {
             ...closedFlyoutState,
             contextBtns: null,
+            packageJson: "testjson file",
         };
 
         this.props.updateCurrentWindow("Packages");
@@ -64,6 +66,22 @@ export class Packages extends Component {
         });
     };
 
+    getSoftSelectId = ({ id } = "") => id;
+
+    onSoftSelectChange = (packageId, rowData) => {
+        //Note: only the Id is reliable, rowData may be out of date
+        this.props.logEvent(
+            toDiagnosticsModel("Packages_GridRowClick", {
+                id: packageId,
+                displayName: rowData.name,
+            })
+        );
+        this.setState({
+            openFlyoutName: "package-json",
+            packageJson: rowData.content,
+        });
+    };
+
     render() {
         const {
                 t,
@@ -78,6 +96,8 @@ export class Packages extends Component {
                 rowData: isPending ? undefined : packages || [],
                 onContextMenuChange: this.onContextMenuChange,
                 t: this.props.t,
+                getSoftSelectId: this.getSoftSelectId,
+                onSoftSelectChange: this.onSoftSelectChange,
             };
 
         return (
@@ -116,6 +136,12 @@ export class Packages extends Component {
                     {!error && <PackagesGrid {...gridProps} />}
                     {this.state.openFlyoutName === "new-Package" && (
                         <PackageNewContainer t={t} onClose={this.closeFlyout} />
+                    )}
+                    {this.state.openFlyoutName === "package-json" && (
+                        <PackageJSONContainer
+                            packageJson={this.state.packageJson}
+                            onClose={this.closeFlyout}
+                        />
                     )}
                 </PageContent>
             </ComponentArray>
