@@ -386,21 +386,30 @@ export class PackageNew extends LinkedComponent {
                 e.target.value.errorMessage = this.props.t(
                     "packages.flyouts.new.validation.unsupportedProperty"
                 );
-            } else {
-                const propertiesContent =
-                    deviceContent[contentFormat.desiredPropertiesKey];
-
-                this.setState({
-                    packageJsonContentFormat: contentFormat,
-                    packageJson: e.target.value.json,
-                    packageFile: dataURLtoFile(
-                        "data:application/json;base64," +
-                            btoa(JSON.stringify(e.target.value.jsObject)),
-                        this.state.firmwarePackageName
-                    ),
-                    packageVersion: propertiesContent[contentFormat.versionKey],
-                });
+                return;
             }
+
+            const propertiesContent =
+                deviceContent[contentFormat.desiredPropertiesKey];
+
+            if (!propertiesContent.hasOwnProperty(contentFormat.versionKey)) {
+                e.target.value.error = true;
+                e.target.value.errorMessage = this.props.t(
+                    "package.flyouts.new.validation.unsupportedVersionKey"
+                );
+                return;
+            }
+
+            this.setState({
+                packageJsonContentFormat: contentFormat,
+                packageJson: e.target.value.json,
+                packageFile: dataURLtoFile(
+                    "data:application/json;base64," +
+                        btoa(JSON.stringify(e.target.value.jsObject)),
+                    this.state.firmwarePackageName
+                ),
+                packageVersion: propertiesContent[contentFormat.versionKey],
+            });
         }
     };
 
