@@ -19,27 +19,8 @@ pool:
   vmImage: ubuntu-latest
 variables:
   - template: ../templates/variables-all.yaml
-  - name: serenityMajorVersion
-    value: 5
-  - name: serenityMinorVersion
-    value: 0
-  - name: serenityPatchVersion
-    value: 2
-  - name: serenityVersion
-    value: $(serenityMajorVersion).$(serenityMinorVersion).$(serenityPatchVersion)
   - name: buildId
     value: build-$(Build.BuildId)
-  - name: serenityVersionRowKey
-    value: serenityVersion
-  - name: serenityVersionWithMetadata
-    value: $(serenityVersion)+$(Build.SourceVersion).$(Build.BuildId)
-  - name: serenityVersionWithMetadataRowKey
-    value: serenityVersionWithMetadata
-    # https://helm.sh/docs/chart_best_practices/conventions/#version-numbers
-  - name: serenityVersionWithMetadataKubernetesFormat
-    value: $(serenityVersion)_$(Build.SourceVersion).$(Build.BuildId)
-  - name: serenityVersionWithMetadataKubernetesFormatRowKey
-    value: serenityVersionWithMetadataKubernetesFormat
   - name: applicationCode
     value: crsliot
   - name: applicationShortCode
@@ -171,7 +152,6 @@ stages:
               --configuration $(dotnetBuildConfiguration)
               --runtime $(dotnetProductionRuntimeId)
               /p:TargetLatestRuntimePatch=true
-              /p:VersionPrefix=$(serenityVersion).$(Build.BuildId)
             displayName: Build assemblies
 
           - task: CopyFiles@2
@@ -208,8 +188,7 @@ stages:
               }
 
               $previousReleaseTag = git for-each-ref --sort=-creatordate --format '%(tag)' refs/tags |
-                Select-String -Pattern '^\d+\.\d+\.\d+$' |
-                Select-String -Pattern '^$(serenityMajorVersion)\.$(serenityMinorVersion)\.$(serenityPatchVersion)$' -NotMatch |
+                Select-String -Pattern '^\d+\.\d+\.\d+' |
                 Select-Object -ExpandProperty Matches -First 1 |
                 Select-Object -ExpandProperty Value
               $logFilePath = (Join-Path $(commitsSinceLastReleaseArtifactName) git-log.txt)
@@ -589,11 +568,6 @@ stages:
               sed -i -e 's/replace_this_imageTag/$(Build.BuildId)/g' $(mmmIotPlatformServicesHelmChartValuesFile)
             displayName: Set image tag
 
-          - script: |-
-              set -Eeuxo pipefail
-              sed -i -e 's/replace_this_appVersion/$(serenityVersionWithMetadataKubernetesFormat)/g' $(mmmIotPlatformServicesHelmChartValuesFile)
-            displayName: Set app version
-
           - task: HelmDeploy@0
             displayName: Install services Helm chart
             inputs:
@@ -755,108 +729,6 @@ stages:
           - publish: $(dependenciesReportArtifactName)
             artifact: $(dependenciesReportArtifactName)
             displayName: Publish dependencies report
-
-  - stage: tagImages
-    displayName: Tag images
-    dependsOn:
-      - functionalTest
-    condition: and(succeeded(), or(eq(variables['runTagImagesStage'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
-    jobs:
-      - job: tagImages
-        displayName: Tag images
-        strategy:
-          matrix:
-            asa-manager:
-              serviceName: asa-manager
-            config:
-              serviceName: config
-            device-telemetry:
-              serviceName: device-telemetry
-            diagnostics:
-              serviceName: diagnostics
-            identity-gateway:
-              serviceName: identity-gateway
-            iothub-manager:
-              serviceName: iothub-manager
-            reverse-proxy:
-              serviceName: reverse-proxy
-            storage-adapter:
-              serviceName: storage-adapter
-            tenant-manager:
-              serviceName: tenant-manager
-            webui:
-              serviceName: webui
-        steps:
-          - checkout: none
-
-          - task: Docker@2
-            displayName: Pull image
-            inputs:
-              containerRegistry: $(dockerHubServiceConnectionName)
-              command: pull
-              arguments: $(dockerHubRepositoryName)/$(serviceName):$(Build.BuildId)
-
-          - task: Docker@2
-            displayName: Apply version tag
-            inputs:
-              containerRegistry: $(dockerHubServiceConnectionName)
-              command: tag
-              arguments: $(dockerHubRepositoryName)/$(serviceName):$(Build.BuildId) $(dockerHubRepositoryName)/$(serviceName):$(serenityVersion)
-
-          - task: Docker@2
-            displayName: Push image
-            inputs:
-              containerRegistry: $(dockerHubServiceConnectionName)
-              repository: $(dockerHubRepositoryName)/$(serviceName)
-              command: push
-              tags: $(serenityVersion)
-
-  - stage: recordVersion
-    displayName: Record version
-    dependsOn:
-      - functionalTest
-    condition: and(succeeded(), or(eq(variables['runRecordVersionStage'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
-    jobs:
-      - job: recordVersion
-        displayName: Record version
-        steps:
-          - checkout: none
-
-          - task: AzureCLI@2
-            displayName: Record version
-            inputs:
-              azureSubscription: $(subscriptionName)
-              scriptType: bash
-              scriptLocation: inlineScript
-              inlineScript: |-
-                az storage entity insert --entity PartitionKey=$(tableStoragePartition) RowKey=$(tableStorageRowKeyPrefix)$(serenityVersionRowKey) Content="$serenityVersion" --table-name $(tableStorageName) --account-name $(storageAccountName)
-                az storage entity insert --entity PartitionKey=$(tableStoragePartition) RowKey=$(tableStorageRowKeyPrefix)$(serenityVersionWithMetadataRowKey) Content="$serenityVersionWithMetadata" --table-name $(tableStorageName) --account-name $(storageAccountName)
-                az storage entity insert --entity PartitionKey=$(tableStoragePartition) RowKey=$(tableStorageRowKeyPrefix)$(serenityVersionWithMetadataKubernetesFormatRowKey) Content="$serenityVersionWithMetadataKubernetesFormat" --table-name $(tableStorageName) --account-name $(storageAccountName)
-
-  - stage: tagRepository
-    displayName: Tag repository
-    dependsOn:
-      - functionalTest
-    condition: and(succeeded(), or(eq(variables['runTagRepositoryStage'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/master')))
-    jobs:
-      - job: tagRepository
-        displayName: Tag repository
-        variables:
-          System.Debug: true
-        steps:
-          - checkout: self
-            displayName: Checkout repository
-            persistCredentials: true
-
-          - script: |-
-              set -Eeuxo pipefail
-              git config user.name "Kyle Estes"
-              git config user.email kestes.cw@mmm.com
-              git tag --force --annotate $(serenityVersion) --message 'Serenity version tag in SemVer 2.0 format'
-              git tag --force --annotate $(serenityVersionWithMetadata) --message 'Serenity version tag with metadata in SemVer 2.0 format'
-              git tag --force --annotate $(serenityVersionWithMetadataKubernetesFormat) --message 'Serenity version tag with metadata and format adjusted for Kubernetes'
-              git push origin --tags --force
-            displayName: Add tags
 
   - stage: cleanup
     displayName: Cleanup

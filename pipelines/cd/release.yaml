@@ -1,0 +1,144 @@
+trigger: none
+pr: none
+pool:
+  vmImage: ubuntu-latest
+variables:
+  - template: ../templates/variables-all.yaml
+  - name: semVer
+    value: $(semVerMajor).$(semVerMinor).$(semVerPatch)
+  - name: semVerMeta
+    value: $(semVer)+$(semVerMetaSha).$(semVerMetaBuild)
+stages:
+  - stage: checkParameters
+    displayName: Check parameters
+    dependsOn: []
+    jobs:
+      - job: checkParameters
+        displayName: Check parameters
+        steps:
+          - checkout: none
+
+          - script: |-
+              set -Eeuxo pipefail
+              echo "SemVer major version: '$(semVerMajor)'"
+              if [ -z "$(semVerMajor)" ]
+              then
+                echo "A numeric value for the 'semVerMajor' variable must be provided" > /dev/stderr
+                exit 1
+              fi
+
+              echo "SemVer major version: '$(semVerMinor)'"
+              if [ -z "$(semVerMinor)" ]
+              then
+                echo "A numeric value for the 'semVerMinor' variable must be provided" > /dev/stderr
+                exit 1
+              fi
+
+              echo "SemVer major version: '$(semVerPatch)'"
+              if [ -z "$(semVerPatch)" ]
+              then
+                echo "A numeric value for the 'semVerPatch' variable must be provided" > /dev/stderr
+                exit 1
+              fi
+
+              echo "SemVer major version: '$(semVerMetaSha)'"
+              if [ -z "$(semVerMetaSha)" ]
+              then
+                echo "A numeric value for the 'semVerMetaSha' variable must be provided" > /dev/stderr
+                exit 1
+              fi
+
+              echo "SemVer major version: '$(semVerMetaBuild)'"
+              if [ -z "$(semVerMetaBuild)" ]
+              then
+                echo "A numeric value for the 'semVerMetaBuild' variable must be provided" > /dev/stderr
+                exit 1
+              fi
+            displayName: Check parameters
+
+  - stage: tagImages
+    displayName: Tag images
+    dependsOn: []
+    jobs:
+      - job: tagImages
+        displayName: Tag images
+        strategy:
+          matrix:
+            asa-manager:
+              serviceName: asa-manager
+            config:
+              serviceName: config
+            device-telemetry:
+              serviceName: device-telemetry
+            diagnostics:
+              serviceName: diagnostics
+            identity-gateway:
+              serviceName: identity-gateway
+            iothub-manager:
+              serviceName: iothub-manager
+            reverse-proxy:
+              serviceName: reverse-proxy
+            storage-adapter:
+              serviceName: storage-adapter
+            tenant-manager:
+              serviceName: tenant-manager
+            webui:
+              serviceName: webui
+        steps:
+          - checkout: none
+
+          - task: Docker@2
+            displayName: Pull image
+            inputs:
+              containerRegistry: $(dockerHubServiceConnectionName)
+              command: pull
+              arguments: $(dockerHubRepositoryName)/$(serviceName):$(semVerMetaBuild)
+
+          - task: Docker@2
+            displayName: Apply version tag
+            inputs:
+              containerRegistry: $(dockerHubServiceConnectionName)
+              command: tag
+              arguments: $(dockerHubRepositoryName)/$(serviceName):$(semVerMetaBuild) $(dockerHubRepositoryName)/$(serviceName):$(semVer)
+
+          - task: Docker@2
+            displayName: Apply version tag with metadata
+            inputs:
+              containerRegistry: $(dockerHubServiceConnectionName)
+              command: tag
+              arguments: $(dockerHubRepositoryName)/$(serviceName):$(semVerMetaBuild) $(dockerHubRepositoryName)/$(serviceName):$(semVerMeta)
+
+          - task: Docker@2
+            displayName: Push image
+            inputs:
+              containerRegistry: $(dockerHubServiceConnectionName)
+              repository: $(dockerHubRepositoryName)/$(serviceName)
+              command: push
+              tags: |-
+                $(semVer)
+                $(semVerMeta)
+
+  - stage: tagRepository
+    displayName: Tag repository
+    jobs:
+      - job: tagRepository
+        displayName: Tag repository
+        variables:
+          System.Debug: true
+        steps:
+          - checkout: self
+            displayName: Checkout repository
+            persistCredentials: true
+
+          - script: |-
+              set -Eeuxo pipefail
+              git config user.name "Kyle Estes"
+              git config user.email kestes.cw@mmm.com
+              git checkout $(semVerMetaSha)
+              #git tag --force --annotate $(semVer) --message 'Serenity version tag in SemVer 2.0 format'
+              #TODO: ensure tag does not already exist
+              #TODO: ensure tag adheres to SemVer format
+              #TODO: ensure SemVer precedence is obeyed (version must be larger than last)
+              GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag --annotate $(semVerMeta) --message 'Serenity version tag with metadata in SemVer 2.0 format'
+              git push origin --tags
+            displayName: Add tags

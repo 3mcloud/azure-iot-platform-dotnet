@@ -1,5 +1,5 @@
 imageTag: &imageTag replace_this_imageTag
-appVersion: &appVersion replace_this_appVersion
+appVersion: &appVersion
 secretsRef: &secretsRef
   - Global__ClientAuth__Jwt__AuthIssuer
   - AppConfigurationConnectionString
