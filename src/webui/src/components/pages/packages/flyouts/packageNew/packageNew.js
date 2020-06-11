@@ -43,7 +43,18 @@ import uuid from "uuid/v4";
 const fileInputAccept = ".json,application/json",
     firmwareFileInputAccept =
         "*.zip,*.tar,*.bin,*.ipa,*.rar,*.gz,*.bz2,*.tgz,*.swu",
-    isVersionValid = (str) => /^(\d+\.)?(\d+\.)?(\d+)$/.test(str);
+    isVersionValid = (str) => /^(\d+\.)*(\d+)$/.test(str);
+
+const contentFormats = {
+    softwareConfig: {
+        desiredPropertiesKey: "properties.desired.softwareConfig",
+        versionKey: "version",
+    },
+    firmware: {
+        desiredPropertiesKey: "properties.desired.firmware",
+        versionKey: "fwVersion",
+    },
+};
 
 export class PackageNew extends LinkedComponent {
     constructor(props) {
@@ -62,6 +73,7 @@ export class PackageNew extends LinkedComponent {
             changesApplied: undefined,
             fileError: undefined,
             uploadedFirmwareSuccessfully: false,
+            packagepackageJsonContentFormat: contentFormats.softwareConfig,
             packageJson: {
                 jsObject: {
                     id: "sampleConfigId",
@@ -126,7 +138,8 @@ export class PackageNew extends LinkedComponent {
         if (configType === "Firmware" && !uploadedFirmwareSuccessfully) {
             ConfigService.uploadFirmware(packageFile).subscribe(
                 (blobData) => {
-                    let packageJsonObject = packageJson.jsObject;
+                    const packageJsonObject = packageJson.jsObject;
+
                     // Replace all invalid configuration id values
                     packageJsonObject.id =
                         packageFile.name
@@ -341,21 +354,52 @@ export class PackageNew extends LinkedComponent {
         link.set(link.value.filter((_, idx) => index !== idx));
     };
 
+    getContentFormatFromPackageJson = (packageJson) => {
+        const deviceContent = (packageJson.content || {}).deviceContent;
+        return deviceContent.hasOwnProperty(
+            contentFormats.softwareConfig.desiredPropertiesKey
+        )
+            ? contentFormats.softwareConfig
+            : deviceContent.hasOwnProperty(
+                  contentFormats.firmware.desiredPropertiesKey
+              )
+            ? contentFormats.firmware
+            : undefined;
+    };
+
     onJsonChange = (e) => {
         if (!e.target.value.error) {
-            let changedPackageJsonObject = e.target.value.jsObject;
-            this.setState({
-                packageJson: e.target.value.json,
-                packageFile: dataURLtoFile(
-                    "data:application/json;base64," +
-                        btoa(JSON.stringify(e.target.value.jsObject)),
-                    this.state.firmwarePackageName
-                ),
-                packageVersion:
-                    changedPackageJsonObject.content.deviceContent[
-                        "properties.desired.softwareConfig"
-                    ].version,
-            });
+            if (!e.target.value.jsObject) {
+                e.target.value.error = true;
+                return;
+            }
+
+            const changedPackageJsonObject = e.target.value.jsObject,
+                deviceContent = ((changedPackageJsonObject || {}).content || {})
+                    .deviceContent,
+                contentFormat = this.getContentFormatFromPackageJson(
+                    changedPackageJsonObject
+                );
+
+            if (!contentFormat) {
+                e.target.value.error = true;
+                e.target.value.errorMessage =
+                    "Unsupported desired properties format in 'content.deviceContent'";
+            } else {
+                const propertiesContent =
+                    deviceContent[contentFormat.desiredPropertiesKey];
+
+                this.setState({
+                    packageJsonContentFormat: contentFormat,
+                    packageJson: e.target.value.json,
+                    packageFile: dataURLtoFile(
+                        "data:application/json;base64," +
+                            btoa(JSON.stringify(e.target.value.jsObject)),
+                        this.state.firmwarePackageName
+                    ),
+                    packageVersion: propertiesContent[contentFormat.versionKey],
+                });
+            }
         }
     };
 
@@ -450,7 +494,9 @@ export class PackageNew extends LinkedComponent {
 
         this.packageJsonLink = this.linkTo("packageJson").check(
             (jsonObject) => !jsonObject.error,
-            () => this.props.t("packages.flyouts.new.validation.invalid")
+            (jsonObject) =>
+                jsonObject.errorMessage ||
+                this.props.t("packages.flyouts.new.validation.invalid")
         );
 
         this.packageNameLink = this.linkTo("packageName").withValidator(
