@@ -395,7 +395,7 @@ export class PackageNew extends LinkedComponent {
             if (!propertiesContent.hasOwnProperty(contentFormat.versionKey)) {
                 e.target.value.error = true;
                 e.target.value.errorMessage = this.props.t(
-                    "package.flyouts.new.validation.unsupportedVersionKey"
+                    "packages.flyouts.new.validation.unsupportedVersionKey"
                 );
                 return;
             }
