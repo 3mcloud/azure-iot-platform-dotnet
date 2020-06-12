@@ -188,9 +188,7 @@ stages:
               }
 
               $previousReleaseTag = git for-each-ref --sort=-creatordate --format '%(tag)' refs/tags |
-                Select-String -Pattern '^\d+\.\d+\.\d+' |
-                Select-Object -ExpandProperty Matches -First 1 |
-                Select-Object -ExpandProperty Value
+                Select-Object -First 1
               $logFilePath = (Join-Path $(commitsSinceLastReleaseArtifactName) git-log.txt)
               "Commits since ${previousReleaseTag}:" | Set-Content $logFilePath
               git log --oneline --no-decorate --topo-order ^$previousReleaseTag $(Build.SourceVersion) |
