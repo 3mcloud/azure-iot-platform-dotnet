@@ -301,7 +301,7 @@ jobs:
           deploymentPartialName: $(storageAccountPartialName)
           resourceGroupName: $(resourceGroupName)
   - job: addSysAdmin
-    displayName: Creation of table storage and add sysAdmin
+    displayName: Add System Administrators
     dependsOn:
       - storageAccount
     variables:
@@ -331,29 +331,30 @@ jobs:
           ScriptType: InlineScript
           Inline: |
             $storageAccount = Get-AzStorageAccount -ResourceGroupName $(resourceGroupName) -Name $(storageAccountName)
-            $saContext = $storageAccount.Context
-           
-            $cloudTable = (Get-AzStorageTable –Name $(tableStorageName) –Context $saContext -ErrorVariable isTableNotAvailable -ErrorAction SilentlyContinue).CloudTable
-            if($isTableNotAvailable)
+            $storageAccountContext = $storageAccount.Context
+            $cloudTable = (Get-AzStorageTable -Name $(tableStorageName) -Context $storageAccountContext -ErrorVariable tableExists -ErrorAction Stop).CloudTable
+            if(!($tableExists))
             {
-               New-AzStorageTable –Name $(tableStorageName) –Context $saContext
-               $cloudTable = (Get-AzStorageTable –Name $(tableStorageName) –Context $saContext).CloudTable
+               New-AzStorageTable -Name $(tableStorageName) -Context $storageAccountContext
+               $cloudTable = (Get-AzStorageTable -Name $(tableStorageName) -Context $storageAccountContext).CloudTable
             }
-            Install-Module -Name AzTable -Force 
-            $jsonObj = ConvertFrom-Json -InputObject '$(sysAdmins)'
-            $jsonObj
-            ForEach($Row in $jsonObj)
+
+            Install-Module -Name AzTable -Force
+            $systemAdministrators = '$(sysAdmins)' | ConvertFrom-Json -Depth 100
+            Write-Host "System Administrators: $systemAdministrators"
+            ForEach ($systemAdministrator in $systemAdministrators)
             {
-               $partitionKey = "$($Row.UserId)" 
-               $rowKey = "$($Row.UserId)"  
-               $hashTableProperty = @{}
-               $Row.psobject.properties | Foreach { if($_.Name -eq "Name"){ $hashTableProperty[$_.Name] = $_.Value }}
-               echo "Hash Table Property"
-               $hashTableProperty
-               Add-AzTableRow -table $cloudTable -partitionKey $partitionKey -rowKey $rowKey -property  $hashTableProperty -ErrorVariable isConflict -ErrorAction SilentlyContinue
-               Get-AzTableRow -table $cloudTable | ft
+              Add-AzTableRow
+                -Table $cloudTable
+                -PartitionKey $systemAdministrator.UserId
+                -RowKey $systemAdministrator.UserId
+                -Property @{ "Name" = $systemAdministrator.Name }
+                -ErrorVariable isConflict
+                -ErrorAction Stop
+              Write-Host "Table row:"
+              Get-AzTableRow -Table $cloudTable | Format-Table
             }
-          azurePowerShellVersion: 'LatestVersion'
+          azurePowerShellVersion: LatestVersion
 
   - job: eventHub
     displayName: Provision Event Hub
