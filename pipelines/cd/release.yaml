@@ -153,12 +153,17 @@ stages:
               command: tag
               arguments: $(dockerHubRepositoryName)/$(serviceName):$(semVerMetaBuild) $(dockerHubRepositoryName)/$(serviceName):$(semVer)
 
+          - bash: |-
+              semVerMetaDocker = $(echo '$(semVerMeta)' | sed 's/\+/_/g')
+              echo "##vso[task.setvariable variable=semVerMetaDocker]$semVerMetaDocker"
+            displayName: Adapt SemVer for use as Docker tag
+
           - task: Docker@2
             displayName: Apply version tag with metadata
             inputs:
               containerRegistry: $(dockerHubServiceConnectionName)
               command: tag
-              arguments: $(dockerHubRepositoryName)/$(serviceName):$(semVerMetaBuild) $(dockerHubRepositoryName)/$(serviceName):$(semVerMeta)
+              arguments: $(dockerHubRepositoryName)/$(serviceName):$(semVerMetaBuild) $(dockerHubRepositoryName)/$(serviceName):$(semVerMetaDocker)
 
           - task: Docker@2
             displayName: Push image
