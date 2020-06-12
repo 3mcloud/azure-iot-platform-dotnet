@@ -16,7 +16,8 @@ stages:
       - job: checkParameters
         displayName: Check parameters
         steps:
-          - checkout: none
+          - checkout: self
+            displayName: Checkout repository
 
           - pwsh: |-
               Set-PSDebug -Trace 1
