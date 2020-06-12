@@ -154,7 +154,7 @@ stages:
               arguments: $(dockerHubRepositoryName)/$(serviceName):$(semVerMetaBuild) $(dockerHubRepositoryName)/$(serviceName):$(semVer)
 
           - bash: |-
-              semVerMetaDocker = $(echo '$(semVerMeta)' | sed 's/\+/_/g')
+              semVerMetaDocker=$(echo '$(semVerMeta)' | sed 's/\+/_/g')
               echo "##vso[task.setvariable variable=semVerMetaDocker]$semVerMetaDocker"
             displayName: Adapt SemVer for use as Docker tag
 
