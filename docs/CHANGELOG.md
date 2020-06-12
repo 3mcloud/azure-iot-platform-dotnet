@@ -10,7 +10,7 @@ git log --oneline --no-decorate --topo-order ^<previousRelease> master
 where <previousRelease> is the release name e.g 5.1.0
 -->
 
-## [5.1.0] - 2020-06-11
+## [5.1.0] - 2020-06-12
 ### Added
 - Cache IoT Hub device twin query results to greatly reduce throttling and latency
 - Clicking a package name in the Packages page now displays the package JSON data
