@@ -58,7 +58,8 @@ stages:
 
   - stage: tagImages
     displayName: Tag images
-    dependsOn: []
+    dependsOn:
+      - checkParameters
     jobs:
       - job: tagImages
         displayName: Tag images
@@ -120,6 +121,8 @@ stages:
 
   - stage: tagRepository
     displayName: Tag repository
+    dependsOn:
+      - checkParameters
     jobs:
       - job: tagRepository
         displayName: Tag repository
