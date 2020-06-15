@@ -21,6 +21,7 @@ stages:
           environmentCategory: dev
           kubernetesVersion: 1.17.5
           sendgridEmail: aschmidt4@mmm.com
+          aksAgentVmSize: Standard_D8_v3
           sysAdmins: '[{"UserId": "3e30f301-4f57-4b3e-949a-3ff8e93870b5", "Name": "Viswanath Kotha CW"},
                        {"UserId": "00e4068a-944e-4cd2-bc2a-77b1d33a1db3", "Name": "Jonathan Asbury"},
                        {"UserId": "295af21b-90af-4777-b0ba-4d7f94514679", "Name": "Sean Dubiel"},

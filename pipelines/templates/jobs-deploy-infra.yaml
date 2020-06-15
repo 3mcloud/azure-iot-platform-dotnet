@@ -8,6 +8,7 @@ parameters:
   environmentCategory:
   kubernetesVersion:
   sendgridEmail:
+  aksAgentVmSize: Standard_DS2_v2
 
 jobs:
   - template: get-approval.yaml
@@ -205,6 +206,7 @@ jobs:
             -servicePrincipalClientSecret $servicePrincipalKey
             -omsWorkspaceName $(omsWorkspaceName)
             -kubernetesVersion ${{parameters.kubernetesVersion}}
+            -agentVMSize ${{parameters.aksAgentVmSize}}
           deploymentMode: Incremental
           addSpnToEnvironment: true
 
