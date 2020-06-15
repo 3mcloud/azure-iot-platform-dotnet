@@ -3,7 +3,7 @@ export const toTenantModel = (response = { Models: [] }) =>
         return {
             id: model.tenantId,
             displayName: model.tenantName,
-            role: model.roles.includes("admin") ? "Admin" : "Read Only",
+            role: model.roles,
         };
     });
 
