@@ -22,12 +22,11 @@
         "jwt-decode": "^2.2.0",
         "moment": "^2.22.2",
         "njwt": "^1.0.0",
-        "node-sass": "4.14.1",
+        "node-sass": "4.11.0",
         "normalizr": "3.3.0",
         "oidc-client": "^1.9.0",
         "prop-types": "15.6.2",
         "query-string": "6.2.0",
-        "babel-polyfill": "6.26.0",
         "react": "16.6.3",
         "react-dom": "16.6.3",
         "react-dom-factories": "1.0.2",
@@ -54,25 +53,17 @@
         "prettier": "2.0.2"
     },
     "scripts": {
-        "start": "./node_modules/.bin/eslint . --fix && react-scripts start",
+        "start": "./node_modules/.bin/eslint . && react-scripts start",
         "build": "GENERATE_SOURCEMAP=false react-scripts build",
         "lint": "./node_modules/.bin/eslint .",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
         "debug": "cross-env NODE_PATH=src/ REACT_APP_BASE_SERVICE_URL='https://crsliot-aks-dev.centralus.cloudapp.azure.com' react-scripts --inspect-brk start --runInBand"
     },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all",
-            "not ie <= 11"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version",
-            "ie 11"
-        ]
-    }
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not op_mini all",
+        "not ie <= 11"
+    ]
 }
