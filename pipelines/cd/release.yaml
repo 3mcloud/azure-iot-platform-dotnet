@@ -16,49 +16,101 @@ stages:
       - job: checkParameters
         displayName: Check parameters
         steps:
-          - checkout: none
+          - checkout: self
+            displayName: Checkout repository
 
-          - script: |-
-              set -Eeuxo pipefail
-              echo "SemVer major version: '$(semVerMajor)'"
-              if [ -z "$(semVerMajor)" ]
-              then
-                echo "A numeric value for the 'semVerMajor' variable must be provided" > /dev/stderr
-                exit 1
-              fi
+          - pwsh: |-
+              Set-PSDebug -Trace 1
+              Function Test-ParameterValue {
+                [CmdletBinding()]
+                Param(
+                    [Parameter(Mandatory = $True)]
+                    $Name,
+                    [Parameter(Mandatory = $True)]
+                    $Value
+                )
 
-              echo "SemVer major version: '$(semVerMinor)'"
-              if [ -z "$(semVerMinor)" ]
-              then
-                echo "A numeric value for the 'semVerMinor' variable must be provided" > /dev/stderr
-                exit 1
-              fi
+                Write-Verbose "$($Name): $Value"
+                if ([string]::IsNullOrEmpty($Value)) {
+                  throw "Value for parameter '$Name' cannot be null or empty"
+                }
+              }
 
-              echo "SemVer major version: '$(semVerPatch)'"
-              if [ -z "$(semVerPatch)" ]
-              then
-                echo "A numeric value for the 'semVerPatch' variable must be provided" > /dev/stderr
-                exit 1
-              fi
+              Function Test-VersionPrecedence {
+                [CmdletBinding()]
+                Param(
+                    [Parameter(Mandatory = $True)]
+                    $PreviousVersion,
+                    [Parameter(Mandatory = $True)]
+                    $Version
+                )
 
-              echo "SemVer major version: '$(semVerMetaSha)'"
-              if [ -z "$(semVerMetaSha)" ]
-              then
-                echo "A numeric value for the 'semVerMetaSha' variable must be provided" > /dev/stderr
-                exit 1
-              fi
+                Write-Verbose "Previous version: $PreviousVersion"
+                Write-Verbose "Version: $Version"
 
-              echo "SemVer major version: '$(semVerMetaBuild)'"
-              if [ -z "$(semVerMetaBuild)" ]
-              then
-                echo "A numeric value for the 'semVerMetaBuild' variable must be provided" > /dev/stderr
-                exit 1
-              fi
+                # Use the official SemVer regex, with the named capture group syntax adjusted for use with .NET
+                # https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+                $semVerRegex = [regex]::new('^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<metadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')
+                if (!($semVerRegex.IsMatch($PreviousVersion))) {
+                  throw "A valid SemVer string must be specified for 'PreviousVersion'"
+                }
+
+                if (!($semVerRegex.IsMatch($Version))) {
+                  throw "A valid SemVer string must be specified for 'Version'"
+                }
+
+                $previousVersionMatch = $semVerRegex.Match($PreviousVersion)
+                $previousMajor = [int]$previousVersionMatch.Groups['major'].Value
+                $previousMinor = [int]$previousVersionMatch.Groups['minor'].Value
+                $previousPatch = [int]$previousVersionMatch.Groups['patch'].Value
+                $previousPrerelease = $previousVersionMatch.Groups['prerelease'].Value
+                $previousMetadata = $previousVersionMatch.Groups['metadata'].Value
+
+                $versionMatch = $semVerRegex.Match($Version)
+                $major = [int]$versionMatch.Groups['major'].Value
+                $minor = [int]$versionMatch.Groups['minor'].Value
+                $patch = [int]$versionMatch.Groups['patch'].Value
+                $prerelease = $versionMatch.Groups['prerelease'].Value
+                $metadata = $versionMatch.Groups['metadata'].Value
+
+                # Test precedence according to https://semver.org/#spec-item-11
+                # Except do not perform any pre-release logic
+                if ($major -gt $previousMajor) {
+                  Write-Verbose "Major version '$major' takes precedence over previous '$previousMajor'"
+                  return
+                }
+
+                if ($minor -gt $previousMinor) {
+                  Write-Verbose "Minor version '$minor' takes precedence over previous '$previousMinor'"
+                  return
+                }
+
+                if ($patch -gt $previousPatch) {
+                  Write-Verbose "Patch version '$patch' takes precedence over previous '$previousPatch'"
+                  return
+                }
+
+                throw "Version '$Version' must take precedence over previous '$PreviousVersion'"
+              }
+
+              Test-ParameterValue -Name 'semVerMajor' -Value '$(semVerMajor)' -ErrorAction Stop -Verbose
+              Test-ParameterValue -Name 'semVerMinor' -Value '$(semVerMinor)' -ErrorAction Stop -Verbose
+              Test-ParameterValue -Name 'semVerPatch' -Value '$(semVerPatch)' -ErrorAction Stop -Verbose
+              Test-ParameterValue -Name 'semVerMetaSha' -Value '$(semVerMetaSha)' -ErrorAction Stop -Verbose
+              Test-ParameterValue -Name 'semVerMetaBuild' -Value '$(semVerMetaBuild)' -ErrorAction Stop -Verbose
+
+              $previousVersion = git for-each-ref --sort=-creatordate --format '%(tag)' refs/tags |
+                Select-Object -First 1
+              Test-VersionPrecedence -PreviousVersion "$previousVersion" -Version '$(semVerMeta)' -ErrorAction Stop -Verbose
             displayName: Check parameters
+            errorActionPreference: Stop
+            failOnStderr: true
+            ignoreLASTEXITCODE: false
 
   - stage: tagImages
     displayName: Tag images
-    dependsOn: []
+    dependsOn:
+      - checkParameters
     jobs:
       - job: tagImages
         displayName: Tag images
@@ -101,12 +153,17 @@ stages:
               command: tag
               arguments: $(dockerHubRepositoryName)/$(serviceName):$(semVerMetaBuild) $(dockerHubRepositoryName)/$(serviceName):$(semVer)
 
+          - bash: |-
+              semVerMetaDocker=$(echo '$(semVerMeta)' | sed 's/\+/_/g')
+              echo "##vso[task.setvariable variable=semVerMetaDocker]$semVerMetaDocker"
+            displayName: Adapt SemVer for use as Docker tag
+
           - task: Docker@2
             displayName: Apply version tag with metadata
             inputs:
               containerRegistry: $(dockerHubServiceConnectionName)
               command: tag
-              arguments: $(dockerHubRepositoryName)/$(serviceName):$(semVerMetaBuild) $(dockerHubRepositoryName)/$(serviceName):$(semVerMeta)
+              arguments: $(dockerHubRepositoryName)/$(serviceName):$(semVerMetaBuild) $(dockerHubRepositoryName)/$(serviceName):$(semVerMetaDocker)
 
           - task: Docker@2
             displayName: Push image
@@ -116,10 +173,12 @@ stages:
               command: push
               tags: |-
                 $(semVer)
-                $(semVerMeta)
+                $(semVerMetaDocker)
 
   - stage: tagRepository
     displayName: Tag repository
+    dependsOn:
+      - checkParameters
     jobs:
       - job: tagRepository
         displayName: Tag repository
@@ -135,10 +194,6 @@ stages:
               git config user.name "Kyle Estes"
               git config user.email kestes.cw@mmm.com
               git checkout $(semVerMetaSha)
-              #git tag --force --annotate $(semVer) --message 'Serenity version tag in SemVer 2.0 format'
-              #TODO: ensure tag does not already exist
-              #TODO: ensure tag adheres to SemVer format
-              #TODO: ensure SemVer precedence is obeyed (version must be larger than last)
               GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag --annotate $(semVerMeta) --message 'Serenity version tag with metadata in SemVer 2.0 format'
               git push origin --tags
             displayName: Add tags
