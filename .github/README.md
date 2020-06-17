@@ -1,8 +1,6 @@
 [![Build Status](https://dev.azure.com/3M-Bluebird/AzurePlatform/_apis/build/status/serenity/build/test-pr?branchName=master)](https://dev.azure.com/3M-Bluebird/AzurePlatform/_build/latest?definitionId=198&branchName=master)
 
-
 # Overview
-
 <div align="center">
 <img src="https://user-images.githubusercontent.com/33666587/39657377-33612fc8-4fbc-11e8-98a8-58906236238a.png" width="600" height="auto"/>
 </div>
