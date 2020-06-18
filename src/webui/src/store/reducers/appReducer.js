@@ -50,7 +50,6 @@ export const epics = createEpicScenario({
             epics.actions.fetchReleaseInformation(),
             epics.actions.fetchSolutionSettings(),
             epics.actions.fetchTelemetryStatus(),
-            epics.actions.fetchActionSettings(),
             epics.actions.fetchAlerting(),
         ],
     },
