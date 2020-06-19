@@ -47,7 +47,7 @@
         "notFound": "Oops, wir waren nicht in der Lage zu finden, die service.",
         "redirection": "Hoppla, wir haben eine Umleitung Fehler.",
         "retryFailure": "Hoppla, wir haben einen temporären Fehler aus dem service, aber waren nicht in der Lage sich zu erholen. Versuchen Sie es später erneut.",
-        "unknown": "Ein unbekannter Fehler ist aufgetreten. {{message}}"
+        "unknown": "Ein unbekannter Fehler ist aufgetreten."
     },
     "permissions": {
         "ReadAll": "View-Lösung",

@@ -47,7 +47,7 @@
         "notFound": "Oops, we were not able to find the service.",
         "redirection": "Oops, we got a redirection error.",
         "retryFailure": "Oops, we got a temporary error from the service but were unable to recover. Try again later.",
-        "unknown": "An unknown error occurred. {{message}}"
+        "unknown": "An unknown error occurred."
     },
     "permissions": {
         "ReadAll": "View solution",

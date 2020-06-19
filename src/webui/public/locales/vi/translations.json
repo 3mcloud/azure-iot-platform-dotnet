@@ -47,7 +47,7 @@
         "notFound": "Oops, chúng tôi đã không thể tìm thấy những dịch vụ.",
         "redirection": "Oops, chúng tôi có một hướng lỗi.",
         "retryFailure": "Oops, chúng tôi có một lỗi tạm thời từ dịch vụ nhưng đã không thể phục hồi. Thử lại sau.",
-        "unknown": "Một lỗi không xảy ra. {{tin nhắn}}"
+        "unknown": "Một lỗi không xảy ra."
     },
     "permissions": {
         "ReadAll": "Xem giải pháp",

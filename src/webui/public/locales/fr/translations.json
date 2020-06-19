@@ -47,7 +47,7 @@
         "notFound": "Oops, nous n'avons pas pu trouver le service.",
         "redirection": "Oups, nous avons obtenu une redirection de l'erreur.",
         "retryFailure": "Oups, nous avons obtenu une erreur temporaire du service mais ont été incapables de récupérer. Essayez de nouveau plus tard.",
-        "unknown": "Une erreur inconnue s'est produite. {{message}}"
+        "unknown": "Une erreur inconnue s'est produite."
     },
     "permissions": {
         "ReadAll": "Afficher la solution",
