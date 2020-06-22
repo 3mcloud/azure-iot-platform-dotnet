@@ -26,21 +26,21 @@ Set the `AppConfigurationConnectionString` environment variable in the Bash conf
 ### Windows
 In a PowerShell shell:
 ```
-dotnet user-secrets set --project ./src/services/comon/Services/Services.csproj AppConfigurationConnectionString (az appconfig credential list --name <name> --resource-group <resource-group> --query "[?name=='Primary'].connectionString | [0]" --output tsv)
+dotnet user-secrets set --project ./src/services/common/Services/Services.csproj AppConfigurationConnectionString (az appconfig credential list --name <name> --resource-group <resource-group> --query "[?name=='Primary'].connectionString | [0]" --output tsv)
 ```
 Then check the value of the secret:
 ```
-dotnet user-secrets list --project ./src/services/comon/Services/Services.csproj --json | Select-Object -Skip 1 | Select-Object -SkipLast 1 | ConvertFrom-Json | Select-Object -ExpandProperty AppConfigurationConnectionString
+dotnet user-secrets list --project ./src/services/common/Services/Services.csproj --json | Select-Object -Skip 1 | Select-Object -SkipLast 1 | ConvertFrom-Json | Select-Object -ExpandProperty AppConfigurationConnectionString
 ```
 
 ### Non-Windows
 In a Bash shell:
 ```
-dotnet user-secrets set --project ./src/services/comon/Services/Services.csproj AppConfigurationConnectionString `az appconfig credential list --name <name> --resource-group <resource-group> --query "[?name=='Primary'].connectionString | [0]" --output tsv`
+dotnet user-secrets set --project ./src/services/common/Services/Services.csproj AppConfigurationConnectionString `az appconfig credential list --name <name> --resource-group <resource-group> --query "[?name=='Primary'].connectionString | [0]" --output tsv`
 ```
 Then check the value of the secret:
 ```
-dotnet user-secrets list --project ./src/services/comon/Services/Services.csproj --json | sed '1d;$d' | jq --raw-output '.AppConfigurationConnectionString'
+dotnet user-secrets list --project ./src/services/common/Services/Services.csproj --json | sed '1d;$d' | jq --raw-output '.AppConfigurationConnectionString'
 ```
 
 # Building
