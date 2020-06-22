@@ -6,7 +6,9 @@ parameters:
 steps:
   - checkout: self
     displayName: Checkout repository
-    persistCredentials: true
+
+  - checkout: mmm
+    displayName: Checkout old repository
 
   - task: KubectlInstaller@0
     displayName: Install kubectl
@@ -14,13 +16,14 @@ steps:
       kubectlVersion: ${{parameters.kubernetesVersion}}
 
   - task: AzureCLI@2
-    displayName: Generate report
+    displayName: Generate version report
     inputs:
       azureSubscription: ${{parameters.azureServiceConnectionName}}
       scriptType: pscore
-      scriptPath: pipelines/cd/report.ps1
-      arguments: -SerenityEnvironment ${{parameters.serenityEnvironment}}
+      powerShellErrorActionPreference: Continue
+      scriptPath: $(Build.SourcesDirectory)/azure-iot-platform-dotnet/pipelines/cd/report.ps1
+      arguments: -SourceDirectory $(Build.SourcesDirectory) -SerenityEnvironmentName ${{parameters.serenityEnvironment}} -AzureDevOpsPersonalAccessToken $(azureDevOpsPersonalAccessToken) -Verbose
 
-  - publish: $(System.DefaultWorkingDirectory)/reports/${{parameters.serenityEnvironment}}.html
+  - publish: $(Build.SourcesDirectory)/reports/${{parameters.serenityEnvironment}}.html
     artifact: Version report for ${{parameters.serenityEnvironment}}
     displayName: Publish report
