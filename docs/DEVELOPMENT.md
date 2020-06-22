@@ -34,7 +34,7 @@ dotnet user-secrets list --project ./common/Services/Services.csproj --json | Se
 ```
 
 ### Non-Windows
-In a Bash shell:
+In a Bash shell: 
 ```
 dotnet user-secrets set --project ./common/Services/Services.csproj AppConfigurationConnectionString `az appconfig credential list --name <name> --resource-group <resource-group> --query "[?name=='Primary'].connectionString | [0]" --output tsv`
 ```
