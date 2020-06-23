@@ -9,6 +9,7 @@ parameters:
   kubernetesVersion:
   sendgridEmail:
   aksAgentVmSize: Standard_DS2_v2
+  sysAdmins:
 
 jobs:
   - template: get-approval.yaml
@@ -302,6 +303,7 @@ jobs:
           subscriptionName: ${{parameters.subscriptionName}}
           deploymentPartialName: $(storageAccountPartialName)
           resourceGroupName: $(resourceGroupName)
+
   - job: addSysAdmin
     displayName: Add System Administrators
     dependsOn:
@@ -317,8 +319,6 @@ jobs:
           applicationShortCode: ${{parameters.applicationShortCode}}
           environmentCategory: ${{parameters.environmentCategory}}
           sysAdmins: ${{parameters.sysAdmins}}
-    pool:
-      vmImage: windows-latest
     steps:
       - checkout: self
         displayName: Checkout repository
@@ -330,21 +330,26 @@ jobs:
       - task: AzurePowerShell@5
         inputs:
           azureSubscription: ${{parameters.subscriptionName}}
-          ScriptType: InlineScript
-          Inline: |
+          azurePowerShellVersion: latestVersion
+          scriptType: inlineScript
+          displayName: Add System Administrators
+          scriptArguments: -Verbose
+          inline: |-
+            $VerbosePreference = Continue
             $storageAccount = Get-AzStorageAccount -ResourceGroupName $(resourceGroupName) -Name $(storageAccountName)
             $storageAccountContext = $storageAccount.Context
             $cloudTable = (Get-AzStorageTable -Name $(tableStorageName) -Context $storageAccountContext -ErrorVariable tableExists -ErrorAction Stop).CloudTable
-            if(!($tableExists))
+            if(!$cloudTable.Exists())
             {
-               New-AzStorageTable -Name $(tableStorageName) -Context $storageAccountContext
-               $cloudTable = (Get-AzStorageTable -Name $(tableStorageName) -Context $storageAccountContext).CloudTable
+              New-AzStorageTable -Name $(tableStorageName) -Context $storageAccountContext
+              $cloudTable = (Get-AzStorageTable -Name $(tableStorageName) -Context $storageAccountContext).CloudTable
             }
 
             Install-Module -Name AzTable -Force
+            Write-Verbose 'System Administrators: $(sysAdmins)'
             $systemAdministrators = '$(sysAdmins)' | ConvertFrom-Json -Depth 100
-            Write-Host "System Administrators: $systemAdministrators"
-            ForEach ($systemAdministrator in $systemAdministrators)
+            Write-Verbose "System Administrators: $systemAdministrators"
+            foreach ($systemAdministrator in $systemAdministrators)
             {
               Add-AzTableRow
                 -Table $cloudTable
@@ -356,7 +361,6 @@ jobs:
               Write-Host "Table row:"
               Get-AzTableRow -Table $cloudTable | Format-Table
             }
-          azurePowerShellVersion: LatestVersion
 
   - job: eventHub
     displayName: Provision Event Hub
@@ -678,20 +682,16 @@ jobs:
           scriptLocation: inlineScript
           scriptType: bash
           inlineScript: |-
-            # Needed because Azure Devops has a bug in the extension included, normally the extension will handle the flattening --  Andrew Schmidt
             set -Eeuxo pipefail
-            jq --arg delim ':' 'reduce (tostream|select(length==2)) as $i ({};
-                .[[$i[0][]|tostring]|join($delim)] = $i[1]
-            )' $(System.DefaultWorkingDirectory)/pipelines/cd/app-config-template.json > $(System.DefaultWorkingDirectory)/pipelines/cd/app-config-template-translated.json
-            az appconfig kv import --yes --name $(appConfigurationName) --format json --source file --path "$(System.DefaultWorkingDirectory)/pipelines/cd/app-config-template-translated.json"
+            az appconfig kv import --yes --name $(appConfigurationName) --format json --source file --path "$(System.DefaultWorkingDirectory)/pipelines/cd/app-config-template.json" --separator ":"
             echo "Checking for $(System.DefaultWorkingDirectory)/pipelines/cd/permissions-config/permissions-${{parameters.environmentName}}.json"
             if [ ! -f $(System.DefaultWorkingDirectory)/pipelines/cd/permissions-config/permissions-${{parameters.environmentName}}.json ];
             then
               az appconfig kv import --yes --name $(appConfigurationName) --format json --source file --path "$(System.DefaultWorkingDirectory)/pipelines/cd/permissions-config/permissions-Default.json"
-              echo “Using default permissions file“
+              echo "Using default permissions file"
             else
               az appconfig kv import --yes --name $(appConfigurationName) --format json --source file --path "$(System.DefaultWorkingDirectory)/pipelines/cd/permissions-config/permissions-${{parameters.environmentName}}.json"
-              echo “Using permissions-${{parameters.environmentName}}.json file“
+              echo "Using permissions-${{parameters.environmentName}}.json file"
             fi
 
             az appconfig kv set --key Global:KeyVault:Name                        --value $(keyVaultName) --name $(appConfigurationName) --yes
@@ -983,7 +983,7 @@ jobs:
               --resource-group $(resourceGroupName)
 
   - job: automationAccount
-    displayName: Provision Automation Account,Sendgrid Account
+    displayName: Provision Azure Automation and Sendgrid accounts
     dependsOn:
       - aks
       - keyVault
