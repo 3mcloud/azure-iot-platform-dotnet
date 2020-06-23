@@ -189,7 +189,7 @@ stages:
           imageTag: $(_imageTag)
 
   - stage: psdStg
-    displayName: PSD Stg
+    displayName: PSD staging
     dependsOn:
       - psdDev
     jobs:
