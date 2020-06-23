@@ -1,8 +1,8 @@
 trigger: none
 pr: none
 schedules:
-  - cron: 0 5 * * *
-    displayName: Daily midnight (CST) build
+  - cron: 0 2 * * *
+    displayName: Daily evening(CST) build
     branches:
       include:
         - master
