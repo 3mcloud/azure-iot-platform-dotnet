@@ -31,7 +31,8 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Test.Controllers
         {
             this.logger = new Mock<ILogger<MessagesController>>();
             this.messageServiceMock = new Mock<IMessages>();
-            this.controller = new MessagesController(this.messageServiceMock.Object, this.logger.Object);
+            var config = new AppConfig();
+            this.controller = new MessagesController(this.messageServiceMock.Object, this.logger.Object, config);
         }
 
         [Fact]

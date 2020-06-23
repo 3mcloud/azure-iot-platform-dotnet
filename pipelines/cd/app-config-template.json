@@ -26,6 +26,7 @@
     "Messages": {
       "Collection": "messages",
       "Database": "iot",
+      "MessageRetrievalCountLimit": 1000,
       "TelemetryStorageType": "cosmosdb"
     },
     "RulesTemplatesFolder": "./data/Rules/",

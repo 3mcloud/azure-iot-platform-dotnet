@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Mmm.Iot.Common.Services.Config;
 using Mmm.Iot.Common.Services.Exceptions;
 using Mmm.Iot.Common.Services.External.TimeSeries;
 using Mmm.Iot.Common.Services.Filters;
@@ -22,13 +23,16 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
         private const int DeviceLimit = 1000;
         private readonly IMessages messageService;
         private readonly ILogger logger;
+        private readonly AppConfig config;
 
         public MessagesController(
             IMessages messageService,
-            ILogger<MessagesController> logger)
+            ILogger<MessagesController> logger,
+            AppConfig config)
         {
             this.messageService = messageService;
             this.logger = logger;
+            this.config = config;
         }
 
         [HttpGet]
@@ -96,7 +100,7 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
 
             if (limit == null)
             {
-                limit = 1000;
+                limit = this.config.DeviceTelemetryService.Messages.MessageRetrievalCountLimit;
             }
 
             // TODO: move this logic to the storage engine, depending on the
