@@ -98,7 +98,8 @@ export class Dashboard extends Component {
                           .flatMap((items) => {
                               this.setState({
                                   telemetryQueryExceededLimit:
-                                      items.length >= 1000,
+                                      items.length >=
+                                      Config.telemetryQueryResultLimit,
                               });
                               return Observable.of(items);
                           })
