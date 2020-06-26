@@ -259,7 +259,9 @@
                 "notConnected": "Offline"
             },
             "telemetry": {
-                "header": "Telemetry"
+                "header": "Telemetry",
+                "timezoneDisplay": "Displaying in local timezone:",
+                "limitExceededWarning": "Maximum number of messages received. Earlier data may be truncated."
             }
         }
     },

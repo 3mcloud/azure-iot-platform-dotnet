@@ -28,6 +28,7 @@ export class TelemetryPanel extends Component {
                 t,
                 isPending,
                 telemetry,
+                limitExceeded,
                 lastRefreshed,
                 theme,
                 colors,
@@ -44,7 +45,9 @@ export class TelemetryPanel extends Component {
                 </PanelHeader>
                 <PanelContent className="telemetry-panel-container">
                     <TelemetryChart
+                        t={t}
                         telemetry={telemetry}
+                        limitExceeded={limitExceeded}
                         theme={theme}
                         colors={colors}
                     />
