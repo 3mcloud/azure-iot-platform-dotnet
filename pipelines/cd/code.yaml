@@ -61,6 +61,7 @@ stages:
           applicationShortCode: crsl
           environmentCategory: dev
           imageTag: $(_imageTag)
+          subscriptionId: c36fb2f8-f98d-40d0-90a9-d65e93acb428
 
   - stage: ggkDev
     displayName: GGK dev
@@ -75,6 +76,7 @@ stages:
           applicationShortCode: ggk
           environmentCategory: dev
           imageTag: $(_imageTag)
+          subscriptionId: c36fb2f8-f98d-40d0-90a9-d65e93acb428
 
   - stage: crslQa
     displayName: CRSL QA
@@ -89,6 +91,7 @@ stages:
           applicationShortCode: crsl
           environmentCategory: qa
           imageTag: $(_imageTag)
+          subscriptionId: f27c7c03-1ea8-49b8-9878-106e434b8a23
 
   - stage: crslWkbnch
     displayName: CRSL workbench
@@ -103,6 +106,7 @@ stages:
           applicationShortCode: crsl
           environmentCategory: wkbnch
           imageTag: $(_imageTag)
+          subscriptionId: dcb37438-95ca-4a68-812d-39ce0d591df2
 
   - stage: chimDev
     displayName: CHIM dev
@@ -117,6 +121,7 @@ stages:
           applicationShortCode: chim
           environmentCategory: dev
           imageTag: $(_imageTag)
+          subscriptionId: 28299656-8110-4dc4-a33f-82a6cc3d05c2
 
   - stage: chimQa
     displayName: CHIM QA
@@ -131,6 +136,7 @@ stages:
           applicationShortCode: chim
           environmentCategory: qa
           imageTag: $(_imageTag)
+          subscriptionId: 30975220-85e1-4769-8bc1-4542ec8569a0
 
   - stage: chimProd
     displayName: CHIM prod
@@ -145,6 +151,7 @@ stages:
           applicationShortCode: chim
           environmentCategory: prod
           imageTag: $(_imageTag)
+          subscriptionId: 5401dcf9-9d00-445b-97b4-60b216ea4930
 
   - stage: psdDev
     displayName: PSD dev
@@ -159,6 +166,7 @@ stages:
           applicationShortCode: psd
           environmentCategory: dev
           imageTag: $(_imageTag)
+          subscriptionId: 1d0a4e20-e44d-43b5-97b0-9b577f5bf048
 
   - stage: psdQa
     displayName: PSD QA
@@ -173,6 +181,7 @@ stages:
           applicationShortCode: psd
           environmentCategory:  qa
           imageTag: $(_imageTag)
+          subscriptionId: 8c550fc0-24e0-43cb-8237-5fbb168c1071
 
   - stage: psdEu
     displayName: PSD EU
@@ -187,6 +196,7 @@ stages:
           applicationShortCode: psd
           environmentCategory: eu
           imageTag: $(_imageTag)
+          subscriptionId: 8c550fc0-24e0-43cb-8237-5fbb168c1071
 
   - stage: psdStg
     displayName: PSD staging
@@ -201,6 +211,7 @@ stages:
           applicationShortCode: psd
           environmentCategory: stg
           imageTag: $(_imageTag)
+          subscriptionId: 8c550fc0-24e0-43cb-8237-5fbb168c1071
 
   - stage: emdDev
     displayName: EMD dev
@@ -215,6 +226,7 @@ stages:
           applicationShortCode: emd
           environmentCategory: dev
           imageTag: $(_imageTag)
+          subscriptionId: 191495e8-b878-4140-85eb-aae73a7119cd
 
   - stage: emdQa
     displayName: EMD QA
@@ -229,6 +241,7 @@ stages:
           applicationShortCode: emd
           environmentCategory: qa
           imageTag: $(_imageTag)
+          subscriptionId: 5248a0ea-c79b-4739-adc7-e76eeb27e253
 
   - stage: emdCt
     displayName: EMD CT
@@ -243,3 +256,4 @@ stages:
           applicationShortCode: emd
           environmentCategory: ct
           imageTag: $(_imageTag)
+          subscriptionId: e9f61243-5e9a-4b8a-918c-09fe7e9f1ec1

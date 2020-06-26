@@ -421,24 +421,23 @@ Function Get-AzureAks {
 }
 
 Function Get-SerenityEnvironments {
-    $infraPipeline = ConvertFrom-Yaml (Get-Content -Raw (Join-Path $mmmSourceDirectory $serenityRepositoryName $serenityInfrastructurePipelineFile))
+    $codePipeline = ConvertFrom-Yaml (Get-Content -Raw (Join-Path $mmmSourceDirectory $serenityRepositoryName $serenityCodePipelineFile))
     $serenityEnvironments = @()
-    foreach ($stageItem in $infraPipeline.stages) {
-        $environment = New-Object -TypeName SerenityEnvironment
-        $environment.Name = $stageItem.stage
-        $environment.DisplayName = $stageItem.displayName
+    foreach ($stageItem in $codePipeline.stages) {
         foreach ($parameterItem in $stageItem.jobs |
-            Where-Object { $_.template -ilike '*jobs-deploy-infra*' } |
+            Where-Object { $_.template -ilike '*jobs-deploy-code*' } |
             Select-Object -ExpandProperty parameters) {
+                $environment = New-Object -TypeName SerenityEnvironment
+                $environment.Name = $stageItem.stage
+                $environment.DisplayName = $stageItem.displayName
                 $environment.AzureSubscriptionName = $parameterItem.subscriptionName
                 $environment.AzureSubscriptionId = $parameterItem.subscriptionId
                 $environment.AzureDevOpsEnvironmentName = $parameterItem.environmentName
                 $environment.ApplicationCode = $parameterItem.applicationCode
                 $environment.ApplicationShortCode = $parameterItem.applicationShortCode
                 $environment.EnvironmentCategory = $parameterItem.environmentCategory
+                $serenityEnvironments += $environment
             }
-
-        $serenityEnvironments += $environment
     }
 
     return $serenityEnvironments
@@ -488,7 +487,7 @@ Import-Module -Name powershell-yaml -Force
 $pipelineRuns = @{}
 $tags = @{}
 $mmmSourceDirectory = $SourceDirectory
-$serenityInfrastructurePipelineFile = 'pipelines/cd/infra.yaml'
+$serenityCodePipelineFile = 'pipelines/cd/code.yaml'
 $serenityRepositoryName = 'azure-iot-platform-dotnet'
 $serenityRepositoryNameAlt = 'azure-iot-services-dotnet'
 $script:containerRegistryPageSize = 100
