@@ -456,7 +456,7 @@ $SAJobQuery = @"
                 AA.__ruleid as ruleId,
                 AA.__deviceId as deviceId,
                 AA.__aggregates,
-                AA.__lastReceivedTime as deviceMsgReceived,
+                AA.__lastReceivedTime as deviceMsgReceived
             FROM
                 ApplyAggregatedRuleFilters AA PARTITION BY PartitionId
         
@@ -475,7 +475,7 @@ $SAJobQuery = @"
                 AI.__ruleid as ruleId,
                 AI.__deviceId as deviceId,
                 AI.__aggregates,
-                DATEDIFF(millisecond, '1970-01-01T00:00:00Z', AI.__receivedTime) as deviceMsgReceived,
+                DATEDIFF(millisecond, '1970-01-01T00:00:00Z', AI.__receivedTime) as deviceMsgReceived
             FROM
                 ApplyInstantRuleFilters AI PARTITION BY PartitionId
         )
