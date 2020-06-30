@@ -33,6 +33,7 @@ import {
     SectionDesc,
     TimeSeriesInsightsLinkContainer,
 } from "components/shared";
+import { TimeIntervalDropdownContainer as TimeIntervalDropdown } from "components/shell/timeIntervalDropdown";
 import Flyout from "components/shared/flyout";
 import {
     TelemetryChartContainer as TelemetryChart,
@@ -126,7 +127,10 @@ export class DeviceDetails extends Component {
                 .do((_) => this.setState({ telemetry: {} }))
                 .switchMap(
                     (deviceId) =>
-                        TelemetryService.getTelemetryByDeviceIdP15M([deviceId])
+                        TelemetryService.getTelemetryByDeviceId(
+                            [deviceId],
+                            TimeIntervalDropdown.getTimeIntervalDropdownValue()
+                        )
                             .flatMap((items) => {
                                 this.setState({
                                     telemetryQueryExceededLimit:
@@ -266,6 +270,11 @@ export class DeviceDetails extends Component {
         );
     };
 
+    updateTimeInterval = (timeInterval) => {
+        this.props.updateTimeInterval(timeInterval);
+        this.resetTelemetry$.next(this.props.device.id);
+    };
+
     render() {
         const {
                 t,
@@ -370,6 +379,12 @@ export class DeviceDetails extends Component {
                                     )}
                                 </Section.Header>
                                 <Section.Content>
+                                    <TimeIntervalDropdown
+                                        onChange={this.updateTimeInterval}
+                                        value={this.props.timeInterval}
+                                        t={t}
+                                        className="device-details-time-interval-dropdown"
+                                    />
                                     {timeSeriesExplorerUrl && (
                                         <TimeSeriesInsightsLinkContainer
                                             href={timeSeriesParamUrl}

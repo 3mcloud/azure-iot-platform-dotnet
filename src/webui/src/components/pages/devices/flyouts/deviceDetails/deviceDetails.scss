@@ -60,5 +60,10 @@
     .device-properties-actions .row { color: themed('colorContentTextDim'); }
 
     .device-details-deployment-contentbox { border-color: themed('colorHeaderBorderColor'); }
+
+    .device-details-time-interval-dropdown {
+      border-top-color: 1px solid themed('color-border-rest');
+      border-bottom-color: 1px solid themed('color-border-rest');
+    }
   }
 }
