@@ -71,6 +71,12 @@ export const prepareLogoResponse = ({ xhr, response }) => {
     return returnObj;
 };
 
+export const toSolutionSettingFirmwareModel = (response = {}) =>
+    camelCaseReshape(response, {
+        jsObject: "jsObject",
+        "metadata.version": "metadata.version",
+    });
+
 export const toSolutionSettingThemeModel = (response = {}) =>
     camelCaseReshape(response, {
         description: "description",

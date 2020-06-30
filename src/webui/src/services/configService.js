@@ -9,6 +9,7 @@ import {
     toDeviceGroupsModel,
     toSolutionSettingActionsModel,
     toSolutionSettingThemeModel,
+    toSolutionSettingFirmwareModel,
     toNewPackageRequestModel,
     toPackagesModel,
     toPackageModel,
@@ -105,6 +106,19 @@ export class ConfigService {
         return HttpClient.put(`${ENDPOINT}solution-settings/theme`, model).map(
             toSolutionSettingThemeModel
         );
+    }
+
+    static setDefaultFirmwareSetting(model) {
+        return HttpClient.post(
+            `${ENDPOINT}solution-settings/defaultFirmware`,
+            model
+        ).map(toSolutionSettingFirmwareModel);
+    }
+
+    static getDefaultFirmwareSetting() {
+        return HttpClient.get(
+            `${ENDPOINT}solution-settings/defaultFirmware`
+        ).map(toSolutionSettingFirmwareModel);
     }
 
     static getActionSettings() {
