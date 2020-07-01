@@ -2,11 +2,15 @@
 
 import { connect } from "react-redux";
 import { DeviceJobMethods } from "./deviceJobMethods";
-import { epics as appEpics, getTheme, getActiveDeviceGroup } from "store/reducers/appReducer";
+import {
+    epics as appEpics,
+    getTheme,
+    getActiveDeviceGroup,
+} from "store/reducers/appReducer";
 
 const mapStateToProps = (state) => ({
         theme: getTheme(state),
-        deviceGroup: getActiveDeviceGroup(state)
+        deviceGroup: getActiveDeviceGroup(state),
     }),
     // Wrap the dispatch method
     mapDispatchToProps = (dispatch) => ({

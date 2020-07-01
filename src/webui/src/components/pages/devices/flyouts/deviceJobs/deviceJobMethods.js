@@ -108,7 +108,19 @@ export class DeviceJobMethods extends LinkedComponent {
                     : deviceMethods
             )
             .subscribe((commonMethodSet) => {
-                const commonMethods = [...commonMethodSet, ...this.props.deviceGroup.supportedMethods.map(t=> t.method)];
+                const commonMethods = [
+                    ...commonMethodSet,
+                    ...this.props.deviceGroup.supportedMethods.map(
+                        (t) => t.method
+                    ),
+                ];
+                console.log(
+                    commonMethods,
+                    commonMethodSet,
+                    ...this.props.deviceGroup.supportedMethods.map(
+                        (t) => t.method
+                    )
+                );
                 this.setState({ commonMethods });
             });
     }
