@@ -225,6 +225,14 @@ export class DeviceJobMethods extends LinkedComponent {
                         />
                     </FormGroup>
 
+                    <p>
+                        NOTE: Methods can be reported from the device using the
+                        reported property "SupportedMethods" (comma seperated
+                        list). An alternative is to define them in the device
+                        group. It is preferred to come from the device since
+                        then the device will definitely support the method.{" "}
+                    </p>
+
                     <FormGroup>
                         <FormLabel>
                             {t("devices.flyouts.jobs.jobName")}
