@@ -112,7 +112,7 @@ export class ConfigService {
         return HttpClient.post(
             `${ENDPOINT}solution-settings/defaultFirmware`,
             model
-        ).map(toSolutionSettingFirmwareModel);
+        );
     }
 
     static getDefaultFirmwareSetting() {
