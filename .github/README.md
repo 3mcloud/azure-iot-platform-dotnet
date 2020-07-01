@@ -1,7 +1,7 @@
 [![Build Status](https://dev.azure.com/3M-Bluebird/AzurePlatform/_apis/build/status/serenity/build/test-pr?branchName=master)](https://dev.azure.com/3M-Bluebird/AzurePlatform/_build/latest?definitionId=198&branchName=master)
 
 # Overview
-![Demo of Platform](./img/demo_shot.png)
+![Demo of Platform](./img/demo_shot.PNG)
 
 3M's IoT Platform helps you get better visibility into your devices, assets, and
 sensors wherever they happen to be located. You can collect and analyze real-time
