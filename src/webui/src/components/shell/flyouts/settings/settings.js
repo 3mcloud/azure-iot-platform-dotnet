@@ -22,6 +22,7 @@ import {
 
 import "./settings.scss";
 import { TenantService, ConfigService } from "services";
+import FirmwareVariableGrid from "./firmwareVariableGrid";
 
 const Section = Flyout.Section;
 
@@ -621,9 +622,21 @@ export class Settings extends LinkedComponent {
                                         </Btn>
                                     ) : (
                                         <div className="firmware-edit-container">
-                                            {t(
-                                                "settingsFlyout.firmware.variableSummary"
-                                            )}
+                                            <Section.Container closed={true}>
+                                                <Section.Header>
+                                                    {t(
+                                                        "settingsFlyout.firmware.variables.name"
+                                                    )}
+                                                </Section.Header>
+                                                <Section.Content>
+                                                    {t(
+                                                        "settingsFlyout.firmware.variables.summary"
+                                                    )}
+                                                    <FirmwareVariableGrid
+                                                        t={t}
+                                                    />
+                                                </Section.Content>
+                                            </Section.Container>
                                             <FormControl
                                                 link={this.firmwareJsonLink}
                                                 type="jsoninput"
