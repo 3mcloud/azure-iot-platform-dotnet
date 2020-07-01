@@ -225,6 +225,8 @@ export class DeviceJobMethods extends LinkedComponent {
                         />
                     </FormGroup>
 
+                    <br/>
+
                     <p>
                         NOTE: Methods can be reported from the device using the
                         reported property "SupportedMethods" (comma seperated
