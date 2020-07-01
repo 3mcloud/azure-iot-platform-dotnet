@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Mmm.Iot.Common.Services.External.StorageAdapter;
 using Mmm.Iot.Config.Services.External;
 using Mmm.Iot.Config.Services.Models;
 using Mmm.Platform.IoT.Common.Services.Models;
@@ -24,6 +25,10 @@ namespace Mmm.Iot.Config.Services
         Task<Logo> GetLogoAsync();
 
         Task<Logo> SetLogoAsync(Logo model);
+
+        Task<ValueApiModel> SetSolutionSettingAsync(string id, object setting);
+
+        Task<T> GetSolutionSettingAsync<T>(string id);
 
         Task<IEnumerable<DeviceGroup>> GetAllDeviceGroupsAsync();
 
