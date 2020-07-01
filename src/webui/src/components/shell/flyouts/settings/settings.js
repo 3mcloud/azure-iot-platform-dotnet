@@ -36,10 +36,17 @@ const alertingIsPending = (jobState) => {
 
 const firmwareSettingErrorTypes = {
     noVersion: "settingsFlyout.firmware.error.noVersion",
-    uploadError: "settingsFlyout.firmware.error.uploadError",
+    uploadError: "settingsFlyout.firmware.error.upload",
     invalid: "settingsFlyout.firmware.error.invalid",
     unknown: "settingsFlyout.firmware.error.unknown",
+    retrievalError: "settingsFlyout.firmware.error.retrieval",
+    doubleSlash: "settingsFlyout.firmware.error.doubleSlash",
+    reserved: {
+        id: "settingsFlyout.firmware.error.reserved.id",
+    },
 };
+
+const emptyFirmwareJson = { jsObject: {} };
 
 export class Settings extends LinkedComponent {
     constructor(props) {
@@ -57,7 +64,7 @@ export class Settings extends LinkedComponent {
             alertingIsActive: this.props.alerting.isActive,
             alertingPending: alertingIsPending(this.props.alerting.jobState),
             firmwareEdit: false,
-            firmwareJson: { jsObject: {} },
+            firmwareJson: emptyFirmwareJson,
             firmwareSettingPending: false,
             firmwareSettingError: "",
         };
@@ -288,10 +295,37 @@ export class Settings extends LinkedComponent {
         this.props.logEvent(toDiagnosticsModel("Settings_LogoUpdated", {}));
     };
 
-    enableFirmwareEdit = () => this.setState({ firmwareEdit: true });
+    enableFirmwareEdit = () => {
+        this.setState({
+            firmwareEdit: false,
+            firmwareSettingError: false,
+            firmwareSettingPending: true,
+        });
+
+        ConfigService.getDefaultFirmwareSetting().subscribe(
+            (defaultFirmwareModel) => {
+                this.setState({
+                    firmwareJson: { jsObject: defaultFirmwareModel.jsObject },
+                    firmwareEdit: true,
+                    firmwareSettingPending: false,
+                });
+            },
+            (error) => {
+                this.setState({
+                    firmwareSettingPending: false,
+                    firmwareSettingError:
+                        firmwareSettingErrorTypes.retrievalError,
+                });
+            }
+        );
+    };
 
     disableFirmwareEdit = () =>
-        this.setState({ firmwareEdit: false, firmwareJson: { jsObject: {} } });
+        this.setState({
+            firmwareEdit: false,
+            firmwareJson: emptyFirmwareJson,
+            firmwareSettingError: false,
+        });
 
     onFirmwareEdit = (firmwareInput) => {
         this.setState({ firmwareSettingError: false });
@@ -303,11 +337,25 @@ export class Settings extends LinkedComponent {
             return;
         }
 
-        const json = firmwareInput.target.value.jsObject;
+        const json = firmwareInput.target.value;
 
-        if (!this.getFirmwareVersionField(json)) {
+        if (!this.getFirmwareVersionField(json.jsObject)) {
             this.setState({
+                firmwareJson: json,
                 firmwareSettingError: firmwareSettingErrorTypes.noVersion,
+            });
+        } else if (
+            Object.keys(json.jsObject).some((key) => key.indexOf("//") !== -1)
+        ) {
+            this.setState({
+                firmwareJson: json,
+                firmwareSettingError: firmwareSettingErrorTypes.doubleSlash,
+            });
+        } else if ((json.jsObject || { id: undefined }).id) {
+            this.setState({
+                firmwareJson: json,
+                firmwareSettingErrorTypes:
+                    firmwareSettingErrorTypes.reserved.id,
             });
         } else {
             this.setState({
@@ -317,7 +365,7 @@ export class Settings extends LinkedComponent {
     };
 
     getFirmwareVersionField = (json, parent) => {
-        const parentKey = parent ? `${parent}.` : "";
+        const parentKey = parent ? `${parent}//` : "";
 
         if (!json) {
             return;
@@ -327,11 +375,14 @@ export class Settings extends LinkedComponent {
             if (value === "${version}") {
                 return `${parentKey}${key}`;
             } else {
-                if (typeof value === "object") {
-                    return this.getFirmwareVersionField(
+                if (value instanceof Object) {
+                    let childKey = this.getFirmwareVersionField(
                         value,
                         `${parentKey}${key}`
                     );
+                    if (childKey) {
+                        return childKey;
+                    }
                 }
             }
         }
@@ -343,12 +394,14 @@ export class Settings extends LinkedComponent {
             firmwareSettingError: false,
         });
         const firmwareJson = this.state.firmwareJson,
-            firmwareVersionField = this.getFirmwareVersionField(firmwareJson);
+            firmwareVersionField = this.getFirmwareVersionField(
+                firmwareJson.jsObject
+            );
 
         if (firmwareVersionField) {
             ConfigService.setDefaultFirmwareSetting({
-                jsObject: firmwareJson,
-                metaData: {
+                jsObject: firmwareJson.jsObject,
+                metadata: {
                     version: firmwareVersionField,
                 },
             }).subscribe(
@@ -356,6 +409,7 @@ export class Settings extends LinkedComponent {
                     this.setState({
                         firmwareSettingPending: false,
                         firmwareSettingError: false,
+                        firmwareEdit: false,
                     });
                 },
                 (error) => {
@@ -577,11 +631,6 @@ export class Settings extends LinkedComponent {
                                                 theme={theme}
                                                 onChange={this.onFirmwareEdit}
                                             />
-                                            {firmwareSettingError && (
-                                                <div className="firmware-setting-error-container">
-                                                    {t(firmwareSettingError)}
-                                                </div>
-                                            )}
                                             <BtnToolbar>
                                                 <Btn
                                                     type="button"
@@ -616,6 +665,11 @@ export class Settings extends LinkedComponent {
                                                     )}
                                                 </Btn>
                                             </BtnToolbar>
+                                        </div>
+                                    )}
+                                    {firmwareSettingError && (
+                                        <div className="firmware-setting-error-container">
+                                            {t(firmwareSettingError)}
                                         </div>
                                     )}
                                 </Section.Content>
