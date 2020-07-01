@@ -573,7 +573,7 @@ export class Settings extends LinkedComponent {
                                             <FormControl
                                                 link={this.firmwareJsonLink}
                                                 type="jsoninput"
-                                                height="50%"
+                                                height="100%"
                                                 theme={theme}
                                                 onChange={this.onFirmwareEdit}
                                             />

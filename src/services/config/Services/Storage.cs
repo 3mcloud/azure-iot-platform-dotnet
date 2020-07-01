@@ -62,30 +62,40 @@ namespace Mmm.Iot.Config.Services
 
         public async Task<object> GetThemeAsync()
         {
-            string data;
+            object data;
 
             try
             {
-                var response = await this.client.GetAsync(SolutionCollectionId, ThemeKey);
-                data = response.Data;
+                data = await this.GetSolutionSettingAsync<object>(ThemeKey);
             }
             catch (ResourceNotFoundException)
             {
-                data = JsonConvert.SerializeObject(Theme.Default);
+                data = Theme.Default;
             }
 
-            var themeOut = JsonConvert.DeserializeObject(data) as JToken ?? new JObject();
+            var themeOut = data as JToken ?? new JObject();
             this.AppendAzureMapsKey(themeOut);
             return themeOut;
         }
 
         public async Task<object> SetThemeAsync(object themeIn)
         {
-            var value = JsonConvert.SerializeObject(themeIn);
-            var response = await this.client.UpdateAsync(SolutionCollectionId, ThemeKey, value, "*");
+            var response = await this.SetSolutionSettingAsync(ThemeKey, themeIn);
             var themeOut = JsonConvert.DeserializeObject(response.Data) as JToken ?? new JObject();
             this.AppendAzureMapsKey(themeOut);
             return themeOut;
+        }
+
+        public async Task<ValueApiModel> SetSolutionSettingAsync(string id, object setting)
+        {
+            var value = JsonConvert.SerializeObject(setting);
+            return await this.client.UpdateAsync(SolutionCollectionId, id, value, "*");
+        }
+
+        public async Task<T> GetSolutionSettingAsync<T>(string id)
+        {
+            var response = await this.client.GetAsync(SolutionCollectionId, id);
+            return JsonConvert.DeserializeObject<T>(response.Data);
         }
 
         public async Task<object> GetUserSetting(string id)
@@ -112,8 +122,7 @@ namespace Mmm.Iot.Config.Services
         {
             try
             {
-                var response = await this.client.GetAsync(SolutionCollectionId, LogoKey);
-                return JsonConvert.DeserializeObject<Logo>(response.Data);
+                return await this.GetSolutionSettingAsync<Logo>(LogoKey);
             }
             catch (ResourceNotFoundException)
             {
@@ -138,8 +147,7 @@ namespace Mmm.Iot.Config.Services
                 }
             }
 
-            var value = JsonConvert.SerializeObject(model);
-            var response = await this.client.UpdateAsync(SolutionCollectionId, LogoKey, value, "*");
+            var response = await this.SetSolutionSettingAsync(LogoKey, model);
             return JsonConvert.DeserializeObject<Logo>(response.Data);
         }
 
