@@ -196,15 +196,15 @@ export const backupDefaultFirmwareModel = {
         metrics: {
             queries: {
                 current:
-                    "SELECT deviceId FROM devices WHERE configurations.[[{0}]].status = 'Applied' AND properties.reported.softwareConfig.version = properties.desired.softwareConfig.version AND properties.reported.softwareConfig.status='Success'",
+                    "SELECT deviceId FROM devices WHERE configurations.[[${deployment.id}]].status = 'Applied' AND properties.reported.softwareConfig.version = properties.desired.softwareConfig.version AND properties.reported.softwareConfig.status='Success'",
                 applying:
-                    "SELECT deviceId FROM devices WHERE configurations.[[{0}]].status = 'Applied' AND ( properties.reported.softwareConfig.status='Downloading' OR properties.reported.softwareConfig.status='Verifying' OR properties.reported.softwareConfig.status='Applying')",
+                    "SELECT deviceId FROM devices WHERE configurations.[[${deployment.id}]].status = 'Applied' AND ( properties.reported.softwareConfig.status='Downloading' OR properties.reported.softwareConfig.status='Verifying' OR properties.reported.softwareConfig.status='Applying')",
                 rebooting:
-                    "SELECT deviceId FROM devices WHERE configurations.[[{0}]].status = 'Applied' AND properties.reported.softwareConfig.version = properties.desired.softwareConfig.version AND properties.reported.softwareConfig.status='Rebooting'",
+                    "SELECT deviceId FROM devices WHERE configurations.[[${deployment.id}]].status = 'Applied' AND properties.reported.softwareConfig.version = properties.desired.softwareConfig.version AND properties.reported.softwareConfig.status='Rebooting'",
                 error:
-                    "SELECT deviceId FROM devices WHERE configurations.[[{0}]].status = 'Applied' AND properties.reported.softwareConfig.status='Error'",
+                    "SELECT deviceId FROM devices WHERE configurations.[[${deployment.id}]].status = 'Applied' AND properties.reported.softwareConfig.status='Error'",
                 rolledback:
-                    "SELECT deviceId FROM devices WHERE configurations.[[{0}]].status = 'Applied' AND properties.reported.softwareConfig.status='RolledBack'",
+                    "SELECT deviceId FROM devices WHERE configurations.[[${deployment.id}]].status = 'Applied' AND properties.reported.softwareConfig.status='RolledBack'",
             },
         },
         targetCondition: "",

@@ -158,6 +158,9 @@
                         "lastModifiedDate": "Human readable date timestamp",
                         "size": "File size in bytes",
                         "type": "Uploaded file type"
+                    },
+                    "deployment": {
+                        "id": "When deploying your package, this value will be replaced by the ID of your deployment"
                     }
                 }
             }
