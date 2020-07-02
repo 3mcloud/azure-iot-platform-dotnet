@@ -17,8 +17,10 @@ export const toDeviceGroupModel = function (deviceGroup = {}) {
         conditions: "conditions",
         eTag: "eTag",
         telemetryFormat: "telemetryFormat",
+        supportedMethods: "supportedMethods",
     });
     deviceGroup["telemetryFormat"] = deviceGroup.telemetryFormat || [];
+    deviceGroup["supportedMethods"] = deviceGroup.supportedMethods || [];
     return deviceGroup;
 };
 
@@ -41,6 +43,7 @@ export const toCreateDeviceGroupRequestModel = (params = {}) => ({
         toDeviceConditionModel(condition)
     ),
     TelemetryFormat: params.telemetryFormat || [],
+    SupportedMethods: params.supportedMethods || [],
 });
 
 export const toUpdateDeviceGroupRequestModel = (params = {}) => ({
@@ -51,6 +54,7 @@ export const toUpdateDeviceGroupRequestModel = (params = {}) => ({
         toDeviceConditionModel(condition)
     ),
     TelemetryFormat: params.telemetryFormat || [],
+    SupportedMethods: params.supportedMethods || [],
 });
 
 export const prepareLogoResponse = ({ xhr, response }) => {
