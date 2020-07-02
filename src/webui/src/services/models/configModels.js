@@ -1,4 +1,5 @@
 // Copyright (c) Microsoft. All rights reserved.
+/* eslint-disable no-template-curly-in-string */
 
 import update from "immutability-helper";
 import {

@@ -1,4 +1,5 @@
 // Copyright (c) Microsoft. All rights reserved.
+/* eslint-disable no-template-curly-in-string */
 
 import React from "react";
 import { Toggle } from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Toggle";
@@ -37,10 +38,10 @@ const alertingIsPending = (jobState) => {
 
 const firmwareSettingErrorTypes = {
     noVersion: "settingsFlyout.firmware.error.noVersion",
-    uploadError: "settingsFlyout.firmware.error.upload",
+    upload: "settingsFlyout.firmware.error.upload",
     invalid: "settingsFlyout.firmware.error.invalid",
     unknown: "settingsFlyout.firmware.error.unknown",
-    retrievalError: "settingsFlyout.firmware.error.retrieval",
+    retrieval: "settingsFlyout.firmware.error.retrieval",
     doubleSlash: "settingsFlyout.firmware.error.doubleSlash",
     reserved: {
         id: "settingsFlyout.firmware.error.reserved.id",
@@ -314,8 +315,7 @@ export class Settings extends LinkedComponent {
             (error) => {
                 this.setState({
                     firmwareSettingPending: false,
-                    firmwareSettingError:
-                        firmwareSettingErrorTypes.retrievalError,
+                    firmwareSettingError: firmwareSettingErrorTypes.retrieval,
                 });
             }
         );
@@ -416,8 +416,7 @@ export class Settings extends LinkedComponent {
                 (error) => {
                     this.setState({
                         firmwareSettingPending: false,
-                        firmwareSettingError:
-                            firmwareSettingErrorTypes.uploadError,
+                        firmwareSettingError: firmwareSettingErrorTypes.upload,
                     });
                 }
             );
@@ -458,7 +457,10 @@ export class Settings extends LinkedComponent {
                 firmwareSettingError,
             } = this.state;
         this.applicationNameLink = this.linkTo("applicationName");
-        this.firmwareJsonLink = this.linkTo("firmwareJson");
+        this.firmwareJsonLink = this.linkTo("firmwareJson").check(
+            () => !firmwareSettingError,
+            (json) => json.errorMessage || t(firmwareSettingError)
+        );
         const hasChanged = logoFile !== undefined || applicationName !== "",
             hasSimulationChanged =
                 !getSimulationPending &&
@@ -612,14 +614,21 @@ export class Settings extends LinkedComponent {
                                 <Section.Content>
                                     {t("settingsFlyout.firmware.description")}
                                     {!firmwareEdit ? (
-                                        <Btn
-                                            type="button"
-                                            svg={svgs.edit}
-                                            onClick={this.enableFirmwareEdit}
-                                            className="firmware-edit-button"
-                                        >
-                                            {t("settingsFlyout.firmware.edit")}
-                                        </Btn>
+                                        <BtnToolbar>
+                                            <Btn
+                                                primary
+                                                type="button"
+                                                svg={svgs.edit}
+                                                onClick={
+                                                    this.enableFirmwareEdit
+                                                }
+                                                className="firmware-edit-button"
+                                            >
+                                                {t(
+                                                    "settingsFlyout.firmware.edit"
+                                                )}
+                                            </Btn>
+                                        </BtnToolbar>
                                     ) : (
                                         <div className="firmware-edit-container">
                                             <Section.Container closed={true}>
@@ -646,6 +655,7 @@ export class Settings extends LinkedComponent {
                                             />
                                             <BtnToolbar>
                                                 <Btn
+                                                    primary
                                                     type="button"
                                                     svg={svgs.checkmark}
                                                     onClick={
@@ -667,7 +677,7 @@ export class Settings extends LinkedComponent {
                                                 )}
                                                 <Btn
                                                     type="button"
-                                                    svg={svgs.x}
+                                                    svg={svgs.cancelX}
                                                     onClick={
                                                         this.disableFirmwareEdit
                                                     }
@@ -678,11 +688,6 @@ export class Settings extends LinkedComponent {
                                                     )}
                                                 </Btn>
                                             </BtnToolbar>
-                                        </div>
-                                    )}
-                                    {firmwareSettingError && (
-                                        <div className="firmware-setting-error-container">
-                                            {t(firmwareSettingError)}
                                         </div>
                                     )}
                                 </Section.Content>
