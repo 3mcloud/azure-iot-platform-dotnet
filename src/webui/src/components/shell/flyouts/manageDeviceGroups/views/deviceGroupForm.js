@@ -24,6 +24,7 @@ import {
 
 import Flyout from "components/shared/flyout";
 import { DeviceGroupTelemetryFormatContainer } from "../deviceGroupTelemetryFormat.container";
+import { DeviceGroupSupportedMethodsContainer } from "../deviceGroupSupportedMethods.container";
 
 const Section = Flyout.Section;
 
@@ -60,6 +61,7 @@ class DeviceGroupForm extends LinkedComponent {
             displayName: "",
             conditions: [newCondition()],
             telemetryFormat: [],
+            supportedMethods: [],
             isPending: false,
             error: undefined,
             isEdit: this.props.selectedDeviceGroup,
@@ -99,6 +101,7 @@ class DeviceGroupForm extends LinkedComponent {
             conditions,
             displayName,
             telemetryFormat,
+            supportedMethods,
         },
     }) => {
         if (this.state.isEdit) {
@@ -114,6 +117,7 @@ class DeviceGroupForm extends LinkedComponent {
                     key: conditionKey++,
                 })),
                 telemetryFormat: telemetryFormat,
+                supportedMethods: supportedMethods,
             });
         }
     };
@@ -162,7 +166,8 @@ class DeviceGroupForm extends LinkedComponent {
 
     updateTelemetryFormat = (value) =>
         this.setState({ telemetryFormat: value });
-
+    updateSupportedMethods = (value) =>
+        this.setState({ supportedMethods: value });
     addCondition = () => {
         this.props.logEvent(toDiagnosticsModel("DeviceGroup_AddCondition", {}));
         return this.conditionsLink.set([
@@ -269,7 +274,7 @@ class DeviceGroupForm extends LinkedComponent {
                 label: t(`deviceQueryConditions.typeOptions.${value}`),
                 value,
             }));
-        const { telemetryFormat } = this.state;
+        const { telemetryFormat, supportedMethods } = this.state;
         return (
             <div>
                 {!this.state.isDelete ? (
@@ -430,6 +435,13 @@ class DeviceGroupForm extends LinkedComponent {
                                     format={telemetryFormat}
                                     onTelemetryChange={
                                         this.updateTelemetryFormat
+                                    }
+                                />
+                                <DeviceGroupSupportedMethodsContainer
+                                    t={t}
+                                    methods={supportedMethods}
+                                    onMethodsChange={
+                                        this.updateSupportedMethods
                                     }
                                 />
                                 <BtnToolbar>
