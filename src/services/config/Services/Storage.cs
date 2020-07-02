@@ -60,29 +60,28 @@ namespace Mmm.Iot.Config.Services
             this.logger = logger;
         }
 
-        public async Task<object> GetThemeAsync()
+        public async Task<Theme> GetThemeAsync()
         {
-            object data;
+            Theme theme;
 
             try
             {
-                data = await this.GetSolutionSettingAsync<object>(ThemeKey);
+                theme = await this.GetSolutionSettingAsync<Theme>(ThemeKey);
             }
             catch (ResourceNotFoundException)
             {
-                data = Theme.Default;
+                theme = Theme.Default;
             }
 
-            var themeOut = data as JToken ?? new JObject();
-            this.AppendAzureMapsKey(themeOut);
-            return themeOut;
+            theme.AzureMapsKey ??= this.config.ConfigService.AzureMapsKey;
+            return theme;
         }
 
-        public async Task<object> SetThemeAsync(object themeIn)
+        public async Task<Theme> SetThemeAsync(object themeIn)
         {
             var response = await this.SetSolutionSettingAsync(ThemeKey, themeIn);
-            var themeOut = JsonConvert.DeserializeObject(response.Data) as JToken ?? new JObject();
-            this.AppendAzureMapsKey(themeOut);
+            Theme themeOut = JsonConvert.DeserializeObject<Theme>(response.Data);
+            themeOut.AzureMapsKey ??= this.config.ConfigService.AzureMapsKey;
             return themeOut;
         }
 
@@ -535,14 +534,6 @@ namespace Mmm.Iot.Config.Services
             {
                 this.logger.LogError("Attempted to find a device group name for a tenant with no storage adapter collection. Returning false.", e);
                 return false;
-            }
-        }
-
-        private void AppendAzureMapsKey(JToken theme)
-        {
-            if (theme[AzureMapsKey] == null)
-            {
-                theme[AzureMapsKey] = this.config.ConfigService.AzureMapsKey;
             }
         }
 
