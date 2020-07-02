@@ -958,6 +958,8 @@
                 "browse": "Browse",
                 "browseFirmwareText": "for a firmware file",
                 "browseText": "for a package file",
+                "firmwareTemplateTip": "Initial JSON data is derived from your template. You can view and edit this template from the Settings menu.",
+                "firmwareJson": "Firmware JSON",
                 "packageNamePlaceholder": "Enter Package Name",
                 "packageVersionPlaceholder": "Enter Package Version",
                 "packageTypePlaceholder": "Select package type",
