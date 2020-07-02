@@ -16,6 +16,7 @@ import {
     toConfigTypesModel,
     toNewFirmwareUploadRequestModel,
     toFirmwareModel,
+    backupDefaultFirmwareModel,
 } from "./models";
 import { Observable } from "rxjs";
 
@@ -116,9 +117,9 @@ export class ConfigService {
     }
 
     static getDefaultFirmwareSetting() {
-        return HttpClient.get(
-            `${ENDPOINT}solution-settings/defaultFirmware`
-        ).map(toSolutionSettingFirmwareModel);
+        return HttpClient.get(`${ENDPOINT}solution-settings/defaultFirmware`)
+            .catch((error) => this.catch404(error, backupDefaultFirmwareModel))
+            .map(toSolutionSettingFirmwareModel);
     }
 
     static getActionSettings() {
@@ -203,5 +204,15 @@ export class ConfigService {
     /** Delete a package */
     static deletePackage(id) {
         return HttpClient.delete(`${ENDPOINT}packages/${id}`).map((_) => id);
+    }
+
+    /*
+    a 404 is thrown by some device telemetry apis when a collection does not exist
+    for instances where this is the case, we want to catch this 404 and simply return no data instead
+    */
+    static catch404(error, continueAs) {
+        return error.status === 404
+            ? Observable.of(continueAs)
+            : Observable.throw(error);
     }
 }
