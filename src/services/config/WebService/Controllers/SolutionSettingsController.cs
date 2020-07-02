@@ -34,14 +34,14 @@ namespace Mmm.Iot.Config.WebService.Controllers
 
         [HttpGet("solution-settings/theme")]
         [Authorize("ReadAll")]
-        public async Task<object> GetThemeAsync()
+        public async Task<Theme> GetThemeAsync()
         {
             return await this.storage.GetThemeAsync();
         }
 
         [HttpPut("solution-settings/theme")]
         [Authorize("ReadAll")]
-        public async Task<object> SetThemeAsync([FromBody] object theme)
+        public async Task<Theme> SetThemeAsync([FromBody] Theme theme)
         {
             return await this.storage.SetThemeAsync(theme);
         }

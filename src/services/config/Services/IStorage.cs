@@ -14,9 +14,9 @@ namespace Mmm.Iot.Config.Services
 {
     public interface IStorage
     {
-        Task<object> GetThemeAsync();
+        Task<Theme> GetThemeAsync();
 
-        Task<object> SetThemeAsync(object theme);
+        Task<Theme> SetThemeAsync(object theme);
 
         Task<object> GetUserSetting(string id);
 
