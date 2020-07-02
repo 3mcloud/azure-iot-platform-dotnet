@@ -206,10 +206,6 @@ export class ConfigService {
         return HttpClient.delete(`${ENDPOINT}packages/${id}`).map((_) => id);
     }
 
-    /*
-    a 404 is thrown by some device telemetry apis when a collection does not exist
-    for instances where this is the case, we want to catch this 404 and simply return no data instead
-    */
     static catch404(error, continueAs) {
         return error.status === 404
             ? Observable.of(continueAs)
