@@ -4,6 +4,10 @@ import React from "react";
 import { Trans } from "react-i18next";
 import { Link } from "react-router-dom";
 import {
+    Balloon,
+    BalloonPosition,
+} from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Balloon/Balloon";
+import {
     packageTypeOptions,
     packagesEnum,
     configTypeOptions,
@@ -685,18 +689,7 @@ export class PackageNew extends LinkedComponent {
                                         )}
                                     </div>
                                 )}
-                                {uploadedFirmwareSuccessfully && (
-                                    <div>
-                                        <br />
-                                        <FormControl
-                                            link={this.packageJsonLink}
-                                            type="jsoninput"
-                                            height="550px"
-                                            theme={theme}
-                                            onChange={this.onJsonChange}
-                                        />
-                                    </div>
-                                )}
+                                {uploadedFirmwareSuccessfully && <br />}
                             </div>
                         )}
                         {packageFile && (
@@ -749,6 +742,31 @@ export class PackageNew extends LinkedComponent {
                                             {packageVersion}
                                         </FormLabel>
                                     )}
+                                </FormGroup>
+                            )}
+                        {!completedSuccessfully &&
+                            configType === "Firmware" &&
+                            uploadedFirmwareSuccessfully && (
+                                <FormGroup>
+                                    <FormLabel svg={svgs.info}>
+                                        <Balloon
+                                            position={BalloonPosition.Left}
+                                            tooltip={t(
+                                                "packages.flyouts.new.firmwareTemplateTip"
+                                            )}
+                                        >
+                                            {t(
+                                                "packages.flyouts.new.firmwareJson"
+                                            )}
+                                        </Balloon>
+                                    </FormLabel>
+                                    <FormControl
+                                        link={this.packageJsonLink}
+                                        type="jsoninput"
+                                        height="550px"
+                                        theme={theme}
+                                        onChange={this.onJsonChange}
+                                    />
                                 </FormGroup>
                             )}
                         <FormGroup>
