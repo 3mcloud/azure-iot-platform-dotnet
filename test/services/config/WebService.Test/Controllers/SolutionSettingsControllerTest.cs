@@ -48,7 +48,7 @@ namespace Mmm.Iot.Config.WebService.Test.Controllers
 
             this.mockStorage
                 .Setup(x => x.GetThemeAsync())
-                .ReturnsAsync(new
+                .ReturnsAsync(new Theme
                 {
                     Name = name,
                     Description = description,
@@ -71,13 +71,13 @@ namespace Mmm.Iot.Config.WebService.Test.Controllers
 
             this.mockStorage
                 .Setup(x => x.SetThemeAsync(It.IsAny<object>()))
-                .ReturnsAsync(new
+                .ReturnsAsync(new Theme
                 {
                     Name = name,
                     Description = description,
                 });
 
-            var result = await this.controller.SetThemeAsync(new
+            var result = await this.controller.SetThemeAsync(new Theme
             {
                 Name = name,
                 Description = description,
