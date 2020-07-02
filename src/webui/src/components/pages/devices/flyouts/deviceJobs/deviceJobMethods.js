@@ -108,7 +108,14 @@ export class DeviceJobMethods extends LinkedComponent {
                     : deviceMethods
             )
             .subscribe((commonMethodSet) => {
-                const commonMethods = [...commonMethodSet];
+                const commonMethods = Array.from(
+                    new Set([
+                        ...commonMethodSet,
+                        ...this.props.deviceGroup.supportedMethods.map(
+                            (t) => t.method
+                        ),
+                    ])
+                );
                 this.setState({ commonMethods });
             });
     }
@@ -217,6 +224,16 @@ export class DeviceJobMethods extends LinkedComponent {
                             errorState={!!error}
                         />
                     </FormGroup>
+
+                    <br />
+
+                    <p>
+                        NOTE: Methods can be reported from the device using the
+                        reported property "SupportedMethods" (comma seperated
+                        list). An alternative is to define them in the device
+                        group. It is preferred to come from the device since
+                        then the device will definitely support the method.{" "}
+                    </p>
 
                     <FormGroup>
                         <FormLabel>

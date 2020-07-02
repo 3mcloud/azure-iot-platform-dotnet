@@ -3,11 +3,6 @@
 import React from "react";
 import { Trans } from "react-i18next";
 import update from "immutability-helper";
-import {
-    Balloon,
-    BalloonAlignment,
-    BalloonPosition,
-} from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Balloon/Balloon";
 import { Toggle } from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Toggle";
 
 import Config from "app.config";
@@ -18,21 +13,13 @@ import {
     FormControl,
     FormGroup,
     FormLabel,
-    Hyperlink,
     PillGroup,
     Radio,
     SectionDesc,
-    ThemedSvgContainer,
 } from "components/shared";
-import { ActionEmailSetupContainer } from "./actionEmailSetup.container";
+
 import { SeverityRenderer } from "components/shared/cellRenderers";
-import {
-    Validator,
-    svgs,
-    isValidEmail,
-    LinkedComponent,
-    themedPaths,
-} from "utilities";
+import { Validator, svgs, isValidEmail, LinkedComponent } from "utilities";
 import Flyout from "components/shared/flyout";
 import { IoTHubManagerService, TelemetryService } from "services";
 import {
@@ -897,38 +884,7 @@ export class RuleEditor extends LinkedComponent {
                                             "rules.flyouts.ruleEditor.actions.off"
                                         )}
                                     />
-                                    <Balloon
-                                        position={BalloonPosition.Top}
-                                        align={BalloonAlignment.End}
-                                        tooltip={
-                                            <Trans
-                                                i18nKey={
-                                                    "rules.flyouts.ruleEditor.actions.emailSetupHelp"
-                                                }
-                                            >
-                                                Manual setup is required.
-                                                <Hyperlink
-                                                    href={
-                                                        Config.contextHelpUrls
-                                                            .ruleActionsEmail
-                                                    }
-                                                    target="_blank"
-                                                >
-                                                    {t(
-                                                        "rules.flyouts.ruleEditor.actions.learnMore"
-                                                    )}
-                                                </Hyperlink>
-                                            </Trans>
-                                        }
-                                    >
-                                        <ThemedSvgContainer
-                                            paths={themedPaths.questionBubble}
-                                        />
-                                    </Balloon>
                                 </div>
-                                {formData.actionEnabled && (
-                                    <ActionEmailSetupContainer />
-                                )}
                                 <Section.Content>
                                     {formData.actionEnabled &&
                                         actionLinks.map((action, idx) => (

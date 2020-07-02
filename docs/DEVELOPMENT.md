@@ -26,21 +26,21 @@ Set the `AppConfigurationConnectionString` environment variable in the Bash conf
 ### Windows
 In a PowerShell shell:
 ```
-dotnet user-secrets set --project ./common/Services/Services.csproj AppConfigurationConnectionString (az appconfig credential list --name <name> --resource-group <resource-group> --query "[?name=='Primary'].connectionString | [0]" --output tsv)
+dotnet user-secrets set --project ./src/services/common/Services/Services.csproj AppConfigurationConnectionString (az appconfig credential list --name <name> --resource-group <resource-group> --query "[?name=='Primary'].connectionString | [0]" --output tsv)
 ```
 Then check the value of the secret:
 ```
-dotnet user-secrets list --project ./common/Services/Services.csproj --json | Select-Object -Skip 1 | Select-Object -SkipLast 1 | ConvertFrom-Json | Select-Object -ExpandProperty AppConfigurationConnectionString
+dotnet user-secrets list --project ./src/services/common/Services/Services.csproj --json | Select-Object -Skip 1 | Select-Object -SkipLast 1 | ConvertFrom-Json | Select-Object -ExpandProperty AppConfigurationConnectionString
 ```
 
 ### Non-Windows
 In a Bash shell:
 ```
-dotnet user-secrets set --project ./common/Services/Services.csproj AppConfigurationConnectionString `az appconfig credential list --name <name> --resource-group <resource-group> --query "[?name=='Primary'].connectionString | [0]" --output tsv`
+dotnet user-secrets set --project ./src/services/common/Services/Services.csproj AppConfigurationConnectionString `az appconfig credential list --name <name> --resource-group <resource-group> --query "[?name=='Primary'].connectionString | [0]" --output tsv`
 ```
 Then check the value of the secret:
 ```
-dotnet user-secrets list --project common/Services/Services.csproj --json | sed '1d;$d' | jq --raw-output '.AppConfigurationConnectionString'
+dotnet user-secrets list --project ./src/services/common/Services/Services.csproj --json | sed '1d;$d' | jq --raw-output '.AppConfigurationConnectionString'
 ```
 
 # Building
@@ -58,7 +58,7 @@ dotnet build ./storage-adapter/storage-adapter.sln
 ```
 
 ## Build a Docker image for an individual service
-You must provide a value for the `AppConfigurationConnectionString` environment variable to the Docker build. This value is a secret and must not be set directly in the Dockerfile via the `ENV` instruction. Therefore, you must provide the value in the the `--build-args` option of the `docker build` command.
+You must provide a value for the `AppConfigurationConnectionString` environment variable to the Docker build. This value is a secret and must not be set directly in the Dockerfile via the `ENV` instruction. Therefore, you must provide the value in the `--build-args` option of the `docker build` command.
 
 ```
 docker build --file ./<service-name>/WebService/Dockerfile --build-arg AppConfigurationConnectionString=$AppConfgurationConnectionString .

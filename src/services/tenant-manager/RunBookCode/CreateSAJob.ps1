@@ -456,7 +456,7 @@ $SAJobQuery = @"
                 AA.__ruleid as ruleId,
                 AA.__deviceId as deviceId,
                 AA.__aggregates,
-                AA.__lastReceivedTime as deviceMsgReceived,
+                AA.__lastReceivedTime as deviceMsgReceived
             FROM
                 ApplyAggregatedRuleFilters AA PARTITION BY PartitionId
         
@@ -475,7 +475,7 @@ $SAJobQuery = @"
                 AI.__ruleid as ruleId,
                 AI.__deviceId as deviceId,
                 AI.__aggregates,
-                DATEDIFF(millisecond, '1970-01-01T00:00:00Z', AI.__receivedTime) as deviceMsgReceived,
+                DATEDIFF(millisecond, '1970-01-01T00:00:00Z', AI.__receivedTime) as deviceMsgReceived
             FROM
                 ApplyInstantRuleFilters AI PARTITION BY PartitionId
         )
@@ -588,7 +588,7 @@ $SAJobFunction = @"
                     "binding": {
                         "type": "Microsoft.StreamAnalytics/JavascriptUdf",
                         "properties": {
-                            "script": "function main(record, dataPoint, isBatched) {\n    let iotHubTimestamp = record.EventEnqueuedUtcTime;\n    if (isBatched == 'true' && record.hasOwnProperty('data') && record.hasOwnProperty('channels')) {\n        let lowerCaseChannels = record.channels.map(channel => channel.toLowerCase());\n        let timestampIndex = lowerCaseChannels.indexOf('unixts');\n        if (timestampIndex == -1) {\n            return iotHubTimestamp;\n        }\n        else {\n            // The timestamp in the data point is a millisecond unix timestamp, and must be converted to 1970-01-01T00:00:00.000Z format\n            let receviedTime = new Date(dataPoint[timestampIndex]);\n            return receviedTime.toISOString();\n        }\n    }\n    else {\n        return iotHubTimestamp;\n    }\n}"
+                            "script": "function main(record, dataPoint, isBatched) {\n    let iotHubTimestamp = record.EventEnqueuedUtcTime;\n    if (isBatched == 'true' && record.hasOwnProperty('data') && record.hasOwnProperty('channels')) {\n        let lowerCaseChannels = record.channels.map(channel => channel.toLowerCase());\n        let timestampIndex = lowerCaseChannels.indexOf('unixts');\n        if (timestampIndex == -1) {\n            return iotHubTimestamp;\n        }\n        else {\n            let timestampValue = dataPoint[timestampIndex];\n            let timestampMeasurementIndex = lowerCaseChannels.indexOf('unixtsmeasurement');\n\n            // default the measurement to seconds if we're using the data point timestamp and the measurement field was not given\n            let timestampMeasurement = timestampMeasurementIndex != -1\n                ? dataPoint[timestampMeasurementIndex]\n                : 's';\n\n            switch (timestampMeasurement) {\n                case 's':  // seconds\n                    timestampValue *= 1000;  // convert to ms\n                    break;\n            }\n\n            // The timestamp in the data point is a millisecond unix timestamp, and must be converted to 1970-01-01T00:00:00.000Z format\n            let receviedTime = new Date(timestampValue);\n            return receviedTime.toISOString();\n        }\n    }\n    else {\n        return iotHubTimestamp;\n    }\n}"
                         }
                     }
                 }

@@ -40,6 +40,7 @@ const baseUrl = process.env.REACT_APP_BASE_SERVICE_URL || "",
         gridResizeDebounceTime: 200, // ms
         dashboardRefreshInterval: 15000, // 15 seconds
         telemetryRefreshInterval: 1000, // 1 seconds
+        telemetryQueryResultLimit: 1000, // 1000 messages is the default maximum for our messages API response
         actionSetupPollingInterval: 20 * 1000, // every 20 seconds
         actionSetupPollingTimeLimit: 2 * 60 * 1000, // for up to 2 minutes
         simulationId: "1",

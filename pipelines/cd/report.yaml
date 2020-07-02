@@ -8,6 +8,13 @@ resources:
       type: githubenterprise
       name: MMM/azure-iot-services-dotnet
       endpoint: GithubMMM
+schedules:
+  - cron: 0 6 * * *
+    displayName: Daily midnight (CST) build
+    branches:
+      include:
+        - master
+    always: true
 stages:
   - stage: crslDev
     dependsOn: []

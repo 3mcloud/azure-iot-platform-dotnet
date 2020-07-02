@@ -47,7 +47,7 @@
         "notFound": "Uy, no fuimos capaces de encontrar el servicio.",
         "redirection": "Uy, tenemos una redirección de error.",
         "retryFailure": "Vaya, tenemos a un error temporal del servicio, pero no pudieron recuperarse. Inténtelo de nuevo más tarde.",
-        "unknown": "Ocurrió un error desconocido. {{mensaje}}"
+        "unknown": "Ocurrió un error desconocido."
     },
     "permissions": {
         "ReadAll": "Ver solución",

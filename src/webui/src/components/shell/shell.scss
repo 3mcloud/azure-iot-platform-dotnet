@@ -23,7 +23,7 @@ $companySvgSize: 23px;
 
   .nav-item-icon {
     img {
-      max-height: 24px;
+      max-height: 23px;
       vertical-align: middle;
       @include rem-fallback(margin, 10px);
     }
@@ -33,6 +33,20 @@ $companySvgSize: 23px;
 
   @include themify($themes) {
     .nav-item-icon svg { fill: themed('colorNavText'); }
+  }
+}
+
+span[class*='Masthead_masthead-branding']{
+
+  .nav-item-icon {
+    margin-Bottom: 3px;
+  }
+
+  .nav-item-icon svg {
+    height: 23px;
+    width: auto;
+    @include rem-fallback(margin, 10px);
+    margin-Bottom:6px;
   }
 }
 

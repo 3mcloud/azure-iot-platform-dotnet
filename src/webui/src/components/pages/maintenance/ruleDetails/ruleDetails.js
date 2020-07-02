@@ -63,6 +63,7 @@ export class RuleDetails extends Component {
             telemetryIsPending: true,
             telemetry: {},
             telemetryError: undefined,
+            telemetryQueryExceededLimit: false,
 
             devices: [],
             deviceIds: "",
@@ -99,6 +100,13 @@ export class RuleDetails extends Component {
                         return TelemetryService.getTelemetryByDeviceIdP15M(
                             deviceIds
                         )
+                            .flatMap((items) => {
+                                this.setState({
+                                    telemetryQueryExceededLimit:
+                                        items.length >= 1000,
+                                });
+                                return Observable.of(items);
+                            })
                             .merge(
                                 this.telemetryRefresh$ // Previous request complete
                                     .delay(Config.telemetryRefreshInterval) // Wait to refresh
@@ -572,6 +580,11 @@ export class RuleDetails extends Component {
                                         <div className="details-chart-container">
                                             <TelemetryChart
                                                 telemetry={this.state.telemetry}
+                                                t={t}
+                                                limitExceeded={
+                                                    this.state
+                                                        .telemetryQueryExceededLimit
+                                                }
                                                 theme={theme}
                                                 colors={chartColorObjects}
                                             />

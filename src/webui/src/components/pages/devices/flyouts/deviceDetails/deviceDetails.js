@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 import React, { Component } from "react";
+import { Observable, Subject } from "rxjs";
 import { Trans } from "react-i18next";
-import { Subject } from "rxjs";
 import moment from "moment";
 import {
     Balloon,
@@ -33,6 +33,7 @@ import {
     SectionDesc,
     TimeSeriesInsightsLinkContainer,
 } from "components/shared";
+import { TimeIntervalDropdownContainer as TimeIntervalDropdown } from "components/shell/timeIntervalDropdown";
 import Flyout from "components/shared/flyout";
 import {
     TelemetryChartContainer as TelemetryChart,
@@ -76,6 +77,7 @@ export class DeviceDetails extends Component {
             telemetry: {},
             telemetryIsPending: true,
             telemetryError: null,
+            telemetryQueryExceededLimit: false,
 
             showRawMessage: false,
             currentModuleStatus: undefined,
@@ -125,7 +127,17 @@ export class DeviceDetails extends Component {
                 .do((_) => this.setState({ telemetry: {} }))
                 .switchMap(
                     (deviceId) =>
-                        TelemetryService.getTelemetryByDeviceIdP15M([deviceId])
+                        TelemetryService.getTelemetryByDeviceId(
+                            [deviceId],
+                            TimeIntervalDropdown.getTimeIntervalDropdownValue()
+                        )
+                            .flatMap((items) => {
+                                this.setState({
+                                    telemetryQueryExceededLimit:
+                                        items.length >= 1000,
+                                });
+                                return Observable.of(items);
+                            })
                             .merge(
                                 this.telemetryRefresh$ // Previous request complete
                                     .delay(
@@ -178,12 +190,12 @@ export class DeviceDetails extends Component {
         } = nextProps;
         let tempState = {};
         /*
-      deviceModuleStatus is a prop fetched by making fetchModules() API call through deviceDetails.container on demand.
-      moduleStatus is a prop sent from deploymentDetailsGrid which it already has in rowData.
-      Both deviceModuleStatus and moduleStatus have the same content,
-        but come from different sources based on the page that opens this flyout.
-      Depending on which one is available, currentModuleStatus is set in component state.
-    */
+            deviceModuleStatus is a prop fetched by making fetchModules() API call through deviceDetails.container on demand.
+            moduleStatus is a prop sent from deploymentDetailsGrid which it already has in rowData.
+            Both deviceModuleStatus and moduleStatus have the same content,
+                but come from different sources based on the page that opens this flyout.
+            Depending on which one is available, currentModuleStatus is set in component state.
+        */
 
         if ((this.props.device || {}).id !== device.id) {
             // Reset state if the device changes.
@@ -256,6 +268,11 @@ export class DeviceDetails extends Component {
             (alertsError) =>
                 this.setState({ alertsError, isAlertsPending: false })
         );
+    };
+
+    updateTimeInterval = (timeInterval) => {
+        this.props.updateTimeInterval(timeInterval);
+        this.resetTelemetry$.next(this.props.device.id);
     };
 
     render() {
@@ -362,6 +379,12 @@ export class DeviceDetails extends Component {
                                     )}
                                 </Section.Header>
                                 <Section.Content>
+                                    <TimeIntervalDropdown
+                                        onChange={this.updateTimeInterval}
+                                        value={this.props.timeInterval}
+                                        t={t}
+                                        className="device-details-time-interval-dropdown"
+                                    />
                                     {timeSeriesExplorerUrl && (
                                         <TimeSeriesInsightsLinkContainer
                                             href={timeSeriesParamUrl}
@@ -369,6 +392,11 @@ export class DeviceDetails extends Component {
                                     )}
                                     <TelemetryChart
                                         className="telemetry-chart"
+                                        t={t}
+                                        limitExceeded={
+                                            this.state
+                                                .telemetryQueryExceededLimit
+                                        }
                                         telemetry={telemetry}
                                         theme={theme}
                                         colors={chartColorObjects}

@@ -26,6 +26,7 @@
     "Messages": {
       "Collection": "messages",
       "Database": "iot",
+      "MessageRetrievalCountLimit": 1000,
       "TelemetryStorageType": "cosmosdb"
     },
     "RulesTemplatesFolder": "./data/Rules/",
@@ -61,8 +62,7 @@
     "AzureB2cBaseUri": "https://login.microsoftonline.com/crsltestab2c.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_testpolicy&client_id=086c6072-f6fe-449f-887c-e08c598aec0b&nonce=defaultNonce&redirect_uri=https%3A%2F%2Flocalhost%3A44367%2Fconnect%2Fcallback&scope=openid&response_type=id_token&prompt=login&response_mode=form_post",
     "ClientAuth": {
       "AuthType": "JWT",
-      "CorsWhitelist": "*"
-      },
+      "CorsWhitelist": "*",
       "Jwt": {
         "AadAppId": "OVERWRITTEN_IN_DEPLOYMENT",
         "AllowedAlgorithms": "RS256",

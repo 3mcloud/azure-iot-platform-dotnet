@@ -1,0 +1,103 @@
+trigger: none
+pr: none
+pool:
+  vmImage: ubuntu-latest
+variables:
+  locationName: centralus
+stages:
+  - stage: emdDev
+    displayName: EMD dev
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: 3M-UDAH02-SpartanIotHub-Dev
+          locationName: $(locationName)
+          subscriptionId: 191495e8-b878-4140-85eb-aae73a7119cd
+          applicationCode: emdiot
+          applicationShortCode: emd
+          environmentCategory: dev
+          environmentName: IoT_EMD_Environment_DEV
+          kubernetesVersion: 1.16.8
+          sendgridEmail: cfinn@mmm.com
+          sysAdmins: >-
+            [{"UserId": "3e30f301-4f57-4b3e-949a-3ff8e93870b5", "Name": "Viswanath Kotha CW"},
+             {"UserId": "00e4068a-944e-4cd2-bc2a-77b1d33a1db3", "Name": "Jonathan Asbury"},
+             {"UserId": "295af21b-90af-4777-b0ba-4d7f94514679", "Name": "Sean Dubiel"},
+             {"UserId": "534a9d20-04aa-4f42-9cf9-d82fca6cf7df", "Name": "Ragavender Basangari CW"},
+             {"UserId": "a2dc5d37-94cc-4fd6-91bb-8a26458d8089", "Name": "Anant Choudhari CW"},
+             {"UserId": "866aa8d9-a571-4b3e-8acd-de710e74342d", "Name": "Nick Gawryk"},
+             {"UserId": "9f8df5ac-6312-4245-be6d-ff6bb70ac1e1", "Name": "Jayasimha Nallagatla CW"},
+             {"UserId": "b3bbea27-2e63-4f95-8197-e9869af64b14", "Name": "Sahithi Voruganti CW"},
+             {"UserId": "ec9745fa-9fa9-4d35-ab55-1e3bd064c4a2", "Name": "Andrew Schmidt"},
+             {"UserId": "f6a7ba19-0f66-4cc6-9d15-2241f40fc122", "Name": "Joseph Bethke"},
+             {"UserId": "c8efa307-f285-4fb2-91ae-5d4061d2b271", "Name": "Jonathan Asbury CW"},
+             {"UserId": "a0ee6a74-65e7-4885-9219-d92982a7e04a", "Name": "Kyle Estes CW"},
+             {"UserId": "4a0b6ddb-38ef-46dd-928b-e7ffed63963c", "Name": "Rakesh Satelli CW"},
+             {"UserId": "f8b35420-6ee3-4d4d-a757-e7ffe4f4f791", "Name": "Brad Murray"},
+             {"UserId": "05ea1ece-4c9c-49bf-b628-c9fa68e777eb", "Name": "Matt Moore"},
+             {"UserId": "ad0d811e-d6ff-499f-9ee2-6949ef1f2222", "Name": "Caitlin Finn"},
+             {"UserId": "fbdfb13e-8245-4c8f-96f5-de55da465355", "Name": "Phillip Bergeron"}]
+
+  - stage: emdQa
+    displayName: EMD QA
+    dependsOn:
+      - emdDev
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: 3M-UDAH03-SpartanIotHub-QA
+          locationName: $(locationName)
+          subscriptionId: 5248a0ea-c79b-4739-adc7-e76eeb27e253
+          applicationCode: emdiot
+          applicationShortCode: emd
+          environmentCategory: qa
+          environmentName: IoT_EMD_Environment_QA
+          kubernetesVersion: 1.16.8
+          sendgridEmail: cfinn@mmm.com
+          sysAdmins: >-
+            [{"UserId": "3e30f301-4f57-4b3e-949a-3ff8e93870b5", "Name": "Viswanath Kotha CW"},
+             {"UserId": "00e4068a-944e-4cd2-bc2a-77b1d33a1db3", "Name": "Jonathan Asbury"},
+             {"UserId": "295af21b-90af-4777-b0ba-4d7f94514679", "Name": "Sean Dubiel"},
+             {"UserId": "534a9d20-04aa-4f42-9cf9-d82fca6cf7df", "Name": "Ragavender Basangari CW"},
+             {"UserId": "a2dc5d37-94cc-4fd6-91bb-8a26458d8089", "Name": "Anant Choudhari CW"},
+             {"UserId": "866aa8d9-a571-4b3e-8acd-de710e74342d", "Name": "Nick Gawryk"},
+             {"UserId": "9f8df5ac-6312-4245-be6d-ff6bb70ac1e1", "Name": "Jayasimha Nallagatla CW"},
+             {"UserId": "b3bbea27-2e63-4f95-8197-e9869af64b14", "Name": "Sahithi Voruganti CW"},
+             {"UserId": "ec9745fa-9fa9-4d35-ab55-1e3bd064c4a2", "Name": "Andrew Schmidt"},
+             {"UserId": "f6a7ba19-0f66-4cc6-9d15-2241f40fc122", "Name": "Joseph Bethke"},
+             {"UserId": "c8efa307-f285-4fb2-91ae-5d4061d2b271", "Name": "Jonathan Asbury CW"},
+             {"UserId": "a0ee6a74-65e7-4885-9219-d92982a7e04a", "Name": "Kyle Estes CW"},
+             {"UserId": "4a0b6ddb-38ef-46dd-928b-e7ffed63963c", "Name": "Rakesh Satelli CW"},
+             {"UserId": "f8b35420-6ee3-4d4d-a757-e7ffe4f4f791", "Name": "Brad Murray"},
+             {"UserId": "05ea1ece-4c9c-49bf-b628-c9fa68e777eb", "Name": "Matt Moore"},
+             {"UserId": "ad0d811e-d6ff-499f-9ee2-6949ef1f2222", "Name": "Caitlin Finn"},
+             {"UserId": "fbdfb13e-8245-4c8f-96f5-de55da465355", "Name": "Phillip Bergeron"}]
+
+  - stage: emdCt
+    displayName: EMD CT
+    dependsOn:
+      - emdQa
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: 3M-UDAH04-SpartanIotHub-CT
+          locationName: $(locationName)
+          subscriptionId: e9f61243-5e9a-4b8a-918c-09fe7e9f1ec1
+          applicationCode: emdiot
+          applicationShortCode: emd
+          environmentCategory: ct
+          environmentName: IoT_EMD_Environment_CT
+          kubernetesVersion: 1.16.8
+          sendgridEmail: cfinn@mmm.com
+          sysAdmins: >-
+            [{"UserId": "3e30f301-4f57-4b3e-949a-3ff8e93870b5", "Name": "Viswanath Kotha CW"},
+             {"UserId": "00e4068a-944e-4cd2-bc2a-77b1d33a1db3", "Name": "Jonathan Asbury"},
+             {"UserId": "295af21b-90af-4777-b0ba-4d7f94514679", "Name": "Sean Dubiel"},
+             {"UserId": "ec9745fa-9fa9-4d35-ab55-1e3bd064c4a2", "Name": "Andrew Schmidt"},
+             {"UserId": "f6a7ba19-0f66-4cc6-9d15-2241f40fc122", "Name": "Joseph Bethke"},
+             {"UserId": "c8efa307-f285-4fb2-91ae-5d4061d2b271", "Name": "Jonathan Asbury CW"},
+             {"UserId": "a0ee6a74-65e7-4885-9219-d92982a7e04a", "Name": "Kyle Estes CW"},
+             {"UserId": "f8b35420-6ee3-4d4d-a757-e7ffe4f4f791", "Name": "Brad Murray"},
+             {"UserId": "05ea1ece-4c9c-49bf-b628-c9fa68e777eb", "Name": "Matt Moore"},
+             {"UserId": "ad0d811e-d6ff-499f-9ee2-6949ef1f2222", "Name": "Caitlin Finn"},
+             {"UserId": "fbdfb13e-8245-4c8f-96f5-de55da465355", "Name": "Phillip Bergeron"}]

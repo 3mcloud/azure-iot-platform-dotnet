@@ -47,7 +47,7 @@
         "notFound": "Oops, we were not able to find the service.",
         "redirection": "Oops, we got a redirection error.",
         "retryFailure": "Oops, we got a temporary error from the service but were unable to recover. Try again later.",
-        "unknown": "An unknown error occurred. {{message}}"
+        "unknown": "An unknown error occurred."
     },
     "permissions": {
         "ReadAll": "View solution",
@@ -227,6 +227,14 @@
       "validation": {
         "required": "Required fields are not included"
       }
+    },
+    "supportedMethods": {
+      "add": "Add",
+      "methodHeader": "Method Name",
+      "supportedMethodHeader": "Supported Methods",
+      "validation": {
+        "required": "Required fields are not included"
+      }
     }
   },
     "dashboard": {
@@ -259,7 +267,9 @@
                 "notConnected": "Offline"
             },
             "telemetry": {
-                "header": "Telemetry"
+                "header": "Telemetry",
+                "timezoneDisplay": "Displaying in local timezone:",
+                "limitExceededWarning": "Maximum number of messages received. Earlier data may be truncated."
             }
         }
     },
