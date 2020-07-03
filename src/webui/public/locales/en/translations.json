@@ -227,6 +227,14 @@
       "validation": {
         "required": "Required fields are not included"
       }
+    },
+    "supportedMethods": {
+      "add": "Add",
+      "methodHeader": "Method Name",
+      "supportedMethodHeader": "Supported Methods",
+      "validation": {
+        "required": "Required fields are not included"
+      }
     }
   },
     "dashboard": {

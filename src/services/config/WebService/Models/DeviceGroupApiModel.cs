@@ -20,6 +20,7 @@ namespace Mmm.Iot.Config.WebService.Models
             this.DisplayName = model.DisplayName;
             this.Conditions = model.Conditions;
             this.TelemetryFormat = model.TelemetryFormat;
+            this.SupportedMethods = model.SupportedMethods;
             this.ETag = model.ETag;
 
             this.Metadata = new Dictionary<string, string>
@@ -38,6 +39,9 @@ namespace Mmm.Iot.Config.WebService.Models
         [JsonProperty("Conditions")]
         public IEnumerable<DeviceGroupCondition> Conditions { get; set; }
 
+        [JsonProperty("SupportedMethods")]
+        public IEnumerable<DeviceGroupSupportedMethods> SupportedMethods { get; set; }
+
         [JsonProperty("TelemetryFormat")]
         public IEnumerable<DeviceGroupTelemetryFormat> TelemetryFormat { get; set; }
 
@@ -54,6 +58,7 @@ namespace Mmm.Iot.Config.WebService.Models
                 DisplayName = this.DisplayName,
                 Conditions = this.Conditions,
                 TelemetryFormat = this.TelemetryFormat,
+                SupportedMethods = this.SupportedMethods,
             };
         }
     }
