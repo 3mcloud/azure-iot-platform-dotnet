@@ -194,9 +194,12 @@
   "deviceGroupsFlyout": {
     "actions": "Actions",
     "cancel": "Cancel",
+    "reset":"Reset",
     "title": "Manage device groups",
     "create": "Create new device group",
     "deviceGroupName": "Device group name",
+    "pinned":"Pinned Device Group",
+    "unpinned":"Unpinned Device Group",
     "new": "New device group",
     "edit": "Edit a device group",
     "name": "Name",
