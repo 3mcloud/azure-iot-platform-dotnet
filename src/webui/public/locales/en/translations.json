@@ -191,52 +191,52 @@
             "selectedType": "Must be of the selected type"
         }
     },
-  "deviceGroupsFlyout": {
-    "actions": "Actions",
-    "cancel": "Cancel",
-    "title": "Manage device groups",
-    "create": "Create new device group",
-    "deviceGroupName": "Device group name",
-    "new": "New device group",
-    "edit": "Edit a device group",
-    "name": "Name",
-    "namePlaceHolder": "Device group name",
-    "save": "Save",
-    "errorMsg": {
-      "nameCantBeEmpty": "Name is required"
+    "deviceGroupsFlyout": {
+        "actions": "Actions",
+        "cancel": "Cancel",
+        "title": "Manage device groups",
+        "create": "Create new device group",
+        "deviceGroupName": "Device group name",
+        "new": "New device group",
+        "edit": "Edit a device group",
+        "name": "Name",
+        "namePlaceHolder": "Device group name",
+        "save": "Save",
+        "errorMsg": {
+            "nameCantBeEmpty": "Name is required"
+        },
+        "delete": {
+            "title": "Delete",
+            "header": "Delete device group",
+            "description": "This action will delete the '{{deviceGroupName}}' device group permanently from the platform.",
+            "confirmNo": "No, do not delete the device group.",
+            "confirmYes": "Yes, please delete the device group.",
+            "summaryHeader": "Summary",
+            "affected": "Affected device group",
+            "cancel": "Cancel",
+            "apply": "Delete",
+            "pending": "Deleting device group... ",
+            "applySuccess": "Device group deleted successfully!",
+            "close": "Close"
+        },
+        "format": {
+            "add": "Add",
+            "keyHeader": "Key",
+            "displayNameHeader": "Display Name",
+            "telemetryFormatHeader": "Telemetry Format",
+            "validation": {
+                "required": "Required fields are not included"
+            }
+        },
+        "supportedMethods": {
+            "add": "Add",
+            "methodHeader": "Method Name",
+            "supportedMethodHeader": "Supported Methods",
+            "validation": {
+                "required": "Required fields are not included"
+            }
+        }
     },
-    "delete": {
-      "title": "Delete",
-      "header": "Delete device group",
-      "description": "This action will delete the '{{deviceGroupName}}' device group permanently from the platform.",
-      "confirmNo": "No, do not delete the device group.",
-      "confirmYes": "Yes, please delete the device group.",
-      "summaryHeader": "Summary",
-      "affected": "Affected device group",
-      "cancel": "Cancel",
-      "apply": "Delete",
-      "pending": "Deleting device group... ",
-      "applySuccess": "Device group deleted successfully!",
-      "close": "Close"
-    },
-    "format": {
-      "add": "Add",
-      "keyHeader": "Key",
-      "displayNameHeader": "Display Name",
-      "telemetryFormatHeader": "Telemetry Format",
-      "validation": {
-        "required": "Required fields are not included"
-      }
-    },
-    "supportedMethods": {
-      "add": "Add",
-      "methodHeader": "Method Name",
-      "supportedMethodHeader": "Supported Methods",
-      "validation": {
-        "required": "Required fields are not included"
-      }
-    }
-  },
     "dashboard": {
         "noData": "No data available",
         "panels": {
@@ -307,11 +307,11 @@
                     "hint": "Select user role",
                     "label": "User Role"
                 },
-                "systemAdmin":{
-                    "hint":"Select user",
-                    "label":"System Admin",
-                    "title":"Add System Admin",
-                    "add":"Add",
+                "systemAdmin": {
+                    "hint": "Select user",
+                    "label": "System Admin",
+                    "title": "Add System Admin",
+                    "add": "Add",
                     "applySuccess": "Added system admin successfully!"
                 },
                 "apply": "Send invite",
@@ -337,12 +337,12 @@
                 "apply": "Delete",
                 "pending": "Deleting users... ",
                 "applySuccess": "Users deleted successfully!",
-                "close": "Close",                
-                "systemAdmin":{
-                    "hint":"Select user",
-                    "label":"System Admin",
-                    "title":"Delete System Admin",
-                    "add":"Delete",
+                "close": "Close",
+                "systemAdmin": {
+                    "hint": "Select user",
+                    "label": "System Admin",
+                    "title": "Delete System Admin",
+                    "add": "Delete",
                     "applySuccess": "Deleted system admin successfully!"
                 }
             }
@@ -415,6 +415,15 @@
                 },
                 "telemetry": {
                     "title": "Telemetry"
+                },
+                "deviceUploads": {
+                    "title": "Device Uploads",
+                    "description": "File Uploads from Device",
+                    "noneExist": "No Files are uploaded from Device.",
+                    "fileName": "File Name",
+                    "action": "Action",
+                    "property": "Property",
+                    "value": "Value"
                 }
             },
             "delete": {
@@ -935,8 +944,8 @@
                     "unsupportedVersionKey": "Unsupported version key in desired properties"
                 }
             },
-            "packageJson":{
-                "title":"Package JSON Data"
+            "packageJson": {
+                "title": "Package JSON Data"
             }
         },
         "modals": {

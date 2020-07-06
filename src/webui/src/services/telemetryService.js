@@ -14,6 +14,7 @@ import {
     toRulesModel,
     toStatusModel,
     toTelemetryRequestModel,
+    toDeviceUploadsModel,
 } from "./models";
 
 const ENDPOINT = Config.serviceUrls.telemetry;
@@ -129,6 +130,16 @@ export class TelemetryService {
         return HttpClient.delete(`${ENDPOINT}rules/${id}`).map(() => ({
             deletedRuleId: id,
         }));
+    }
+
+    static getDeviceUploads(id) {
+        var response = HttpClient.get(`${ENDPOINT}deviceFiles/${id}`).map(toDeviceUploadsModel);
+        return response;
+    }
+
+    static getDeviceUploadsFileContent(blobName) {
+        var response = HttpClient.post(`${ENDPOINT}deviceFiles/download`, { "BlobName": blobName }, { responseType: "blob" });
+        return response;
     }
 
     /*

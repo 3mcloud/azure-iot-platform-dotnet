@@ -27,7 +27,8 @@
     }
   }
 
-  .device-details-deployment-contentbox {
+  .device-details-deployment-contentbox, 
+  .device-details-deviceuploads-contentbox {
     @include rem-fallback(padding, 20px, 0px, 20px, 20px);
     @include rem-fallback(border-top, 1px, solid);
     @include rem-fallback(margin-top, 20px);
@@ -59,11 +60,16 @@
 
     .device-properties-actions .row { color: themed('colorContentTextDim'); }
 
-    .device-details-deployment-contentbox { border-color: themed('colorHeaderBorderColor'); }
+    .device-details-deployment-contentbox,
+    .device-details-deviceuploads-contentbox { border-color: themed('colorHeaderBorderColor'); }
 
     .device-details-time-interval-dropdown {
       border-top-color: 1px solid themed('color-border-rest');
       border-bottom-color: 1px solid themed('color-border-rest');
     }
+  }
+
+  .download-deviceupload > .svg-container.btn-icon{
+    transform: rotate(180deg);
   }
 }

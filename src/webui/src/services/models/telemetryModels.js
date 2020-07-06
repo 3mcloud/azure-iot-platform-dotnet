@@ -52,8 +52,8 @@ export const toRuleModel = (response = {}) => {
             $set: model.deleted
                 ? "Deleted"
                 : model.enabled
-                ? "Enabled"
-                : "Disabled",
+                    ? "Enabled"
+                    : "Disabled",
         },
     });
 };
@@ -145,10 +145,10 @@ export const toEditRuleRequestModel = ({
     eTag,
 }) => {
     const Conditions = conditions.map((condition) => ({
-            Field: condition.field,
-            Operator: condition.operator,
-            Value: condition.value,
-        })),
+        Field: condition.field,
+        Operator: condition.operator,
+        Value: condition.value,
+    })),
         Actions = (actions || []).map((act) => ({
             Type: act.type,
             Parameters: {
@@ -181,3 +181,14 @@ export const toTelemetryRequestModel = (alarmQueryModel = {}) =>
         limit: "Limit",
         devices: "Devices",
     });
+
+export const toDeviceUploadsModel = (response = []) => {
+    var data = getItems(response).map((upload) => camelCaseReshape(upload, {
+        name: "Name",
+        blobName: "BlobName",
+        uploadedOn: "UploadedOn",
+        size: "Size",
+        uploadedBy: "UploadedBy",
+    }));
+    return data;
+};
