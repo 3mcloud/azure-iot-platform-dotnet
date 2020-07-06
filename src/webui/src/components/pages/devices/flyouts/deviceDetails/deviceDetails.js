@@ -113,16 +113,16 @@ export class DeviceDetails extends Component {
         }
 
         const {
-            device = {},
-            device: { telemetry: { interval = "0" } = {} } = {},
-        } = this.props,
+                device = {},
+                device: { telemetry: { interval = "0" } = {} } = {},
+            } = this.props,
             deviceId = device.id;
         this.fetchAlerts(deviceId);
         this.fetchDeviceUploads(deviceId);
 
         const [hours = 0, minutes = 0, seconds = 0] = interval
-            .split(":")
-            .map(int),
+                .split(":")
+                .map(int),
             refreshInterval = ((hours * 60 + minutes) * 60 + seconds) * 1000,
             // Telemetry stream - START
             onPendingStart = () => this.setState({ telemetryIsPending: true }),
@@ -145,7 +145,7 @@ export class DeviceDetails extends Component {
                                 this.telemetryRefresh$ // Previous request complete
                                     .delay(
                                         refreshInterval ||
-                                        Config.dashboardRefreshInterval
+                                            Config.dashboardRefreshInterval
                                     ) // Wait to refresh
                                     .do(onPendingStart)
                                     .flatMap((_) =>
@@ -276,25 +276,29 @@ export class DeviceDetails extends Component {
     };
 
     fetchDeviceUploads = (deviceId) => {
-        this.deviceUploadsSubscription = TelemetryService.getDeviceUploads(deviceId).subscribe(
-            (deviceUploads) => {
-                this.setState({
-                    deviceUploads
-                })
-            }
-        );
+        this.deviceUploadsSubscription = TelemetryService.getDeviceUploads(
+            deviceId
+        ).subscribe((deviceUploads) => {
+            this.setState({
+                deviceUploads,
+            });
+        });
     };
 
     downloadFile = (relativePath, fileName) => {
-        TelemetryService.getDeviceUploadsFileContent(relativePath).subscribe(response => {
-            var blob = new Blob([response.response], { type: response.response.contentType });
-            let url = window.URL.createObjectURL(blob);
-            let a = document.createElement('a');
-            a.href = url;
-            a.download = fileName;
-            a.click();
-        });
-    }
+        TelemetryService.getDeviceUploadsFileContent(relativePath).subscribe(
+            (response) => {
+                var blob = new Blob([response.response], {
+                    type: response.response.contentType,
+                });
+                let url = window.URL.createObjectURL(blob);
+                let a = document.createElement("a");
+                a.href = url;
+                a.download = fileName;
+                a.click();
+            }
+        );
+    };
 
     updateTimeInterval = (timeInterval) => {
         this.props.updateTimeInterval(timeInterval);
@@ -303,14 +307,14 @@ export class DeviceDetails extends Component {
 
     render() {
         const {
-            t,
-            onClose,
-            device,
-            theme,
-            timeSeriesExplorerUrl,
-            isDeviceModuleStatusPending,
-            deviceModuleStatusError,
-        } = this.props,
+                t,
+                onClose,
+                device,
+                theme,
+                timeSeriesExplorerUrl,
+                isDeviceModuleStatusPending,
+                deviceModuleStatusError,
+            } = this.props,
             { telemetry, lastMessage, currentModuleStatus } = this.state,
             lastMessageTime = (lastMessage || {}).time,
             isPending = this.state.isAlertsPending && this.props.isRulesPending,
@@ -318,9 +322,9 @@ export class DeviceDetails extends Component {
                 rowData: isPending
                     ? undefined
                     : this.applyRuleNames(
-                        this.state.alerts || [],
-                        this.props.rules || []
-                    ),
+                          this.state.alerts || [],
+                          this.props.rules || []
+                      ),
                 t: this.props.t,
                 deviceGroups: this.props.deviceGroups,
                 domLayout: "autoHeight",
@@ -339,11 +343,11 @@ export class DeviceDetails extends Component {
 
             timeSeriesParamUrl = timeSeriesExplorerUrl
                 ? timeSeriesExplorerUrl +
-                `&relativeMillis=1800000&timeSeriesDefinitions=[{"name":"${
-                device.id
-                }","measureName":"${
-                Object.keys(telemetry).sort()[0]
-                }","predicate":"'${device.id}'"}]`
+                  `&relativeMillis=1800000&timeSeriesDefinitions=[{"name":"${
+                      device.id
+                  }","measureName":"${
+                      Object.keys(telemetry).sort()[0]
+                  }","predicate":"'${device.id}'"}]`
                 : undefined;
 
         return (
@@ -374,20 +378,20 @@ export class DeviceDetails extends Component {
                                         <div className="device-simulated">
                                             {device.isSimulated
                                                 ? t(
-                                                    "devices.flyouts.details.simulated"
-                                                )
+                                                      "devices.flyouts.details.simulated"
+                                                  )
                                                 : t(
-                                                    "devices.flyouts.details.notSimulated"
-                                                )}
+                                                      "devices.flyouts.details.notSimulated"
+                                                  )}
                                         </div>
                                         <div className="device-connected">
                                             {device.connected
                                                 ? t(
-                                                    "devices.flyouts.details.connected"
-                                                )
+                                                      "devices.flyouts.details.connected"
+                                                  )
                                                 : t(
-                                                    "devices.flyouts.details.notConnected"
-                                                )}
+                                                      "devices.flyouts.details.notConnected"
+                                                  )}
                                         </div>
                                     </Cell>
                                 </Row>
@@ -487,15 +491,15 @@ export class DeviceDetails extends Component {
                                                         [tagName, tagValue],
                                                         idx
                                                     ) => (
-                                                            <Row key={idx}>
-                                                                <Cell className="col-3">
-                                                                    {tagName}
-                                                                </Cell>
-                                                                <Cell className="col-7">
-                                                                    {tagValue.toString()}
-                                                                </Cell>
-                                                            </Row>
-                                                        )
+                                                        <Row key={idx}>
+                                                            <Cell className="col-3">
+                                                                {tagName}
+                                                            </Cell>
+                                                            <Cell className="col-7">
+                                                                {tagValue.toString()}
+                                                            </Cell>
+                                                        </Row>
+                                                    )
                                                 )}
                                             </GridBody>
                                         </Grid>
@@ -538,18 +542,18 @@ export class DeviceDetails extends Component {
                                             "devices.flyouts.details.methods.noneExist"
                                         )
                                     ) : (
-                                            <Grid>
-                                                {device.methods.map(
-                                                    (methodName, idx) => (
-                                                        <Row key={idx}>
-                                                            <Cell>
-                                                                {methodName}
-                                                            </Cell>
-                                                        </Row>
-                                                    )
-                                                )}
-                                            </Grid>
-                                        )}
+                                        <Grid>
+                                            {device.methods.map(
+                                                (methodName, idx) => (
+                                                    <Row key={idx}>
+                                                        <Cell>
+                                                            {methodName}
+                                                        </Cell>
+                                                    </Row>
+                                                )
+                                            )}
+                                        </Grid>
+                                    )}
                                 </Section.Content>
                             </Section.Container>
 
@@ -616,10 +620,10 @@ export class DeviceDetails extends Component {
                                                             idx
                                                         ) => {
                                                             const desiredPropertyValue =
-                                                                device
-                                                                    .desiredProperties[
-                                                                propertyName
-                                                                ],
+                                                                    device
+                                                                        .desiredProperties[
+                                                                        propertyName
+                                                                    ],
                                                                 serializedProperties = serializeNestedDeviceProperties(
                                                                     propertyName,
                                                                     propertyValue
@@ -633,25 +637,25 @@ export class DeviceDetails extends Component {
                                                                     value,
                                                                 ]) => {
                                                                     const displayValue =
-                                                                        !desiredPropertyValue ||
+                                                                            !desiredPropertyValue ||
                                                                             value ===
-                                                                            desiredPropertyValue
-                                                                            ? value.toString()
-                                                                            : t(
-                                                                                "devices.flyouts.details.properties.syncing",
-                                                                                {
-                                                                                    reportedPropertyValue: value.toString(),
-                                                                                    desiredPropertyValue: desiredPropertyValue.toString(),
-                                                                                }
-                                                                            ),
+                                                                                desiredPropertyValue
+                                                                                ? value.toString()
+                                                                                : t(
+                                                                                      "devices.flyouts.details.properties.syncing",
+                                                                                      {
+                                                                                          reportedPropertyValue: value.toString(),
+                                                                                          desiredPropertyValue: desiredPropertyValue.toString(),
+                                                                                      }
+                                                                                  ),
                                                                         truncatedDisplayName =
                                                                             propertyDisplayName.length <=
-                                                                                20
+                                                                            20
                                                                                 ? propertyDisplayName
                                                                                 : `...${propertyDisplayName.substring(
-                                                                                    propertyDisplayName.length -
-                                                                                    17
-                                                                                )}`;
+                                                                                      propertyDisplayName.length -
+                                                                                          17
+                                                                                  )}`;
                                                                     rows.push(
                                                                         <Row
                                                                             key={
@@ -755,11 +759,11 @@ export class DeviceDetails extends Component {
                                                 <Cell className="col-15">
                                                     {device.connected
                                                         ? t(
-                                                            "devices.flyouts.details.connected"
-                                                        )
+                                                              "devices.flyouts.details.connected"
+                                                          )
                                                         : t(
-                                                            "devices.flyouts.details.notConnected"
-                                                        )}
+                                                              "devices.flyouts.details.notConnected"
+                                                          )}
                                                 </Cell>
                                             </Row>
                                             {device.connected && (
@@ -773,10 +777,10 @@ export class DeviceDetails extends Component {
                                                         <Cell className="col-15">
                                                             {lastMessageTime
                                                                 ? moment(
-                                                                    lastMessageTime
-                                                                ).format(
-                                                                    DEFAULT_TIME_FORMAT
-                                                                )
+                                                                      lastMessageTime
+                                                                  ).format(
+                                                                      DEFAULT_TIME_FORMAT
+                                                                  )
                                                                 : "---"}
                                                         </Cell>
                                                     </Row>
@@ -854,7 +858,9 @@ export class DeviceDetails extends Component {
                             </Section.Container>
                             <Section.Container>
                                 <Section.Header>
-                                    {t("devices.flyouts.details.deviceUploads.title")}
+                                    {t(
+                                        "devices.flyouts.details.deviceUploads.title"
+                                    )}
                                 </Section.Header>
                                 <Section.Content>
                                     <SectionDesc>
@@ -885,69 +891,91 @@ export class DeviceDetails extends Component {
                                                 </GridHeader>
                                                 <GridBody>
                                                     {deviceUploads.map(
-                                                        (
-                                                            upload, idx
-                                                        ) => (
-                                                                <Row key={idx}>
-                                                                    <Cell className="col-3">
-                                                                        <Balloon
-                                                                            position={
-                                                                                BalloonPosition.Left
-                                                                            }
-                                                                            tooltip={
-                                                                                <div>
-                                                                                    <Grid className="device-details-deviceuploads-popup">
-                                                                                        <GridHeader>
-                                                                                            <Row>
-                                                                                                <Cell className="col-3">
-                                                                                                    {t(
-                                                                                                        "devices.flyouts.details.deviceUploads.property"
-                                                                                                    )}
-                                                                                                </Cell>
-                                                                                                <Cell className="col-6">
-                                                                                                    {t(
-                                                                                                        "devices.flyouts.details.deviceUploads.value"
-                                                                                                    )}
-                                                                                                </Cell>
-                                                                                            </Row>
-                                                                                        </GridHeader>
-                                                                                        <GridBody>
-                                                                                            <Row>
-                                                                                                <Cell className="col-3">Size</Cell>
-                                                                                                <Cell className="col-6">{upload.Size.toString()}</Cell>
-                                                                                            </Row>
-                                                                                            <Row>
-                                                                                                <Cell className="col-3">Uploaded On</Cell>
-                                                                                                <Cell className="col-6">{formatTime(upload.UploadedOn)}</Cell>
-                                                                                            </Row>
-                                                                                            <Row>
-                                                                                                <Cell className="col-3">Uploaded By</Cell>
-                                                                                                <Cell className="col-6">{upload.UploadedBy}</Cell>
-                                                                                            </Row>
-                                                                                        </GridBody>
-                                                                                    </Grid>
-                                                                                </div>
-                                                                            }
-                                                                        >
-                                                                            {upload.Name}
-                                                                        </Balloon>
-
-                                                                    </Cell>
-                                                                    <Cell className="col-3">
-                                                                        <Btn
-                                                                            svg={svgs.upload}
-                                                                            className="download-deviceupload"
-                                                                            onClick={() =>
-                                                                                this.downloadFile(upload.BlobName, upload.Name)
-                                                                            }
-                                                                        >
-                                                                        </Btn>
-                                                                    </Cell>
-                                                                </Row>
-                                                            )
+                                                        (upload, idx) => (
+                                                            <Row key={idx}>
+                                                                <Cell className="col-3">
+                                                                    <Balloon
+                                                                        position={
+                                                                            BalloonPosition.Left
+                                                                        }
+                                                                        tooltip={
+                                                                            <div>
+                                                                                <Grid className="device-details-deviceuploads-popup">
+                                                                                    <GridHeader>
+                                                                                        <Row>
+                                                                                            <Cell className="col-3">
+                                                                                                {t(
+                                                                                                    "devices.flyouts.details.deviceUploads.property"
+                                                                                                )}
+                                                                                            </Cell>
+                                                                                            <Cell className="col-6">
+                                                                                                {t(
+                                                                                                    "devices.flyouts.details.deviceUploads.value"
+                                                                                                )}
+                                                                                            </Cell>
+                                                                                        </Row>
+                                                                                    </GridHeader>
+                                                                                    <GridBody>
+                                                                                        <Row>
+                                                                                            <Cell className="col-3">
+                                                                                                Size
+                                                                                            </Cell>
+                                                                                            <Cell className="col-6">
+                                                                                                {upload.Size.toString()}
+                                                                                            </Cell>
+                                                                                        </Row>
+                                                                                        <Row>
+                                                                                            <Cell className="col-3">
+                                                                                                Uploaded
+                                                                                                On
+                                                                                            </Cell>
+                                                                                            <Cell className="col-6">
+                                                                                                {formatTime(
+                                                                                                    upload.UploadedOn
+                                                                                                )}
+                                                                                            </Cell>
+                                                                                        </Row>
+                                                                                        <Row>
+                                                                                            <Cell className="col-3">
+                                                                                                Uploaded
+                                                                                                By
+                                                                                            </Cell>
+                                                                                            <Cell className="col-6">
+                                                                                                {
+                                                                                                    upload.UploadedBy
+                                                                                                }
+                                                                                            </Cell>
+                                                                                        </Row>
+                                                                                    </GridBody>
+                                                                                </Grid>
+                                                                            </div>
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            upload.Name
+                                                                        }
+                                                                    </Balloon>
+                                                                </Cell>
+                                                                <Cell className="col-3">
+                                                                    <Btn
+                                                                        svg={
+                                                                            svgs.upload
+                                                                        }
+                                                                        className="download-deviceupload"
+                                                                        onClick={() =>
+                                                                            this.downloadFile(
+                                                                                upload.BlobName,
+                                                                                upload.Name
+                                                                            )
+                                                                        }
+                                                                    ></Btn>
+                                                                </Cell>
+                                                            </Row>
+                                                        )
                                                     )}
                                                 </GridBody>
-                                            </Grid>)}
+                                            </Grid>
+                                        )}
                                     </div>
                                 </Section.Content>
                             </Section.Container>

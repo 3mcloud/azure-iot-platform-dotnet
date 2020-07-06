@@ -133,12 +133,18 @@ export class TelemetryService {
     }
 
     static getDeviceUploads(id) {
-        var response = HttpClient.get(`${ENDPOINT}deviceFiles/${id}`).map(toDeviceUploadsModel);
+        var response = HttpClient.get(`${ENDPOINT}deviceFiles/${id}`).map(
+            toDeviceUploadsModel
+        );
         return response;
     }
 
     static getDeviceUploadsFileContent(blobName) {
-        var response = HttpClient.post(`${ENDPOINT}deviceFiles/download`, { "BlobName": blobName }, { responseType: "blob" });
+        var response = HttpClient.post(
+            `${ENDPOINT}deviceFiles/download`,
+            { BlobName: blobName },
+            { responseType: "blob" }
+        );
         return response;
     }
 
