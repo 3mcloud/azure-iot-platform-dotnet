@@ -398,7 +398,9 @@ export class PackageNew extends LinkedComponent {
 
     replaceFirmwareVariables = (json, varOptions) => {
         for (const [key, value] of Object.entries(json)) {
-            if (value instanceof String) {
+            if (value instanceof Object) {
+                this.replaceFirmwareVariables(value, varOptions);
+            } else if (typeof value === "string" || value instanceof String) {
                 let varReplace = value.match(firmwareJsonVariableReplace);
                 if (varReplace) {
                     let parent = varOptions[varReplace[1]];
@@ -407,8 +409,6 @@ export class PackageNew extends LinkedComponent {
                         json[key] = child || value;
                     }
                 }
-            } else if (value instanceof Object) {
-                this.replaceFirmwareVariables(value, varOptions);
             }
         }
         return json;
