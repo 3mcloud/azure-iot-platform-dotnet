@@ -110,6 +110,7 @@ export class DeviceGroups extends React.Component {
                         <div className="list">
                             {deviceGroups
                                 .sort(compareByProperty("sortOrder", true))
+                                .sort(compareByProperty("isPinned", false))
                                 .map((deviceGroup, idx) => (
                                     <div
                                         className="item"

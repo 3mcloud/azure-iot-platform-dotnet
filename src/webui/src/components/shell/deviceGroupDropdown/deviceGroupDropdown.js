@@ -21,6 +21,7 @@ export class DeviceGroupDropdown extends Component {
     deviceGroupsToOptions = (deviceGroups) =>
         deviceGroups
             .sort(compareByProperty("sortOrder", true))
+            .sort(compareByProperty("isPinned", false))
             .map(({ id, displayName }) => ({
                 label: displayName,
                 value: id,
