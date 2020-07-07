@@ -194,6 +194,8 @@ stages:
               git config user.name "Kyle Estes"
               git config user.email kestes.cw@mmm.com
               git checkout $(semVerMetaSha)
-              GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)" git tag --annotate $(semVerMeta) --message 'Serenity version tag with metadata in SemVer 2.0 format'
+              GIT_COMMITTER_DATE="$(git show --format=%aD | head -1)"
+              git tag --annotate $(semVerMeta) --message 'Serenity version tag with metadata in SemVer 2.0 format'
+              git tag --annotate $(semVer) --message 'Serenity version tag in SemVer 2.0 format'
               git push origin --tags
             displayName: Add tags

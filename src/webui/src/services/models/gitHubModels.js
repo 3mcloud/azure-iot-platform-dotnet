@@ -7,5 +7,5 @@ const emptyResponse = { name: undefined, htmlUrl: undefined };
 export const toGitHubModel = (response = emptyResponse) =>
     camelCaseReshape(response, {
         name: "version",
-        htmlUrl: "releaseNotesUrl",
+        body: "releaseNotesUrl",
     });

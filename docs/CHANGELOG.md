@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!---
 To easily get a list of committed changes between current master and the previous release use:
 git log --oneline --no-decorate --topo-order ^<previousRelease> master
-where <previousRelease> is the release name e.g 5.1.0+d49ef995a368fc4b461e4b6306797b065308ea9e.63398
+where <previousRelease> is the release name e.g 5.1.0
 -->
 
 ## [5.2.0] - 2020-07-07
@@ -59,6 +59,6 @@ where <previousRelease> is the release name e.g 5.1.0+d49ef995a368fc4b461e4b6306
 - Code base rearchitected to use common library and reduce duplication
 
 [5.2.0]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.2.0
-[5.1.0]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.1.0%2B7c220f1fbb11917602c14497d5410b242c0ed11a.63385
+[5.1.0]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.1.0
 [5.0.1]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.0.1
 [5.0.0]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.0.0
