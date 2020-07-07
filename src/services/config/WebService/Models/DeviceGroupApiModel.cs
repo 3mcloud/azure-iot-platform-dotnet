@@ -20,6 +20,7 @@ namespace Mmm.Iot.Config.WebService.Models
             this.DisplayName = model.DisplayName;
             this.Conditions = model.Conditions;
             this.TelemetryFormat = model.TelemetryFormat;
+            this.SupportedMethods = model.SupportedMethods;
             this.ETag = model.ETag;
             this.IsPinned = model.IsPinned;
             this.SortOrder = model.SortOrder;
@@ -39,6 +40,9 @@ namespace Mmm.Iot.Config.WebService.Models
 
         [JsonProperty("Conditions")]
         public IEnumerable<DeviceGroupCondition> Conditions { get; set; }
+
+        [JsonProperty("SupportedMethods")]
+        public IEnumerable<DeviceGroupSupportedMethods> SupportedMethods { get; set; }
 
         [JsonProperty("TelemetryFormat")]
         public IEnumerable<DeviceGroupTelemetryFormat> TelemetryFormat { get; set; }
@@ -64,6 +68,7 @@ namespace Mmm.Iot.Config.WebService.Models
                 TelemetryFormat = this.TelemetryFormat,
                 IsPinned = this.IsPinned,
                 SortOrder = this.SortOrder,
+                SupportedMethods = this.SupportedMethods,
             };
         }
     }

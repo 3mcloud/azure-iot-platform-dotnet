@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 import React, { Component } from "react";
+import { Observable, Subject } from "rxjs";
 import { Trans } from "react-i18next";
-import { Subject } from "rxjs";
 import moment from "moment";
 import {
     Balloon,
@@ -18,6 +18,7 @@ import {
     int,
     svgs,
     translateColumnDefs,
+    formatTime,
     DEFAULT_TIME_FORMAT,
 } from "utilities";
 import {
@@ -33,6 +34,7 @@ import {
     SectionDesc,
     TimeSeriesInsightsLinkContainer,
 } from "components/shared";
+import { TimeIntervalDropdownContainer as TimeIntervalDropdown } from "components/shell/timeIntervalDropdown";
 import Flyout from "components/shared/flyout";
 import {
     TelemetryChartContainer as TelemetryChart,
@@ -76,9 +78,11 @@ export class DeviceDetails extends Component {
             telemetry: {},
             telemetryIsPending: true,
             telemetryError: null,
+            telemetryQueryExceededLimit: false,
 
             showRawMessage: false,
             currentModuleStatus: undefined,
+            deviceUploads: undefined,
         };
         this.baseState = this.state;
         this.columnDefs = [
@@ -114,6 +118,7 @@ export class DeviceDetails extends Component {
             } = this.props,
             deviceId = device.id;
         this.fetchAlerts(deviceId);
+        this.fetchDeviceUploads(deviceId);
 
         const [hours = 0, minutes = 0, seconds = 0] = interval
                 .split(":")
@@ -125,7 +130,17 @@ export class DeviceDetails extends Component {
                 .do((_) => this.setState({ telemetry: {} }))
                 .switchMap(
                     (deviceId) =>
-                        TelemetryService.getTelemetryByDeviceIdP15M([deviceId])
+                        TelemetryService.getTelemetryByDeviceId(
+                            [deviceId],
+                            TimeIntervalDropdown.getTimeIntervalDropdownValue()
+                        )
+                            .flatMap((items) => {
+                                this.setState({
+                                    telemetryQueryExceededLimit:
+                                        items.length >= 1000,
+                                });
+                                return Observable.of(items);
+                            })
                             .merge(
                                 this.telemetryRefresh$ // Previous request complete
                                     .delay(
@@ -178,12 +193,12 @@ export class DeviceDetails extends Component {
         } = nextProps;
         let tempState = {};
         /*
-      deviceModuleStatus is a prop fetched by making fetchModules() API call through deviceDetails.container on demand.
-      moduleStatus is a prop sent from deploymentDetailsGrid which it already has in rowData.
-      Both deviceModuleStatus and moduleStatus have the same content,
-        but come from different sources based on the page that opens this flyout.
-      Depending on which one is available, currentModuleStatus is set in component state.
-    */
+            deviceModuleStatus is a prop fetched by making fetchModules() API call through deviceDetails.container on demand.
+            moduleStatus is a prop sent from deploymentDetailsGrid which it already has in rowData.
+            Both deviceModuleStatus and moduleStatus have the same content,
+                but come from different sources based on the page that opens this flyout.
+            Depending on which one is available, currentModuleStatus is set in component state.
+        */
 
         if ((this.props.device || {}).id !== device.id) {
             // Reset state if the device changes.
@@ -204,6 +219,7 @@ export class DeviceDetails extends Component {
             const deviceId = (device || {}).id;
             this.resetTelemetry$.next(deviceId);
             this.fetchAlerts(deviceId);
+            this.fetchDeviceUploads(deviceId);
         } else if (
             !moduleStatus &&
             !isDeviceModuleStatusPending &&
@@ -221,6 +237,7 @@ export class DeviceDetails extends Component {
     componentWillUnmount() {
         this.alertSubscription.unsubscribe();
         this.telemetrySubscription.unsubscribe();
+        this.deviceUploadsSubscription.unsubscribe();
     }
 
     copyDevicePropertiesToClipboard = () => {
@@ -258,6 +275,36 @@ export class DeviceDetails extends Component {
         );
     };
 
+    fetchDeviceUploads = (deviceId) => {
+        this.deviceUploadsSubscription = TelemetryService.getDeviceUploads(
+            deviceId
+        ).subscribe((deviceUploads) => {
+            this.setState({
+                deviceUploads,
+            });
+        });
+    };
+
+    downloadFile = (relativePath, fileName) => {
+        TelemetryService.getDeviceUploadsFileContent(relativePath).subscribe(
+            (response) => {
+                var blob = new Blob([response.response], {
+                    type: response.response.contentType,
+                });
+                let url = window.URL.createObjectURL(blob);
+                let a = document.createElement("a");
+                a.href = url;
+                a.download = fileName;
+                a.click();
+            }
+        );
+    };
+
+    updateTimeInterval = (timeInterval) => {
+        this.props.updateTimeInterval(timeInterval);
+        this.resetTelemetry$.next(this.props.device.id);
+    };
+
     render() {
         const {
                 t,
@@ -286,6 +333,7 @@ export class DeviceDetails extends Component {
             },
             tags = Object.entries(device.tags || {}),
             properties = Object.entries(device.properties || {}),
+            deviceUploads = this.state.deviceUploads || [],
             moduleQuerySuccessful =
                 currentModuleStatus &&
                 currentModuleStatus !== {} &&
@@ -362,6 +410,12 @@ export class DeviceDetails extends Component {
                                     )}
                                 </Section.Header>
                                 <Section.Content>
+                                    <TimeIntervalDropdown
+                                        onChange={this.updateTimeInterval}
+                                        value={this.props.timeInterval}
+                                        t={t}
+                                        className="device-details-time-interval-dropdown"
+                                    />
                                     {timeSeriesExplorerUrl && (
                                         <TimeSeriesInsightsLinkContainer
                                             href={timeSeriesParamUrl}
@@ -369,6 +423,11 @@ export class DeviceDetails extends Component {
                                     )}
                                     <TelemetryChart
                                         className="telemetry-chart"
+                                        t={t}
+                                        limitExceeded={
+                                            this.state
+                                                .telemetryQueryExceededLimit
+                                        }
                                         telemetry={telemetry}
                                         theme={theme}
                                         colors={chartColorObjects}
@@ -793,6 +852,129 @@ export class DeviceDetails extends Component {
                                                     }
                                                 </div>
                                             </ComponentArray>
+                                        )}
+                                    </div>
+                                </Section.Content>
+                            </Section.Container>
+                            <Section.Container>
+                                <Section.Header>
+                                    {t(
+                                        "devices.flyouts.details.deviceUploads.title"
+                                    )}
+                                </Section.Header>
+                                <Section.Content>
+                                    <SectionDesc>
+                                        {t(
+                                            "devices.flyouts.details.deviceUploads.description"
+                                        )}
+                                    </SectionDesc>
+                                    <div className="device-details-deviceuploads-contentbox">
+                                        {deviceUploads.length === 0 &&
+                                            t(
+                                                "devices.flyouts.details.deviceUploads.noneExist"
+                                            )}
+                                        {deviceUploads.length > 0 && (
+                                            <Grid className="device-details-deviceuploads">
+                                                <GridHeader>
+                                                    <Row>
+                                                        <Cell className="col-7">
+                                                            {t(
+                                                                "devices.flyouts.details.deviceUploads.fileName"
+                                                            )}
+                                                        </Cell>
+                                                        <Cell className="col-3">
+                                                            {t(
+                                                                "devices.flyouts.details.deviceUploads.action"
+                                                            )}
+                                                        </Cell>
+                                                    </Row>
+                                                </GridHeader>
+                                                <GridBody>
+                                                    {deviceUploads.map(
+                                                        (upload, idx) => (
+                                                            <Row key={idx}>
+                                                                <Cell className="col-3">
+                                                                    <Balloon
+                                                                        position={
+                                                                            BalloonPosition.Left
+                                                                        }
+                                                                        tooltip={
+                                                                            <div>
+                                                                                <Grid className="device-details-deviceuploads-popup">
+                                                                                    <GridHeader>
+                                                                                        <Row>
+                                                                                            <Cell className="col-3">
+                                                                                                {t(
+                                                                                                    "devices.flyouts.details.deviceUploads.property"
+                                                                                                )}
+                                                                                            </Cell>
+                                                                                            <Cell className="col-6">
+                                                                                                {t(
+                                                                                                    "devices.flyouts.details.deviceUploads.value"
+                                                                                                )}
+                                                                                            </Cell>
+                                                                                        </Row>
+                                                                                    </GridHeader>
+                                                                                    <GridBody>
+                                                                                        <Row>
+                                                                                            <Cell className="col-3">
+                                                                                                Size
+                                                                                            </Cell>
+                                                                                            <Cell className="col-6">
+                                                                                                {upload.Size.toString()}
+                                                                                            </Cell>
+                                                                                        </Row>
+                                                                                        <Row>
+                                                                                            <Cell className="col-3">
+                                                                                                Uploaded
+                                                                                                On
+                                                                                            </Cell>
+                                                                                            <Cell className="col-6">
+                                                                                                {formatTime(
+                                                                                                    upload.UploadedOn
+                                                                                                )}
+                                                                                            </Cell>
+                                                                                        </Row>
+                                                                                        <Row>
+                                                                                            <Cell className="col-3">
+                                                                                                Uploaded
+                                                                                                By
+                                                                                            </Cell>
+                                                                                            <Cell className="col-6">
+                                                                                                {
+                                                                                                    upload.UploadedBy
+                                                                                                }
+                                                                                            </Cell>
+                                                                                        </Row>
+                                                                                    </GridBody>
+                                                                                </Grid>
+                                                                            </div>
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            upload.Name
+                                                                        }
+                                                                    </Balloon>
+                                                                </Cell>
+                                                                <Cell className="col-3">
+                                                                    <Btn
+                                                                        svg={
+                                                                            svgs.upload
+                                                                        }
+                                                                        className="download-deviceupload"
+                                                                        onClick={() =>
+                                                                            this.downloadFile(
+                                                                                upload.BlobName,
+                                                                                upload.Name
+                                                                            )
+                                                                        }
+                                                                    ></Btn>
+                                                                </Cell>
+                                                            </Row>
+                                                        )
+                                                    )}
+                                                </GridBody>
+                                            </Grid>
                                         )}
                                     </div>
                                 </Section.Content>

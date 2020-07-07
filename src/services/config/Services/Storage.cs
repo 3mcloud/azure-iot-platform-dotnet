@@ -60,32 +60,41 @@ namespace Mmm.Iot.Config.Services
             this.logger = logger;
         }
 
-        public async Task<object> GetThemeAsync()
+        public async Task<Theme> GetThemeAsync()
         {
-            string data;
+            Theme theme;
 
             try
             {
-                var response = await this.client.GetAsync(SolutionCollectionId, ThemeKey);
-                data = response.Data;
+                theme = await this.GetSolutionSettingAsync<Theme>(ThemeKey);
             }
             catch (ResourceNotFoundException)
             {
-                data = JsonConvert.SerializeObject(Theme.Default);
+                theme = Theme.Default;
             }
 
-            var themeOut = JsonConvert.DeserializeObject(data) as JToken ?? new JObject();
-            this.AppendAzureMapsKey(themeOut);
+            theme.AzureMapsKey ??= this.config.ConfigService.AzureMapsKey;
+            return theme;
+        }
+
+        public async Task<Theme> SetThemeAsync(object themeIn)
+        {
+            var response = await this.SetSolutionSettingAsync(ThemeKey, themeIn);
+            Theme themeOut = JsonConvert.DeserializeObject<Theme>(response.Data);
+            themeOut.AzureMapsKey ??= this.config.ConfigService.AzureMapsKey;
             return themeOut;
         }
 
-        public async Task<object> SetThemeAsync(object themeIn)
+        public async Task<ValueApiModel> SetSolutionSettingAsync(string id, object setting)
         {
-            var value = JsonConvert.SerializeObject(themeIn);
-            var response = await this.client.UpdateAsync(SolutionCollectionId, ThemeKey, value, "*");
-            var themeOut = JsonConvert.DeserializeObject(response.Data) as JToken ?? new JObject();
-            this.AppendAzureMapsKey(themeOut);
-            return themeOut;
+            var value = JsonConvert.SerializeObject(setting);
+            return await this.client.UpdateAsync(SolutionCollectionId, id, value, "*");
+        }
+
+        public async Task<T> GetSolutionSettingAsync<T>(string id)
+        {
+            var response = await this.client.GetAsync(SolutionCollectionId, id);
+            return JsonConvert.DeserializeObject<T>(response.Data);
         }
 
         public async Task<object> GetUserSetting(string id)
@@ -112,8 +121,7 @@ namespace Mmm.Iot.Config.Services
         {
             try
             {
-                var response = await this.client.GetAsync(SolutionCollectionId, LogoKey);
-                return JsonConvert.DeserializeObject<Logo>(response.Data);
+                return await this.GetSolutionSettingAsync<Logo>(LogoKey);
             }
             catch (ResourceNotFoundException)
             {
@@ -138,8 +146,7 @@ namespace Mmm.Iot.Config.Services
                 }
             }
 
-            var value = JsonConvert.SerializeObject(model);
-            var response = await this.client.UpdateAsync(SolutionCollectionId, LogoKey, value, "*");
+            var response = await this.SetSolutionSettingAsync(LogoKey, model);
             return JsonConvert.DeserializeObject<Logo>(response.Data);
         }
 
@@ -527,14 +534,6 @@ namespace Mmm.Iot.Config.Services
             {
                 this.logger.LogError("Attempted to find a device group name for a tenant with no storage adapter collection. Returning false.", e);
                 return false;
-            }
-        }
-
-        private void AppendAzureMapsKey(JToken theme)
-        {
-            if (theme[AzureMapsKey] == null)
-            {
-                theme[AzureMapsKey] = this.config.ConfigService.AzureMapsKey;
             }
         }
 

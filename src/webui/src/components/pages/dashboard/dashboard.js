@@ -41,6 +41,7 @@ const initialState = {
         telemetry: {},
         telemetryIsPending: true,
         telemetryError: null,
+        telemetryQueryExceededLimit: false,
 
         // Analytics data
         analyticsVersion: 0,
@@ -94,6 +95,14 @@ export class Dashboard extends Component {
                           deviceIds,
                           TimeIntervalDropdown.getTimeIntervalDropdownValue()
                       )
+                          .flatMap((items) => {
+                              this.setState({
+                                  telemetryQueryExceededLimit:
+                                      items.length >=
+                                      Config.telemetryQueryResultLimit,
+                              });
+                              return Observable.of(items);
+                          })
                           .merge(
                               this.telemetryRefresh$ // Previous request complete
                                   .delay(Config.telemetryRefreshInterval) // Wait to refresh
@@ -390,6 +399,7 @@ export class Dashboard extends Component {
                 telemetry,
                 telemetryIsPending,
                 telemetryError,
+                telemetryQueryExceededLimit,
 
                 analyticsVersion,
                 currentActiveAlerts,
@@ -544,6 +554,7 @@ export class Dashboard extends Component {
                                 timeSeriesExplorerUrl={timeSeriesParamUrl}
                                 telemetry={telemetry}
                                 isPending={telemetryIsPending}
+                                limitExceeded={telemetryQueryExceededLimit}
                                 lastRefreshed={lastRefreshed}
                                 error={deviceGroupError || telemetryError}
                                 theme={theme}

@@ -4,9 +4,11 @@ import { connect } from "react-redux";
 import { withNamespaces } from "react-i18next";
 import { DeviceDetails } from "./deviceDetails";
 import {
+    redux as appRedux,
     getTheme,
     getDeviceGroups,
     getTimeSeriesExplorerUrl,
+    getTimeInterval,
 } from "store/reducers/appReducer";
 import {
     epics as ruleEpics,
@@ -35,6 +37,7 @@ const mapStateToProps = (state, props) => ({
         deviceModuleStatus: getDeviceModuleStatus(state),
         isDeviceModuleStatusPending: getDeviceModuleStatusPendingStatus(state),
         deviceModuleStatusError: getDeviceModuleStatusError(state),
+        timeInterval: getTimeInterval(state),
     }),
     // Wrap the dispatch method
     mapDispatchToProps = (dispatch) => ({
@@ -47,6 +50,8 @@ const mapStateToProps = (state, props) => ({
                     devicesEpics.actions.fetchEdgeAgent
                 )
             ),
+        updateTimeInterval: (timeInterval) =>
+            dispatch(appRedux.actions.updateTimeInterval(timeInterval)),
     });
 
 export const DeviceDetailsContainer = withNamespaces()(

@@ -14,6 +14,8 @@ namespace Mmm.Iot.Config.Services.Models
 
         public IEnumerable<DeviceGroupCondition> Conditions { get; set; }
 
+        public IEnumerable<DeviceGroupSupportedMethods> SupportedMethods { get; set; }
+
         public IEnumerable<DeviceGroupTelemetryFormat> TelemetryFormat { get; set; }
 
         public bool IsPinned { get; set; }

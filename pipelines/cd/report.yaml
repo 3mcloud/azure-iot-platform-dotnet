@@ -8,6 +8,13 @@ resources:
       type: githubenterprise
       name: MMM/azure-iot-services-dotnet
       endpoint: GithubMMM
+schedules:
+  - cron: 0 6 * * *
+    displayName: Daily midnight (CST) build
+    branches:
+      include:
+        - master
+    always: true
 stages:
   - stage: crslDev
     dependsOn: []
@@ -125,6 +132,19 @@ stages:
               kubernetesVersion: 1.16.8
               azureServiceConnectionName: 3M-ASDT05-PSD-CS-IOT-QA
               serenityEnvironment: psdEu
+
+  - stage: psdQa
+    dependsOn: []
+    displayName: PSD QA
+    jobs:
+      - job: psdQa
+        displayName: PSD QA
+        steps:
+          - template: ../templates/steps-report-versions.yaml
+            parameters:
+              kubernetesVersion: 1.16.8
+              azureServiceConnectionName: 3M-ASDT05-PSD-CS-IOT-QA
+              serenityEnvironment: psdQa
 
   - stage: psdStg
     dependsOn: []

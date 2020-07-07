@@ -33,13 +33,15 @@ export class TimeIntervalDropdown extends Component {
 
     render() {
         const options = optionValues.map(({ value }) => ({
-            label: this.props.t(`timeInterval.${value}`),
-            value,
-        }));
+                label: this.props.t(`timeInterval.${value}`),
+                value,
+            })),
+            className = this.props.className || "time-interval-dropdown";
+
         return (
             <SelectInput
                 name="time-interval-dropdown"
-                className="time-interval-dropdown"
+                className={className}
                 attr={{
                     select: {
                         className: "time-interval-dropdown-select",

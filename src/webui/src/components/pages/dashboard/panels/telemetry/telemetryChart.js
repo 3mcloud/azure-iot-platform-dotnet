@@ -200,7 +200,7 @@ export class TelemetryChart extends Component {
     };
 
     render() {
-        const { telemetry } = this.props,
+        const { telemetry, limitExceeded, t } = this.props,
             { telemetryKeys } = this.state,
             telemetryList = telemetryKeys.map((key) => {
                 const count = Object.keys(telemetry[key]).length,
@@ -224,7 +224,14 @@ export class TelemetryChart extends Component {
                     active={this.state.telemetryKey}
                 />
                 <div className="chart-container" id={this.chartId} />
-                <p>Displaying in local timezone: {timezone}</p>
+                <p>{`${t(
+                    "dashboard.panels.telemetry.timezoneDisplay"
+                )} ${timezone}`}</p>
+                {limitExceeded && (
+                    <p>
+                        {t("dashboard.panels.telemetry.limitExceededWarning")}
+                    </p>
+                )}
             </div>
         );
     }
