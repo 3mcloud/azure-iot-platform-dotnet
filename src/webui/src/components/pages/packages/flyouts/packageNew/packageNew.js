@@ -4,6 +4,10 @@ import React from "react";
 import { Trans } from "react-i18next";
 import { Link } from "react-router-dom";
 import {
+    Balloon,
+    BalloonPosition,
+} from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Balloon/Balloon";
+import {
     packageTypeOptions,
     packagesEnum,
     configTypeOptions,
@@ -43,18 +47,8 @@ import uuid from "uuid/v4";
 const fileInputAccept = ".json,application/json",
     firmwareFileInputAccept =
         "*.zip,*.tar,*.bin,*.ipa,*.rar,*.gz,*.bz2,*.tgz,*.swu",
-    isVersionValid = (str) => /^(\d+\.)*(\d+)$/.test(str);
-
-const contentFormats = {
-    softwareConfig: {
-        desiredPropertiesKey: "properties.desired.softwareConfig",
-        versionKey: "version",
-    },
-    firmware: {
-        desiredPropertiesKey: "properties.desired.firmware",
-        versionKey: "fwVersion",
-    },
-};
+    isVersionValid = (str) => /^(\d+\.)*(\d+)$/.test(str),
+    firmwareJsonVariableReplace = /\$\{(blobData|packageFile)\.(.*)\}/;
 
 export class PackageNew extends LinkedComponent {
     constructor(props) {
@@ -73,40 +67,10 @@ export class PackageNew extends LinkedComponent {
             changesApplied: undefined,
             fileError: undefined,
             uploadedFirmwareSuccessfully: false,
-            packagepackageJsonContentFormat: contentFormats.softwareConfig,
             packageJson: {
-                jsObject: {
-                    id: "sampleConfigId",
-                    content: {
-                        deviceContent: {
-                            "properties.desired.softwareConfig": {
-                                softwareName: "Firmware",
-                                version: "1.0.0",
-                                softwareURL: "blob_uri",
-                                fileName: "filename",
-                                serialNumber: "",
-                                checkSum: "",
-                            },
-                        },
-                    },
-                    metrics: {
-                        queries: {
-                            current:
-                                "SELECT deviceId FROM devices WHERE configurations.[[{0}]].status = 'Applied' AND properties.reported.softwareConfig.version = properties.desired.softwareConfig.version AND properties.reported.softwareConfig.status='Success'",
-                            applying:
-                                "SELECT deviceId FROM devices WHERE configurations.[[{0}]].status = 'Applied' AND ( properties.reported.softwareConfig.status='Downloading' OR properties.reported.softwareConfig.status='Verifying' OR properties.reported.softwareConfig.status='Applying')",
-                            rebooting:
-                                "SELECT deviceId FROM devices WHERE configurations.[[{0}]].status = 'Applied' AND properties.reported.softwareConfig.version = properties.desired.softwareConfig.version AND properties.reported.softwareConfig.status='Rebooting'",
-                            error:
-                                "SELECT deviceId FROM devices WHERE configurations.[[{0}]].status = 'Applied' AND properties.reported.softwareConfig.status='Error'",
-                            rolledback:
-                                "SELECT deviceId FROM devices WHERE configurations.[[{0}]].status = 'Applied' AND properties.reported.softwareConfig.status='RolledBack'",
-                        },
-                    },
-                    targetCondition: "",
-                    priority: 20,
-                },
+                jsObject: {},
             },
+            firmwareTemplateVersionField: "",
         };
     }
 
@@ -124,7 +88,6 @@ export class PackageNew extends LinkedComponent {
                 packageVersion,
                 customConfigName,
                 fileError,
-                packageJson,
                 packageFile,
                 uploadedFirmwareSuccessfully,
                 tags,
@@ -138,45 +101,52 @@ export class PackageNew extends LinkedComponent {
         if (configType === "Firmware" && !uploadedFirmwareSuccessfully) {
             ConfigService.uploadFirmware(packageFile).subscribe(
                 (blobData) => {
-                    const packageJsonObject = packageJson.jsObject;
+                    ConfigService.getDefaultFirmwareSetting().subscribe(
+                        (firmwareTemplate) => {
+                            firmwareTemplate.jsObject.id =
+                                packageFile.name
+                                    .toLowerCase()
+                                    .replace(/[^a-z0-9[\]\-+%_*!']/gi, "_") +
+                                "-" +
+                                uuid();
+                            this.replaceFirmwareVariables(
+                                firmwareTemplate.jsObject,
+                                {
+                                    packageFile: packageFile,
+                                    blobData: blobData,
+                                }
+                            );
+                            this.replaceFirmwareVersion(
+                                firmwareTemplate.jsObject,
+                                packageVersion,
+                                firmwareTemplate.metadata.version
+                            );
 
-                    // Replace all invalid configuration id values
-                    packageJsonObject.id =
-                        packageFile.name
-                            .toLowerCase()
-                            .replace(/[^a-z0-9[\]\-+%_*!']/gi, "_") +
-                        "-" +
-                        uuid();
-                    packageJsonObject.content.deviceContent[
-                        "properties.desired.softwareConfig"
-                    ].fileName = packageFile.name;
-                    packageJsonObject.content.deviceContent[
-                        "properties.desired.softwareConfig"
-                    ].softwareURL = blobData.FileUri;
-                    packageJsonObject.content.deviceContent[
-                        "properties.desired.softwareConfig"
-                    ].checkSum = blobData.CheckSum;
-
-                    // Replace Configuration Ids in metrics
-                    for (const [key, value] of Object.entries(
-                        packageJsonObject.metrics.queries
-                    )) {
-                        packageJsonObject.metrics.queries[key] = value.replace(
-                            "firmware285",
-                            packageJsonObject.id
-                        );
-                    }
-
-                    this.setState({
-                        packageJson: packageJson,
-                        uploadedFirmwareSuccessfully: true,
-                        firmwarePackageName: packageFile.name,
-                        packageFile: dataURLtoFile(
-                            "data:application/json;base64," +
-                                btoa(JSON.stringify(packageJsonObject)),
-                            packageFile.name
-                        ),
-                    });
+                            this.setState({
+                                packageJson: {
+                                    jsObject: firmwareTemplate.jsObject,
+                                },
+                                firmwareTemplateVersionField:
+                                    firmwareTemplate.metadata.version,
+                                uploadedFirmwareSuccessfully: true,
+                                firmwarePackageName: packageFile.name,
+                                packageFile: dataURLtoFile(
+                                    "data:application/json;base64," +
+                                        btoa(
+                                            JSON.stringify(
+                                                firmwareTemplate.jsObject
+                                            )
+                                        ),
+                                    packageFile.name
+                                ),
+                            });
+                        },
+                        (error) => {
+                            this.setState({
+                                fileError: error,
+                            });
+                        }
+                    );
                 },
                 (error) => {
                     this.setState({
@@ -354,19 +324,6 @@ export class PackageNew extends LinkedComponent {
         link.set(link.value.filter((_, idx) => index !== idx));
     };
 
-    getContentFormatFromPackageJson = (packageJson) => {
-        const deviceContent = (packageJson.content || {}).deviceContent;
-        return deviceContent.hasOwnProperty(
-            contentFormats.softwareConfig.desiredPropertiesKey
-        )
-            ? contentFormats.softwareConfig
-            : deviceContent.hasOwnProperty(
-                  contentFormats.firmware.desiredPropertiesKey
-              )
-            ? contentFormats.firmware
-            : undefined;
-    };
-
     onJsonChange = (e) => {
         if (!e.target.value.error) {
             if (!e.target.value.jsObject) {
@@ -374,25 +331,9 @@ export class PackageNew extends LinkedComponent {
                 return;
             }
 
-            const changedPackageJsonObject = e.target.value.jsObject,
-                deviceContent = ((changedPackageJsonObject || {}).content || {})
-                    .deviceContent,
-                contentFormat = this.getContentFormatFromPackageJson(
-                    changedPackageJsonObject
-                );
+            const versionField = this.state.firmwareTemplateVersionField;
 
-            if (!contentFormat) {
-                e.target.value.error = true;
-                e.target.value.errorMessage = this.props.t(
-                    "packages.flyouts.new.validation.unsupportedProperty"
-                );
-                return;
-            }
-
-            const propertiesContent =
-                deviceContent[contentFormat.desiredPropertiesKey];
-
-            if (!propertiesContent.hasOwnProperty(contentFormat.versionKey)) {
+            if (!versionField) {
                 e.target.value.error = true;
                 e.target.value.errorMessage = this.props.t(
                     "packages.flyouts.new.validation.unsupportedVersionKey"
@@ -400,15 +341,20 @@ export class PackageNew extends LinkedComponent {
                 return;
             }
 
+            // loop through keys until you've taken the version key value
+            let version = e.target.value.jsObject;
+            versionField.split("//").forEach((childKey) => {
+                version = version[childKey];
+            });
+
             this.setState({
-                packageJsonContentFormat: contentFormat,
-                packageJson: e.target.value.json,
+                packageJson: e.target.value,
                 packageFile: dataURLtoFile(
                     "data:application/json;base64," +
                         btoa(JSON.stringify(e.target.value.jsObject)),
                     this.state.firmwarePackageName
                 ),
-                packageVersion: propertiesContent[contentFormat.versionKey],
+                packageVersion: version,
             });
         }
     };
@@ -418,19 +364,54 @@ export class PackageNew extends LinkedComponent {
     };
 
     packageVersionChange = ({ target: { value = {} } }) => {
-        const { packageJson, configType } = this.state;
+        const {
+            packageJson,
+            configType,
+            packageVersion,
+            firmwareTemplateVersionField,
+        } = this.state;
         let packageJsonObject = packageJson.jsObject;
 
         if (packageJsonObject && configType === "Firmware") {
-            // Replace version
-            packageJsonObject.content.deviceContent[
-                "properties.desired.softwareConfig"
-            ].version = value;
+            this.replaceFirmwareVersion(
+                packageJsonObject,
+                packageVersion,
+                firmwareTemplateVersionField
+            );
             this.setState({
                 packageJson: packageJson,
-                packageJsonObject: packageJson.jsObject,
             });
         }
+    };
+
+    replaceFirmwareVersion = (json, version, versionKey) => {
+        const versionKeySplit = versionKey.split("//");
+        let jsonChild = json;
+        versionKeySplit.forEach((key, idx) => {
+            if (idx === versionKeySplit.length - 1) {
+                jsonChild[key] = version;
+            } else {
+                jsonChild = jsonChild[key];
+            }
+        });
+    };
+
+    replaceFirmwareVariables = (json, varOptions) => {
+        for (const [key, value] of Object.entries(json)) {
+            if (value instanceof Object) {
+                this.replaceFirmwareVariables(value, varOptions);
+            } else if (typeof value === "string" || value instanceof String) {
+                let varReplace = value.match(firmwareJsonVariableReplace);
+                if (varReplace) {
+                    let parent = varOptions[varReplace[1]];
+                    if (parent) {
+                        let child = parent[varReplace[2]];
+                        json[key] = child || value;
+                    }
+                }
+            }
+        }
+        return json;
     };
 
     render() {
@@ -708,18 +689,7 @@ export class PackageNew extends LinkedComponent {
                                         )}
                                     </div>
                                 )}
-                                {uploadedFirmwareSuccessfully && (
-                                    <div>
-                                        <br />
-                                        <FormControl
-                                            link={this.packageJsonLink}
-                                            type="jsoninput"
-                                            height="550px"
-                                            theme={theme}
-                                            onChange={this.onJsonChange}
-                                        />
-                                    </div>
-                                )}
+                                {uploadedFirmwareSuccessfully && <br />}
                             </div>
                         )}
                         {packageFile && (
@@ -772,6 +742,31 @@ export class PackageNew extends LinkedComponent {
                                             {packageVersion}
                                         </FormLabel>
                                     )}
+                                </FormGroup>
+                            )}
+                        {!completedSuccessfully &&
+                            configType === "Firmware" &&
+                            uploadedFirmwareSuccessfully && (
+                                <FormGroup>
+                                    <FormLabel svg={svgs.info}>
+                                        <Balloon
+                                            position={BalloonPosition.Left}
+                                            tooltip={t(
+                                                "packages.flyouts.new.firmwareTemplateTip"
+                                            )}
+                                        >
+                                            {t(
+                                                "packages.flyouts.new.firmwareJson"
+                                            )}
+                                        </Balloon>
+                                    </FormLabel>
+                                    <FormControl
+                                        link={this.packageJsonLink}
+                                        type="jsoninput"
+                                        height="550px"
+                                        theme={theme}
+                                        onChange={this.onJsonChange}
+                                    />
                                 </FormGroup>
                             )}
                         <FormGroup>

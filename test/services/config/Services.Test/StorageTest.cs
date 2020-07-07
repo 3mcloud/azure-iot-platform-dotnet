@@ -205,14 +205,14 @@ namespace Mmm.Iot.Config.Services.Test
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ValueApiModel
                 {
-                    Data = JsonConvert.SerializeObject(new
+                    Data = JsonConvert.SerializeObject(new Theme
                     {
                         Name = name,
                         Description = description,
                     }),
                 });
 
-            var result = await this.storage.GetThemeAsync() as dynamic;
+            var result = await this.storage.GetThemeAsync();
 
             this.mockClient
                 .Verify(
@@ -233,7 +233,7 @@ namespace Mmm.Iot.Config.Services.Test
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ThrowsAsync(new ResourceNotFoundException());
 
-            var result = await this.storage.GetThemeAsync() as dynamic;
+            var result = await this.storage.GetThemeAsync();
 
             this.mockClient
                 .Verify(
@@ -253,7 +253,7 @@ namespace Mmm.Iot.Config.Services.Test
             var name = this.rand.NextString();
             var description = this.rand.NextString();
 
-            var theme = new
+            var theme = new Theme
             {
                 Name = name,
                 Description = description,

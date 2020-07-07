@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import { SelectInput } from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Input/SelectInput";
 
 import { toDiagnosticsModel } from "services/models";
+import { compareByProperty } from "utilities";
 
 import "./deviceGroupDropdown.scss";
 
@@ -18,10 +19,13 @@ export class DeviceGroupDropdown extends Component {
     };
 
     deviceGroupsToOptions = (deviceGroups) =>
-        deviceGroups.map(({ id, displayName }) => ({
-            label: displayName,
-            value: id,
-        }));
+        deviceGroups
+            .sort(compareByProperty("sortOrder", true))
+            .sort(compareByProperty("isPinned", false))
+            .map(({ id, displayName }) => ({
+                label: displayName,
+                value: id,
+            }));
 
     render() {
         const { deviceGroups, activeDeviceGroupId } = this.props,

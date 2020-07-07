@@ -1,20 +1,29 @@
 // Copyright (c) Microsoft. All rights reserved.
+/* eslint-disable no-template-curly-in-string */
 
 import React from "react";
 import { Toggle } from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Toggle";
 
 import Config from "app.config";
 import Flyout from "components/shared/flyout";
-import { Btn, Indicator } from "components/shared";
+import {
+    Btn,
+    Indicator,
+    Protected,
+    FormControl,
+    BtnToolbar,
+} from "components/shared";
 import { svgs, LinkedComponent, isDef } from "utilities";
 import { ApplicationSettingsContainer } from "./applicationSettings.container";
 import {
+    permissions,
     toDiagnosticsModel,
     toSinglePropertyDiagnosticsModel,
 } from "services/models";
 
 import "./settings.scss";
-import { TenantService } from "services";
+import { TenantService, ConfigService } from "services";
+import FirmwareVariableGrid from "./firmwareVariableGrid";
 
 const Section = Flyout.Section;
 
@@ -26,6 +35,20 @@ const alertingIsPending = (jobState) => {
         jobState === "Deleting"
     );
 };
+
+const firmwareSettingErrorTypes = {
+    noVersion: "settingsFlyout.firmware.error.noVersion",
+    upload: "settingsFlyout.firmware.error.upload",
+    invalid: "settingsFlyout.firmware.error.invalid",
+    unknown: "settingsFlyout.firmware.error.unknown",
+    retrieval: "settingsFlyout.firmware.error.retrieval",
+    doubleSlash: "settingsFlyout.firmware.error.doubleSlash",
+    reserved: {
+        id: "settingsFlyout.firmware.error.reserved.id",
+    },
+};
+
+const emptyFirmwareJson = { jsObject: {} };
 
 export class Settings extends LinkedComponent {
     constructor(props) {
@@ -42,6 +65,10 @@ export class Settings extends LinkedComponent {
             alertingState: this.props.alerting.jobState,
             alertingIsActive: this.props.alerting.isActive,
             alertingPending: alertingIsPending(this.props.alerting.jobState),
+            firmwareEdit: false,
+            firmwareJson: emptyFirmwareJson,
+            firmwareSettingPending: false,
+            firmwareSettingError: "",
         };
 
         const { t } = this.props;
@@ -270,6 +297,137 @@ export class Settings extends LinkedComponent {
         this.props.logEvent(toDiagnosticsModel("Settings_LogoUpdated", {}));
     };
 
+    enableFirmwareEdit = () => {
+        this.setState({
+            firmwareEdit: false,
+            firmwareSettingError: false,
+            firmwareSettingPending: true,
+        });
+
+        ConfigService.getDefaultFirmwareSetting().subscribe(
+            (defaultFirmwareModel) => {
+                this.setState({
+                    firmwareJson: { jsObject: defaultFirmwareModel.jsObject },
+                    firmwareEdit: true,
+                    firmwareSettingPending: false,
+                });
+            },
+            (error) => {
+                this.setState({
+                    firmwareSettingPending: false,
+                    firmwareSettingError: firmwareSettingErrorTypes.retrieval,
+                });
+            }
+        );
+    };
+
+    disableFirmwareEdit = () =>
+        this.setState({
+            firmwareEdit: false,
+            firmwareJson: emptyFirmwareJson,
+            firmwareSettingError: false,
+        });
+
+    onFirmwareEdit = (firmwareInput) => {
+        this.setState({ firmwareSettingError: false });
+
+        if (firmwareInput.target.value.error) {
+            this.setState({
+                firmwareSettingError: firmwareSettingErrorTypes.invalid,
+            });
+            return;
+        }
+
+        const json = firmwareInput.target.value;
+
+        if (!this.getFirmwareVersionField(json.jsObject)) {
+            this.setState({
+                firmwareJson: json,
+                firmwareSettingError: firmwareSettingErrorTypes.noVersion,
+            });
+        } else if (
+            Object.keys(json.jsObject).some((key) => key.indexOf("//") !== -1)
+        ) {
+            this.setState({
+                firmwareJson: json,
+                firmwareSettingError: firmwareSettingErrorTypes.doubleSlash,
+            });
+        } else if ((json.jsObject || { id: undefined }).id) {
+            this.setState({
+                firmwareJson: json,
+                firmwareSettingErrorTypes:
+                    firmwareSettingErrorTypes.reserved.id,
+            });
+        } else {
+            this.setState({
+                firmwareJson: json,
+            });
+        }
+    };
+
+    getFirmwareVersionField = (json, parent) => {
+        const parentKey = parent ? `${parent}//` : "";
+
+        if (!json) {
+            return;
+        }
+
+        for (const [key, value] of Object.entries(json)) {
+            if (value === "${version}") {
+                return `${parentKey}${key}`;
+            } else {
+                if (value instanceof Object) {
+                    let childKey = this.getFirmwareVersionField(
+                        value,
+                        `${parentKey}${key}`
+                    );
+                    if (childKey) {
+                        return childKey;
+                    }
+                }
+            }
+        }
+    };
+
+    setFirmwareDefaultSetting = () => {
+        this.setState({
+            firmwareSettingPending: true,
+            firmwareSettingError: false,
+        });
+        const firmwareJson = this.state.firmwareJson,
+            firmwareVersionField = this.getFirmwareVersionField(
+                firmwareJson.jsObject
+            );
+
+        if (firmwareVersionField) {
+            ConfigService.setDefaultFirmwareSetting({
+                jsObject: firmwareJson.jsObject,
+                metadata: {
+                    version: firmwareVersionField,
+                },
+            }).subscribe(
+                () => {
+                    this.setState({
+                        firmwareSettingPending: false,
+                        firmwareSettingError: false,
+                        firmwareEdit: false,
+                    });
+                },
+                (error) => {
+                    this.setState({
+                        firmwareSettingPending: false,
+                        firmwareSettingError: firmwareSettingErrorTypes.upload,
+                    });
+                }
+            );
+        } else {
+            this.setState({
+                firmwareSettingPending: false,
+                firmwareSettingError: firmwareSettingErrorTypes.noVersion,
+            });
+        }
+    };
+
     render() {
         const {
                 t,
@@ -294,8 +452,15 @@ export class Settings extends LinkedComponent {
                 applicationName,
                 toggledSimulation,
                 madeLogoUpdate,
+                firmwareEdit,
+                firmwareSettingPending,
+                firmwareSettingError,
             } = this.state;
         this.applicationNameLink = this.linkTo("applicationName");
+        this.firmwareJsonLink = this.linkTo("firmwareJson").check(
+            () => !firmwareSettingError,
+            (json) => json.errorMessage || t(firmwareSettingError)
+        );
         const hasChanged = logoFile !== undefined || applicationName !== "",
             hasSimulationChanged =
                 !getSimulationPending &&
@@ -398,44 +563,136 @@ export class Settings extends LinkedComponent {
                                 </a>
                             </Section.Content>
                         </Section.Container>
-                        <Section.Container
-                            collapsable={false}
-                            className="app-alerting"
-                        >
-                            <Section.Header>
-                                {t("settingsFlyout.alerting")}: {alertingState}
-                            </Section.Header>
-                            <Section.Content className="release-notes">
-                                {t("settingsFlyout.alertingDescription")}
-                                <br></br>
-                                <br></br>
-                                <Toggle
-                                    className="alerting-toggle-button"
-                                    name={t("settingsFlyout.alertingToggle")}
-                                    attr={{
-                                        button: {
-                                            "aria-label": t(
-                                                "settingsFlyout.alertingToggle"
-                                            ),
-                                            type: "button",
-                                        },
-                                    }}
-                                    on={alertingIsActive}
-                                    disabled={alertingPending}
-                                    onChange={this.onAlertingStatusChange}
-                                    onLabel={
-                                        alertingPending
-                                            ? t("settingsFlyout.loading")
-                                            : t("settingsFlyout.stop")
-                                    }
-                                    offLabel={
-                                        alertingPending
-                                            ? t("settingsFlyout.loading")
-                                            : t("settingsFlyout.start")
-                                    }
-                                />
-                            </Section.Content>
-                        </Section.Container>
+                        <Protected permission={permissions.enableAlerting}>
+                            <Section.Container
+                                collapsable={false}
+                                className="app-alerting"
+                            >
+                                <Section.Header>
+                                    {t("settingsFlyout.alerting")}:{" "}
+                                    {alertingState}
+                                </Section.Header>
+                                <Section.Content className="release-notes">
+                                    {t("settingsFlyout.alertingDescription")}
+                                    <br></br>
+                                    <br></br>
+                                    <Toggle
+                                        className="alerting-toggle-button"
+                                        name={t(
+                                            "settingsFlyout.alertingToggle"
+                                        )}
+                                        attr={{
+                                            button: {
+                                                "aria-label": t(
+                                                    "settingsFlyout.alertingToggle"
+                                                ),
+                                                type: "button",
+                                            },
+                                        }}
+                                        on={alertingIsActive}
+                                        disabled={alertingPending}
+                                        onChange={this.onAlertingStatusChange}
+                                        onLabel={
+                                            alertingPending
+                                                ? t("settingsFlyout.loading")
+                                                : t("settingsFlyout.stop")
+                                        }
+                                        offLabel={
+                                            alertingPending
+                                                ? t("settingsFlyout.loading")
+                                                : t("settingsFlyout.start")
+                                        }
+                                    />
+                                </Section.Content>
+                            </Section.Container>
+                        </Protected>
+                        <Protected permission={permissions.createPackages}>
+                            <Section.Container className="firmware-edit-container">
+                                <Section.Header>
+                                    {t("settingsFlyout.firmware.name")}
+                                </Section.Header>
+                                <Section.Content>
+                                    {t("settingsFlyout.firmware.description")}
+                                    {!firmwareEdit ? (
+                                        <BtnToolbar>
+                                            <Btn
+                                                primary
+                                                type="button"
+                                                svg={svgs.edit}
+                                                onClick={
+                                                    this.enableFirmwareEdit
+                                                }
+                                                className="firmware-edit-button"
+                                            >
+                                                {t(
+                                                    "settingsFlyout.firmware.edit"
+                                                )}
+                                            </Btn>
+                                        </BtnToolbar>
+                                    ) : (
+                                        <div className="firmware-edit-container">
+                                            <Section.Container closed={true}>
+                                                <Section.Header>
+                                                    {t(
+                                                        "settingsFlyout.firmware.variables.name"
+                                                    )}
+                                                </Section.Header>
+                                                <Section.Content>
+                                                    {t(
+                                                        "settingsFlyout.firmware.variables.summary"
+                                                    )}
+                                                    <FirmwareVariableGrid
+                                                        t={t}
+                                                    />
+                                                </Section.Content>
+                                            </Section.Container>
+                                            <FormControl
+                                                link={this.firmwareJsonLink}
+                                                type="jsoninput"
+                                                height="100%"
+                                                theme={theme}
+                                                onChange={this.onFirmwareEdit}
+                                            />
+                                            <BtnToolbar>
+                                                <Btn
+                                                    primary
+                                                    type="button"
+                                                    svg={svgs.checkmark}
+                                                    onClick={
+                                                        this
+                                                            .setFirmwareDefaultSetting
+                                                    }
+                                                    className="firmware-save-button"
+                                                    disabled={
+                                                        firmwareSettingPending ||
+                                                        firmwareSettingError
+                                                    }
+                                                >
+                                                    {t(
+                                                        "settingsFlyout.firmware.save"
+                                                    )}
+                                                </Btn>
+                                                {firmwareSettingPending && (
+                                                    <Indicator />
+                                                )}
+                                                <Btn
+                                                    type="button"
+                                                    svg={svgs.cancelX}
+                                                    onClick={
+                                                        this.disableFirmwareEdit
+                                                    }
+                                                    className="firmware-cancel-button"
+                                                >
+                                                    {t(
+                                                        "settingsFlyout.firmware.cancel"
+                                                    )}
+                                                </Btn>
+                                            </BtnToolbar>
+                                        </div>
+                                    )}
+                                </Section.Content>
+                            </Section.Container>
+                        </Protected>
                         <Section.Container className="simulation-toggle-container">
                             <Section.Header>
                                 {t("settingsFlyout.simulationData")}{" "}
