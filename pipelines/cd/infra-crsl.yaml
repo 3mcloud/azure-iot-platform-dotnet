@@ -26,7 +26,7 @@ stages:
           applicationCode: crsliot
           applicationShortCode: crsl
           environmentCategory: dev
-          kubernetesVersion: 1.17.5
+          kubernetesVersion: 1.18.1
           sendgridEmail: aschmidt4@mmm.com
           aksAgentVmSize: Standard_D8_v3
           sysAdmins: >-
@@ -58,7 +58,7 @@ stages:
           applicationCode: ggktech
           applicationShortCode: ggk
           environmentCategory: dev
-          kubernetesVersion: 1.17.5
+          kubernetesVersion: 1.18.1
           sendgridEmail: aschmidt4@mmm.com
           sysAdmins: >-
             [{"UserId": "3e30f301-4f57-4b3e-949a-3ff8e93870b5", "Name": "Viswanath Kotha CW"},
@@ -90,7 +90,7 @@ stages:
           applicationCode: crsliot
           applicationShortCode: crsl
           environmentCategory: qa
-          kubernetesVersion: 1.16.8
+          kubernetesVersion: 1.18.1
           aksAgentVmSize: Standard_DS1_v2
           sendgridEmail: aschmidt4@mmm.com
           sysAdmins: >-
@@ -123,7 +123,7 @@ stages:
           applicationCode: crsliot
           applicationShortCode: crsl
           environmentCategory: wkbnch
-          kubernetesVersion: 1.16.8
+          kubernetesVersion: 1.18.1
           aksAgentVmSize: Standard_DS1_v2
           sendgridEmail: aschmidt4@mmm.com
           sysAdmins: >-
