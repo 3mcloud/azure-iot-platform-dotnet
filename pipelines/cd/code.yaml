@@ -191,12 +191,12 @@ stages:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
           environmentName: IoT_PSD_Environment_EU
-          subscriptionName: 3M-ASDT05-PSD-CS-IOT-QA
+          subscriptionName: 3M-ASDT07-PSD-CS-IOT-Prod
           applicationCode: psdiot
           applicationShortCode: psd
           environmentCategory: eu
           imageTag: $(_imageTag)
-          subscriptionId: 8c550fc0-24e0-43cb-8237-5fbb168c1071
+          subscriptionId: 71fd3c60-f2c3-4e78-ad18-7e370fe3b068
 
   - stage: psdStg
     displayName: PSD staging
