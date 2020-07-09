@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using Mmm.Iot.Common.Services.Exceptions;
+using Mmm.Iot.Common.Services.External.StorageAdapter;
 using Mmm.Iot.Common.Services.Filters;
 using Mmm.Iot.Config.Services;
 using Mmm.Iot.Config.Services.Models;
@@ -18,6 +20,8 @@ namespace Mmm.Iot.Config.WebService.Controllers
     [TypeFilter(typeof(ExceptionsFilterAttribute))]
     public class SolutionSettingsController : Controller
     {
+        private const string DefaultFirmwareKey = "defaultFirmware";
+
         private static readonly string AccessControlExposeHeaders = "Access-Control-Expose-Headers";
         private readonly IStorage storage;
         private readonly IActions actions;
@@ -30,14 +34,14 @@ namespace Mmm.Iot.Config.WebService.Controllers
 
         [HttpGet("solution-settings/theme")]
         [Authorize("ReadAll")]
-        public async Task<object> GetThemeAsync()
+        public async Task<Theme> GetThemeAsync()
         {
             return await this.storage.GetThemeAsync();
         }
 
         [HttpPut("solution-settings/theme")]
         [Authorize("ReadAll")]
-        public async Task<object> SetThemeAsync([FromBody] object theme)
+        public async Task<Theme> SetThemeAsync([FromBody] Theme theme)
         {
             return await this.storage.SetThemeAsync(theme);
         }
@@ -95,6 +99,25 @@ namespace Mmm.Iot.Config.WebService.Controllers
         {
             var actions = await this.actions.GetListAsync();
             return new ActionSettingsListApiModel(actions);
+        }
+
+        [HttpPost("solution-settings/defaultFirmware")]
+        [Authorize("CreatePackages")]
+        public async Task<ValueApiModel> SetDefaultFirmwareSettingAsync([FromBody] DefaultFirmwareSettingApiModel settingModel)
+        {
+            if (string.IsNullOrEmpty(settingModel.Metadata.Version))
+            {
+                throw new BadRequestException("defaultFirmware setting must define the metadata property 'Version'.");
+            }
+
+            return await this.storage.SetSolutionSettingAsync(DefaultFirmwareKey, settingModel);
+        }
+
+        [HttpGet("solution-settings/defaultFirmware")]
+        [Authorize("ReadAll")]
+        public async Task<DefaultFirmwareSettingApiModel> GetDefaultFirmwareSettingAsync()
+        {
+            return await this.storage.GetSolutionSettingAsync<DefaultFirmwareSettingApiModel>(DefaultFirmwareKey);
         }
 
         private void SetImageResponse(Logo model)

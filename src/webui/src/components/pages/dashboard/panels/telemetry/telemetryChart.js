@@ -166,6 +166,7 @@ export class TelemetryChart extends Component {
             );
         }
         const noAnimate = telemetryKey === this.state.telemetryKey; // will be false if there is no telemetry data
+        const isCompactMode = chartData.length <= 5;
         // Set a timeout to allow the panel height to be calculated before updating the graph
         setTimeout(() => {
             if (
@@ -183,8 +184,9 @@ export class TelemetryChart extends Component {
                         includeDots: true,
                         yAxisState: "shared", // Default to all values being on the same axis
                         grid: false,
-                        legend: "compact",
+                        legend: isCompactMode ? "compact" : "shown",
                         offset: timezone,
+                        tooltip: true,
                     },
                     this.props.colors
                 );

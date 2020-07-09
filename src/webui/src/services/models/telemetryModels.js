@@ -181,3 +181,16 @@ export const toTelemetryRequestModel = (alarmQueryModel = {}) =>
         limit: "Limit",
         devices: "Devices",
     });
+
+export const toDeviceUploadsModel = (response = []) => {
+    var data = getItems(response).map((upload) =>
+        camelCaseReshape(upload, {
+            name: "Name",
+            blobName: "BlobName",
+            uploadedOn: "UploadedOn",
+            size: "Size",
+            uploadedBy: "UploadedBy",
+        })
+    );
+    return data;
+};

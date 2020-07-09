@@ -9,12 +9,14 @@ import {
     toDeviceGroupsModel,
     toSolutionSettingActionsModel,
     toSolutionSettingThemeModel,
+    toSolutionSettingFirmwareModel,
     toNewPackageRequestModel,
     toPackagesModel,
     toPackageModel,
     toConfigTypesModel,
     toNewFirmwareUploadRequestModel,
     toFirmwareModel,
+    backupDefaultFirmwareModel,
 } from "./models";
 import { Observable } from "rxjs";
 
@@ -107,6 +109,19 @@ export class ConfigService {
         );
     }
 
+    static setDefaultFirmwareSetting(model) {
+        return HttpClient.post(
+            `${ENDPOINT}solution-settings/defaultFirmware`,
+            model
+        );
+    }
+
+    static getDefaultFirmwareSetting() {
+        return HttpClient.get(`${ENDPOINT}solution-settings/defaultFirmware`)
+            .catch((error) => this.catch404(error, backupDefaultFirmwareModel))
+            .map(toSolutionSettingFirmwareModel);
+    }
+
     static getActionSettings() {
         return HttpClient.get(`${ENDPOINT}solution-settings/actions`).map(
             toSolutionSettingActionsModel
@@ -189,5 +204,11 @@ export class ConfigService {
     /** Delete a package */
     static deletePackage(id) {
         return HttpClient.delete(`${ENDPOINT}packages/${id}`).map((_) => id);
+    }
+
+    static catch404(error, continueAs) {
+        return error.status === 404
+            ? Observable.of(continueAs)
+            : Observable.throw(error);
     }
 }

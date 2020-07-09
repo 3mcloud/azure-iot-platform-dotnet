@@ -40,9 +40,7 @@ export class ManageDeviceGroups extends LinkedComponent {
     }
 
     componentWillUnmount() {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-        }
+        if (this.subscription) this.subscription.unsubscribe();
     }
 
     toggleNewFilter = () => {
@@ -72,7 +70,10 @@ export class ManageDeviceGroups extends LinkedComponent {
 
     render() {
         const { t, deviceGroups = [] } = this.props;
-
+        const btnStyle = {
+            margin: "0px",
+            paddingLeft: "10px",
+        };
         return (
             <Flyout.Container
                 header={t("deviceGroupsFlyout.title")}
@@ -94,6 +95,7 @@ export class ManageDeviceGroups extends LinkedComponent {
                             >
                                 <Btn
                                     className="add-btn"
+                                    style={btnStyle}
                                     svg={svgs.plus}
                                     onClick={this.toggleNewFilter}
                                 >

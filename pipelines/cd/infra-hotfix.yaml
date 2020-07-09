@@ -76,7 +76,14 @@ jobs:
           echo "System Admins: '$(sysAdmins)'"
           if [ -z "$(sysAdmins)" ]
           then
-            echo "A json format value for the 'sysAdmins' variable must be provided" > /dev/stderr
+            echo "A value for the 'sysAdmins' variable must be provided in JSON format" > /dev/stderr
+            exit 1
+          fi
+
+          echo "AKS agent VM size: '$(aksAgentVmSize)'"
+          if [ -z "$(aksAgentVmSize)" ]
+          then
+            echo "A value for the 'aksAgentVmSize' variable must be provided" > /dev/stderr
             exit 1
           fi
         displayName: Check parameters
@@ -93,3 +100,4 @@ jobs:
       kubernetesVersion: $(kubernetesVersion)
       sendgridEmail: $(sendGridEmail)
       sysAdmins: $(sysAdmins)
+      aksAgentVmSize: $(aksAgentVmSize)
