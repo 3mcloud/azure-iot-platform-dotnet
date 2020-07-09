@@ -11,11 +11,20 @@ export class AdvancedPivotMenu extends React.Component {
         this.state = {
             prevDisable: false,
             nextDisable: false,
+            showSliderIcons: false,
         };
     }
 
     componentDidMount() {
         this.checkButtons(this.refs.offsetWidth, this.refs.scrollWidth);
+    }
+
+    componentWillReceiveProps(nextprops) {
+        if (nextprops.links && nextprops.links.length > 5) {
+            this.setState({ showSliderIcons: true });
+        } else {
+            this.setState({ showSliderIcons: false });
+        }
     }
 
     checkButtons = (offsetWidthValue, scrollWidthValue) => {
@@ -51,6 +60,7 @@ export class AdvancedPivotMenu extends React.Component {
     };
 
     render() {
+        const { showSliderIcons } = { ...this.state };
         return (
             <div
                 className="slider-container"
@@ -58,25 +68,29 @@ export class AdvancedPivotMenu extends React.Component {
                     this.refs = el;
                 }}
             >
-                <div
-                    className={`btnSlider btnSliderLeft ${
-                        this.state.prevDisable ? "disableSlider" : ""
-                    }`}
-                    onClick={this.slideLeft.bind(this)}
-                >
-                    {"<"}
-                </div>
+                {showSliderIcons && (
+                    <div
+                        className={`btnSlider btnSliderLeft ${
+                            this.state.prevDisable ? "disableSlider" : ""
+                        }`}
+                        onClick={this.slideLeft.bind(this)}
+                    >
+                        {"<"}
+                    </div>
+                )}
                 <div className="slider-wrapper">
                     <PivotMenu {...this.props} />
                 </div>
-                <div
-                    className={`btnSlider btnSliderRight ${
-                        this.state.nextDisable ? "disableSlider" : ""
-                    }`}
-                    onClick={this.slideRight.bind(this)}
-                >
-                    {">"}
-                </div>
+                {showSliderIcons && (
+                    <div
+                        className={`btnSlider btnSliderRight ${
+                            this.state.nextDisable ? "disableSlider" : ""
+                        }`}
+                        onClick={this.slideRight.bind(this)}
+                    >
+                        {">"}
+                    </div>
+                )}
             </div>
         );
     }
