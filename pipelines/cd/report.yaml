@@ -130,7 +130,7 @@ stages:
           - template: ../templates/steps-report-versions.yaml
             parameters:
               kubernetesVersion: 1.16.8
-              azureServiceConnectionName: 3M-ASDT05-PSD-CS-IOT-QA
+              azureServiceConnectionName: 3M-ASDT07-PSD-CS-IOT-Prod
               serenityEnvironment: psdEu
 
   - stage: psdStg
@@ -145,6 +145,19 @@ stages:
               kubernetesVersion: 1.16.8
               azureServiceConnectionName: 3M-ASDT05-PSD-CS-IOT-QA
               serenityEnvironment: psdStg
+
+  - stage: psdProd
+    dependsOn: []
+    displayName: PSD Prod
+    jobs:
+      - job: psdProd
+        displayName: PSD Prod
+        steps:
+          - template: ../templates/steps-report-versions.yaml
+            parameters:
+              kubernetesVersion: 1.16.8
+              azureServiceConnectionName: 3M-ASDT07-PSD-CS-IOT-Prod
+              serenityEnvironment: psdProd
 
   - stage: emdDev
     dependsOn: []

@@ -85,8 +85,8 @@ stages:
       - template: ../templates/jobs-deploy-infra.yaml
         parameters:
           subscriptionName: 3M-ASDT05-PSD-CS-IOT-QA
-          locationName: $(locationName)
-          subscriptionId: 8c550fc0-24e0-43cb-8237-5fbb168c1071
+          locationName: westeurope
+          subscriptionId: 71fd3c60-f2c3-4e78-ad18-7e370fe3b068
           applicationCode: psdiot
           applicationShortCode: psd
           environmentCategory: eu
@@ -126,6 +126,34 @@ stages:
              {"UserId": "866aa8d9-a571-4b3e-8acd-de710e74342d", "Name": "Nick Gawryk"},
              {"UserId": "ec9745fa-9fa9-4d35-ab55-1e3bd064c4a2", "Name": "Andrew Schmidt"},
              {"UserId": "f6a7ba19-0f66-4cc6-9d15-2241f40fc122", "Name": "Joseph Bethke"},
+             {"UserId": "a0ee6a74-65e7-4885-9219-d92982a7e04a", "Name": "Kyle Estes CW"},
+             {"UserId": "7cd9667d-7878-44bb-8fa2-87fba7d8508c", "Name": "Lyle Luppes"},
+             {"UserId": "f8b35420-6ee3-4d4d-a757-e7ffe4f4f791", "Name": "Brad Murray"}]
+
+  - stage: psdProd
+    displayName: PSD Prod
+    dependsOn:
+      - psdDev
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: 3M-ASDT07-PSD-CS-IOT-Prod
+          locationName: $(locationName)
+          subscriptionId: 71fd3c60-f2c3-4e78-ad18-7e370fe3b068
+          applicationCode: psdiot
+          applicationShortCode: psd
+          environmentCategory: prod
+          environmentName: IoT_PSD_Environment_Prod
+          kubernetesVersion: 1.16.8
+          sendgridEmail: aschmidt4@mmm.com
+          sysAdmins: >-
+            [{"UserId": "3e30f301-4f57-4b3e-949a-3ff8e93870b5", "Name": "Viswanath Kotha CW"},
+             {"UserId": "00e4068a-944e-4cd2-bc2a-77b1d33a1db3", "Name": "Jonathan Asbury"},
+             {"UserId": "295af21b-90af-4777-b0ba-4d7f94514679", "Name": "Sean Dubiel"},
+             {"UserId": "866aa8d9-a571-4b3e-8acd-de710e74342d", "Name": "Nick Gawryk"},
+             {"UserId": "ec9745fa-9fa9-4d35-ab55-1e3bd064c4a2", "Name": "Andrew Schmidt"},
+             {"UserId": "f6a7ba19-0f66-4cc6-9d15-2241f40fc122", "Name": "Joseph Bethke"},
+             {"UserId": "c8efa307-f285-4fb2-91ae-5d4061d2b271", "Name": "Jonathan Asbury CW"},
              {"UserId": "a0ee6a74-65e7-4885-9219-d92982a7e04a", "Name": "Kyle Estes CW"},
              {"UserId": "7cd9667d-7878-44bb-8fa2-87fba7d8508c", "Name": "Lyle Luppes"},
              {"UserId": "f8b35420-6ee3-4d4d-a757-e7ffe4f4f791", "Name": "Brad Murray"}]
