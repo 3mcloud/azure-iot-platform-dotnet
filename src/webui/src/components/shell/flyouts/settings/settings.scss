@@ -5,6 +5,10 @@
 
 .settings-workflow-container {
   .app-version {
+    .privacy-link{
+      display: block;
+      @include rem-fallback(margin-top, 20px);
+    }
     @include rem-fallback(margin-top, 20px);
   }
 
@@ -37,11 +41,6 @@
 
   .diagnostics-content {
     padding-bottom: 0px;
-
-    .privacy-link{
-      display: block;
-      @include rem-fallback(margin, 20px, 0px);
-    }
 
     .toggle {
       display: flex;
