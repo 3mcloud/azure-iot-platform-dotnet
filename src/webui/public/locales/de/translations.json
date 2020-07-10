@@ -111,8 +111,6 @@
         "toggleError": "Fehler beim aktualisieren der simulation status",
         "setLogoError": "Fehler beim aktualisieren der logo",
         "simulationLoadError": "Fehler beim laden der simulation status",
-        "sendDiagnosticsHeader": "Helfen Sie uns zu verbessern",
-        "sendDiagnosticsText": "Fernüberwachung senden Sie anonyme Informationen an Microsoft, wie Fehlerprotokollen, die Konfiguration und die Informationen darüber, wie Sie die Anwendung verwenden. Es werden keine persönlichen Informationen gesammelt.",
         "sendDiagnosticsCheckbox": "Ja, teilen Sie Informationen mit Microsoft",
         "dontSendDiagnosticsCheckbox": "Nein, nicht teilen Informationen mit Microsoft",
         "sendDiagnosticsMicrosoftPrivacyUrl": "Datenschutzerklärung",

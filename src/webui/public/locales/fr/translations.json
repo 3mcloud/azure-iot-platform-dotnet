@@ -111,8 +111,6 @@
         "toggleError": "Erreur de mise à jour de l'état des simulations",
         "setLogoError": "Erreur de mise à jour du logo",
         "simulationLoadError": "Erreur lors du chargement de l'état des simulations",
-        "sendDiagnosticsHeader": "Aidez-nous à améliorer",
-        "sendDiagnosticsText": "La Surveillance à distance peut envoyer des informations à Microsoft, tels que les journaux d'erreurs, de configuration et des informations sur la façon dont vous utilisez l'application. Aucune information personnelle n'est collecté.",
         "sendDiagnosticsCheckbox": "Oui, de partager des informations avec Microsoft",
         "dontSendDiagnosticsCheckbox": "Non, ne pas partager des informations avec Microsoft",
         "sendDiagnosticsMicrosoftPrivacyUrl": "Déclaration De Confidentialité",
