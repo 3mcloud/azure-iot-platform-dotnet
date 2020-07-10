@@ -164,7 +164,7 @@ jobs:
           templateLocation: Linked artifact
           csmFile: $(armTemplatesDirectory)/loganalytics.json
           csmParametersFile: $(armParametersDirectory)/loganalytics.json
-          overrideParameters: -omsWorkspaceName $(omsWorkspaceName)2
+          overrideParameters: -omsWorkspaceName $(omsWorkspaceName)
           deploymentMode: Incremental
           addSpnToEnvironment: true
 
