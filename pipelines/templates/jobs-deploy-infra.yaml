@@ -602,7 +602,7 @@ jobs:
           templateLocation: Linked artifact
           csmFile: $(armTemplatesDirectory)/appinsights.json
           csmParametersFile: $(armParametersDirectory)/appinsights.json
-          overrideParameters: -appInsightsName $(appInsightsName) -appInsightsLocation $(appInsightsLocation)
+          overrideParameters: -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.locationName}}
           deploymentMode: Incremental
 
       - template: steps-delete-oldest-deployment.yaml
