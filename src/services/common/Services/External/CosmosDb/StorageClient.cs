@@ -392,7 +392,7 @@ namespace Mmm.Iot.Common.Services.External.CosmosDb
             {
                 queryOptions = new FeedOptions
                 {
-                    EnableCrossPartitionQuery = true,
+                    EnableCrossPartitionQuery = false,
                     EnableScanInQuery = true,
                 };
             }
