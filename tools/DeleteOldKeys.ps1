@@ -4,6 +4,7 @@ Param(
     $AppConfigurationName
 )
 
+
 az appconfig kv delete --name $AppConfigurationName --key "Actions:actionseventhubname" --yes
 az appconfig kv delete --name $AppConfigurationName --key "Actions:logicappendpointurl" --yes
 az appconfig kv delete --name $AppConfigurationName --key "Actions:solutionwebsiteurl" --yes
