@@ -841,7 +841,7 @@ jobs:
           templateLocation: Linked artifact
           csmFile: $(armTemplatesDirectory)/functions.json
           csmParametersFile: $(armParametersDirectory)/functions.json
-          overrideParameters: -functionAppName $(functionApp1Name) -appInsightsLocation ${{parameters.appInsightsLocation}} -appInsightsName $(appInsightsName) -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
+          overrideParameters: -functionAppName $(functionApp1Name) -appInsightsLocation ${{parameters.appInsightsLocation}} -appInsightsName $(appInsightsName) -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~3
           deploymentMode: Incremental
           deploymentName: $(functionApp1PartialName)-$(Build.BuildId)
           addSpnToEnvironment: true
@@ -913,7 +913,7 @@ jobs:
           templateLocation: Linked artifact
           csmFile: $(armTemplatesDirectory)/functions.json
           csmParametersFile: $(armParametersDirectory)/functions.json
-          overrideParameters: -functionAppName $(functionApp2Name) -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.appInsightsLocation}} -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
+          overrideParameters: -functionAppName $(functionApp2Name) -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.appInsightsLocation}} -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~3
           deploymentMode: Incremental
           deploymentName: $(functionApp2PartialName)-$(Build.BuildId)
           addSpnToEnvironment: true
@@ -958,7 +958,7 @@ jobs:
           templateLocation: Linked artifact
           csmFile: $(armTemplatesDirectory)/functions.json
           csmParametersFile: $(armParametersDirectory)/functions.json
-          overrideParameters: -functionAppName ${{parameters.applicationCode}}-alertingactionsfuncapp-${{parameters.environmentCategory}} -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.appInsightsLocation}} -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
+          overrideParameters: -functionAppName ${{parameters.applicationCode}}-alertingactionsfuncapp-${{parameters.environmentCategory}} -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.appInsightsLocation}} -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~3
           deploymentMode: Incremental
           deploymentName: alertingactionsfuncapp-$(Build.BuildId)
           addSpnToEnvironment: true

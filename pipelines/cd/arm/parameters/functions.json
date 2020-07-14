@@ -10,7 +10,7 @@
       "appInsightsLocation": { "value": "eastus" },
       "storageAccountName": { "value": "" },
       "runtime": { "value": "dotnet" },
-      "funcVersion": { "value": "~2" },
+      "funcVersion": { "value": "~3" },
       "codedeployPackageUrl": { "value": "" }
     }
   }
