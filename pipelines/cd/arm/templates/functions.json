@@ -90,7 +90,7 @@
             "type": "string",
             "defaultValue": "~3",
             "metadata": {
-                "description": "Version of the function app. v1 or v2"
+                "description": "Version of the function app."
             }
         },
         "codedeployPackageUrl": {
