@@ -94,7 +94,7 @@ namespace Mmm.Iot.IoTHubManager.Services
                     this.GetTwinChangeCollectionId(tenantId),
                     new FeedOptions
                     {
-                        EnableCrossPartitionQuery = true,
+                        EnableCrossPartitionQuery = false,
                     },
                     sql,
                     0,

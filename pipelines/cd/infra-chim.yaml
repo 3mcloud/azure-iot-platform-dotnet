@@ -18,7 +18,7 @@ stages:
           applicationCode: chimiot
           applicationShortCode: chim
           environmentCategory: dev
-          kubernetesVersion: 1.16.8
+          kubernetesVersion: 1.16.10
           sendgridEmail: blinzie@mmm.com
           sysAdmins: >-
             [{"UserId": "3e30f301-4f57-4b3e-949a-3ff8e93870b5", "Name": "Viswanath Kotha CW"},
@@ -53,7 +53,7 @@ stages:
           applicationCode: chimiot
           applicationShortCode: chim
           environmentCategory: qa
-          kubernetesVersion: 1.16.8
+          kubernetesVersion: 1.16.10
           sendgridEmail: blinzie@mmm.com
           sysAdmins: >-
             [{"UserId": "3e30f301-4f57-4b3e-949a-3ff8e93870b5", "Name": "Viswanath Kotha CW"},
@@ -88,7 +88,7 @@ stages:
           applicationCode: chimiot
           applicationShortCode: chim
           environmentCategory: prod
-          kubernetesVersion: 1.16.8
+          kubernetesVersion: 1.16.10
           sendgridEmail: blinzie@mmm.com
           sysAdmins: >-
             [{"UserId": "ec9745fa-9fa9-4d35-ab55-1e3bd064c4a2", "Name": "Andrew Schmidt"},

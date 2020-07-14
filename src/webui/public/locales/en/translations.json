@@ -115,10 +115,8 @@
         "toggleError": "Error updating simulation status",
         "setLogoError": "Error updating logo",
         "simulationLoadError": "Error loading simulation status",
-        "sendDiagnosticsHeader": "Help us improve",
-        "sendDiagnosticsText": "Remote Monitoring can send anonymous information to Microsoft, such as error logs, configuration, and information about how you use the application. No personal information is collected.",
-        "sendDiagnosticsCheckbox": "Yes, share information with Microsoft",
-        "dontSendDiagnosticsCheckbox": "No, don't share information with Microsoft",
+        "sendDiagnosticsCheckbox": "Yes, log diagnostics information",
+        "dontSendDiagnosticsCheckbox": "No, don't log diagnostics information",
         "sendDiagnosticsMicrosoftPrivacyUrl": "Privacy Statement",
         "diagnosticsLoadError": "Error updating diagnostics preference",
         "firmware": {

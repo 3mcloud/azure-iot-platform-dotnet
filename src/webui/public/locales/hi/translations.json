@@ -111,8 +111,6 @@
         "toggleError": "त्रुटि अद्यतन करने के सिमुलेशन की स्थिति",
         "setLogoError": "त्रुटि अद्यतन लोगो",
         "simulationLoadError": "त्रुटि लोड हो रहा सिमुलेशन स्थिति",
-        "sendDiagnosticsHeader": "हमें सुधार करने में मदद",
-        "sendDiagnosticsText": "दूरस्थ निगरानी भेज सकते हैं गुमनाम जानकारी के लिए Microsoft, इस तरह के रूप में त्रुटि लॉग, विन्यास, और कैसे के बारे में जानकारी आप आवेदन का उपयोग करें. कोई व्यक्तिगत जानकारी एकत्र की है । ",
         "sendDiagnosticsCheckbox": "हाँ, शेयर जानकारी के साथ Microsoft",
         "dontSendDiagnosticsCheckbox": "नहीं, नहीं के साथ जानकारी साझा माइक्रोसॉफ्ट",
         "sendDiagnosticsMicrosoftPrivacyUrl": "गोपनीयता कथन",

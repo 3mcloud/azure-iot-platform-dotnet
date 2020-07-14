@@ -493,23 +493,7 @@ export class Settings extends LinkedComponent {
                 <form onSubmit={this.apply}>
                     <div className="settings-workflow-container">
                         <Section.Container collapsable={false}>
-                            <Section.Header>
-                                {t("settingsFlyout.sendDiagnosticsHeader")}
-                            </Section.Header>
                             <Section.Content className="diagnostics-content">
-                                {this.props.t(
-                                    "settingsFlyout.sendDiagnosticsText"
-                                )}
-                                <a
-                                    href={Config.serviceUrls.privacy}
-                                    className="privacy-link"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {this.props.t(
-                                        "settingsFlyout.sendDiagnosticsMicrosoftPrivacyUrl"
-                                    )}
-                                </a>
                                 {getDiagnosticsError ? (
                                     <div className="toggle">
                                         {t(
@@ -553,13 +537,23 @@ export class Settings extends LinkedComponent {
                             <Section.Header>
                                 {t("settingsFlyout.version", { version })}
                             </Section.Header>
-                            <Section.Content className="release-notes">
+                            <Section.Content className="release-and-privacy-notes">
                                 <a
                                     href={releaseNotesUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
                                     {t("settingsFlyout.viewRelNotes")}
+                                </a>
+                                <a
+                                    href={Config.serviceUrls.privacy}
+                                    className="privacy-link"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {this.props.t(
+                                        "settingsFlyout.sendDiagnosticsMicrosoftPrivacyUrl"
+                                    )}
                                 </a>
                             </Section.Content>
                         </Section.Container>

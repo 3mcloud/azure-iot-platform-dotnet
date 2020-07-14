@@ -106,7 +106,7 @@ namespace Mmm.Iot.DeviceTelemetry.Services
             var sql = QueryBuilder.GetTopDeviceDocumentsSql("message", limit, deviceId, "deviceId");
             FeedOptions queryOptions = new FeedOptions
             {
-                EnableCrossPartitionQuery = true,
+                EnableCrossPartitionQuery = false,
                 EnableScanInQuery = true,
             };
 
@@ -209,7 +209,7 @@ namespace Mmm.Iot.DeviceTelemetry.Services
 
             FeedOptions queryOptions = new FeedOptions
             {
-                EnableCrossPartitionQuery = true,
+                EnableCrossPartitionQuery = false,
                 EnableScanInQuery = true,
             };
 

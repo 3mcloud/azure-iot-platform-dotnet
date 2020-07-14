@@ -111,8 +111,6 @@
         "toggleError": "Đề cập nhật mô phỏng tình trạng",
         "setLogoError": "Đề cập nhật logo",
         "simulationLoadError": "Lỗi nạp mô phỏng tình trạng",
-        "sendDiagnosticsHeader": "Giúp chúng tôi nâng",
-        "sendDiagnosticsText": "Giám sát từ xa có thể gửi thông tin nặc danh để Microsoft, như lỗi ghi hình ảnh và thông tin về làm thế nào bạn sử dụng các ứng dụng. Không có thông tin cá nhân được thu thập được.",
         "sendDiagnosticsCheckbox": "Vâng, chia sẻ thông tin với Microsoft",
         "dontSendDiagnosticsCheckbox": "Không, không chia sẻ thông tin với Microsoft",
         "sendDiagnosticsMicrosoftPrivacyUrl": "Chính Tuyên Bố",

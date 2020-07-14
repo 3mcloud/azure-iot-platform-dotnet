@@ -111,8 +111,6 @@
         "toggleError": "Error al actualizar la simulación de estado",
         "setLogoError": "Error de actualización de logotipo",
         "simulationLoadError": "Error al cargar la simulación de estado",
-        "sendDiagnosticsHeader": "Nos ayudan a mejorar",
-        "sendDiagnosticsText": "Monitoreo remoto puede enviar información anónima de Microsoft, tales como registros de errores, configuración y obtener información acerca de cómo utilizar la aplicación. No se recopila información personal.",
         "sendDiagnosticsCheckbox": "Sí, compartir información con Microsoft",
         "dontSendDiagnosticsCheckbox": "No, no comparten información con Microsoft",
         "sendDiagnosticsMicrosoftPrivacyUrl": "Declaración De Privacidad",
