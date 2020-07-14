@@ -21,7 +21,6 @@ stages:
         parameters:
           subscriptionName: 3M-CRSLAD16-BBIoTP-DEV
           locationName: $(locationName)
-          appInsightsLocation: eastus
           environmentName: IoT_CRSL_Environment_Dev
           subscriptionId: c36fb2f8-f98d-40d0-90a9-d65e93acb428
           applicationCode: crsliot

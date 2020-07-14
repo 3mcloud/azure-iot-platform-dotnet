@@ -41,6 +41,7 @@ jobs:
       - script: |-
           echo "parameter: subscriptionName: ${{parameters.subscriptionName}}"
           echo "parameter: locationName: ${{parameters.locationName}}"
+          echo "parameter: appInsightsLocation: ${{parameters.appInsightsLocation}}"
           echo "parameter: environmentName: ${{parameters.environmentName}}"
           echo "parameter: subscriptionId: ${{parameters.subscriptionId}}"
           echo "parameter: applicationCode: ${{parameters.applicationCode}}"
