@@ -2,7 +2,9 @@
 // Copyright (c) 3M. All rights reserved.
 // </copyright>
 
+using Mmm.Iot.Common.Services.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Mmm.Iot.AsaManager.Services.Models.DeviceGroups
 {
@@ -12,9 +14,10 @@ namespace Mmm.Iot.AsaManager.Services.Models.DeviceGroups
         public string Key { get; set; }
 
         [JsonProperty("Operator")]
-        public string Operator { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public DeviceGroupConditionOperatorType Operator { get; set; }
 
         [JsonProperty("Value")]
-        public string Value { get; set; }
+        public object Value { get; set; }
     }
 }

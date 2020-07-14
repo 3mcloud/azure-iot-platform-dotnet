@@ -499,7 +499,7 @@ namespace Mmm.Iot.DeviceTelemetry.Services.Test
                     new Condition()
                     {
                         Field = "sample_conddition",
-                        Operator = OperatorType.Equals,
+                        Operator = RuleConditionOperatorType.Equals,
                         Value = "1",
                     },
                 },
@@ -562,7 +562,7 @@ namespace Mmm.Iot.DeviceTelemetry.Services.Test
                 new Condition()
                 {
                     Field = "sample_conddition",
-                    Operator = OperatorType.Equals,
+                    Operator = RuleConditionOperatorType.Equals,
                     Value = "1",
                 },
             };

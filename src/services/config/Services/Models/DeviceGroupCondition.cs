@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using Mmm.Iot.Common.Services.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -15,7 +16,7 @@ namespace Mmm.Iot.Config.Services.Models
 
         [JsonProperty("Operator")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public OperatorType Operator { get; set; }
+        public DeviceGroupConditionOperatorType Operator { get; set; }
 
         [JsonProperty("Value")]
         public object Value { get; set; }

@@ -16,7 +16,7 @@ namespace Mmm.Iot.Common.Services.Models
         public string Field { get; set; } = string.Empty;
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public OperatorType Operator { get; set; }
+        public RuleConditionOperatorType Operator { get; set; }
 
         public string Value { get; set; } = string.Empty;
     }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Mmm.Iot.Common.Services.Exceptions;
+using Mmm.Iot.Common.Services.Models;
 using Mmm.Iot.Common.TestHelpers;
 using Mmm.Iot.Config.Services;
 using Mmm.Iot.Config.Services.Models;
@@ -14,6 +15,8 @@ using Mmm.Iot.Config.WebService.Controllers;
 using Mmm.Iot.Config.WebService.Models;
 using Moq;
 using Xunit;
+using DeviceGroup = Mmm.Iot.Config.Services.Models.DeviceGroup;
+using DeviceGroupCondition = Mmm.Iot.Config.Services.Models.DeviceGroupCondition;
 
 namespace Mmm.Iot.Config.WebService.Test.Controllers
 {
@@ -45,7 +48,7 @@ namespace Mmm.Iot.Config.WebService.Test.Controllers
                         new DeviceGroupCondition()
                         {
                             Key = this.rand.NextString(),
-                            Operator = OperatorType.EQ,
+                            Operator = DeviceGroupConditionOperatorType.EQ,
                             Value = this.rand.NextString(),
                         },
                     },
@@ -60,7 +63,7 @@ namespace Mmm.Iot.Config.WebService.Test.Controllers
                         new DeviceGroupCondition()
                         {
                             Key = this.rand.NextString(),
-                            Operator = OperatorType.EQ,
+                            Operator = DeviceGroupConditionOperatorType.EQ,
                             Value = this.rand.NextString(),
                         },
                     },
@@ -75,7 +78,7 @@ namespace Mmm.Iot.Config.WebService.Test.Controllers
                         new DeviceGroupCondition()
                         {
                             Key = this.rand.NextString(),
-                            Operator = OperatorType.EQ,
+                            Operator = DeviceGroupConditionOperatorType.EQ,
                             Value = this.rand.NextString(),
                         },
                     },
@@ -112,7 +115,7 @@ namespace Mmm.Iot.Config.WebService.Test.Controllers
                 new DeviceGroupCondition()
                 {
                     Key = this.rand.NextString(),
-                    Operator = OperatorType.EQ,
+                    Operator = DeviceGroupConditionOperatorType.EQ,
                     Value = this.rand.NextString(),
                 },
             };
@@ -151,7 +154,7 @@ namespace Mmm.Iot.Config.WebService.Test.Controllers
                 new DeviceGroupCondition()
                 {
                     Key = this.rand.NextString(),
-                    Operator = OperatorType.EQ,
+                    Operator = DeviceGroupConditionOperatorType.EQ,
                     Value = this.rand.NextString(),
                 },
             };
@@ -216,7 +219,7 @@ namespace Mmm.Iot.Config.WebService.Test.Controllers
                 new DeviceGroupCondition()
                 {
                     Key = this.rand.NextString(),
-                    Operator = OperatorType.EQ,
+                    Operator = DeviceGroupConditionOperatorType.EQ,
                     Value = this.rand.NextString(),
                 },
             };

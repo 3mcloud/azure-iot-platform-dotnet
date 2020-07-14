@@ -4,10 +4,10 @@
 
 using System;
 using System.Collections.Generic;
-using Mmm.Iot.AsaManager.Services.Models;
 using Mmm.Iot.AsaManager.Services.Models.DeviceGroups;
 using Mmm.Iot.AsaManager.Services.Models.Rules;
 using Mmm.Iot.Common.Services.External.StorageAdapter;
+using Mmm.Iot.Common.Services.Models;
 using Mmm.Iot.Common.TestHelpers;
 using Newtonsoft.Json;
 
@@ -67,7 +67,7 @@ namespace Mmm.Iot.AsaManager.Services.Test.Helpers
             return new DeviceGroupConditionModel
             {
                 Key = this.rand.NextString(),
-                Operator = this.rand.NextString(),
+                Operator = DeviceGroupConditionOperatorType.EQ,
                 Value = this.rand.NextString(),
             };
         }

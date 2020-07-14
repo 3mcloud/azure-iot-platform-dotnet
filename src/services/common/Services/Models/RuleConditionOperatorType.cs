@@ -1,10 +1,10 @@
-// <copyright file="OperatorType.cs" company="3M">
+// <copyright file="RuleConditionOperatorType.cs" company="3M">
 // Copyright (c) 3M. All rights reserved.
 // </copyright>
 
 namespace Mmm.Iot.Common.Services.Models
 {
-    public enum OperatorType
+    public enum RuleConditionOperatorType
     {
         GreaterThan,
         GreaterThanOrEqual,
