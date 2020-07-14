@@ -12,6 +12,7 @@ stages:
         parameters:
           subscriptionName: 3M-ASDT04-PSD-CS-IOT-Dev
           locationName: $(locationName)
+          appInsightsLocation: eastus
           subscriptionId: 1d0a4e20-e44d-43b5-97b0-9b577f5bf048
           applicationCode: psdiot
           applicationShortCode: psd
@@ -49,6 +50,7 @@ stages:
         parameters:
           subscriptionName: 3M-ASDT05-PSD-CS-IOT-QA
           locationName: $(locationName)
+          appInsightsLocation: eastus
           subscriptionId: 8c550fc0-24e0-43cb-8237-5fbb168c1071
           applicationCode: psdiot
           applicationShortCode: psd
@@ -114,6 +116,7 @@ stages:
         parameters:
           subscriptionName: 3M-ASDT05-PSD-CS-IOT-QA
           locationName: $(locationName)
+          appInsightsLocation: eastus
           subscriptionId: 8c550fc0-24e0-43cb-8237-5fbb168c1071
           applicationCode: psdiot
           applicationShortCode: psd
@@ -139,6 +142,7 @@ stages:
         parameters:
           subscriptionName: 3M-ASDT07-PSD-CS-IOT-Prod
           locationName: $(locationName)
+          appInsightsLocation: eastus
           subscriptionId: 71fd3c60-f2c3-4e78-ad18-7e370fe3b068
           applicationCode: psdiot
           applicationShortCode: psd

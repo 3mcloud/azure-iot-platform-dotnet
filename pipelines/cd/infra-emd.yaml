@@ -12,6 +12,7 @@ stages:
         parameters:
           subscriptionName: 3M-UDAH02-SpartanIotHub-Dev
           locationName: $(locationName)
+          appInsightsLocation: eastus
           subscriptionId: 191495e8-b878-4140-85eb-aae73a7119cd
           applicationCode: emdiot
           applicationShortCode: emd
@@ -47,6 +48,7 @@ stages:
         parameters:
           subscriptionName: 3M-UDAH03-SpartanIotHub-QA
           locationName: $(locationName)
+          appInsightsLocation: eastus
           subscriptionId: 5248a0ea-c79b-4739-adc7-e76eeb27e253
           applicationCode: emdiot
           applicationShortCode: emd
@@ -82,6 +84,7 @@ stages:
         parameters:
           subscriptionName: 3M-UDAH04-SpartanIotHub-CT
           locationName: $(locationName)
+          appInsightsLocation: eastus
           subscriptionId: e9f61243-5e9a-4b8a-918c-09fe7e9f1ec1
           applicationCode: emdiot
           applicationShortCode: emd

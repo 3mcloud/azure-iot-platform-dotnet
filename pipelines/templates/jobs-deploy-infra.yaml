@@ -5,6 +5,7 @@ parameters:
   subscriptionId:
   applicationCode:
   applicationShortCode:
+  appInsightsLocation: ${{parameters.locationName}}
   environmentCategory:
   kubernetesVersion:
   sendgridEmail:
@@ -50,7 +51,6 @@ jobs:
           echo "variable: aksPartialName: $(aksPartialName)"
           echo "variable: appConfigurationPartialName: $(appConfigurationPartialName)"
           echo "variable: appInsightsPartialName: $(appInsightsPartialName)"
-          echo "variable: appInsightsLocation: $(appInsightsLocation)"
           echo "variable: armDirectory: $(armDirectory)"
           echo "variable: automationPartialName: $(automationPartialName)"
           echo "variable: blobContainerPartialName: $(blobContainerPartialName)"

@@ -21,6 +21,7 @@ stages:
         parameters:
           subscriptionName: 3M-CRSLAD16-BBIoTP-DEV
           locationName: $(locationName)
+          appInsightsLocation: eastus
           environmentName: IoT_CRSL_Environment_Dev
           subscriptionId: c36fb2f8-f98d-40d0-90a9-d65e93acb428
           applicationCode: crsliot
@@ -53,6 +54,7 @@ stages:
         parameters:
           subscriptionName: 3M-CRSLAD16-BBIoTP-DEV
           locationName: $(locationName)
+          appInsightsLocation: eastus
           environmentName: GGK-Environment
           subscriptionId: c36fb2f8-f98d-40d0-90a9-d65e93acb428
           applicationCode: ggktech
@@ -85,6 +87,7 @@ stages:
         parameters:
           subscriptionName: 3M-CRSLAD17-BBIoTP-QA
           locationName: $(locationName)
+          appInsightsLocation: eastus
           environmentName: IoT_CRSL_Environment_QA
           subscriptionId: f27c7c03-1ea8-49b8-9878-106e434b8a23
           applicationCode: crsliot
@@ -118,6 +121,7 @@ stages:
         parameters:
           subscriptionName: 3M-CRSLAD19-BBIoTP-Prod
           locationName: $(locationName)
+          appInsightsLocation: eastus
           environmentName: IoT_CRSL_Environment_WKBNCH
           subscriptionId: dcb37438-95ca-4a68-812d-39ce0d591df2
           applicationCode: crsliot

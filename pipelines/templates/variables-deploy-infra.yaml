@@ -9,8 +9,6 @@ parameters:
 
 variables:
   - template: variables-all.yaml
-  - name: appInsightsLocation
-    value: eastus
   - name: armDirectory
     value: pipelines/cd/arm
   - name: cosmosDbName
