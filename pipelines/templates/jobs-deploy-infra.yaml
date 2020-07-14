@@ -5,7 +5,7 @@ parameters:
   subscriptionId:
   applicationCode:
   applicationShortCode:
-  appInsightsLocation:
+  appInsightsLocation: 
   environmentCategory:
   kubernetesVersion:
   sendgridEmail:
