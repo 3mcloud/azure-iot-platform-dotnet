@@ -88,6 +88,7 @@ stages:
         parameters:
           subscriptionName: 3M-ASDT07-PSD-CS-IOT-Prod
           locationName: westeurope
+          appInsightsLocation: westeurope
           subscriptionId: 71fd3c60-f2c3-4e78-ad18-7e370fe3b068
           applicationCode: psdiot
           applicationShortCode: psd
