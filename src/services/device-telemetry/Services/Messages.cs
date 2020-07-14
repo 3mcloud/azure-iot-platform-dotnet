@@ -209,7 +209,7 @@ namespace Mmm.Iot.DeviceTelemetry.Services
 
             FeedOptions queryOptions = new FeedOptions
             {
-                EnableCrossPartitionQuery = true,
+                EnableCrossPartitionQuery = false,
                 EnableScanInQuery = true,
             };
 
