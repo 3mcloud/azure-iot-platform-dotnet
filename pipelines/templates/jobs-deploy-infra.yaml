@@ -602,7 +602,7 @@ jobs:
           templateLocation: Linked artifact
           csmFile: $(armTemplatesDirectory)/appinsights.json
           csmParametersFile: $(armParametersDirectory)/appinsights.json
-          overrideParameters: -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.locationName}}
+          overrideParameters: -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.appInsightsLocation}}
           deploymentMode: Incremental
 
       - template: steps-delete-oldest-deployment.yaml
@@ -836,7 +836,7 @@ jobs:
           templateLocation: Linked artifact
           csmFile: $(armTemplatesDirectory)/functions.json
           csmParametersFile: $(armParametersDirectory)/functions.json
-          overrideParameters: -functionAppName $(functionApp1Name) -appInsightsLocation ${{parameters.locationName}} -appInsightsName $(appInsightsName) -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
+          overrideParameters: -functionAppName $(functionApp1Name) -appInsightsLocation ${{parameters.appInsightsLocation}} -appInsightsName $(appInsightsName) -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
           deploymentMode: Incremental
           deploymentName: $(functionApp1PartialName)-$(Build.BuildId)
           addSpnToEnvironment: true
@@ -908,7 +908,7 @@ jobs:
           templateLocation: Linked artifact
           csmFile: $(armTemplatesDirectory)/functions.json
           csmParametersFile: $(armParametersDirectory)/functions.json
-          overrideParameters: -functionAppName $(functionApp2Name) -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.locationName}} -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
+          overrideParameters: -functionAppName $(functionApp2Name) -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.appInsightsLocation}} -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
           deploymentMode: Incremental
           deploymentName: $(functionApp2PartialName)-$(Build.BuildId)
           addSpnToEnvironment: true
@@ -953,7 +953,7 @@ jobs:
           templateLocation: Linked artifact
           csmFile: $(armTemplatesDirectory)/functions.json
           csmParametersFile: $(armParametersDirectory)/functions.json
-          overrideParameters: -functionAppName ${{parameters.applicationCode}}-alertingactionsfuncapp-${{parameters.environmentCategory}} -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.locationName}} -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
+          overrideParameters: -functionAppName ${{parameters.applicationCode}}-alertingactionsfuncapp-${{parameters.environmentCategory}} -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.appInsightsLocation}} -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
           deploymentMode: Incremental
           deploymentName: alertingactionsfuncapp-$(Build.BuildId)
           addSpnToEnvironment: true
