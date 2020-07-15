@@ -9,6 +9,9 @@ To easily get a list of committed changes between current master and the previou
 git log --oneline --no-decorate --topo-order ^<previousRelease> master
 where <previousRelease> is the release name e.g 5.1.0
 -->
+## [5.2.1] - 2020-07-15
+### Fixed
+- Corrected the application version number
 
 ## [5.2.0] - 2020-07-15
 ### Added
