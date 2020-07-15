@@ -10,8 +10,9 @@ git log --oneline --no-decorate --topo-order ^<previousRelease> master
 where <previousRelease> is the release name e.g 5.1.0
 -->
 
-## [5.2.0] - 2020-07-07
+## [5.2.0] - 2020-07-15
 ### Added
+- Show application version number in settings flyout with link to changelog for release notes
 - Updated the display of device names in telemetry chart
 - Device group sorting
 - Package firmware JSON template is now fully customizable with a configurable default
@@ -22,6 +23,9 @@ where <previousRelease> is the release name e.g 5.1.0
 - Enable configuration of device telemetry message retrieval count limit
 
 ### Fixed
+- Re-enable cross-partition queries for device telemetry messages
+- Clarified language in system settings privacy notice
+- Telemetry chart attributes no longer show unnecessary left-right scroll buttons
 - Enabling advanced alerting in the settings panel no longer shows as failed
 - Default logo now appears with correct size
 - Prevent stack trace from appearing in error message when API returns HTTP 500
