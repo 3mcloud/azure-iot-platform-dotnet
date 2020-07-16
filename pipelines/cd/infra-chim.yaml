@@ -3,7 +3,7 @@ pr: none
 pool:
   vmImage: ubuntu-latest
 variables:
-  locationName: centralus
+  locationName: eastus2 
 stages:
   - stage: chimDev
     displayName: CHIM dev
