@@ -228,7 +228,7 @@ function loadPolicyToIoThub(){
 
 # Create DPS and add current iothub to DPS
 function addDPSToIoThub($connectionString){
-    New-AzIoTDeviceProvisioningService -Name $data.dpsName -Location "eastus" `
+    New-AzIoTDeviceProvisioningService -Name $data.dpsName -Location $data.location `
                                         -ResourceGroupName $data.resourceGroup
 
     Add-AzIoTDeviceProvisioningServiceLinkedHub -ResourceGroupName $data.resourceGroup `
