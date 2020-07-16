@@ -25,7 +25,7 @@ stages:
         steps:
           - template: ../templates/steps-report-versions.yaml
             parameters:
-              kubernetesVersion: 1.18.1
+              kubernetesVersion: 1.17.5
               azureServiceConnectionName: 3M-CRSLAD16-BBIoTP-Dev
               serenityEnvironment: crslDev
 
@@ -38,7 +38,7 @@ stages:
         steps:
           - template: ../templates/steps-report-versions.yaml
             parameters:
-              kubernetesVersion: 1.18.1
+              kubernetesVersion: 1.17.5
               azureServiceConnectionName: 3M-CRSLAD16-BBIoTP-Dev
               serenityEnvironment: ggkDev
 
@@ -51,7 +51,7 @@ stages:
         steps:
           - template: ../templates/steps-report-versions.yaml
             parameters:
-              kubernetesVersion: 1.18.1
+              kubernetesVersion: 1.17.5
               azureServiceConnectionName: 3M-CRSLAD17-BBIoTP-QA
               serenityEnvironment: crslQa
 
@@ -64,7 +64,7 @@ stages:
         steps:
           - template: ../templates/steps-report-versions.yaml
             parameters:
-              kubernetesVersion: 1.18.1
+              kubernetesVersion: 1.17.5
               azureServiceConnectionName: 3M-CRSLAD19-BBIoTP-Prod
               serenityEnvironment: crslWkbnch
 
