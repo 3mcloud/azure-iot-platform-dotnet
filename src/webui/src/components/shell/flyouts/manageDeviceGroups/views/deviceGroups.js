@@ -4,7 +4,7 @@ import "../manageDeviceGroups.scss";
 import { compareByProperty } from "utilities";
 import { Btn, BtnToolbar } from "components/shared";
 import { ConfigService } from "services";
-import { toUpdateDeviceGroupRequestModel } from "services/models";
+import { toDeviceGroupModel } from "services/models";
 
 export class DeviceGroups extends React.Component {
     // TODO: Remove constructor when args are passed in
@@ -67,11 +67,11 @@ export class DeviceGroups extends React.Component {
     apply = (event) => {
         event.preventDefault();
         this.subscription = Observable.from(this.state.deviceGroups)
-            .flatMap((devicecGroup) =>
+            .flatMap((deviceGroup) =>
                 ConfigService.updateDeviceGroup(
-                    devicecGroup.id,
-                    toUpdateDeviceGroupRequestModel(devicecGroup)
-                ).map(() => devicecGroup)
+                    deviceGroup.id,
+                    toDeviceGroupModel(deviceGroup)
+                ).map(() => deviceGroup)
             )
             .subscribe(
                 (deviceGroup) => {

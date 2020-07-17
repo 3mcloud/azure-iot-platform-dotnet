@@ -66,6 +66,8 @@ class DeviceGroupForm extends LinkedComponent {
             error: undefined,
             isEdit: this.props.selectedDeviceGroup,
             isDelete: undefined,
+            IsPinned: false,
+            SortOrder: 0,
         };
 
         // State to input links
@@ -102,6 +104,8 @@ class DeviceGroupForm extends LinkedComponent {
             displayName,
             telemetryFormat,
             supportedMethods,
+            isPinned,
+            sortOrder,
         },
     }) => {
         if (this.state.isEdit) {
@@ -118,6 +122,8 @@ class DeviceGroupForm extends LinkedComponent {
                 })),
                 telemetryFormat: telemetryFormat,
                 supportedMethods: supportedMethods,
+                isPinned: isPinned,
+                sortOrder: sortOrder,
             });
         }
     };

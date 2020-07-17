@@ -187,6 +187,11 @@ export const epics = createEpicScenario({
                         Object.keys(getDeviceGroupEntities(store.getState()))[0]
                 )
                 .map(
+                    (value) =>
+                        value ||
+                        Object.keys(getDeviceGroupEntities(store.getState()))[0]
+                )
+                .map(
                     toActionCreator(
                         redux.actions.updateActiveDeviceGroup,
                         fromAction
