@@ -171,15 +171,6 @@ export const epics = createEpicScenario({
                             fromAction
                         )(deviceGroups)
                     );
-                    // If no active device group has been selected yet, select the first one
-                    if (!getActiveDeviceGroupId(store.getState())) {
-                        actions.push(
-                            toActionCreator(
-                                redux.actions.updateActiveDeviceGroup,
-                                fromAction
-                            )(deviceGroups[0].id)
-                        );
-                    }
                     actions.push(epics.actions.fetchSelectedDeviceGroup());
                     return actions;
                 })
@@ -188,8 +179,9 @@ export const epics = createEpicScenario({
 
     fetchSelectedDeviceGroup: {
         type: "APP_SELECTED_DEVICE_GROUP_FETCH",
-        epic: (fromAction) =>
+        epic: (fromAction, store) =>
             IdentityGatewayService.getUserActiveDeviceGroup()
+                .map((value) => value || Object.keys(getDeviceGroupEntities(store.getState()))[0])
                 .map(
                     toActionCreator(
                         redux.actions.updateActiveDeviceGroup,
