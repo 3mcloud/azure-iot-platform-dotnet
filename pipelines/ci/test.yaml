@@ -460,7 +460,7 @@ stages:
           - task: KubectlInstaller@0
             displayName: Install kubectl
             inputs:
-              kubectlVersion: 1.16.7
+              kubectlVersion: 1.18.2
 
           - task: AzureCLI@2
             displayName: Create namespace
