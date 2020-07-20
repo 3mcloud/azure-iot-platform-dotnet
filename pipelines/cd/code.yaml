@@ -100,7 +100,7 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: IoT_CRSL_Environment_WKBNCH
+          environmentName: IoT_CRSL_Environment_Wkbnch
           subscriptionName: 3M-CRSLAD19-BBIoTP-Prod
           applicationCode: crsliot
           applicationShortCode: crsl

@@ -305,7 +305,7 @@ jobs:
           deploymentPartialName: $(storageAccountPartialName)
           resourceGroupName: $(resourceGroupName)
 
-  - job: addSysAdmin
+  - job: addSysAdmins
     displayName: Add System Administrators
     dependsOn:
       - storageAccount
@@ -319,48 +319,27 @@ jobs:
           applicationCode: ${{parameters.applicationCode}}
           applicationShortCode: ${{parameters.applicationShortCode}}
           environmentCategory: ${{parameters.environmentCategory}}
-          sysAdmins: ${{parameters.sysAdmins}}
     steps:
       - checkout: self
         displayName: Checkout repository
 
-      - template: apply-arm-tags.yaml
-        parameters:
-          environment: ${{parameters.environmentName}}
-
       - task: AzurePowerShell@5
+        displayName: Add System Administrators
         inputs:
           azureSubscription: ${{parameters.subscriptionName}}
           azurePowerShellVersion: latestVersion
           scriptType: inlineScript
-          displayName: Add System Administrators
-          scriptArguments: -Verbose
           inline: |-
-            $VerbosePreference = Continue
-            $storageAccount = Get-AzStorageAccount -ResourceGroupName $(resourceGroupName) -Name $(storageAccountName)
-            $storageAccountContext = $storageAccount.Context
-            $cloudTable = (Get-AzStorageTable -Name $(tableStorageName) -Context $storageAccountContext -ErrorVariable tableExists -ErrorAction Stop).CloudTable
-            if(!$cloudTable.Exists())
-            {
+            $storageAccountContext = (Get-AzStorageAccount -ResourceGroupName $(resourceGroupName) -Name $(storageAccountName)).Context
+            $tableExists = (Get-AzStorageTable -Context $storageAccountContext | Select-Object -ExpandProperty Name) -Contains '$(tableStorageName)'
+            if (!$tableExists) {
               New-AzStorageTable -Name $(tableStorageName) -Context $storageAccountContext
               $cloudTable = (Get-AzStorageTable -Name $(tableStorageName) -Context $storageAccountContext).CloudTable
-            }
-
-            Install-Module -Name AzTable -Force
-            Write-Verbose 'System Administrators: $(sysAdmins)'
-            $systemAdministrators = '$(sysAdmins)' | ConvertFrom-Json -Depth 100
-            Write-Verbose "System Administrators: $systemAdministrators"
-            foreach ($systemAdministrator in $systemAdministrators)
-            {
-              Add-AzTableRow
-                -Table $cloudTable
-                -PartitionKey $systemAdministrator.UserId
-                -RowKey $systemAdministrator.UserId
-                -Property @{ "Name" = $systemAdministrator.Name }
-                -ErrorVariable isConflict
-                -ErrorAction Stop
-              Write-Host "Table row:"
-              Get-AzTableRow -Table $cloudTable | Format-Table
+              Install-Module -Name AzTable -Force
+              '${{parameters.sysAdmins}}' | ConvertFrom-Json -Depth 100 | Write-Output | ForEach-Object {
+                Add-AzTableRow -Table $cloudTable -PartitionKey $_.UserId -RowKey $_.UserId -Property @{ "Name" = $_.Name }
+                Get-AzTableRow -Table $cloudTable | Format-Table
+              }
             }
 
   - job: eventHub
