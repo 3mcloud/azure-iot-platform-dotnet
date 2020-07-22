@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mmm.Iot.IoTHubManager.Services.Models;
 using DeviceJobStatus = Mmm.Iot.IoTHubManager.Services.Models.DeviceJobStatus;
-using JobStatus = Mmm.Iot.IoTHubManager.Services.Models.JobStatus;
+using JobStatus = Mmm.Iot.Common.Services.Models.JobStatus;
 using JobType = Mmm.Iot.IoTHubManager.Services.Models.JobType;
 
 namespace Mmm.Iot.IoTHubManager.Services
