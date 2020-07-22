@@ -181,7 +181,11 @@ export const epics = createEpicScenario({
         type: "APP_SELECTED_DEVICE_GROUP_FETCH",
         epic: (fromAction, store) =>
             IdentityGatewayService.getUserActiveDeviceGroup()
-                .map((value) => value || Object.keys(getDeviceGroupEntities(store.getState()))[0])
+                .map(
+                    (value) =>
+                        value ||
+                        Object.keys(getDeviceGroupEntities(store.getState()))[0]
+                )
                 .map(
                     toActionCreator(
                         redux.actions.updateActiveDeviceGroup,
