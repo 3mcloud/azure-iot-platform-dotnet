@@ -1,929 +1,1088 @@
 {
-    "header": {
-        "appName": "नीला IoT दूरस्थ निगरानी",
-        "companyName": "3M",
-        "profile": "प्रोफ़ाइल",
-        "more": "अधिक",
-        "getStarted": "शुरू हो जाओ",
-        "documentation": "प्रलेखन",
-        "sendSuggestion": "एक सुझाव भेज सकते हैं"
+  "header": {
+    "appName": "नीला IoT दूरस्थ निगरानी",
+    "companyName": "3M",
+    "profile": "प्रोफ़ाइल",
+    "more": "अधिक",
+    "getStarted": "शुरू हो जाओ",
+    "documentation": "प्रलेखन",
+    "sendSuggestion": "एक सुझाव भेज सकते हैं"
+  },
+  "globalNav": {
+    "expand": "विस्तार पक्ष नेविगेशन",
+    "collapse": "पतन की ओर नेविगेशन"
+  },
+  "accessDenied": {
+    "message": "उफ़ लग रहा है जैसे तुम एक किरायेदार. आप कर सकते हैं बनाने के लिए एक नया किरायेदार खोलने के द्वारा अपने प्रोफ़ाइल और क्लिक करें 'बनाने के लिए नए किरायेदार' बटन.",
+    "learnMore": "अधिक जानने के लिए",
+    "createTenant": "बनाने किरायेदार"
+  },
+  "pageNotFound": {
+    "title": "404 पृष्ठ नहीं मिला",
+    "message": "उफ़, हम में सक्षम नहीं थे खोजने के लिए आप का अनुरोध पृष्ठ."
+  },
+  "tabs": {
+    "dashboard": "डैशबोर्ड",
+    "devices": "डिवाइस एक्सप्लोरर",
+    "users": "उपयोगकर्ता प्रबंधन",
+    "rules": "नियम",
+    "maintenance": "रखरखाव",
+    "packages": "संकुल",
+    "deployments": "तैनाती"
+  },
+  "errorFormat": "त्रुटि: {{संदेश}}",
+  "edgeAgentStatus": {
+    "200": "ठीक है । ",
+    "400": "परिनियोजन कॉन्फ़िगरेशन गलत है या अमान्य है.",
+    "406": "डिवाइस ऑफ़लाइन है या नहीं भेजने की स्थिति की रिपोर्ट । ",
+    "412": "परिनियोजन कॉन्फ़िगरेशन स्कीमा संस्करण अमान्य है । ",
+    "417": "डिवाइस की तैनाती विन्यास सेट नहीं है.",
+    "500": "एक त्रुटि में हुई IoT किनारे रनटाइम । ",
+    "unknown": "एक अज्ञात कोड प्राप्त किया । "
+  },
+  "errorCode": {
+    "noResponse": "ओह, वहाँ कोई जवाब नहीं था सर्वर से.",
+    "notLoggedIn": "आप की जरूरत लॉगिन करने के लिए कॉल करने के लिए की सेवा । ",
+    "notAuthorized": "आप अधिकृत नहीं हैं कॉल करने के लिए की सेवा । ",
+    "notFound": "उफ़, हम में सक्षम नहीं थे खोजने के लिए की सेवा । ",
+    "redirection": "उफ़, हम एक पुनर्निर्देशन त्रुटि.",
+    "retryFailure": "उफ़, हम एक अस्थायी त्रुटि से सेवा ठीक करने में असमर्थ थे. बाद में फिर से कोशिश.",
+    "unknown": "एक अज्ञात त्रुटि उत्पन्न हुई । "
+  },
+  "permissions": {
+    "ReadAll": "देखें समाधान",
+    "CreateDeviceGroups": "बनाने डिवाइस समूहों",
+    "DeleteDeviceGroups": "डिवाइस को हटा दें समूहों",
+    "UpdateDeviceGroups": "अद्यतन डिवाइस समूहों",
+    "CreateDevices": "बनाने के लिए उपकरणों",
+    "DeleteDevices": "हटाने उपकरणों",
+    "UpdateDevices": "अद्यतन उपकरणों",
+    "CreateRules": "नियम बनाएँ",
+    "DeleteRules": "हटाने के नियमों",
+    "UpdateRules": "अद्यतन नियमों",
+    "DeleteAlarms": "हटाने अलर्ट",
+    "UpdateAlarms": "अद्यतन अलर्ट",
+    "CreateJobs": "रोजगार के अवसर पैदा",
+    "UpdateSIMManagement": "अद्यतन सिम प्रबंधन",
+    "DeletePackages": "हटाने के संकुल",
+    "CreatePackages": "संकुल बनाने",
+    "CreateDeployments": "बनाने की तैनाती",
+    "DeleteDeployments": "हटाने की तैनाती",
+    "InviteUsers": "उपयोगकर्ताओं को आमंत्रित",
+    "DeleteUsers": "उपयोगकर्ताओं को हटाने के लिए",
+    "DeleteTenant": "किरायेदार हटाना",
+    "EnableAlerting": "सक्षम चेतावनी",
+    "DisableAlerting": "अक्षम करें चेतावनी"
+  },
+  "protected": {
+    "permissionDenied": "अनुमति {{अनुमति}} से इनकार किया है."
+  },
+  "deviceGroupDropDown": {
+    "ariaLabel": "डिवाइस समूह"
+  },
+  "flyout": {
+    "closeTitle": "करीब"
+  },
+  "settingsFlyout": {
+    "title": "सिस्टम सेटिंग्स",
+    "version": "संस्करण {{संस्करण}}",
+    "viewRelNotes": "रिलीज नोट्स देखें",
+    "theme": "विषय",
+    "changeTheme": "परिवर्तन आवेदन रंग विषय",
+    "switchTheme1": "स्विच करने के लिए {{nextTheme1}} विषय",
+    "switchTheme2": "स्विच करने के लिए {{nextTheme2}} विषय",
+    "apply": "लागू",
+    "cancel": "रद्द",
+    "close": "करीब",
+    "flowing": "बह",
+    "optInButton": "निदान",
+    "simulationToggle": "सिमुलेशन",
+    "start": "शुरू",
+    "stop": "बंद करो",
+    "stopped": "बंद कर दिया",
+    "enable": "सक्षम करें",
+    "disable": "अक्षम",
+    "simulationData": "सिमुलेशन डेटा",
+    "loading": "लोड हो रहा है",
+    "alerting": "उन्नत चेतावनी",
+    "alertingToggle": "शुरू/बंद करो चेतावनी",
+    "alertingDescription": "शुरू करने या रोकने के उन्नत चेतावनी. रोकने की चेतावनी को कम से कम लागत के समाधान है । नियम और चेतावनियाँ दोनों निष्क्रिय हो, तो चेतावनी बंद कर दिया है । ",
+    "alertingStarting": "शुरू",
+    "alertingStopping": "रोक",
+    "alertingChangeFail": "में विफल रहा है",
+    "alertingPending": "लंबित",
+    "simulationDescription": "शुरू करने या रोकने के सिमुलेशन उपकरणों. रोक डिवाइस सिमुलेशन जाएगा कम से कम लागत के समाधान; कोई नकली टेलीमेटरी के लिए भेजा जाएगा अपने IoT हब और अलर्ट उत्पन्न नहीं किया जाएगा के लिए नकली उपकरणों.",
+    "toggleError": "त्रुटि अद्यतन करने के सिमुलेशन की स्थिति",
+    "setLogoError": "त्रुटि अद्यतन लोगो",
+    "simulationLoadError": "त्रुटि लोड हो रहा सिमुलेशन स्थिति",
+    "sendDiagnosticsCheckbox": "हाँ, लॉग इन निदान जानकारी",
+    "dontSendDiagnosticsCheckbox": "नहीं, नहीं लॉग इन निदान जानकारी",
+    "sendDiagnosticsMicrosoftPrivacyUrl": "गोपनीयता कथन",
+    "diagnosticsLoadError": "त्रुटि अद्यतन निदान वरीयता",
+    "firmware": {
+      "error": {
+        "noVersion": "मूल्य ${संस्करण} में परिभाषित किया जाना चाहिए अपने फर्मवेयर JSON टेम्पलेट है । ",
+        "upload": "एक त्रुटि हुई है, जबकि अपलोड करने के अपने फर्मवेयर JSON टेम्पलेट",
+        "invalid": "अमान्य फर्मवेयर JSON टेम्पलेट प्रविष्टि",
+        "unknown": "एक अज्ञात त्रुटि उत्पन्न हुई । ",
+        "retrieval": "एक त्रुटि हुई पुन: प्राप्त करने के वर्तमान फर्मवेयर JSON टेम्पलेट",
+        "doubleSlash": "फर्मवेयर JSON टेम्पलेट कुंजी शामिल नहीं हो सकता है '//'",
+        "reserved": {
+          "id": "कुंजी 'आईडी' आरक्षित है और इस्तेमाल नहीं किया जा सकता फर्मवेयर में JSON टेम्पलेट"
+        }
+      },
+      "name": "फर्मवेयर JSON टेम्पलेट",
+      "description": "अपलोड एक फर्मवेयर JSON टेम्पलेट के साथ उपयोग के लिए फर्मवेयर पैकेज अपलोड संकुल पर पृष्ठ.",
+      "edit": "संपादित करें",
+      "save": "बचाने के लिए",
+      "cancel": "रद्द",
+      "variables": {
+        "name": "टेम्पलेट चर",
+        "summary": "निम्न टेम्पलेट चर में इस्तेमाल किया जा सकता अपने फर्मवेयर JSON टेम्पलेट है । उपयोग: ${माता पिता.बच्चे}, ई । ग्राम ${blobData.FileUri}",
+        "grid": {
+          "parent": "माता-पिता",
+          "child": "बच्चे",
+          "description": "विवरण"
+        },
+        "descriptions": {
+          "version": "माता-पिता ही । इस चर की आवश्यकता है में अपने टेम्पलेट और को अधिलेखित कर दिया है के साथ अपने फर्मवेयर पैकेज के संस्करण मूल्य. उपयोग: ${संस्करण}",
+          "blobData": {
+            "FileUri": "बूँद भंडारण यूआरआई के लिए अपने फर्मवेयर फ़ाइल अपलोड",
+            "CheckSum": "CheckSum मान के लिए अपने बूँद भंडारण के लिए अपलोड की गई फ़ाइल"
+          },
+          "packageFile": {
+            "name": "नाम के अपने फर्मवेयर फ़ाइल अपलोड",
+            "lastModified": "एमएस से epoch टाइमस्टैम्प",
+            "lastModifiedDate": "मानव पठनीय तारीख टाइमस्टैम्प",
+            "size": "फ़ाइल आकार बाइट्स में",
+            "type": "अपलोड की गई फ़ाइल प्रकार"
+          },
+          "deployment": {
+            "id": "जब की तैनाती के अपने पैकेज, इस मूल्य द्वारा प्रतिस्थापित किया जाएगा की आईडी अपने तैनाती"
+          }
+        }
+      }
+    }
+  },
+  "helpFlyout": {
+    "title": "प्रलेखन"
+  },
+  "profileFlyout": {
+    "title": "उपयोगकर्ता प्रोफ़ाइल",
+    "description": "<0><0>learnMore</0></0 के बारे में> भूमिकाएँ और अनुमतियाँ.",
+    "learnMore": "अधिक जानने के लिए",
+    "logout": "लॉगआउट",
+    "noUser": "कोई उपयोगकर्ता पाया",
+    "roles": "भूमिकाओं",
+    "noRoles": "कोई भूमिकाओं पाया",
+    "permissions": "Permissions",
+    "noPermissions": "कोई अनुमतियाँ पाया",
+    "close": "करीब",
+    "tenants": {
+      "tenantHeader": "किरायेदारों",
+      "noTenant": "कोई किरायेदारों पाया",
+      "createTenant": "बनाएँ नया किरायेदार",
+      "deleteTenant": "हटाना",
+      "tenantNameColumn": "किरायेदार",
+      "tenantRoleColumn": "भूमिका",
+      "tenantActionColumn": "कार्रवाई",
+      "saveTenant": "बचाने के लिए",
+      "cancel": "रद्द"
+    }
+  },
+  "resetActiveDeviceQuery": {
+    "title": "रीसेट क्वेरी"
+  },
+  "createDeviceQuery": {
+    "title": "क्वेरी उपकरणों",
+    "create": "क्वेरी",
+    "reset": "रीसेट करें",
+    "createDeviceGroup": "डिवाइस समूह",
+    "allDevices": "सभी उपकरणों",
+    "nameAlreadyExists": "एक डिवाइस था, पहले से ही बनाया इन शर्तों के साथ."
+  },
+  "deviceQueryConditions": {
+    "condition": "हालत {{headerCount}}",
+    "delete": "हटाना",
+    "field": "क्षेत्र",
+    "fieldPlaceholder": "क्षेत्र का चयन करें",
+    "operator": "ऑपरेटर",
+    "operatorPlaceholder": "ऑपरेटर का चयन करें",
+    "operatorOptions": {
+      "EQ": "= बराबर होती है",
+      "GT": "> अधिक से अधिक से अधिक",
+      "LT": "< कम से कम",
+      "GE": ">= अधिक से अधिक या बराबर",
+      "LE": "<= से कम या बराबर"
     },
-    "globalNav": {
-        "expand": "विस्तार पक्ष नेविगेशन",
-        "collapse": "पतन की ओर नेविगेशन"
+    "value": "मूल्य",
+    "valuePlaceholder": "मान दर्ज",
+    "type": "प्रकार",
+    "typePlaceholder": "का चयन करें प्रकार",
+    "typeOptions": {
+      "Number": "संख्या",
+      "Text": "पाठ"
     },
-    "accessDenied": {
-        "message": "उफ़ लग रहा है जैसे तुम एक किरायेदार. आप कर सकते हैं बनाने के लिए एक नया किरायेदार खोलने के द्वारा अपने प्रोफ़ाइल और क्लिक करें 'बनाने के लिए नए किरायेदार' बटन.",
-        "learnMore": "अधिक जानने के लिए",
-        "createTenant": "बनाने किरायेदार"
+    "remove": "निकालें हालत",
+    "add": "जोड़ें हालत",
+    "errorMsg": {
+      "fieldCantBeEmpty": "क्षेत्र की आवश्यकता है",
+      "operatorCantBeEmpty": "ऑपरेटर आवश्यक है",
+      "valueCantBeEmpty": "मूल्य की आवश्यकता है",
+      "typeCantBeEmpty": "प्रकार की आवश्यकता है",
+      "selectedType": "किया जाना चाहिए के चयनित प्रकार"
+    }
+  },
+  "deviceGroupsFlyout": {
+    "actions": "कार्रवाई",
+    "cancel": "रद्द",
+    "reset": "रीसेट करें",
+    "title": "डिवाइस का प्रबंधन समूहों",
+    "create": "बनाने के लिए नए उपकरण समूह",
+    "deviceGroupName": "डिवाइस का नाम",
+    "pinned": "टिकी डिवाइस समूह",
+    "unpinned": "Unpinned डिवाइस समूह",
+    "new": "नई डिवाइस समूह",
+    "edit": "संपादित करें उपकरण समूह",
+    "name": "नाम",
+    "namePlaceHolder": "डिवाइस का नाम",
+    "save": "बचाने के लिए",
+    "errorMsg": {
+      "nameCantBeEmpty": "नाम की आवश्यकता है"
     },
-    "pageNotFound": {
-        "title": "404 पृष्ठ नहीं मिला",
-        "message": "उफ़, हम में सक्षम नहीं थे खोजने के लिए आप का अनुरोध पृष्ठ."
+    "delete": {
+      "title": "हटाना",
+      "header": "हटाने डिवाइस",
+      "description": "इस कार्रवाई को हटाना होगा '{{deviceGroupName}}' डिवाइस से स्थायी रूप से मंच । ",
+      "confirmNo": "कोई हटा नहीं है, डिवाइस समूह.",
+      "confirmYes": "हाँ, तो हटा दें डिवाइस समूह.",
+      "summaryHeader": "सारांश",
+      "affected": "प्रभावित डिवाइस समूह",
+      "cancel": "रद्द",
+      "apply": "हटाना",
+      "pending": "हटाने डिवाइस... ",
+      "applySuccess": "डिवाइस को सफलतापूर्वक नष्ट कर दिया!",
+      "close": "करीब"
     },
-    "tabs": {
-        "dashboard": "डैशबोर्ड",
-        "devices": "डिवाइस एक्सप्लोरर",
-        "users": "उपयोगकर्ता प्रबंधन",
-        "rules": "नियम",
-        "maintenance": "रखरखाव",
-        "packages": "संकुल",
-        "deployments": "तैनाती"
+    "format": {
+      "add": "जोड़ें",
+      "keyHeader": "कुंजी",
+      "displayNameHeader": "प्रदर्शन नाम",
+      "telemetryFormatHeader": "टेलीमेटरी प्रारूप",
+      "validation": {
+        "required": "आवश्यक फ़ील्ड शामिल नहीं हैं"
+      }
     },
-    "errorFormat": "त्रुटि: {{संदेश}}",
-    "edgeAgentStatus": {
-        "200": "ठीक है । ",
-        "400": "परिनियोजन कॉन्फ़िगरेशन गलत है या अमान्य है.",
-        "406": "डिवाइस ऑफ़लाइन है या नहीं भेजने की स्थिति की रिपोर्ट । ",
-        "412": "परिनियोजन कॉन्फ़िगरेशन स्कीमा संस्करण अमान्य है । ",
-        "417": "डिवाइस की तैनाती विन्यास सेट नहीं है.",
-        "500": "एक त्रुटि में हुई IoT किनारे रनटाइम । ",
-        "unknown": "एक अज्ञात कोड प्राप्त किया । "
+    "supportedMethods": {
+      "add": "जोड़ें",
+      "methodHeader": "विधि नाम",
+      "supportedMethodHeader": "समर्थित तरीकों",
+      "validation": {
+        "required": "आवश्यक फ़ील्ड शामिल नहीं हैं"
+      }
+    }
+  },
+  "dashboard": {
+    "noData": "कोई डेटा उपलब्ध नहीं है",
+    "panels": {
+      "alerts": {
+        "header": "अलर्ट",
+        "explore": "का पता लगाने"
+      },
+      "analytics": {
+        "header": "विश्लेषिकी",
+        "topRule": "शीर्ष नियमों के साथ सक्रिय अलर्ट",
+        "deviceGroupAlerts": "चेतावनी डिवाइस के द्वारा समूह",
+        "criticalAlerts": "महत्वपूर्ण अलर्ट",
+        "currentWindow": "वर्तमान में",
+        "previousWindow": "इससे पहले"
+      },
+      "map": {
+        "header": "डिवाइस स्थानों",
+        "runtimeError": "एक त्रुटि हुई है, जबकि प्रतिपादन नक्शा",
+        "notSupportedError": "नीला नक्शे समर्थित नहीं है, अपने क्षेत्र में"
+      },
+      "overview": {
+        "header": "डिवाइस के आँकड़े",
+        "allDevices": "सभी उपकरणों",
+        "critical": "महत्वपूर्ण",
+        "warnings": "चेतावनी",
+        "total": "कुल",
+        "connected": "जुड़ा हुआ है",
+        "notConnected": "ऑफ़लाइन"
+      },
+      "telemetry": {
+        "header": "टेलीमेटरी",
+        "timezoneDisplay": "प्रदर्शित करने में स्थानीय समय क्षेत्र:",
+        "limitExceededWarning": "संदेशों की अधिकतम संख्या प्राप्त किया. इससे पहले डेटा छोटा किया जा सकता है."
+      }
+    }
+  },
+  "refreshBar": {
+    "refreshing": "ताज़ा",
+    "lastRefreshed": "पिछले ताजा",
+    "ariaLabel": "पृष्ठ ताज़ा करें"
+  },
+  "users": {
+    "title": "उपयोगकर्ता प्रबंधन",
+    "ariaLabel": "खोज उपयोगकर्ताओं",
+    "searchPlaceholder": "उपयोगकर्ताओं को खोज...",
+    "grid": {
+      "userName": "नाम",
+      "userType": "प्रकार",
+      "userId": "Guid",
+      "userRole": "भूमिका"
     },
-    "errorCode": {
-        "noResponse": "ओह, वहाँ कोई जवाब नहीं था सर्वर से.",
-        "notLoggedIn": "आप की जरूरत लॉगिन करने के लिए कॉल करने के लिए की सेवा । ",
-        "notAuthorized": "आप अधिकृत नहीं हैं कॉल करने के लिए की सेवा । ",
-        "notFound": "उफ़, हम में सक्षम नहीं थे खोजने के लिए की सेवा । ",
-        "redirection": "उफ़, हम एक पुनर्निर्देशन त्रुटि.",
-        "retryFailure": "उफ़, हम एक अस्थायी त्रुटि से सेवा ठीक करने में असमर्थ थे. बाद में फिर से कोशिश.",
-        "unknown": "एक अज्ञात त्रुटि उत्पन्न हुई ।"
+    "flyouts": {
+      "new": {
+        "contextMenuName": "नए उपयोगकर्ता",
+        "addServicePrincipal": "जोड़ें सेवा प्रिंसिपल",
+        "title": "उपयोगकर्ताओं को आमंत्रित",
+        "user": {
+          "label": "ईमेल पते",
+          "apply": "आमंत्रण भेजें",
+          "applySuccess": "उपयोगकर्ता सफलतापूर्वक आमंत्रित!"
+        },
+        "servicePrincipal": {
+          "label": "सेवा प्रिंसिपल अनुप्रयोग आईडी",
+          "apply": "जोड़ें",
+          "applySuccess": "जोड़ा सेवा प्रिंसिपल"
+        },
+        "roles": {
+          "hint": "का चयन करें उपयोगकर्ता भूमिका",
+          "label": "उपयोगकर्ता भूमिका"
+        },
+        "systemAdmin": {
+          "hint": "उपयोगकर्ता का चयन करें",
+          "label": "सिस्टम व्यवस्थापक",
+          "title": "सिस्टम व्यवस्थापक जोड़ें",
+          "add": "जोड़ें",
+          "applySuccess": "जोड़ा गया सिस्टम व्यवस्थापक सफलतापूर्वक!"
+        },
+        "apply": "आमंत्रण भेजें",
+        "cancel": "रद्द",
+        "validation": {
+          "required": "आवश्यक है",
+          "invalid": "अमान्य ईमेल प्रदान की",
+          "invalidGuid": "अमान्य Guid"
+        },
+        "summaryHeader": "सारांश",
+        "pending": "को हटाने के उपकरणों... ",
+        "close": "करीब"
+      },
+      "delete": {
+        "title": "हटाना",
+        "header": "उपयोगकर्ताओं को हटाने के लिए",
+        "description": "इस कार्रवाई को दूर करेगा चयनित उपयोगकर्ता से इस किरायेदार.",
+        "confirmNo": "नहीं, दूर नहीं चयनित उपयोगकर्ताओं से इस किरायेदार.",
+        "confirmYes": "हाँ, कृपया निकालें चयनित उपयोगकर्ताओं से इस किरायेदार.",
+        "summaryHeader": "सारांश",
+        "affected": "प्रभावित उपयोगकर्ताओं",
+        "cancel": "रद्द",
+        "apply": "हटाना",
+        "pending": "हटाने के उपयोगकर्ताओं... ",
+        "applySuccess": "उपयोगकर्ताओं को सफलतापूर्वक नष्ट कर दिया!",
+        "close": "करीब",
+        "systemAdmin": {
+          "hint": "उपयोगकर्ता का चयन करें",
+          "label": "सिस्टम व्यवस्थापक",
+          "title": "हटाने के प्रणाली व्यवस्थापक",
+          "add": "हटाना",
+          "applySuccess": "हटाए गए सिस्टम व्यवस्थापक सफलतापूर्वक!"
+        }
+      }
+    }
+  },
+  "devices": {
+    "title": "डिवाइस एक्सप्लोरर",
+    "ariaLabel": "खोज उपकरणों",
+    "searchPlaceholder": "खोज उपकरणों...",
+    "noneFound": "कोई उपकरण नहीं मिला है.",
+    "refresh": "ताज़ा",
+    "grid": {
+      "connected": "जुड़ा हुआ है",
+      "deviceName": "डिवाइस का नाम",
+      "deviceType": "डिवाइस प्रकार",
+      "firmware": "फर्मवेयर",
+      "lastConnection": "अंतिम कनेक्शन",
+      "no": "कोई",
+      "offline": "ऑफ़लाइन",
+      "simulated": "नकली",
+      "status": "स्थिति",
+      "telemetry": "टेलीमेटरी",
+      "yes": "हाँ"
     },
-    "permissions": {
-        "ReadAll": "देखें समाधान",
-        "CreateDeviceGroups": "बनाने डिवाइस समूहों",
-        "DeleteDeviceGroups": "डिवाइस को हटा दें समूहों",
-        "UpdateDeviceGroups": "अद्यतन डिवाइस समूहों",
-        "CreateDevices": "बनाने के लिए उपकरणों",
-        "DeleteDevices": "हटाने उपकरणों",
-        "UpdateDevices": "अद्यतन उपकरणों",
-        "CreateRules": "नियम बनाएँ",
-        "DeleteRules": "हटाने के नियमों",
-        "UpdateRules": "अद्यतन नियमों",
-        "DeleteAlarms": "हटाने अलर्ट",
-        "UpdateAlarms": "अद्यतन अलर्ट",
-        "CreateJobs": "रोजगार के अवसर पैदा",
-        "UpdateSIMManagement": "अद्यतन सिम प्रबंधन",
-        "DeletePackages": "हटाने के संकुल",
-        "CreatePackages": "संकुल बनाने",
-        "CreateDeployments": "बनाने की तैनाती",
-        "DeleteDeployments": "हटाने की तैनाती",
-        "InviteUsers": "उपयोगकर्ताओं को आमंत्रित",
-        "DeleteUsers": "उपयोगकर्ताओं को हटाने के लिए",
-        "DeleteTenant": "किरायेदार हटाना",
-        "EnableAlerting": "सक्षम चेतावनी",
-        "DisableAlerting": "अक्षम करें चेतावनी"
+    "flyouts": {
+      "details": {
+        "title": "डिवाइस का विवरण",
+        "noDevice": "उफ़, हम थे खोजने के लिए सक्षम नहीं है । ",
+        "close": "करीब",
+        "connected": "जुड़ा हुआ है",
+        "notConnected": "काट दिया",
+        "simulated": "नकली",
+        "notSimulated": "शारीरिक",
+        "diagnostics": {
+          "title": "निदान",
+          "description": "नैदानिक डिवाइस से जानकारी",
+          "keyHeader": "संपत्ति",
+          "valueHeader": "मूल्य",
+          "status": "स्थिति",
+          "lastMessage": "पिछले संदेश",
+          "message": "संदेश",
+          "showMessage": "यहाँ क्लिक करें देखने के लिए कच्चे संदेश"
+        },
+        "methods": {
+          "title": "तरीकों",
+          "description": "को चलाने के लिए एक विधि पर एक या एक से अधिक उपकरणों, इस फलक का चयन करें, चेकबॉक्स के लिए डिवाइस(एस), क्लिक करें <1><0>{{नौकरियाँ}}</0></1>, और उसके बाद का चयन <3><0>{{तरीकों}}</0></3>.",
+          "noneExist": "कोई विधि नहीं मिली । "
+        },
+        "modules": {
+          "title": "तैनाती के लिए संदेश",
+          "description": "एज मॉड्यूल पर संदेश डिवाइस",
+          "noneExist": "कोई संदेश नहीं पाया इस डिवाइस के लिए"
+        },
+        "properties": {
+          "title": "गुण",
+          "description": "बदलने के लिए एक संपत्ति पर एक या एक से अधिक उपकरणों, इस फलक का चयन करें, चेकबॉक्स के लिए डिवाइस(एस), क्लिक करें <1><0>{{नौकरियाँ}}</0></1>, और उसके बाद का चयन <3><0>{{गुण}}</0></3>.",
+          "keyHeader": "संपत्ति",
+          "valueHeader": "मूल्य",
+          "noneExist": "कोई गुण पाया इस डिवाइस के लिए.",
+          "copy": "कॉपी",
+          "copyAllProperties": "प्रतिलिपि की एक सूची सभी संपत्तियों के लिए डिवाइस",
+          "syncing": "{{reportedPropertyValue}} (सिंक्रनाइज़ {{desiredPropertyValue}})"
+        },
+        "tags": {
+          "title": "टैग",
+          "description": "जोड़ने, हटाने, या बदलने के लिए एक टैग पर एक या एक से अधिक उपकरणों, इस फलक का चयन करें, चेकबॉक्स के लिए डिवाइस(एस), क्लिक करें <1><0>{{नौकरियाँ}}</0></1>, और उसके बाद का चयन <3><0>{{टैग}}</0></3>.",
+          "keyHeader": "कुंजी",
+          "valueHeader": "मूल्य",
+          "noneExist": "कोई टैग के लिए मिला । "
+        },
+        "telemetry": {
+          "title": "टेलीमेटरी"
+        },
+        "deviceUploads": {
+          "title": "डिवाइस अपलोड",
+          "description": "डिवाइस से फाइल अपलोड",
+          "noneExist": "कोई फाइल अपलोड कर रहे हैं डिवाइस से.",
+          "fileName": "फ़ाइल नाम",
+          "action": "कार्रवाई",
+          "property": "संपत्ति",
+          "value": "मूल्य"
+        }
+      },
+      "delete": {
+        "title": "हटाना",
+        "header": "डिवाइस को हटा दें",
+        "description": "इस क्रिया को हटाने के उपकरणों से स्थायी रूप से मंच । ",
+        "confirmNo": "कोई हटा नहीं है, चयनित भौतिक उपकरणों.",
+        "confirmYes": "हाँ, कृपया हटाएँ चयनित भौतिक उपकरणों.",
+        "simulatedNotSupported": "हटाने के नकली उपकरणों वर्तमान में समर्थित नहीं है, इस कार्रवाई के केवल हो जाएगा पर ले जाया भौतिक उपकरणों.",
+        "summaryHeader": "सारांश",
+        "affected": "प्रभावित उपकरणों",
+        "cancel": "रद्द",
+        "apply": "हटाना",
+        "pending": "को हटाने के उपकरणों... ",
+        "applySuccess": "उपकरणों को सफलतापूर्वक नष्ट कर दिया!",
+        "close": "करीब"
+      },
+      "c2dMessage": {
+        "sendMessage": "संदेश भेजें",
+        "title": "डिवाइस संदेशों के लिए बादल",
+        "header": "भेजने C2D संदेश",
+        "description": "इस के लिए भेज देंगे सभी चयनित उपकरणों",
+        "simulatedNotSupported": "भेजने के लिए नकली उपकरणों वर्तमान में समर्थित नहीं है, इस कार्रवाई के केवल हो जाएगा पर ले जाया भौतिक उपकरणों.",
+        "summaryHeader": "सारांश",
+        "affected": "प्रभावित उपकरणों",
+        "cancel": "रद्द",
+        "apply": "भेजें",
+        "pending": "भेजने के लिए उपकरणों के... ",
+        "applySuccess": "संदेश सफलतापूर्वक भेजा!",
+        "close": "करीब",
+        "validation": {
+          "invalid": "Json मान्य नहीं है!"
+        },
+        "jsonPayloadMessage": "संदेश पेलोड उपकरणों के लिए:"
+      },
+      "jobs": {
+        "title": "नौकरियाँ",
+        "noDevices": "उफ़, हम में सक्षम नहीं थे खोजने के लिए किसी भी चयनित उपकरणों.",
+        "summaryHeader": "सारांश",
+        "affected": "प्रभावित उपकरणों",
+        "cancel": "रद्द",
+        "apply": "लागू",
+        "pending": "प्रस्तुत करने का काम...",
+        "applySuccess": "नौकरी के लिए सफलतापूर्वक प्रस्तुत किया गया!",
+        "close": "करीब",
+        "selectJob": "का चयन करें नौकरी",
+        "jobName": "नौकरी के नाम",
+        "jobNameHint": "दर्ज नौकरी के नाम",
+        "jobNameHelpMessage": "केवल अक्षरों और संख्याओं की अनुमति दी हैं",
+        "viewStatus": "देखें नौकरी की स्थिति",
+        "validation": {
+          "required": "आवश्यक है",
+          "invalid": "अमान्य प्रविष्टि"
+        },
+        "tags": {
+          "radioLabel": "टैग",
+          "title": "टैग चयनित उपकरणों पर",
+          "description": "टैग आम में चयनित उपकरणों पर",
+          "keyHeader": "कुंजी",
+          "valueHeader": "मूल्य",
+          "typeHeader": "प्रकार",
+          "typeNumber": "संख्या",
+          "typeString": "पाठ",
+          "noneExist": "कोई आम टैग में पाया गया के लिए चयनित उपकरणों.",
+          "add": "टैग जोड़ें"
+        },
+        "methods": {
+          "radioLabel": "तरीकों",
+          "title": "चलाने विधि चयनित उपकरणों पर",
+          "description": "सभी उपलब्ध तरीकों के लिए उपकरण या उपकरणों के समूह",
+          "methodName": "विधि नाम",
+          "methodNameHint": "चयन की विधि",
+          "firmwareVersion": "फर्मवेयर संस्करण",
+          "firmwareVersionHint": "1.0.1",
+          "firmwareUri": "फर्मवेयर URI",
+          "firmwareUriHint": "दर्ज फर्मवेयर उड़ी मूल्य",
+          "jsonPayload": "पेलोड (वैकल्पिक)",
+          "jsonPayloadMessage": "एक वैध JSON अनुरोध पेलोड डिवाइस के लिए विधि."
+        },
+        "properties": {
+          "radioLabel": "गुण",
+          "title": "गुण चयनित उपकरणों पर",
+          "description": "उपलब्ध गुणों और मूल्यों को बदलने के लिए",
+          "keyHeader": "संपत्ति",
+          "valueHeader": "मूल्य",
+          "typeHeader": "प्रकार",
+          "typeNumber": "संख्या",
+          "typeString": "पाठ",
+          "noneExist": "कोई आम गुण पाया के लिए चयनित उपकरणों.",
+          "syncing": "{{reportedPropertyValue}} (सिंक्रनाइज़ {{desiredPropertyValue}})"
+        }
+      },
+      "new": {
+        "contextMenuName": "नई डिवाइस",
+        "title": "नई डिवाइस",
+        "summaryHeader": "प्रावधान सारांश",
+        "affected": "उपकरणों के लिए प्रावधान",
+        "cancel": "रद्द",
+        "apply": "लागू",
+        "pending": "प्रोविजनिंग उपकरणों... ",
+        "applySuccess": "उपकरणों का प्रावधान सफलतापूर्वक",
+        "simulatedRefreshMessage": "नकली उपकरणों बनाई गई हैं पृष्ठभूमि में सर्वर पर है । इसलिए, वे एक समय लग सकता है दिखाने के लिए जब डिवाइस सूची में ताजा है.",
+        "close": "करीब",
+        "validation": {
+          "required": "आवश्यक है",
+          "greaterThanZero": "शून्य से अधिक होना चाहिए"
+        },
+        "count": {
+          "label": "उपकरणों की संख्या"
+        },
+        "device": {
+          "label": "डिवाइस",
+          "device": "IoT डिवाइस",
+          "edgeDevice": "IoT डिवाइस बढ़त"
+        },
+        "deviceType": {
+          "label": "प्रकार",
+          "simulated": "नकली",
+          "physical": "असली"
+        },
+        "deviceId": {
+          "label": "डिवाइस आईडी",
+          "hint": "डिवाइस आईडी दर्ज करें ",
+          "sysGenerated": "प्रणाली उत्पन्न डिवाइस आईडी"
+        },
+        "deviceIdExample": {
+          "label": "डिवाइस आईडी उदाहरण",
+          "format": "{{deviceName}}-{#####}",
+          "deviceName": "{नाम}"
+        },
+        "deviceModel": {
+          "label": "डिवाइस मॉडल",
+          "hint": "का चयन करें मौजूदा डिवाइस प्रकार"
+        },
+        "authenticationType": {
+          "label": "प्रमाणीकरण प्रकार",
+          "symmetric": "सममित कुंजी",
+          "x509": "X. 509"
+        },
+        "authenticationKey": {
+          "label": "प्रमाणीकरण कुंजी",
+          "generateKeys": "ऑटो कुंजी उत्पन्न",
+          "manualKeys": "प्रवेश कुंजी मैन्युअल रूप से",
+          "hint": "दर्ज करें अपने यहाँ कुंजी",
+          "primaryKey": "प्राथमिक कुंजी",
+          "primaryKeyConnection": "कनेक्शन स्ट्रिंग प्राथमिक कुंजी",
+          "secondaryKey": "माध्यमिक कुंजी",
+          "secondaryKeyConnection": "कनेक्शन स्ट्रिंग माध्यमिक कुंजी",
+          "primaryThumbprint": "प्राथमिक थंबप्रिंट",
+          "secondaryThumbprint": "माध्यमिक थंबप्रिंट"
+        }
+      },
+      "SIMManagement": {
+        "title": "सिम प्रबंधन",
+        "provider": "प्रदाता",
+        "summaryHeader": "सारांश और निर्देश",
+        "here": "यहाँ",
+        "select": "का चयन करें...",
+        "header": {
+          "telefonica": "के रूप में एक Telefónica IoT ग्राहक आप का लाभ इस सुविधा को जोड़ने को समृद्ध करने के लिए स्वचालित रूप से अपने नीला दूरदराज के निगरानी समाधान के साथ कनेक्टिविटी उपलब्ध डेटा में Telefónica IoT कनेक्टिविटी मंच (नेटवर्क के बारे में जानकारी, डेटा की खपत और नेटवर्क आधारित स्थान)."
+        },
+        "description": {
+          "telefonica": "इस सुविधा का पूर्वावलोकन में है. सिंक करने के क्रम में अपने डेटा कनेक्टिविटी में नीला दूरदराज के निगरानी समाधान के लिए, कृपया भरने के लिए एक अनुरोध <1><0>url</0></1> का चयन करें, \"विकल्प नीला दूरस्थ निगरानी\" और शामिल हैं अपने संपर्क डेटा, और हम स्वचालित रूप से अपने खाते को सक्रिय. \n\nयदि आप नहीं कर रहे हैं एक Telefónica ग्राहक अभी तक है और आप चाहते हैं आनंद लेने के लिए इस या अन्य IoT कनेक्टिविटी पर बादल सेवाओं के साथ, आप कर सकते हैं हमसे संपर्क करें <1><0>url</0></1> और विकल्प का चयन करें \"कनेक्टिविटी\"; हम मदद करने में खुशी होगी आप."
+        },
+        "operator": {
+          "telefonica": "Telefónica"
+        }
+      }
+    }
+  },
+  "rules": {
+    "title": "नियम",
+    "searchPlaceholder": "खोज नियम...",
+    "ariaLabel": "खोज नियम",
+    "alertingOnForRules": "चेतावनी पर दिया जाना चाहिए के लिए नियमों का उपयोग करें",
+    "turnOnRulesText": "आप कर सकते हैं इस सुविधा की बारी पर क्लिक करके सेटिंग्स मेनू (गियर आइकन) पर स्क्रीन के ऊपर सही",
+    "severity": {
+      "info": "जानकारी",
+      "warning": "चेतावनी",
+      "critical": "महत्वपूर्ण"
     },
-    "protected": {
-        "permissionDenied": "अनुमति {{अनुमति}} से इनकार किया है."
+    "grid": {
+      "enabled": "सक्षम",
+      "disabled": "विकलांग",
+      "ruleName": "नियम का नाम",
+      "description": "विवरण",
+      "severity": "गंभीरता",
+      "deviceGroup": "डिवाइस समूह",
+      "trigger": "ट्रिगर",
+      "notificationType": "अधिसूचना प्रकार",
+      "status": "स्थिति",
+      "count": "गिनती",
+      "lastTrigger": "पिछले ट्रिगर",
+      "maintenanceLog": "रखरखाव लॉग इन करें",
+      "explore": "का पता लगाने"
     },
-    "deviceGroupDropDown": {
-        "ariaLabel": "डिवाइस समूह"
+    "flyouts": {
+      "edit": "संपादित करें",
+      "statusToggle": "स्थिति",
+      "enable": "सक्षम करें",
+      "disable": "अक्षम",
+      "changeStatus": "स्थिति बदलें",
+      "newRule": "नए नियम",
+      "editRule": "नियम संपादित",
+      "viewRule": "नियम विवरण",
+      "statusTitle": "स्थिति बदलें",
+      "delete": "हटाना",
+      "ruleEditor": {
+        "ruleName": "नियम का नाम",
+        "namePlaceholder": "प्रवेश नियम का नाम",
+        "description": "विवरण",
+        "descriptionPlaceholder": "प्रवेश नियम विवरण",
+        "deviceGroup": "डिवाइस समूह",
+        "deviceGroupPlaceholder": "डिवाइस का चयन करें समूह",
+        "conditions": "स्थिति",
+        "addCondition": "जोड़ें हालत",
+        "delete": "हटाना",
+        "calculation": "गणना",
+        "calculationPlaceholder": "का चयन करें",
+        "timePeriod": "समय की अवधि (मिनट में)",
+        "condition": {
+          "description": "आबाद करने के लिए क्षेत्रों, एक डिवाइस होना आवश्यक सूचना गुण कुंजी के साथ के रूप में: <0><0>{{प्रारूप}}</0></0>.",
+          "condition": "हालत",
+          "field": "क्षेत्र",
+          "fieldPlaceholder": "क्षेत्र का चयन करें",
+          "operator": "ऑपरेटर",
+          "operatorPlaceholder": "ऑपरेटर का चयन करें",
+          "operatorOptions": {
+            "Equals": "= बराबर होती है",
+            "GreaterThan": "> अधिक से अधिक से अधिक",
+            "LessThan": "< कम से कम",
+            "GreaterThanOrEqual": ">= अधिक से अधिक या बराबर",
+            "LessThanOrEqual": "<= से कम या बराबर"
+          },
+          "value": "मूल्य",
+          "valuePlaceholder": "मान दर्ज"
+        },
+        "actions": {
+          "action": "कार्रवाई",
+          "checkingEmailSetup": "स्थिति की जाँच के ईमेल विन्यास.",
+          "setupEmail": "भेजने के लिए ईमेल अलर्ट, <1><0>outlookLogin</0></1> की आवश्यकता है.",
+          "outlookLogin": "साइन इन करने के लिए Outlook",
+          "emailSetupConfirmed": "अपने ईमेल विन्यास पूरा हो चुका है सफलतापूर्वक । ",
+          "setupEmailError": "वहाँ किया गया है एक त्रुटि की पुष्टि के लिए अपने ईमेल सेटअप है. <1><0>tryAgain</0></1>",
+          "setupEmailTimeout": "जाँच के लिए ईमेल सेटअप समाप्त हो गया है. <1><0>tryAgain</0></1>",
+          "emailSetupHelp": "भेजने के ईमेल अलर्ट मार्गदर्शन विन्यास की आवश्यकता है. <1><0>learnMore</0></1>",
+          "tryAgain": "कृपया फिर से कोशिश करें.",
+          "learnMore": "अधिक जानने के लिए",
+          "emailActionLabel": "ईमेल भेजें",
+          "emailAddresses": "ईमेल पते",
+          "enterEmail": "प्रेस दर्ज करें जोड़ने के लिए ईमेल प्राप्तकर्ता",
+          "emailComments": "अतिरिक्त नोट्स",
+          "enterEmailComments": "अतिरिक्त नोट्स दर्ज ईमेल के लिए संदेश.",
+          "emailSubject": "ईमेल विषय",
+          "enterEmailSubject": "दर्ज करें ईमेल विषय",
+          "syntaxError": "नहीं एक मान्य ईमेल पता",
+          "on": "ईमेल सक्षम",
+          "off": "ईमेल अक्षम",
+          "defaultEmailSubject": "नीला IoT दूरदराज के निगरानी चेतावनी: {{ruleName}} शुरू हो गया था",
+          "deleteEmail": "ईमेल को नष्ट"
+        },
+        "calculationOptions": {
+          "average": "औसत",
+          "instant": "त्वरित"
+        },
+        "validation": {
+          "required": "आवश्यक है",
+          "nan": "एक संख्या होनी चाहिए"
+        },
+        "severityLevel": "गंभीरता स्तर",
+        "ruleStatus": "नियम स्थिति",
+        "ruleEnabled": "सक्षम",
+        "ruleDisabled": "विकलांग",
+        "devicesAffected": "उपकरणों के इस नियम से प्रभावित",
+        "summaryHeader": "सारांश",
+        "apply": "लागू",
+        "cancel": "रद्द"
+      },
+      "deleteRule": {
+        "preDeleteText": "हम रखने के लिए किसी भी अलर्ट के साथ जुड़े इस नियम के बाद भी यह नष्ट कर दिया । यदि आप चाहते हैं को नष्ट करने के लिए संबंधित अलर्ट, के लिए जाने के लिए <1><0>url</0></1> और चुनें अलर्ट आप चाहते हैं को दूर करने के लिए.",
+        "deleteConfirmation": "नियम हटा दिया गया है । ",
+        "postDeleteText": "यदि आप चाहते हैं को नष्ट करने के लिए अलर्ट के साथ जुड़े इस नियम के लिए जाने के लिए <1><0>url</0></1> और चुनें अलर्ट आप चाहते हैं को दूर करने के लिए.",
+        "disableConfirmation": "नियम अक्षम किया गया है.",
+        "maintenancePage": "रखरखाव पृष्ठ",
+        "title": "हटाने के नियम",
+        "close": "करीब",
+        "delete": "हटाना",
+        "cancel": "रद्द"
+      }
+    }
+  },
+  "fileInput": {
+    "upload": "अपलोड"
+  },
+  "applicationSettings": {
+    "nameAndLogo": "नाम और लोगो",
+    "nameLogoDescription": "संपादित लोगो और नाम में साइट शीर्षक.",
+    "replaceLogo": "जगह लोगो छवि",
+    "logoDescription": "की सिफारिश की लोगो आकार: 24 x 24 पिक्सल है.\nअधिकतम लोगो का आकार: 300 KB.\nसमर्थित फ़ाइल स्वरूपों:\n.एसवीजी\n.PNG\n.JPEG\n .JPG",
+    "applicationName": "आवेदन नाम",
+    "currentLogo": "वर्तमान लोगो",
+    "edit": "संपादित करें",
+    "checkmark": "चेकमार्क",
+    "uploadError": "में असमर्थ अपलोड करने के लिए फ़ाइल की जाँच करें फ़ाइल प्रकार/आकार और पुन: प्रयास करें । ",
+    "error": "त्रुटि"
+  },
+  "maintenance": {
+    "acknowledge": "स्वीकार करते हैं",
+    "acknowledged": "स्वीकार किया",
+    "alertOccurrences": "चेतावनी घटनाओं",
+    "alertedDeviceTelemetry": "सतर्क कर दिया डिवाइस के टेलीमेटरी",
+    "alertedDevices": "सतर्क उपकरणों",
+    "all": "सभी",
+    "close": "करीब",
+    "closed": "बंद",
+    "critical": "महत्वपूर्ण",
+    "delete": "हटाना",
+    "devices": "उपकरणों",
+    "failedJobs": "विफल कार्य",
+    "jobs": "नौकरियाँ",
+    "lastEvent": "पिछले घटना",
+    "noData": "कोई डेटा नहीं",
+    "noOccurrenceSelected": "कोई घटनाओं चयनित",
+    "notifications": "अलर्ट",
+    "open": "खुला",
+    "openAlerts": "खुला अलर्ट",
+    "relatedInfo": "संबंधित जानकारी",
+    "ruleDetail": "नियम विवरण",
+    "ruleDetailsDesc": "प्रबंधन की चेतावनी घटनाओं के लिए जुड़े इस नियम में नीचे दिए गए अनुभाग का उपयोग करें, और संबंधित जानकारी के निवारण के लिए प्रत्येक घटना । ",
+    "severity": "गंभीरता",
+    "succeeded": "सफल रहा",
+    "telemetry": "टेलीमेटरी",
+    "title": "रखरखाव",
+    "total": "कुल",
+    "warning": "चेतावनी",
+    "alertGrid": {
+      "totalCount": "कुल गिनती",
+      "open": "खुला",
+      "acknowledged": "स्वीकार किया",
+      "closed": "बंद",
+      "lastOccurrence": "पिछले घटना"
     },
-    "flyout": {
-        "closeTitle": "करीब"
+    "jobGrid": {
+      "jobName": "नौकरी के नाम",
+      "status": "स्थिति",
+      "operation": "ऑपरेशन",
+      "noDevices": "नहीं । उपकरणों की",
+      "succeeded": "सफल रहा",
+      "failed": "में विफल रहा है",
+      "startTime": "प्रारंभ समय",
+      "endTime": "अंत समय"
     },
-    "settingsFlyout": {
-        "alerting": "उन्नत चेतावनी",
-        "title": "सिस्टम सेटिंग्स",
-        "version": "संस्करण {{संस्करण}}",
-        "viewRelNotes": "रिलीज नोट्स देखें",
-        "theme": "विषय",
-        "changeTheme": "परिवर्तन आवेदन रंग विषय",
-        "switchTheme1": "स्विच करने के लिए {{nextTheme1}} विषय",
-        "switchTheme2": "स्विच करने के लिए {{nextTheme2}} विषय",
+    "jobStatusGrid": {
+      "deviceIdAffected": "डिवाइस आईडी प्रभावित",
+      "lastReturnMsg": "पिछले वापसी संदेश"
+    },
+    "alertOccGrid": {
+      "occurrence": "घटना",
+      "triggerDevice": "ट्रिगर डिवाइस",
+      "time": "समय"
+    },
+    "jobStatus": {
+      "1": "कतारबद्ध",
+      "2": "चल रहा है",
+      "3": "पूरा",
+      "4": "में विफल रहा है",
+      "5": "रद्द कर दिया",
+      "6": "अनुसूचित",
+      "queued": "पंक्तिबद्ध"
+    }
+  },
+  "timeInterval": {
+    "PT15M": "पिछले 15 मिनट",
+    "PT1H": "पिछले घंटे",
+    "P1D": "अंतिम दिन",
+    "P7D": "पिछले सप्ताह",
+    "P1M": "पिछले महीने",
+    "ariaLabel": "समय अंतराल"
+  },
+  "timeSeriesInsights": {
+    "explore": "का पता लगाने में समय श्रृंखला अंतर्दृष्टि",
+    "exploreTooltip": "डेटा देखने के लिए समय में श्रृंखला अंतर्दृष्टि एक्सप्लोरर, पूछने के लिए कृपया समाधान के मालिक अनुदान के लिए आप डेटा का उपयोग. <1><0>learnMore</0></1>",
+    "learnMore": "अधिक जानने के लिए"
+  },
+  "deployments": {
+    "title": "तैनाती",
+    "flyouts": {
+      "new": {
+        "contextMenuName": "नई तैनाती",
+        "title": "नई तैनाती",
         "apply": "लागू",
         "cancel": "रद्द",
         "close": "करीब",
-        "flowing": "बह",
-        "optInButton": "निदान",
-        "simulationToggle": "सिमुलेशन",
-        "alertingToggle": "शुरू/बंद करो चेतावनी",
-        "start": "शुरू",
-        "stop": "बंद करो",
-        "stopped": "बंद कर दिया",
-        "enable": "सक्षम करें",
-        "disable": "अक्षम",
-        "simulationData": "सिमुलेशन डेटा",
-        "loading": "लोड हो रहा है",
-        "alertingDescription": "शुरू करने या रोकने के उन्नत चेतावनी. रोकने की चेतावनी को कम से कम लागत के समाधान है । नियम और चेतावनियाँ दोनों निष्क्रिय हो, तो चेतावनी बंद कर दिया है । ",
-        "simulationDescription": "शुरू करने या रोकने के सिमुलेशन उपकरणों. रोक डिवाइस सिमुलेशन जाएगा कम से कम लागत के समाधान; कोई नकली टेलीमेटरी के लिए भेजा जाएगा अपने IoT हब और अलर्ट उत्पन्न नहीं किया जाएगा के लिए नकली उपकरणों.",
-        "toggleError": "त्रुटि अद्यतन करने के सिमुलेशन की स्थिति",
-        "setLogoError": "त्रुटि अद्यतन लोगो",
-        "simulationLoadError": "त्रुटि लोड हो रहा सिमुलेशन स्थिति",
-        "sendDiagnosticsCheckbox": "हाँ, शेयर जानकारी के साथ Microsoft",
-        "dontSendDiagnosticsCheckbox": "नहीं, नहीं के साथ जानकारी साझा माइक्रोसॉफ्ट",
-        "sendDiagnosticsMicrosoftPrivacyUrl": "गोपनीयता कथन",
-        "diagnosticsLoadError": "त्रुटि अद्यतन निदान वरीयता"
-    },
-    "helpFlyout": {
-        "title": "प्रलेखन"
-    },
-    "profileFlyout": {
-        "title": "उपयोगकर्ता प्रोफ़ाइल",
-        "description": "<0><0>learnMore</0></0 के बारे में> भूमिकाएँ और अनुमतियाँ.",
-        "learnMore": "अधिक जानने के लिए",
-        "logout": "लॉगआउट",
-        "noUser": "कोई उपयोगकर्ता पाया",
-        "roles": "भूमिकाओं",
-        "noRoles": "कोई भूमिकाओं पाया",
-        "permissions": "Permissions",
-        "noPermissions": "कोई अनुमतियाँ पाया",
-        "close": "करीब",
-        "tenants": {
-            "tenantHeader": "किरायेदारों",
-            "noTenant": "कोई किरायेदारों पाया",
-            "createTenant": "बनाएँ नया किरायेदार",
-            "deleteTenant": "हटाना",
-            "tenantNameColumn": "किरायेदार",
-            "tenantRoleColumn": "भूमिका",
-            "tenantActionColumn": "कार्रवाई",
-            "saveTenant": "बचाने के लिए",
-            "cancel": "रद्द"
-        }
-    },
-    "createDeviceQueryFlyout": {
-        "title": "क्वेरी उपकरणों",
-        "create": "क्वेरी",
-        "reset": "रीसेट करें",
-        "createDeviceGroup": "डिवाइस समूह"
-    },
-    "resetActiveDeviceQuery": {
-        "title": "रीसेट क्वेरी"
-    },
-    "deviceQueryConditions": {
-        "condition": "हालत {{headerCount}}",
-        "delete": "हटाना",
-        "field": "क्षेत्र",
-        "fieldPlaceholder": "क्षेत्र का चयन करें",
-        "operator": "ऑपरेटर",
-        "operatorPlaceholder": "ऑपरेटर का चयन करें",
-        "operatorOptions": {
-            "EQ": "= बराबर होती है",
-            "GT": "> अधिक से अधिक से अधिक",
-            "LT": "< कम से कम",
-            "GE": ">= अधिक से अधिक या बराबर",
-            "LE": "<= से कम या बराबर"
-        },
-        "value": "मूल्य",
-        "valuePlaceholder": "मान दर्ज",
-        "type": "प्रकार",
-        "typePlaceholder": "का चयन करें प्रकार",
-        "typeOptions": {
-            "Number": "संख्या",
-            "Text": "पाठ"
-        },
-        "remove": "निकालें हालत",
-        "add": "जोड़ें हालत",
-        "errorMsg": {
-            "fieldCantBeEmpty": "क्षेत्र की आवश्यकता है",
-            "operatorCantBeEmpty": "ऑपरेटर आवश्यक है",
-            "valueCantBeEmpty": "मूल्य की आवश्यकता है",
-            "typeCantBeEmpty": "प्रकार की आवश्यकता है",
-            "selectedType": "किया जाना चाहिए के चयनित प्रकार"
-        }
-    },
-    "deviceGroupsFlyout": {
-        "actions": "कार्रवाई",
-        "cancel": "रद्द",
-        "title": "डिवाइस का प्रबंधन समूहों",
-        "create": "बनाने के लिए नए उपकरण समूह",
-        "deviceGroupName": "डिवाइस का नाम",
-        "new": "नई डिवाइस समूह",
-        "edit": "संपादित करें उपकरण समूह",
+        "packageType": "पैकेज के प्रकार",
+        "configType": "विन्यास प्रकार",
+        "deviceGroup": "डिवाइस समूह",
         "name": "नाम",
-        "namePlaceHolder": "डिवाइस का नाम",
-        "save": "बचाने के लिए",
-        "errorMsg": {
-            "nameCantBeEmpty": "नाम की आवश्यकता है"
+        "priority": "प्राथमिकता (उच्च मूल्यों से संकेत मिलता है उच्च प्राथमिकता)",
+        "priorityToolTip": "जब दो तैनाती के लक्ष्य को एक ही डिवाइस तैनाती के साथ उच्च प्राथमिकता हो जाता है लागू किया जाता है । यदि दो की तैनाती है एक ही प्राथमिकता है, तैनाती के बाद सृजन की तारीख हो जाता है लागू किया जाता है । <1><0>और जानें</0></1>",
+        "priorityLearnMore": "के बारे में अधिक जानने प्राथमिकता",
+        "package": "पैकेज",
+        "packageTypePlaceHolder": "पैकेज के प्रकार का चयन करें",
+        "configTypePlaceHolder": "विन्यास प्रकार का चयन करें",
+        "packagePlaceHolder": "का चयन करें पैकेज",
+        "deviceGroupPlaceHolder": "डिवाइस का चयन करें समूह",
+        "priorityPlaceHolder": "प्रवेश में प्राथमिकता",
+        "namePlaceHolder": "नाम दर्ज करें",
+        "targetText": "लक्षित उपकरणों",
+        "infoText": "इस तैनाती लगातार चलाता है. हर डिवाइस (और किसी भी आप भविष्य में जोड़) में चयनित डिवाइस समूह प्राप्त होगा इस पैकेज में । ",
+        "successText": "देखें अपने तैनाती की स्थिति विस्तार के लिए <1><0>{{deploymentName}}</0></1>.",
+        "creating": "बनाने तैनाती",
+        "validation": {
+          "required": "आवश्यक है",
+          "positiveInteger": "किया जाना चाहिए एक सकारात्मक पूर्णांक कम से कम 2147483648",
+          "name": "नाम 50 से अधिक पात्रों"
         }
+      },
+      "status": {
+        "title": "तैनाती की स्थिति",
+        "relatedDeployment": {
+          "title": "संबंधित तैनाती",
+          "noRelatedDeploymentText": "कोई संबंधित तैनाती के लिए मौजूद हैं, चयनित तैनाती । "
+        },
+        "deploymentLimitText": "अपने वातावरण वर्तमान में सीमित करने के लिए 100 सक्रिय तैनाती.",
+        "active": "सक्रिय",
+        "inActive": "निष्क्रिय",
+        "apply": "लागू",
+        "cancel": "रद्द",
+        "close": "करीब",
+        "updating": "अद्यतन परिनियोजन"
+      }
+    },
+    "details": {
+      "deploymentName": "तैनाती का नाम",
+      "deviceGroup": "डिवाइस समूह",
+      "start": "शुरू",
+      "packageType": "पैकेज के प्रकार",
+      "configType": "विन्यास प्रकार",
+      "package": "पैकेज",
+      "priority": "प्राथमिकता",
+      "applied": "लागू",
+      "targeted": "लक्षित",
+      "failed": "में विफल रहा है",
+      "succeeded": "सफल रहा",
+      "pending": "लंबित",
+      "unknown": "अज्ञात",
+      "customMetrics": "कस्टम मीट्रिक",
+      "devicesAffected": "उपकरणों प्रभावित",
+      "grid": {
+        "name": "नाम",
+        "deploymentStatus": "तैनाती की स्थिति",
+        "firmware": "फर्मवेयर",
+        "lastMessage": "पिछले संदेश",
+        "start": "शुरू",
+        "end": "अंत"
+      }
+    },
+    "modals": {
+      "delete": {
+        "contextMenuName": "हटाना",
+        "title": "हटाने तैनाती?",
+        "info": "हटाने '{{deploymentName}}' बंद हो जाएगा इस तैनाती से लागू किया जा रहा करने के लिए इन उपकरणों । यह परिणाम हो सकता है में एक कम प्राथमिकता तैनाती लागू किया जा रहा है."
+      }
+    },
+    "grid": {
+      "name": "नाम",
+      "package": "पैकेज",
+      "deviceGroup": "डिवाइस समूह",
+      "priority": "प्राथमिकता",
+      "packageType": "पैकेज के प्रकार",
+      "configType": "विन्यास प्रकार",
+      "targeted": "लक्षित",
+      "targetedTooltip": "की संख्या डिवाइस जुड़वां उस मैच के लक्ष्य हालत में है । ",
+      "applied": "लागू",
+      "appliedTooltip": "की संख्या डिवाइस जुड़वां है कि संशोधित किया गया है द्वारा विन्यास है । ",
+      "failed": "में विफल रहा है",
+      "succeeded": "सफल रहा",
+      "createdOn": "पर बनाया",
+      "status": "स्थिति",
+      "modifiedBy": "द्वारा संशोधित",
+      "modifiedOn": "पर संशोधित",
+      "createdBy": "के द्वारा बनाई गई"
+    }
+  },
+  "packages": {
+    "searchPlaceholder": "खोज संकुल...",
+    "noneFound": "कोई पैकेज नहीं मिला.",
+    "title": "संकुल",
+    "total": "कुल संकुल",
+    "new": "नए पैकेज",
+    "delete": "हटाना",
+    "activate": "सक्रिय",
+    "deactivate": "निष्क्रिय",
+    "grid": {
+      "name": "नाम",
+      "packageType": "पैकेज के प्रकार",
+      "configType": "विन्यास प्रकार",
+      "dateCreated": "तिथि बनाया",
+      "active": "सक्रिय",
+      "tags": "टैग",
+      "version": "संस्करण",
+      "lastModified": "अंतिम संशोधित तिथि",
+      "lastModifedBy": "पिछले द्वारा संशोधित"
+    },
+    "flyouts": {
+      "new": {
+        "title": "नए पैकेज",
+        "header": "अपलोड एक पैकेज",
+        "description": "जोड़ने के एक पैकेज के लिए अपने समाधान",
+        "upload": "अपलोड",
+        "cancel": "रद्द",
+        "close": "करीब",
+        "packageName": "पैकेज का नाम",
+        "packageType": "पैकेज के प्रकार",
+        "version": "संस्करण",
+        "configType": "विन्यास प्रकार",
+        "customType": "कस्टम विन्यास के प्रकार",
+        "browse": "ब्राउज़ करें",
+        "browseFirmwareText": "के लिए एक फर्मवेयर फ़ाइल",
+        "browseText": "के लिए एक पैकेज फ़ाइल",
+        "firmwareTemplateTip": "प्रारंभिक JSON डेटा से ली गई है, अपने टेम्पलेट. आप देख सकते हैं और इस टेम्पलेट को संपादित सेटिंग्स मेनू से.",
+        "firmwareJson": "फर्मवेयर JSON",
+        "packageNamePlaceholder": "पैकेज का नाम दर्ज करें",
+        "packageVersionPlaceholder": "प्रवेश के पैकेज संस्करण",
+        "packageTypePlaceholder": "पैकेज के प्रकार का चयन करें",
+        "configTypePlaceholder": "विन्यास प्रकार का चयन करें",
+        "customTextPlaceholder": "दर्ज कस्टम नाम",
+        "package": "पैकेज",
+        "deploymentsPage": "तैनाती पृष्ठ",
+        "newDeployment": "+ नई तैनाती",
+        "deploymentText": "तैनात करने के लिए संकुल के लिए जाने के लिए <1>तैनाती पृष्ठ</1>, और फिर क्लिक करें <3>+ नई तैनाती</3>.",
+        "validation": {
+          "required": "आवश्यक है",
+          "fileName": "फ़ाइल नाम 50 से अधिक पात्रों",
+          "fileType": "अमान्य फ़ाइल प्रकार",
+          "customConfig": "नाम 50 से अधिक पात्रों",
+          "invalid": "अमान्य प्रविष्टि",
+          "invalidVersion": "अमान्य संस्करण",
+          "unsupportedProperty": "असमर्थित फर्मवेयर संपत्ति में इस्तेमाल सामग्री.deviceContent",
+          "unsupportedVersionKey": "असमर्थित संस्करण में प्रमुख वांछित गुण"
+        }
+      },
+      "packageJson": {
+        "title": "पैकेज JSON डेटा"
+      }
+    },
+    "modals": {
+      "delete": {
+        "title": "पैकेज हटाना?",
+        "info": "हटाने के चयनित पैकेज में इसे हटा देगा. यह नहीं होगा प्रभाव के किसी भी तैनाती के इस पैकेज में । "
+      }
+    }
+  },
+  "packageTypes": {
+    "edgeManifest": "बढ़त प्रकट",
+    "deviceConfiguration": "डिवाइस विन्यास",
+    "unknown": "अज्ञात"
+  },
+  "configTypes": {
+    "firmware": "फर्मवेयर",
+    "custom": "कस्टम"
+  },
+  "modal": {
+    "delete": "हटाना",
+    "cancel": "रद्द"
+  },
+  "walkthrough": {
+    "tabs": {
+      "dashboard": "डैशबोर्ड",
+      "basicPage": "बुनियादी पृष्ठ",
+      "pageWithFlyout": "पृष्ठ के साथ Flyout",
+      "pageWithGrid": "पृष्ठ ग्रिड के साथ"
+    },
+    "basicPage": {
+      "pagePlaceholder": "यह एक नया पृष्ठ."
+    },
+    "pageWithFlyout": {
+      "title": "Flyout उदाहरण",
+      "pageBody": "क्लिक करें संदर्भ ऊपर बटन को खोलने के लिए एक flyout.",
+      "open": "खुला Flyout",
+      "flyouts": {
+        "example": {
+          "header": "उदाहरण Flyout",
+          "description": "इस उदाहरण flyout शामिल हैं एक सरल फार्म के साथ कार्रवाई बटन । ",
+          "insertFormHere": "सम्मिलित प्रपत्र नियंत्रणों यहाँ. देखें 'src/घटकों/साझा/रूपों के लिए' के रूप में विशिष्ट साझा नियंत्रण हो सकता है आप का लाभ उठाने । ",
+          "summaryHeader": "सारांश",
+          "affected": "प्रभावित आइटम",
+          "cancel": "रद्द",
+          "apply": "लागू",
+          "pending": "परिवर्तनों को लागू किए... ",
+          "applySuccess": "आइटम सफलतापूर्वक अद्यतन!",
+          "close": "करीब"
+        }
+      }
+    },
+    "pageWithGrid": {
+      "grid": {
+        "name": "नाम",
+        "description": "विवरण",
+        "btn1": "बटन 1",
+        "btn2": "बटन 2"
+      }
     },
     "dashboard": {
-        "noData": "कोई डेटा उपलब्ध नहीं है",
-        "panels": {
-            "alerts": {
-                "header": "अलर्ट",
-                "explore": "का पता लगाने"
-            },
-            "analytics": {
-                "header": "विश्लेषिकी",
-                "topRule": "शीर्ष नियमों के साथ सक्रिय अलर्ट",
-                "deviceGroupAlerts": "चेतावनी डिवाइस समूह",
-                "criticalAlerts": "महत्वपूर्ण अलर्ट",
-                "currentWindow": "वर्तमान में",
-                "previousWindow": "इससे पहले"
-            },
-            "map": {
-                "header": "डिवाइस स्थानों",
-                "runtimeError": "एक त्रुटि हुई है, जबकि प्रतिपादन नक्शा",
-                "notSupportedError": "नीला नक्शे समर्थित नहीं है, अपने क्षेत्र में"
-            },
-            "overview": {
-                "header": "डिवाइस के आँकड़े",
-                "allDevices": "सभी उपकरणों",
-                "critical": "महत्वपूर्ण",
-                "warnings": "चेतावनी",
-                "total": "कुल",
-                "connected": "जुड़ा हुआ है",
-                "notConnected": "ऑफ़लाइन"
-            },
-            "telemetry": {
-                "header": "टेलीमेटरी"
-            }
+      "panels": {
+        "example": {
+          "header": "उदाहरण के लिए पैनल",
+          "panelBody": "यह एक नया पैनल."
         }
+      }
     },
-    "refreshBar": {
-        "refreshing": "ताज़ा",
-        "lastRefreshed": "पिछले ताजा",
-        "ariaLabel": "पृष्ठ ताज़ा करें"
-    },
-    "users": {
-        "title": "उपयोगकर्ता प्रबंधन",
-        "ariaLabel": "खोज उपयोगकर्ताओं",
-        "searchPlaceholder": "उपयोगकर्ताओं को खोज...",
-        "grid": {
-            "userName": "नाम",
-            "userType": "प्रकार",
-            "userId": "Guid",
-            "userRole": "भूमिका"
-        },
-        "flyouts": {
-            "new": {
-                "contextMenuName": "नए उपयोगकर्ता",
-                "addServicePrincipal": "जोड़ें सेवा प्रिंसिपल",
-                "title": "उपयोगकर्ताओं को आमंत्रित",
-                "user": {
-                    "label": "ईमेल पते",
-                    "apply": "आमंत्रण भेजें",
-                    "applySuccess": "उपयोगकर्ता सफलतापूर्वक आमंत्रित!"
-                },
-                "servicePrincipal": {
-                    "label": "सेवा प्रिंसिपल अनुप्रयोग आईडी",
-                    "apply": "जोड़ें",
-                    "applySuccess": "जोड़ा सेवा प्रिंसिपल"
-                },
-                "roles": {
-                    "hint": "का चयन करें उपयोगकर्ता भूमिका",
-                    "label": "उपयोगकर्ता भूमिका"
-                },
-                "systemAdmin":{
-                    "hint":"Select user",
-                    "label":"System Admin",
-                    "title":"Add System Admin",
-                    "add":"Add",
-                    "applySuccess": "Added system admin successfully!"
-                },
-                "apply": "आमंत्रण भेजें",
-                "cancel": "रद्द",
-                "validation": {
-                    "required": "आवश्यक है",
-                    "invalid": "अमान्य ईमेल प्रदान की",
-                    "invalidGuid": "अमान्य Guid"
-                },
-                "summaryHeader": "सारांश",
-                "pending": "को हटाने के उपकरणों... ",
-                "close": "करीब"
-            },
-            "delete": {
-                "title": "हटाना",
-                "header": "उपयोगकर्ताओं को हटाने के लिए",
-                "description": "इस कार्रवाई को दूर करेगा चयनित उपयोगकर्ता से इस किरायेदार.",
-                "confirmNo": "नहीं, दूर नहीं चयनित उपयोगकर्ताओं से इस किरायेदार.",
-                "confirmYes": "हाँ, कृपया निकालें चयनित उपयोगकर्ताओं से इस किरायेदार.",
-                "summaryHeader": "सारांश",
-                "affected": "प्रभावित उपयोगकर्ताओं",
-                "cancel": "रद्द",
-                "apply": "हटाना",
-                "pending": "हटाने के उपयोगकर्ताओं... ",
-                "applySuccess": "उपयोगकर्ताओं को सफलतापूर्वक नष्ट कर दिया!",
-                "close": "करीब"
-            }
-        }
-    },
-    "devices": {
-        "title": "डिवाइस एक्सप्लोरर",
-        "ariaLabel": "खोज उपकरणों",
-        "searchPlaceholder": "खोज उपकरणों...",
-        "noneFound": "कोई उपकरण नहीं मिला है.",
-        "refresh": "ताज़ा",
-        "grid": {
-            "connected": "जुड़ा हुआ है",
-            "deviceName": "डिवाइस का नाम",
-            "deviceType": "डिवाइस प्रकार",
-            "firmware": "फर्मवेयर",
-            "lastConnection": "अंतिम कनेक्शन",
-            "no": "कोई",
-            "offline": "ऑफ़लाइन",
-            "simulated": "नकली",
-            "status": "स्थिति",
-            "telemetry": "टेलीमेटरी",
-            "yes": "हाँ"
-        },
-        "flyouts": {
-            "createDeviceQuery": {
-                "title": "क्वेरी उपकरणों"
-            },
-            "details": {
-                "title": "डिवाइस का विवरण",
-                "noDevice": "उफ़, हम थे खोजने के लिए सक्षम नहीं है । ",
-                "close": "करीब",
-                "connected": "जुड़ा हुआ है",
-                "notConnected": "काट दिया",
-                "simulated": "नकली",
-                "notSimulated": "शारीरिक",
-                "diagnostics": {
-                    "title": "निदान",
-                    "description": "नैदानिक डिवाइस से जानकारी",
-                    "keyHeader": "संपत्ति",
-                    "valueHeader": "मूल्य",
-                    "status": "स्थिति",
-                    "lastMessage": "पिछले संदेश",
-                    "message": "संदेश",
-                    "showMessage": "यहाँ क्लिक करें देखने के लिए कच्चे संदेश"
-                },
-                "methods": {
-                    "title": "तरीकों",
-                    "description": "को चलाने के लिए एक विधि पर एक या एक से अधिक उपकरणों, इस फलक का चयन करें, चेकबॉक्स के लिए डिवाइस(एस), क्लिक करें <1><0>{{नौकरियाँ}}</0></1>, और उसके बाद का चयन <3><0>{{तरीकों}}</0></3>.",
-                    "noneExist": "कोई विधि नहीं मिली । "
-                },
-                "modules": {
-                    "title": "तैनाती के लिए संदेश",
-                    "description": "एज मॉड्यूल पर संदेश डिवाइस",
-                    "noneExist": "कोई संदेश नहीं पाया इस डिवाइस के लिए"
-                },
-                "properties": {
-                    "title": "गुण",
-                    "description": "बदलने के लिए एक संपत्ति पर एक या एक से अधिक उपकरणों, इस फलक का चयन करें, चेकबॉक्स के लिए डिवाइस(एस), क्लिक करें <1><0>{{नौकरियाँ}}</0></1>, और उसके बाद का चयन <3><0>{{गुण}}</0></3>.",
-                    "keyHeader": "संपत्ति",
-                    "valueHeader": "मूल्य",
-                    "noneExist": "कोई गुण पाया इस डिवाइस के लिए.",
-                    "copy": "कॉपी",
-                    "copyAllProperties": "प्रतिलिपि की एक सूची सभी संपत्तियों के लिए डिवाइस",
-                    "syncing": "{{reportedPropertyValue}} (सिंक्रनाइज़ {{desiredPropertyValue}})"
-                },
-                "tags": {
-                    "title": "टैग",
-                    "description": "जोड़ने, हटाने, या बदलने के लिए एक टैग पर एक या एक से अधिक उपकरणों, इस फलक का चयन करें, चेकबॉक्स के लिए डिवाइस(एस), क्लिक करें <1><0>{{नौकरियाँ}}</0></1>, और उसके बाद का चयन <3><0>{{टैग}}</0></3>.",
-                    "keyHeader": "कुंजी",
-                    "valueHeader": "मूल्य",
-                    "noneExist": "कोई टैग के लिए मिला । "
-                },
-                "telemetry": {
-                    "title": "टेलीमेटरी"
-                }
-            },
-            "delete": {
-                "title": "हटाना",
-                "header": "डिवाइस को हटा दें",
-                "description": "इस क्रिया को हटाने के उपकरणों से स्थायी रूप से मंच । ",
-                "confirmNo": "कोई हटा नहीं है, चयनित भौतिक उपकरणों.",
-                "confirmYes": "हाँ, कृपया हटाएँ चयनित भौतिक उपकरणों.",
-                "simulatedNotSupported": "हटाने के नकली उपकरणों वर्तमान में समर्थित नहीं है, इस कार्रवाई के केवल हो जाएगा पर ले जाया भौतिक उपकरणों.",
-                "summaryHeader": "सारांश",
-                "affected": "प्रभावित उपकरणों",
-                "cancel": "रद्द",
-                "apply": "हटाना",
-                "pending": "को हटाने के उपकरणों... ",
-                "applySuccess": "उपकरणों को सफलतापूर्वक नष्ट कर दिया!",
-                "close": "करीब"
-            },
-            "jobs": {
-                "title": "नौकरियाँ",
-                "noDevices": "उफ़, हम में सक्षम नहीं थे खोजने के लिए किसी भी चयनित उपकरणों.",
-                "summaryHeader": "सारांश",
-                "affected": "प्रभावित उपकरणों",
-                "cancel": "रद्द",
-                "apply": "लागू",
-                "pending": "प्रस्तुत करने का काम...",
-                "applySuccess": "नौकरी के लिए सफलतापूर्वक प्रस्तुत किया गया!",
-                "close": "करीब",
-                "selectJob": "का चयन करें नौकरी",
-                "jobName": "नौकरी के नाम",
-                "jobNameHint": "दर्ज नौकरी के नाम",
-                "jobNameHelpMessage": "केवल अक्षरों और संख्याओं की अनुमति दी हैं",
-                "viewStatus": "देखें नौकरी की स्थिति",
-                "validation": {
-                    "required": "आवश्यक है"
-                },
-                "tags": {
-                    "radioLabel": "टैग",
-                    "title": "टैग चयनित उपकरणों पर",
-                    "description": "टैग आम में चयनित उपकरणों पर",
-                    "keyHeader": "कुंजी",
-                    "valueHeader": "मूल्य",
-                    "typeHeader": "प्रकार",
-                    "typeNumber": "संख्या",
-                    "typeString": "पाठ",
-                    "noneExist": "कोई आम टैग में पाया गया के लिए चयनित उपकरणों.",
-                    "add": "टैग जोड़ें"
-                },
-                "methods": {
-                    "radioLabel": "तरीकों",
-                    "title": "चलाने विधि चयनित उपकरणों पर",
-                    "description": "सभी उपलब्ध तरीकों के लिए उपकरण या उपकरणों के समूह",
-                    "methodName": "विधि नाम",
-                    "methodNameHint": "चयन की विधि",
-                    "firmwareVersion": "फर्मवेयर संस्करण",
-                    "firmwareVersionHint": "1.0.1",
-                    "firmwareUri": "फर्मवेयर URI",
-                    "firmwareUriHint": "दर्ज फर्मवेयर उड़ी मूल्य"
-                },
-                "properties": {
-                    "radioLabel": "गुण",
-                    "title": "गुण चयनित उपकरणों पर",
-                    "description": "उपलब्ध गुणों और मूल्यों को बदलने के लिए",
-                    "keyHeader": "संपत्ति",
-                    "valueHeader": "मूल्य",
-                    "typeHeader": "प्रकार",
-                    "typeNumber": "संख्या",
-                    "typeString": "पाठ",
-                    "noneExist": "कोई आम गुण पाया के लिए चयनित उपकरणों.",
-                    "syncing": "{{reportedPropertyValue}} (सिंक्रनाइज़ {{desiredPropertyValue}})"
-                }
-            },
-            "new": {
-                "contextMenuName": "नई डिवाइस",
-                "title": "नई डिवाइस",
-                "summaryHeader": "प्रावधान सारांश",
-                "affected": "उपकरणों के लिए प्रावधान",
-                "cancel": "रद्द",
-                "apply": "लागू",
-                "pending": "प्रोविजनिंग उपकरणों... ",
-                "applySuccess": "उपकरणों का प्रावधान सफलतापूर्वक",
-                "simulatedRefreshMessage": "नकली उपकरणों बनाई गई हैं पृष्ठभूमि में सर्वर पर है । इसलिए, वे एक समय लग सकता है दिखाने के लिए जब डिवाइस सूची में ताजा है.",
-                "close": "करीब",
-                "validation": {
-                    "required": "आवश्यक है",
-                    "greaterThanZero": "शून्य से अधिक होना चाहिए"
-                },
-                "count": {
-                    "label": "उपकरणों की संख्या"
-                },
-                "device": {
-                    "label": "डिवाइस",
-                    "device": "IoT डिवाइस",
-                    "edgeDevice": "IoT डिवाइस बढ़त"
-                },
-                "deviceType": {
-                    "label": "प्रकार",
-                    "simulated": "नकली",
-                    "physical": "असली"
-                },
-                "deviceId": {
-                    "label": "डिवाइस आईडी",
-                    "hint": "डिवाइस आईडी दर्ज करें",
-                    "sysGenerated": "प्रणाली उत्पन्न डिवाइस आईडी"
-                },
-                "deviceIdExample": {
-                    "label": "डिवाइस आईडी उदाहरण",
-                    "format": "{{deviceName}}-{#####}",
-                    "deviceName": "{नाम}"
-                },
-                "deviceModel": {
-                    "label": "डिवाइस मॉडल",
-                    "hint": "का चयन करें मौजूदा डिवाइस प्रकार"
-                },
-                "authenticationType": {
-                    "label": "प्रमाणीकरण प्रकार",
-                    "symmetric": "सममित कुंजी",
-                    "x509": "X. 509"
-                },
-                "authenticationKey": {
-                    "label": "प्रमाणीकरण कुंजी",
-                    "generateKeys": "ऑटो कुंजी उत्पन्न",
-                    "manualKeys": "प्रवेश कुंजी मैन्युअल रूप से",
-                    "hint": "दर्ज करें अपने यहाँ कुंजी",
-                    "primaryKey": "प्राथमिक कुंजी",
-                    "primaryKeyConnection": "कनेक्शन स्ट्रिंग प्राथमिक कुंजी",
-                    "secondaryKey": "माध्यमिक कुंजी",
-                    "secondaryKeyConnection": "कनेक्शन स्ट्रिंग माध्यमिक कुंजी",
-                    "primaryThumbprint": "प्राथमिक थंबप्रिंट",
-                    "secondaryThumbprint": "माध्यमिक थंबप्रिंट"
-                }
-            },
-            "SIMManagement": {
-                "title": "सिम प्रबंधन",
-                "provider": "प्रदाता",
-                "summaryHeader": "सारांश और निर्देश",
-                "here": "यहाँ",
-                "select": "का चयन करें...",
-                "header": {
-                    "telefonica": "के रूप में एक Telefónica IoT ग्राहक आप का लाभ इस सुविधा को जोड़ने को समृद्ध करने के लिए स्वचालित रूप से अपने नीला दूरदराज के निगरानी समाधान के साथ कनेक्टिविटी उपलब्ध डेटा में Telefónica IoT कनेक्टिविटी मंच (नेटवर्क के बारे में जानकारी, डेटा की खपत और नेटवर्क आधारित स्थान)."
-                },
-                "description": {
-                    "telefonica": "इस सुविधा का पूर्वावलोकन में है. सिंक करने के क्रम में अपने डेटा कनेक्टिविटी में नीला दूरदराज के निगरानी समाधान के लिए, कृपया भरने के लिए एक अनुरोध <1><0>url</0></1> का चयन करें, \"विकल्प नीला दूरस्थ निगरानी\" और शामिल हैं अपने संपर्क डेटा, और हम स्वचालित रूप से अपने खाते को सक्रिय. \n\nयदि आप नहीं कर रहे हैं एक Telefónica ग्राहक अभी तक है और आप चाहते हैं आनंद लेने के लिए इस या अन्य IoT कनेक्टिविटी पर बादल सेवाओं के साथ, आप कर सकते हैं हमसे संपर्क करें <1><0>url</0></1> और विकल्प का चयन करें \"कनेक्टिविटी\"; हम मदद करने में खुशी होगी आप."
-                },
-                "operator": {
-                    "telefonica": "Telefónica"
-                }
-            }
-        }
-    },
-    "rules": {
-        "title": "नियम",
-        "searchPlaceholder": "खोज नियम...",
-        "ariaLabel": "खोज नियम",
-        "severity": {
-            "info": "जानकारी",
-            "warning": "चेतावनी",
-            "critical": "महत्वपूर्ण"
-        },
-        "grid": {
-            "enabled": "सक्षम",
-            "disabled": "विकलांग",
-            "ruleName": "नियम का नाम",
-            "description": "विवरण",
-            "severity": "गंभीरता",
-            "deviceGroup": "डिवाइस समूह",
-            "trigger": "ट्रिगर",
-            "notificationType": "अधिसूचना प्रकार",
-            "status": "स्थिति",
-            "count": "गिनती",
-            "lastTrigger": "पिछले ट्रिगर",
-            "maintenanceLog": "रखरखाव लॉग इन करें",
-            "explore": "का पता लगाने"
-        },
-        "flyouts": {
-            "edit": "संपादित करें",
-            "statusToggle": "स्थिति",
-            "enable": "सक्षम करें",
-            "disable": "अक्षम",
-            "changeStatus": "स्थिति बदलें",
-            "newRule": "नए नियम",
-            "editRule": "नियम संपादित",
-            "viewRule": "नियम विवरण",
-            "statusTitle": "स्थिति बदलें",
-            "delete": "हटाना",
-            "ruleEditor": {
-                "ruleName": "नियम का नाम",
-                "namePlaceholder": "प्रवेश नियम का नाम",
-                "description": "विवरण",
-                "descriptionPlaceholder": "प्रवेश नियम विवरण",
-                "deviceGroup": "डिवाइस समूह",
-                "deviceGroupPlaceholder": "डिवाइस का चयन करें समूह",
-                "conditions": "स्थिति",
-                "addCondition": "जोड़ें हालत",
-                "delete": "हटाना",
-                "calculation": "गणना",
-                "calculationPlaceholder": "का चयन करें",
-                "timePeriod": "समय की अवधि (मिनट में)",
-                "condition": {
-                    "condition": "हालत",
-                    "field": "क्षेत्र",
-                    "fieldPlaceholder": "क्षेत्र का चयन करें",
-                    "operator": "ऑपरेटर",
-                    "operatorPlaceholder": "ऑपरेटर का चयन करें",
-                    "operatorOptions": {
-                        "Equals": "= बराबर होती है",
-                        "GreaterThan": "> अधिक से अधिक से अधिक",
-                        "LessThan": "< कम से कम",
-                        "GreaterThanOrEqual": ">= अधिक से अधिक या बराबर",
-                        "LessThanOrEqual": "<= से कम या बराबर"
-                    },
-                    "value": "मूल्य",
-                    "valuePlaceholder": "मान दर्ज"
-                },
-                "actions": {
-                    "action": "कार्रवाई",
-                    "checkingEmailSetup": "स्थिति की जाँच के ईमेल विन्यास.",
-                    "setupEmail": "भेजने के लिए ईमेल अलर्ट, <1><0>outlookLogin</0></1> की आवश्यकता है.",
-                    "outlookLogin": "साइन इन करने के लिए Outlook",
-                    "emailSetupConfirmed": "अपने ईमेल विन्यास पूरा हो चुका है सफलतापूर्वक । ",
-                    "setupEmailError": "वहाँ किया गया है एक त्रुटि की पुष्टि के लिए अपने ईमेल सेटअप है. <1><0>tryAgain</0></1>",
-                    "setupEmailTimeout": "जाँच के लिए ईमेल सेटअप समाप्त हो गया है. <1><0>tryAgain</0></1>",
-                    "emailSetupHelp": "भेजने के ईमेल अलर्ट मार्गदर्शन विन्यास की आवश्यकता है. <1><0>learnMore</0></1>",
-                    "tryAgain": "कृपया फिर से कोशिश करें.",
-                    "learnMore": "अधिक जानने के लिए",
-                    "emailActionLabel": "ईमेल भेजें",
-                    "emailAddresses": "ईमेल पते",
-                    "enterEmail": "प्रेस दर्ज करें जोड़ने के लिए ईमेल प्राप्तकर्ता",
-                    "emailComments": "अतिरिक्त नोट्स",
-                    "enterEmailComments": "अतिरिक्त नोट्स दर्ज ईमेल के लिए संदेश.",
-                    "emailSubject": "ईमेल विषय",
-                    "enterEmailSubject": "दर्ज करें ईमेल विषय",
-                    "syntaxError": "नहीं एक मान्य ईमेल पता",
-                    "on": "ईमेल सक्षम",
-                    "off": "ईमेल अक्षम",
-                    "defaultEmailSubject": "नीला IoT दूरदराज के निगरानी चेतावनी: {{ruleName}} शुरू हो गया था",
-                    "deleteEmail": "ईमेल को नष्ट"
-                },
-                "calculationOptions": {
-                    "average": "औसत",
-                    "instant": "त्वरित"
-                },
-                "validation": {
-                    "required": "आवश्यक है",
-                    "nan": "एक संख्या होनी चाहिए"
-                },
-                "severityLevel": "गंभीरता स्तर",
-                "ruleStatus": "नियम स्थिति",
-                "ruleEnabled": "सक्षम",
-                "ruleDisabled": "विकलांग",
-                "devicesAffected": "उपकरणों के इस नियम से प्रभावित",
-                "summaryHeader": "सारांश",
-                "apply": "लागू",
-                "cancel": "रद्द"
-            },
-            "deleteRule": {
-                "preDeleteText": "हम रखने के लिए किसी भी अलर्ट के साथ जुड़े इस नियम के बाद भी यह नष्ट कर दिया । यदि आप चाहते हैं को नष्ट करने के लिए संबंधित अलर्ट, के लिए जाने के लिए <1><0>url</0></1> और चुनें अलर्ट आप चाहते हैं को दूर करने के लिए.",
-                "deleteConfirmation": "नियम हटा दिया गया है । ",
-                "postDeleteText": "यदि आप चाहते हैं को नष्ट करने के लिए अलर्ट के साथ जुड़े इस नियम के लिए जाने के लिए <1><0>url</0></1> और चुनें अलर्ट आप चाहते हैं को दूर करने के लिए.",
-                "disableConfirmation": "नियम अक्षम किया गया है.",
-                "maintenancePage": "रखरखाव पृष्ठ",
-                "title": "हटाने के नियम",
-                "close": "करीब",
-                "delete": "हटाना",
-                "cancel": "रद्द"
-            }
-        }
-    },
-    "fileInput": {
-        "upload": "अपलोड"
-    },
-    "applicationSettings": {
-        "nameAndLogo": "नाम और लोगो",
-        "nameLogoDescription": "संपादित लोगो और नाम में साइट शीर्षक.",
-        "replaceLogo": "जगह लोगो छवि",
-        "logoDescription": "की सिफारिश की लोगो आकार: 24 x 24 पिक्सल है.\nअधिकतम लोगो का आकार: 300 KB.\nसमर्थित फ़ाइल स्वरूपों:\n.एसवीजी\n.PNG\n.JPEG\n.JPG",
-        "applicationName": "आवेदन नाम",
-        "currentLogo": "वर्तमान लोगो",
-        "edit": "संपादित करें",
-        "checkmark": "चेकमार्क",
-        "uploadError": "में असमर्थ अपलोड करने के लिए फ़ाइल की जाँच करें फ़ाइल प्रकार/आकार और पुन: प्रयास करें । ",
-        "error": "त्रुटि"
-    },
-    "maintenance": {
-        "acknowledge": "स्वीकार करते हैं",
-        "acknowledged": "स्वीकार किया",
-        "alertOccurrences": "चेतावनी घटनाओं",
-        "alertedDeviceTelemetry": "सतर्क कर दिया डिवाइस के टेलीमेटरी",
-        "alertedDevices": "सतर्क उपकरणों",
-        "all": "सभी",
-        "close": "करीब",
-        "closed": "बंद",
-        "critical": "महत्वपूर्ण",
-        "delete": "हटाना",
-        "devices": "उपकरणों",
-        "failedJobs": "विफल कार्य",
-        "jobs": "नौकरियाँ",
-        "lastEvent": "पिछले घटना",
-        "noData": "कोई डेटा नहीं",
-        "noOccurrenceSelected": "कोई घटनाओं चयनित",
-        "notifications": "अलर्ट",
-        "open": "खुला",
-        "openAlerts": "खुला अलर्ट",
-        "relatedInfo": "संबंधित जानकारी",
-        "ruleDetail": "नियम विवरण",
-        "ruleDetailsDesc": "प्रबंधन की चेतावनी घटनाओं के लिए जुड़े इस नियम में नीचे दिए गए अनुभाग का उपयोग करें, और संबंधित जानकारी के निवारण के लिए प्रत्येक घटना । ",
-        "severity": "गंभीरता",
-        "succeeded": "सफल रहा",
-        "telemetry": "टेलीमेटरी",
-        "title": "रखरखाव",
-        "total": "कुल",
-        "warning": "चेतावनी",
-        "alertGrid": {
-            "totalCount": "कुल गिनती",
-            "open": "खुला",
-            "acknowledged": "स्वीकार किया",
-            "closed": "बंद",
-            "lastOccurrence": "पिछले घटना"
-        },
-        "jobGrid": {
-            "jobName": "नौकरी के नाम",
-            "status": "स्थिति",
-            "operation": "ऑपरेशन",
-            "noDevices": "नहीं । उपकरणों की",
-            "succeeded": "सफल रहा",
-            "failed": "में विफल रहा है",
-            "startTime": "प्रारंभ समय",
-            "endTime": "अंत समय"
-        },
-        "jobStatusGrid": {
-            "deviceIdAffected": "डिवाइस आईडी प्रभावित",
-            "lastReturnMsg": "पिछले वापसी संदेश"
-        },
-        "alertOccGrid": {
-            "occurrence": "घटना",
-            "triggerDevice": "ट्रिगर डिवाइस",
-            "time": "समय"
-        },
-        "jobStatus": {
-            "1": "कतारबद्ध",
-            "2": "चल रहा है",
-            "3": "पूरा",
-            "4": "में विफल रहा है",
-            "5": "रद्द कर दिया",
-            "6": "अनुसूचित",
-            "queued": "पंक्तिबद्ध"
-        }
-    },
-    "timeInterval": {
-        "PT1H": "पिछले घंटे",
-        "P1D": "अंतिम दिन",
-        "P7D": "पिछले सप्ताह",
-        "P1M": "पिछले महीने",
-        "ariaLabel": "समय अंतराल"
-    },
-    "timeSeriesInsights": {
-        "explore": "का पता लगाने में समय श्रृंखला अंतर्दृष्टि",
-        "exploreTooltip": "डेटा देखने के लिए समय में श्रृंखला अंतर्दृष्टि एक्सप्लोरर, पूछने के लिए कृपया समाधान के मालिक अनुदान के लिए आप डेटा का उपयोग. <1><0>learnMore</0></1>",
-        "learnMore": "अधिक जानने के लिए"
-    },
-    "deployments": {
-        "title": "तैनाती",
-        "flyouts": {
-            "new": {
-                "contextMenuName": "नई तैनाती",
-                "title": "नई तैनाती",
-                "apply": "लागू",
-                "cancel": "रद्द",
-                "close": "करीब",
-                "packageType": "पैकेज के प्रकार",
-                "configType": "विन्यास प्रकार",
-                "deviceGroup": "डिवाइस समूह",
-                "name": "नाम",
-                "priority": "प्राथमिकता (उच्च मूल्यों से संकेत मिलता है उच्च प्राथमिकता)",
-                "priorityToolTip": "जब दो तैनाती के लक्ष्य को एक ही डिवाइस तैनाती के साथ उच्च प्राथमिकता हो जाता है लागू किया जाता है । यदि दो की तैनाती है एक ही प्राथमिकता है, तैनाती के बाद सृजन की तारीख हो जाता है लागू किया जाता है । <1><0>और जानें</0></1>",
-                "priorityLearnMore": "के बारे में अधिक जानने प्राथमिकता",
-                "package": "पैकेज",
-                "packageTypePlaceHolder": "पैकेज के प्रकार का चयन करें",
-                "configTypePlaceHolder": "विन्यास प्रकार का चयन करें",
-                "packagePlaceHolder": "का चयन करें पैकेज",
-                "deviceGroupPlaceHolder": "डिवाइस का चयन करें समूह",
-                "priorityPlaceHolder": "प्रवेश में प्राथमिकता",
-                "namePlaceHolder": "नाम दर्ज करें",
-                "targetText": "लक्षित उपकरणों",
-                "infoText": "इस तैनाती लगातार चलाता है. हर डिवाइस (और किसी भी आप भविष्य में जोड़) में चयनित डिवाइस समूह प्राप्त होगा इस पैकेज में । ",
-                "successText": "देखें अपने तैनाती की स्थिति विस्तार के लिए <1><0>{{deploymentName}}</0></1>.",
-                "creating": "बनाने तैनाती",
-                "validation": {
-                    "required": "आवश्यक है",
-                    "positiveInteger": "किया जाना चाहिए एक सकारात्मक पूर्णांक कम से कम 2147483648",
-                    "name": "नाम 50 से अधिक पात्रों"
-                }
-            },
-            "packageJson":{
-                "title":"Package JSON Data"
-            }
-        },
-        "details": {
-            "deploymentName": "तैनाती का नाम",
-            "deviceGroup": "डिवाइस समूह",
-            "start": "शुरू",
-            "packageType": "पैकेज के प्रकार",
-            "configType": "विन्यास प्रकार",
-            "package": "पैकेज",
-            "priority": "प्राथमिकता",
-            "applied": "लागू",
-            "targeted": "लक्षित",
-            "failed": "में विफल रहा है",
-            "succeeded": "सफल रहा",
-            "pending": "लंबित",
-            "unknown": "अज्ञात",
-            "customMetrics": "कस्टम मीट्रिक",
-            "devicesAffected": "उपकरणों प्रभावित",
-            "grid": {
-                "name": "नाम",
-                "deploymentStatus": "तैनाती की स्थिति",
-                "firmware": "फर्मवेयर",
-                "lastMessage": "पिछले संदेश",
-                "start": "शुरू",
-                "end": "अंत"
-            }
-        },
-        "modals": {
-            "delete": {
-                "contextMenuName": "हटाना",
-                "title": "हटाने तैनाती?",
-                "info": "हटाने '{{deploymentName}}' बंद हो जाएगा इस तैनाती से लागू किया जा रहा करने के लिए इन उपकरणों । यह परिणाम हो सकता है में एक कम प्राथमिकता तैनाती लागू किया जा रहा है."
-            }
-        },
-        "grid": {
-            "name": "नाम",
-            "package": "पैकेज",
-            "deviceGroup": "डिवाइस समूह",
-            "priority": "प्राथमिकता",
-            "packageType": "पैकेज के प्रकार",
-            "configType": "विन्यास प्रकार",
-            "targeted": "लक्षित",
-            "targetedTooltip": "की संख्या डिवाइस जुड़वां उस मैच के लक्ष्य हालत में है । ",
-            "applied": "लागू",
-            "appliedTooltip": "की संख्या डिवाइस जुड़वां है कि संशोधित किया गया है द्वारा विन्यास है । ",
-            "failed": "में विफल रहा है",
-            "succeeded": "सफल रहा",
-            "dateCreated": "पर बनाया"
-        }
-    },
-    "packages": {
-        "searchPlaceholder": "खोज संकुल...",
-        "noneFound": "कोई पैकेज नहीं मिला.",
-        "title": "संकुल",
-        "total": "कुल संकुल",
-        "new": "नए पैकेज",
-        "delete": "हटाना",
-        "grid": {
-            "name": "नाम",
-            "packageType": "पैकेज के प्रकार",
-            "configType": "विन्यास प्रकार",
-            "dateCreated": "तिथि बनाया"
-        },
-        "flyouts": {
-            "new": {
-                "title": "नए पैकेज",
-                "header": "अपलोड एक पैकेज",
-                "description": "जोड़ने के एक पैकेज के लिए अपने समाधान",
-                "upload": "अपलोड",
-                "cancel": "रद्द",
-                "close": "करीब",
-                "packageType": "पैकेज के प्रकार",
-                "configType": "विन्यास प्रकार",
-                "customType": "कस्टम विन्यास के प्रकार",
-                "browse": "ब्राउज़ करें",
-                "browseFirmwareText": "के लिए एक फर्मवेयर फ़ाइल",
-                "browseText": "के लिए एक पैकेज फ़ाइल",
-                "packageTypePlaceholder": "पैकेज के प्रकार का चयन करें",
-                "configTypePlaceholder": "विन्यास प्रकार का चयन करें",
-                "customTextPlaceholder": "दर्ज कस्टम नाम",
-                "package": "पैकेज",
-                "deploymentsPage": "तैनाती पृष्ठ",
-                "newDeployment": "+ नई तैनाती",
-                "deploymentText": "तैनात करने के लिए संकुल के लिए जाने के लिए <1>तैनाती पृष्ठ</1>, और फिर क्लिक करें <3>+ नई तैनाती</3>.",
-                "validation": {
-                    "required": "आवश्यक है",
-                    "fileName": "फ़ाइल नाम 50 से अधिक पात्रों",
-                    "fileType": "अमान्य फ़ाइल प्रकार",
-                    "customConfig": "नाम 50 से अधिक पात्रों"
-                }
-            }
-        },
-        "modals": {
-            "delete": {
-                "title": "पैकेज हटाना?",
-                "info": "हटाने के चयनित पैकेज में इसे हटा देगा. यह नहीं होगा प्रभाव के किसी भी तैनाती के इस पैकेज में । "
-            }
-        }
-    },
-    "packageTypes": {
-        "edgeManifest": "बढ़त प्रकट",
-        "deviceConfiguration": "डिवाइस विन्यास",
-        "unknown": "अज्ञात"
-    },
-    "configTypes": {
-        "firmware": "फर्मवेयर",
-        "custom": "कस्टम"
-    },
-    "modal": {
-        "delete": "हटाना",
-        "cancel": "रद्द"
-    },
-    "walkthrough": {
-        "tabs": {
-            "dashboard": "डैशबोर्ड",
-            "basicPage": "बुनियादी पृष्ठ",
-            "pageWithFlyout": "पृष्ठ के साथ Flyout",
-            "pageWithGrid": "पृष्ठ ग्रिड के साथ"
-        },
-        "basicPage": {
-            "pagePlaceholder": "यह एक नया पृष्ठ."
-        },
-        "pageWithFlyout": {
-            "title": "Flyout उदाहरण",
-            "pageBody": "क्लिक करें संदर्भ ऊपर बटन को खोलने के लिए एक flyout.",
-            "open": "खुला Flyout",
-            "flyouts": {
-                "example": {
-                    "header": "उदाहरण Flyout",
-                    "description": "इस उदाहरण flyout शामिल हैं एक सरल फार्म के साथ कार्रवाई बटन । ",
-                    "insertFormHere": "सम्मिलित प्रपत्र नियंत्रणों यहाँ. देखें 'src/घटकों/साझा/रूपों के लिए' के रूप में विशिष्ट साझा नियंत्रण हो सकता है आप का लाभ उठाने । ",
-                    "summaryHeader": "सारांश",
-                    "affected": "प्रभावित आइटम",
-                    "cancel": "रद्द",
-                    "apply": "लागू",
-                    "pending": "परिवर्तनों को लागू किए... ",
-                    "applySuccess": "आइटम सफलतापूर्वक अद्यतन!",
-                    "close": "करीब"
-                }
-            }
-        },
-        "pageWithGrid": {
-            "grid": {
-                "name": "नाम",
-                "description": "विवरण",
-                "btn1": "बटन 1",
-                "btn2": "बटन 2"
-            }
-        },
-        "dashboard": {
-            "panels": {
-                "example": {
-                    "header": "उदाहरण के लिए पैनल",
-                    "panelBody": "यह एक नया पैनल."
-                }
-            }
-        },
-        "panel": {
-            "header": "उदाहरण के लिए पैनल",
-            "panelBody": "यह एक नया पैनल."
-        }
+    "panel": {
+      "header": "उदाहरण के लिए पैनल",
+      "panelBody": "यह एक नया पैनल."
     }
+  }
 }

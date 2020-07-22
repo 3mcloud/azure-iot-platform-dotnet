@@ -162,7 +162,7 @@
                     }
                 }
             }
-            
+
 
         }
     },
@@ -645,6 +645,8 @@
         "title": "Rules",
         "searchPlaceholder": "Search rules...",
         "ariaLabel": "Search rules",
+        "alertingOnForRules": "Alerting must be turned on to use Rules",
+        "turnOnRulesText": "You may turn this feature on by clicking the settings menu (gear icon) at the top right of the  screen",
         "severity": {
             "info": "Info",
             "warning": "Warning",
@@ -885,6 +887,20 @@
                     "positiveInteger": "Must be a positive integer less than 2147483648",
                     "name": "name greater than 50 characters"
                 }
+            },
+            "status":{
+                "title": "Deployment Status",
+                "relatedDeployment": {
+                    "title": "Related Deployments",
+                    "noRelatedDeploymentText":"No Related deployments exist for the selected deployment."
+                },
+                "deploymentLimitText": "Your environment is currently limited to 100 active deployments.",
+                "active": "Active",
+                "inActive": "InActive",
+                "apply": "Apply",
+                "cancel": "Cancel",
+                "close": "Close",
+                "updating": "Updating Deployment"
             }
         },
         "details": {
@@ -932,7 +948,11 @@
             "appliedTooltip": "Number of device twins that have been modified by the configuration.",
             "failed": "Failed",
             "succeeded": "Succeeded",
-            "dateCreated": "Created On"
+            "createdOn": "Created On",
+            "status": "Status",
+            "modifiedBy": "Modified By",
+            "modifiedOn": "Modified On",
+            "createdBy": "Created By"
         }
     },
     "packages": {

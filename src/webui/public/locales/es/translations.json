@@ -1,929 +1,1088 @@
 {
-    "header": {
-        "appName": "Azure IoT Monitoreo Remoto",
-        "companyName": "3M",
-        "profile": "Perfil",
-        "more": "Más",
-        "getStarted": "Empezar",
-        "documentation": "Documentación",
-        "sendSuggestion": "Enviar una sugerencia"
+  "header": {
+    "appName": "Azure IoT Monitoreo Remoto",
+    "companyName": "3M",
+    "profile": "Perfil",
+    "more": "Más",
+    "getStarted": "Empezar",
+    "documentation": "Documentación",
+    "sendSuggestion": "Enviar una sugerencia"
+  },
+  "globalNav": {
+    "expand": "Expanda El Panel De Navegación Lateral",
+    "collapse": "El Colapso De Navegación Lateral"
+  },
+  "accessDenied": {
+    "message": "Uy parece que usted no tiene un inquilino. Usted puede crear un nuevo inquilino, por la apertura de su perfil y hacer clic en \"Crear Nuevo Inquilino' botón.",
+    "learnMore": "Aprender más",
+    "createTenant": "Crear Inquilino"
+  },
+  "pageNotFound": {
+    "title": "404 - Página no encontrada",
+    "message": "Uy, no hemos podido encontrar la página solicitada."
+  },
+  "tabs": {
+    "dashboard": "Tablero de instrumentos",
+    "devices": "Explorador De Dispositivos",
+    "users": "Gestión De Usuarios",
+    "rules": "Reglas",
+    "maintenance": "Mantenimiento",
+    "packages": "Paquetes",
+    "deployments": "Implementaciones"
+  },
+  "errorFormat": "Error: {{mensaje}}",
+  "edgeAgentStatus": {
+    "200": "OK.",
+    "400": "La configuración de implementación que es incorrecto o no válido.",
+    "406": "El dispositivo está fuera de línea o no el envío de informes de estado.",
+    "412": "La configuración de la implementación de la versión del esquema no es válido.",
+    "417": "El dispositivo de la configuración de implementación no está configurado.",
+    "500": "Se ha producido un error en la IoT Borde tiempo de ejecución.",
+    "unknown": "Un desconocido el código recibido."
+  },
+  "errorCode": {
+    "noResponse": "Uy, no hubo respuesta desde el servidor.",
+    "notLoggedIn": "Tienes que iniciar sesión para llamar al servicio.",
+    "notAuthorized": "Usted no está autorizado para llamar al servicio.",
+    "notFound": "Uy, no fuimos capaces de encontrar el servicio.",
+    "redirection": "Uy, tenemos una redirección de error.",
+    "retryFailure": "Vaya, tenemos a un error temporal del servicio, pero no pudieron recuperarse. Inténtelo de nuevo más tarde.",
+    "unknown": "Ocurrió un error desconocido."
+  },
+  "permissions": {
+    "ReadAll": "Ver solución",
+    "CreateDeviceGroups": "Crear grupos de dispositivos",
+    "DeleteDeviceGroups": "Eliminar grupos de dispositivos",
+    "UpdateDeviceGroups": "Actualización de grupos de dispositivos",
+    "CreateDevices": "La creación de dispositivos",
+    "DeleteDevices": "Eliminar dispositivos",
+    "UpdateDevices": "Actualización de los dispositivos",
+    "CreateRules": "Crear reglas",
+    "DeleteRules": "Eliminar las reglas",
+    "UpdateRules": "Actualización de las reglas de",
+    "DeleteAlarms": "Eliminar alertas",
+    "UpdateAlarms": "Actualización de las alertas",
+    "CreateJobs": "Crear puestos de trabajo",
+    "UpdateSIMManagement": "Actualización de la administración de la tarjeta SIM",
+    "DeletePackages": "Eliminar los paquetes",
+    "CreatePackages": "Crear paquetes",
+    "CreateDeployments": "Crear implementaciones",
+    "DeleteDeployments": "Eliminar implementaciones",
+    "InviteUsers": "Invitar a los usuarios",
+    "DeleteUsers": "Eliminar usuarios",
+    "DeleteTenant": "Borrar el inquilino",
+    "EnableAlerting": "Habilitar las alertas",
+    "DisableAlerting": "Deshabilitar las alertas"
+  },
+  "protected": {
+    "permissionDenied": "Permiso {{permiso}} denegado."
+  },
+  "deviceGroupDropDown": {
+    "ariaLabel": "El grupo de dispositivos"
+  },
+  "flyout": {
+    "closeTitle": "Cerca de"
+  },
+  "settingsFlyout": {
+    "title": "La configuración del sistema",
+    "version": "La versión {{versión}}",
+    "viewRelNotes": "Ver notas de la versión",
+    "theme": "Tema",
+    "changeTheme": "Cambiar el color de la aplicación tema",
+    "switchTheme1": "Cambiar a {{nextTheme1}} tema",
+    "switchTheme2": "Cambiar a {{nextTheme2}} tema",
+    "apply": "Aplicar",
+    "cancel": "Cancelar",
+    "close": "Cerca de",
+    "flowing": "Fluye",
+    "optInButton": "Diagnóstico",
+    "simulationToggle": "Simulación",
+    "start": "Inicio",
+    "stop": "Parada",
+    "stopped": "Se detuvo",
+    "enable": "Habilitar",
+    "disable": "Deshabilitar",
+    "simulationData": "Datos de la simulación",
+    "loading": "La carga de",
+    "alerting": "Sistema Avanzado De Alertas",
+    "alertingToggle": "Start/Stop De Alerta",
+    "alertingDescription": "Iniciar o detener la avanzada de alerta. Detener la alerta de minimizar el costo de la solución. Reglas y alertas serán desactivados si la alerta se apaga.",
+    "alertingStarting": "A partir",
+    "alertingStopping": "Parar",
+    "alertingChangeFail": "Error",
+    "alertingPending": "Pendiente",
+    "simulationDescription": "Iniciar o detener la simulación de dispositivos. Dispositivo de parada de la simulación de minimizar el costo de la solución; no telemetría simulada será enviado a tu Io Hub y las alertas no se generará para los dispositivos simulados.",
+    "toggleError": "Error al actualizar la simulación de estado",
+    "setLogoError": "Error de actualización de logotipo",
+    "simulationLoadError": "Error al cargar la simulación de estado",
+    "sendDiagnosticsCheckbox": "Sí, registro de información de diagnóstico",
+    "dontSendDiagnosticsCheckbox": "No, no registro de información de diagnóstico",
+    "sendDiagnosticsMicrosoftPrivacyUrl": "Declaración De Privacidad",
+    "diagnosticsLoadError": "Error al actualizar el diagnóstico de preferencia",
+    "firmware": {
+      "error": {
+        "noVersion": "El valor ${version} debe ser definido en su firmware JSON plantilla.",
+        "upload": "Se ha producido un error al cargar el firmware JSON plantilla",
+        "invalid": "Firmware no válido JSON plantilla de entrada",
+        "unknown": "Ocurrió un error desconocido.",
+        "retrieval": "Se ha producido un error al recuperar el firmware actual plantilla de JSON",
+        "doubleSlash": "Firmware JSON plantilla de teclas pueden no contener '//'",
+        "reserved": {
+          "id": "La clave del 'id' está reservado y no puede ser utilizado en el firmware JSON plantilla"
+        }
+      },
+      "name": "Firmware JSON Plantilla",
+      "description": "Cargar un firmware JSON plantilla para su uso con el firmware paquete de carga en la página de paquetes.",
+      "edit": "Editar",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "variables": {
+        "name": "Las Variables De La Plantilla",
+        "summary": "Las siguientes variables de plantilla puede ser utilizado en su firmware JSON plantilla. Modo de uso: ${parent.niño}, e.g ${blobData.Archivouri}",
+        "grid": {
+          "parent": "Los padres",
+          "child": "Niño",
+          "description": "Descripción"
+        },
+        "descriptions": {
+          "version": "Padre solamente. Esta variable es necesario en su plantilla y se sobrescribe con su firmware de la versión del paquete de valor. Modo de uso: ${version}",
+          "blobData": {
+            "FileUri": "El Almacenamiento de Blobs URI para que el archivo de firmware cargado",
+            "CheckSum": "El valor de suma de comprobación para su almacenamiento de blobs archivo subido"
+          },
+          "packageFile": {
+            "name": "El nombre de su archivo de firmware cargado",
+            "lastModified": "MS desde la época de marca de tiempo",
+            "lastModifiedDate": "Legible por humanos fecha timestamp",
+            "size": "Tamaño del archivo en bytes",
+            "type": "Subido el tipo de archivo"
+          },
+          "deployment": {
+            "id": "Al implementar el paquete, este valor será reemplazado por el ID de su implementación"
+          }
+        }
+      }
+    }
+  },
+  "helpFlyout": {
+    "title": "Documentación"
+  },
+  "profileFlyout": {
+    "title": "Perfil De Usuario",
+    "description": "<0><0>learnMore</0></0> acerca de los roles y permisos.",
+    "learnMore": "Aprender más",
+    "logout": "Cierre de sesión",
+    "noUser": "El usuario No encontrado",
+    "roles": "Funciones",
+    "noRoles": "Funciones No encontrado",
+    "permissions": "Permisos",
+    "noPermissions": "No hay permisos encontrado",
+    "close": "Cerca de",
+    "tenants": {
+      "tenantHeader": "Los inquilinos",
+      "noTenant": "Sin Inquilinos encontrado",
+      "createTenant": "Crear Nuevo Inquilino",
+      "deleteTenant": "Eliminar",
+      "tenantNameColumn": "El inquilino",
+      "tenantRoleColumn": "Papel",
+      "tenantActionColumn": "Acción",
+      "saveTenant": "Guardar",
+      "cancel": "Cancelar"
+    }
+  },
+  "resetActiveDeviceQuery": {
+    "title": "Restablecimiento de la consulta"
+  },
+  "createDeviceQuery": {
+    "title": "Consulta Los Dispositivos",
+    "create": "Consulta",
+    "reset": "Reset",
+    "createDeviceGroup": "El grupo de dispositivos",
+    "allDevices": "Todos Los Dispositivos",
+    "nameAlreadyExists": "Un grupo de dispositivos que ya fue creado con estas condiciones."
+  },
+  "deviceQueryConditions": {
+    "condition": "Condición {{headerCount}}",
+    "delete": "Eliminar",
+    "field": "Campo",
+    "fieldPlaceholder": "Seleccione el campo",
+    "operator": "Operador",
+    "operatorPlaceholder": "Seleccione operador",
+    "operatorOptions": {
+      "EQ": "= Es igual a",
+      "GT": "> Mayor que",
+      "LT": "< Menos de",
+      "GE": ">= Mayor que o igual",
+      "LE": "<= Menor o igual"
     },
-    "globalNav": {
-        "expand": "Expanda El Panel De Navegación Lateral",
-        "collapse": "El Colapso De Navegación Lateral"
+    "value": "Valor",
+    "valuePlaceholder": "Introduzca el valor de",
+    "type": "Tipo de",
+    "typePlaceholder": "Seleccione el tipo de",
+    "typeOptions": {
+      "Number": "Número de",
+      "Text": "Texto"
     },
-    "accessDenied": {
-        "message": "Uy parece que usted no tiene un inquilino. Usted puede crear un nuevo inquilino, por la apertura de su perfil y hacer clic en \"Crear Nuevo Inquilino' botón.",
-        "learnMore": "Aprender más",
-        "createTenant": "Crear Inquilino"
+    "remove": "Quitar la condición de",
+    "add": "Agregar condición",
+    "errorMsg": {
+      "fieldCantBeEmpty": "El campo es obligatorio",
+      "operatorCantBeEmpty": "El operador se requiere",
+      "valueCantBeEmpty": "Valor es necesario",
+      "typeCantBeEmpty": "Tipo es necesario",
+      "selectedType": "Debe ser del tipo seleccionado"
+    }
+  },
+  "deviceGroupsFlyout": {
+    "actions": "Acciones",
+    "cancel": "Cancelar",
+    "reset": "Reset",
+    "title": "Administrar grupos de dispositivos",
+    "create": "Crear nuevo grupo de dispositivos",
+    "deviceGroupName": "Dispositivo nombre del grupo",
+    "pinned": "Anclado Grupo De Dispositivos",
+    "unpinned": "Desprendida De Grupo De Dispositivos",
+    "new": "Nuevo grupo de dispositivos",
+    "edit": "Edición de un grupo de dispositivos",
+    "name": "Nombre",
+    "namePlaceHolder": "Dispositivo nombre del grupo",
+    "save": "Guardar",
+    "errorMsg": {
+      "nameCantBeEmpty": "Es necesario introducir el nombre"
     },
-    "pageNotFound": {
-        "title": "404 - Página no encontrada",
-        "message": "Uy, no hemos podido encontrar la página solicitada."
+    "delete": {
+      "title": "Eliminar",
+      "header": "Elimine el dispositivo de grupo",
+      "description": "Esta acción eliminará el '{{deviceGroupName}}' grupo de dispositivos de forma permanente de la plataforma.",
+      "confirmNo": "No, no elimine el grupo de dispositivos.",
+      "confirmYes": "Sí, por favor, elimine el dispositivo de grupo.",
+      "summaryHeader": "Resumen",
+      "affected": "Dispositivo afectado grupo",
+      "cancel": "Cancelar",
+      "apply": "Eliminar",
+      "pending": "Eliminación de grupos de dispositivos... ",
+      "applySuccess": "El grupo de dispositivos eliminado con éxito!",
+      "close": "Cerca de"
     },
-    "tabs": {
-        "dashboard": "Tablero de instrumentos",
-        "devices": "Explorador De Dispositivos",
-        "users": "Gestión De Usuarios",
-        "rules": "Reglas",
-        "maintenance": "Mantenimiento",
-        "packages": "Paquetes",
-        "deployments": "Implementaciones"
+    "format": {
+      "add": "Agregar",
+      "keyHeader": "Clave",
+      "displayNameHeader": "Nombre Para Mostrar",
+      "telemetryFormatHeader": "Telemetría Formato",
+      "validation": {
+        "required": "Los campos requeridos no están incluidos"
+      }
     },
-    "errorFormat": "Error: {{mensaje}}",
-    "edgeAgentStatus": {
-        "200": "OK.",
-        "400": "La configuración de implementación que es incorrecto o no válido.",
-        "406": "El dispositivo está fuera de línea o no el envío de informes de estado.",
-        "412": "La configuración de la implementación de la versión del esquema no es válido.",
-        "417": "El dispositivo de la configuración de implementación no está configurado.",
-        "500": "Se ha producido un error en la IoT Borde tiempo de ejecución.",
-        "unknown": "Un desconocido el código recibido."
+    "supportedMethods": {
+      "add": "Agregar",
+      "methodHeader": "Nombre De Método",
+      "supportedMethodHeader": "Métodos Admitidos",
+      "validation": {
+        "required": "Los campos requeridos no están incluidos"
+      }
+    }
+  },
+  "dashboard": {
+    "noData": "No hay datos disponibles",
+    "panels": {
+      "alerts": {
+        "header": "Alertas",
+        "explore": "Explorar"
+      },
+      "analytics": {
+        "header": "Analytics",
+        "topRule": "Normas con alertas activas",
+        "deviceGroupAlerts": "Alerta por el grupo de dispositivos",
+        "criticalAlerts": "Alertas críticas",
+        "currentWindow": "En la actualidad",
+        "previousWindow": "Previamente"
+      },
+      "map": {
+        "header": "Ubicaciones de dispositivos",
+        "runtimeError": "Se ha producido un error al procesar el mapa",
+        "notSupportedError": "Azure de mapas no es soportado en su región"
+      },
+      "overview": {
+        "header": "Las estadísticas del dispositivo",
+        "allDevices": "Todos los dispositivos",
+        "critical": "Crítica",
+        "warnings": "Advertencias",
+        "total": "Total",
+        "connected": "Conectado",
+        "notConnected": "Sin conexión"
+      },
+      "telemetry": {
+        "header": "Telemetría",
+        "timezoneDisplay": "La exhibición en la zona horaria local:",
+        "limitExceededWarning": "Número máximo de mensajes recibidos. Los datos anteriores se puede truncar."
+      }
+    }
+  },
+  "refreshBar": {
+    "refreshing": "Refrescante",
+    "lastRefreshed": "La última actualización",
+    "ariaLabel": "Actualización de la página"
+  },
+  "users": {
+    "title": "Gestión De Usuarios",
+    "ariaLabel": "De búsqueda de los usuarios",
+    "searchPlaceholder": "Los usuarios de la búsqueda...",
+    "grid": {
+      "userName": "Nombre",
+      "userType": "Tipo de",
+      "userId": "Guid",
+      "userRole": "Papel"
     },
-    "errorCode": {
-        "noResponse": "Uy, no hubo respuesta desde el servidor.",
-        "notLoggedIn": "Tienes que iniciar sesión para llamar al servicio.",
-        "notAuthorized": "Usted no está autorizado para llamar al servicio.",
-        "notFound": "Uy, no fuimos capaces de encontrar el servicio.",
-        "redirection": "Uy, tenemos una redirección de error.",
-        "retryFailure": "Vaya, tenemos a un error temporal del servicio, pero no pudieron recuperarse. Inténtelo de nuevo más tarde.",
-        "unknown": "Ocurrió un error desconocido."
+    "flyouts": {
+      "new": {
+        "contextMenuName": "Nuevo usuario",
+        "addServicePrincipal": "Agregar Principal De Servicio",
+        "title": "Invitar a los usuarios",
+        "user": {
+          "label": "Dirección De Correo Electrónico",
+          "apply": "Enviar invitación",
+          "applySuccess": "usuario correctamente invitados!"
+        },
+        "servicePrincipal": {
+          "label": "Principal de servicio de id de la aplicación",
+          "apply": "Agregar",
+          "applySuccess": "Agregó principal de servicio"
+        },
+        "roles": {
+          "hint": "Seleccione la función de usuario",
+          "label": "El Papel De Usuario"
+        },
+        "systemAdmin": {
+          "hint": "Seleccione el usuario",
+          "label": "Sistema De Administración De",
+          "title": "Agregar Sistema De Administración De",
+          "add": "Agregar",
+          "applySuccess": "Añadido sistema de administración con éxito!"
+        },
+        "apply": "Enviar invitación",
+        "cancel": "Cancelar",
+        "validation": {
+          "required": "Se requiere",
+          "invalid": "No válida de correo electrónico proporcionada",
+          "invalidGuid": "Guid No Válido"
+        },
+        "summaryHeader": "Resumen",
+        "pending": "Eliminación de dispositivos... ",
+        "close": "Cerca de"
+      },
+      "delete": {
+        "title": "Eliminar",
+        "header": "Eliminar usuarios",
+        "description": "Esta acción eliminará el usuario seleccionado a partir de este inquilino.",
+        "confirmNo": "No, no retire los usuarios seleccionados a partir de este inquilino.",
+        "confirmYes": "Sí, por favor, retire los usuarios seleccionados a partir de este inquilino.",
+        "summaryHeader": "Resumen",
+        "affected": "Los usuarios afectados",
+        "cancel": "Cancelar",
+        "apply": "Eliminar",
+        "pending": "Eliminación de usuarios... ",
+        "applySuccess": "Los usuarios han eliminado con éxito!",
+        "close": "Cerca de",
+        "systemAdmin": {
+          "hint": "Seleccione el usuario",
+          "label": "Sistema De Administración De",
+          "title": "Eliminar Del Sistema De Administración De",
+          "add": "Eliminar",
+          "applySuccess": "Eliminados del sistema de administración con éxito!"
+        }
+      }
+    }
+  },
+  "devices": {
+    "title": "Explorador De Dispositivos",
+    "ariaLabel": "Búsqueda de dispositivos",
+    "searchPlaceholder": "Búsqueda de dispositivos...",
+    "noneFound": "No se encuentran los dispositivos.",
+    "refresh": "Actualización",
+    "grid": {
+      "connected": "Conectado",
+      "deviceName": "Nombre de dispositivo",
+      "deviceType": "Tipo de dispositivo",
+      "firmware": "Firmware",
+      "lastConnection": "Última conexión",
+      "no": "No",
+      "offline": "Sin conexión",
+      "simulated": "Simulado",
+      "status": "Estado",
+      "telemetry": "Telemetría",
+      "yes": "Sí"
     },
-    "permissions": {
-        "ReadAll": "Ver solución",
-        "CreateDeviceGroups": "Crear grupos de dispositivos",
-        "DeleteDeviceGroups": "Eliminar grupos de dispositivos",
-        "UpdateDeviceGroups": "Actualización de grupos de dispositivos",
-        "CreateDevices": "La creación de dispositivos",
-        "DeleteDevices": "Eliminar dispositivos",
-        "UpdateDevices": "Actualización de los dispositivos",
-        "CreateRules": "Crear reglas",
-        "DeleteRules": "Eliminar las reglas",
-        "UpdateRules": "Actualización de las reglas de",
-        "DeleteAlarms": "Eliminar alertas",
-        "UpdateAlarms": "Actualización de las alertas",
-        "CreateJobs": "Crear puestos de trabajo",
-        "UpdateSIMManagement": "Actualización de la administración de la tarjeta SIM",
-        "DeletePackages": "Eliminar los paquetes",
-        "CreatePackages": "Crear paquetes",
-        "CreateDeployments": "Crear implementaciones",
-        "DeleteDeployments": "Eliminar implementaciones",
-        "InviteUsers": "Invitar a los usuarios",
-        "DeleteUsers": "Eliminar usuarios",
-        "DeleteTenant": "Borrar el inquilino",
-        "EnableAlerting": "Habilitar las alertas",
-        "DisableAlerting": "Deshabilitar las alertas"
+    "flyouts": {
+      "details": {
+        "title": "Detalles Del Dispositivo",
+        "noDevice": "Uy, no fuimos capaces de encontrar el dispositivo.",
+        "close": "Cerca de",
+        "connected": "Conectado",
+        "notConnected": "Desconectado",
+        "simulated": "Simulado",
+        "notSimulated": "Física",
+        "diagnostics": {
+          "title": "Diagnóstico",
+          "description": "La información de diagnóstico del dispositivo",
+          "keyHeader": "La propiedad",
+          "valueHeader": "Valor",
+          "status": "Estado",
+          "lastMessage": "Último mensaje",
+          "message": "Mensaje",
+          "showMessage": "Haga clic aquí para ver raw mensaje"
+        },
+        "methods": {
+          "title": "Métodos",
+          "description": "Para ejecutar un método en uno o más dispositivos, cerca de este panel, seleccione la casilla de verificación para el dispositivo(s), haga clic en <1><0>{{empleos}}</0></1>, y, a continuación, seleccione <3><0>{{métodos}}</0></3>.",
+          "noneExist": "No hay métodos para este dispositivo."
+        },
+        "modules": {
+          "title": "Los mensajes de despliegue",
+          "description": "Borde del módulo de mensajes en el dispositivo",
+          "noneExist": "No hay mensajes encontrados para este dispositivo"
+        },
+        "properties": {
+          "title": "Propiedades",
+          "description": "Para cambiar una propiedad en uno o más dispositivos, cerca de este panel, seleccione la casilla de verificación para el dispositivo(s), haga clic en <1><0>{{empleos}}</0></1>, y, a continuación, seleccione <3><0>{{propiedades}}</0></3>.",
+          "keyHeader": "La propiedad",
+          "valueHeader": "Valor",
+          "noneExist": "No hay propiedades para este dispositivo.",
+          "copy": "Copia",
+          "copyAllProperties": "Copiar una lista de todas las propiedades del dispositivo",
+          "syncing": "{{reportedPropertyValue}} (Sincronización {{desiredPropertyValue}})"
+        },
+        "tags": {
+          "title": "Etiquetas",
+          "description": "Para agregar, eliminar o cambiar una etiqueta en uno o más dispositivos, cerca de este panel, seleccione la casilla de verificación para el dispositivo(s), haga clic en <1><0>{{empleos}}</0></1>, y, a continuación, seleccione <3><0>{{etiquetas}}</0></3>.",
+          "keyHeader": "Clave",
+          "valueHeader": "Valor",
+          "noneExist": "No hay etiquetas para este dispositivo."
+        },
+        "telemetry": {
+          "title": "Telemetría"
+        },
+        "deviceUploads": {
+          "title": "Dispositivo De Carga",
+          "description": "La Carga de archivos desde el Dispositivo",
+          "noneExist": "No cargar los Archivos desde el Dispositivo.",
+          "fileName": "Nombre De Archivo",
+          "action": "Acción",
+          "property": "La propiedad",
+          "value": "Valor"
+        }
+      },
+      "delete": {
+        "title": "Eliminar",
+        "header": "Elimine el dispositivo",
+        "description": "Esta acción eliminará los dispositivos de forma permanente de la plataforma.",
+        "confirmNo": "No, no elimine el seleccionado de dispositivos físicos.",
+        "confirmYes": "Sí, por favor, elimine el seleccionado de dispositivos físicos.",
+        "simulatedNotSupported": "La eliminación de los dispositivos simulados no es compatible actualmente, esta acción será tomada únicamente en los dispositivos físicos.",
+        "summaryHeader": "Resumen",
+        "affected": "Dispositivos afectados",
+        "cancel": "Cancelar",
+        "apply": "Eliminar",
+        "pending": "Eliminación de dispositivos... ",
+        "applySuccess": "dispositivos eliminado con éxito!",
+        "close": "Cerca de"
+      },
+      "c2dMessage": {
+        "sendMessage": "Enviar Mensaje",
+        "title": "De La Nube A Los Mensajes De Los Dispositivos",
+        "header": "Enviar Mensajes C2D",
+        "description": "Esto va a enviar a todos los dispositivos seleccionados",
+        "simulatedNotSupported": "El envío a la simulación de dispositivos no es compatible actualmente, esta acción será tomada únicamente en los dispositivos físicos.",
+        "summaryHeader": "Resumen",
+        "affected": "Dispositivos afectados",
+        "cancel": "Cancelar",
+        "apply": "Enviar",
+        "pending": "Enviar a los dispositivos... ",
+        "applySuccess": "los mensajes enviados con éxito!",
+        "close": "Cerca de",
+        "validation": {
+          "invalid": "Json no es válido!"
+        },
+        "jsonPayloadMessage": "Mensaje de carga de los dispositivos:"
+      },
+      "jobs": {
+        "title": "Puestos de trabajo",
+        "noDevices": "Uy, no fuimos capaces de encontrar cualquiera de los dispositivos seleccionados.",
+        "summaryHeader": "Resumen",
+        "affected": "Dispositivos afectados",
+        "cancel": "Cancelar",
+        "apply": "Aplicar",
+        "pending": "Presentación de trabajo...",
+        "applySuccess": "Trabajo enviado con éxito!",
+        "close": "Cerca de",
+        "selectJob": "Seleccione trabajo",
+        "jobName": "Nombre Del Trabajo",
+        "jobNameHint": "Introduzca el nombre del trabajo",
+        "jobNameHelpMessage": "Sólo letras y números están permitidos",
+        "viewStatus": "Ver el estado de trabajo",
+        "validation": {
+          "required": "Se requiere",
+          "invalid": "entrada no válida"
+        },
+        "tags": {
+          "radioLabel": "Etiquetas",
+          "title": "Las etiquetas de los dispositivos seleccionados",
+          "description": "Etiquetas en común en los dispositivos seleccionados",
+          "keyHeader": "Clave",
+          "valueHeader": "Valor",
+          "typeHeader": "Tipo de",
+          "typeNumber": "Número de",
+          "typeString": "Texto",
+          "noneExist": "No hay etiquetas comunes encontrados para los dispositivos seleccionados.",
+          "add": "Añadir etiqueta"
+        },
+        "methods": {
+          "radioLabel": "Métodos",
+          "title": "Método de ejecución los dispositivos seleccionados",
+          "description": "Todos los métodos disponibles para el dispositivo o grupo de dispositivos",
+          "methodName": "Nombre de método",
+          "methodNameHint": "Seleccione el método de",
+          "firmwareVersion": "Versión De Firmware",
+          "firmwareVersionHint": "1.0.1",
+          "firmwareUri": "El Firmware de la URI",
+          "firmwareUriHint": "Introduzca el firmware valor de URI",
+          "jsonPayload": "De carga (opcional)",
+          "jsonPayloadMessage": "Ingrese una cuenta válida de petición JSON carga para el dispositivo de método."
+        },
+        "properties": {
+          "radioLabel": "Propiedades",
+          "title": "Propiedades de los dispositivos seleccionados",
+          "description": "Propiedades disponibles y los valores para cambiar",
+          "keyHeader": "La propiedad",
+          "valueHeader": "Valor",
+          "typeHeader": "Tipo de",
+          "typeNumber": "Número de",
+          "typeString": "Texto",
+          "noneExist": "No hay propiedades comunes encontrados para los dispositivos seleccionados.",
+          "syncing": "{{reportedPropertyValue}} (Sincronización {{desiredPropertyValue}})"
+        }
+      },
+      "new": {
+        "contextMenuName": "Nuevo dispositivo",
+        "title": "Nuevo dispositivo",
+        "summaryHeader": "Disposición resumen",
+        "affected": "Dispositivos para la provisión de",
+        "cancel": "Cancelar",
+        "apply": "Aplicar",
+        "pending": "El aprovisionamiento de dispositivos... ",
+        "applySuccess": "Los dispositivos de aprovisionado correctamente",
+        "simulatedRefreshMessage": "Los dispositivos simulados se crean en el fondo en el servidor. Por lo tanto, puede tomar un tiempo para aparecer cuando el dispositivo de la lista se actualiza.",
+        "close": "Cerca de",
+        "validation": {
+          "required": "Se requiere",
+          "greaterThanZero": "Debe ser mayor que cero"
+        },
+        "count": {
+          "label": "Número de dispositivos"
+        },
+        "device": {
+          "label": "Dispositivo",
+          "device": "IoT dispositivo",
+          "edgeDevice": "IoT dispositivo de Borde"
+        },
+        "deviceType": {
+          "label": "Tipo de",
+          "simulated": "Simulado",
+          "physical": "Real"
+        },
+        "deviceId": {
+          "label": "ID de dispositivo",
+          "hint": "Introduzca la ID del dispositivo ",
+          "sysGenerated": "El sistema genera un Id de dispositivo."
+        },
+        "deviceIdExample": {
+          "label": "ID de dispositivo de ejemplo",
+          "format": "{{deviceName}}-{#####}",
+          "deviceName": "{Nombre del dispositivo}"
+        },
+        "deviceModel": {
+          "label": "Modelo de dispositivo",
+          "hint": "Seleccione el tipo de dispositivo existente"
+        },
+        "authenticationType": {
+          "label": "Tipo de autenticación",
+          "symmetric": "Clave simétrica",
+          "x509": "X. 509"
+        },
+        "authenticationKey": {
+          "label": "Clave de autenticación",
+          "generateKeys": "Generación automática de claves",
+          "manualKeys": "Introduzca manualmente las claves",
+          "hint": "Introduzca su clave aquí",
+          "primaryKey": "Clave Principal",
+          "primaryKeyConnection": "Cadena de conexión de la Clave principal",
+          "secondaryKey": "La Clave Secundaria",
+          "secondaryKeyConnection": "La cadena de conexión de la Clave secundaria",
+          "primaryThumbprint": "Primaria de la huella digital",
+          "secondaryThumbprint": "Secundaria huella digital"
+        }
+      },
+      "SIMManagement": {
+        "title": "Administración de la tarjeta SIM",
+        "provider": "Proveedor de",
+        "summaryHeader": "Resumen y las instrucciones",
+        "here": "aquí",
+        "select": "Seleccione...",
+        "header": {
+          "telefonica": "Como Telefónica IoT cliente, usted tiene la ventaja de la adición de esta característica para enriquecer automáticamente su Azure Monitoreo Remoto de la Solución con la conectividad de datos disponibles en Telefónica IoT Conectividad de la Plataforma (Información de la Red, el Consumo de Datos y de Red Basada en la Ubicación)."
+        },
+        "description": {
+          "telefonica": "Esta característica está en la vista previa. Con el fin de sincronización de conectividad de datos en Azure Monitoreo Remoto de la Solución, por favor llene una solicitud de <1><0>url</0></1>, seleccione la opción \"Azure Monitoreo Remoto\" e incluir tus datos de contacto y activaremos automáticamente de su cuenta. \n\nSi usted no es un cliente de Telefónica, sin embargo, y para poder disfrutar de este o de otros IoT Conectividad en la Nube Listo servicios, puede contactar con nosotros <1><0>url</0></1> y seleccionar la opción \"Conectividad\"; estaremos encantados de ayudarle."
+        },
+        "operator": {
+          "telefonica": "Telefónica"
+        }
+      }
+    }
+  },
+  "rules": {
+    "title": "Reglas",
+    "searchPlaceholder": "Reglas de búsqueda de...",
+    "ariaLabel": "Reglas de búsqueda",
+    "alertingOnForRules": "Alerta debe estar encendido para usar las Reglas de",
+    "turnOnRulesText": "Usted puede activar esta función haciendo clic en el menú de configuración (icono de engranaje) en la parte superior derecha de la pantalla",
+    "severity": {
+      "info": "Info",
+      "warning": "Advertencia",
+      "critical": "Crítica"
     },
-    "protected": {
-        "permissionDenied": "Permiso {{permiso}} denegado."
+    "grid": {
+      "enabled": "Habilitado",
+      "disabled": "Movilidad",
+      "ruleName": "Nombre de la regla",
+      "description": "Descripción",
+      "severity": "La gravedad",
+      "deviceGroup": "El grupo de dispositivos",
+      "trigger": "Gatillo",
+      "notificationType": "Tipo de notificación",
+      "status": "Estado",
+      "count": "Contar",
+      "lastTrigger": "Último disparo",
+      "maintenanceLog": "Registro de mantenimiento",
+      "explore": "Explorar"
     },
-    "deviceGroupDropDown": {
-        "ariaLabel": "El grupo de dispositivos"
+    "flyouts": {
+      "edit": "Editar",
+      "statusToggle": "Estado",
+      "enable": "Habilitar",
+      "disable": "Deshabilitar",
+      "changeStatus": "Cambio de estado",
+      "newRule": "La nueva regla",
+      "editRule": "Editar regla",
+      "viewRule": "Detalles De La Regla",
+      "statusTitle": "Cambio de estado",
+      "delete": "Eliminar",
+      "ruleEditor": {
+        "ruleName": "Nombre de la regla",
+        "namePlaceholder": "Introduzca el nombre de la regla",
+        "description": "Descripción",
+        "descriptionPlaceholder": "Introduzca la descripción de la regla",
+        "deviceGroup": "El grupo de dispositivos",
+        "deviceGroupPlaceholder": "Seleccione el grupo de dispositivos",
+        "conditions": "Condiciones",
+        "addCondition": "Agregar condición",
+        "delete": "Eliminar",
+        "calculation": "Cálculo",
+        "calculationPlaceholder": "Seleccione",
+        "timePeriod": "Período de tiempo (en minutos)",
+        "condition": {
+          "description": "Para rellenar los campos, un dispositivo debe tener informó propiedades con teclas en forma de: <0><0>{{formato}}</0></0>.",
+          "condition": "Condición",
+          "field": "Campo",
+          "fieldPlaceholder": "Seleccione el campo",
+          "operator": "Operador",
+          "operatorPlaceholder": "Seleccione operador",
+          "operatorOptions": {
+            "Equals": "= Es igual a",
+            "GreaterThan": "> Mayor que",
+            "LessThan": "< Menos de",
+            "GreaterThanOrEqual": ">= Mayor que o igual",
+            "LessThanOrEqual": "<= Menor o igual"
+          },
+          "value": "Valor",
+          "valuePlaceholder": "Introduzca el valor de"
+        },
+        "actions": {
+          "action": "Acción",
+          "checkingEmailSetup": "Comprobación del estado de configuración de correo electrónico.",
+          "setupEmail": "Para enviar alertas de correo electrónico, <1><0>outlookLogin</0></1> es necesario.",
+          "outlookLogin": "iniciar sesión en Outlook",
+          "emailSetupConfirmed": "Su configuración de correo electrónico ha sido completado con éxito.",
+          "setupEmailError": "Ha habido un error de confirmar su configuración de correo electrónico. <1><0>tryAgain</0></1>",
+          "setupEmailTimeout": "Comprobación de la configuración de correo electrónico se ha agotado el tiempo. <1><0>tryAgain</0></1>",
+          "emailSetupHelp": "Envío de alertas por correo electrónico requiere la configuración manual. <1><0>learnMore</0></1>",
+          "tryAgain": "Por favor, inténtelo de nuevo.",
+          "learnMore": "Aprender más",
+          "emailActionLabel": "Enviar correo electrónico",
+          "emailAddresses": "Las direcciones de correo electrónico",
+          "enterEmail": "Presione entrar para agregar destinatario de correo electrónico",
+          "emailComments": "Notas Adicionales",
+          "enterEmailComments": "Introducir notas adicionales para el mensaje de correo electrónico.",
+          "emailSubject": "Asunto Del Correo Electrónico",
+          "enterEmailSubject": "Entrar en asunto del correo electrónico",
+          "syntaxError": "No es una dirección válida de correo electrónico",
+          "on": "Correo electrónico habilitado",
+          "off": "Correo electrónico deshabilitado",
+          "defaultEmailSubject": "Azure IoT Monitoreo Remoto de alerta: {{ruleName}} fue provocado",
+          "deleteEmail": "Eliminar Mensajes De Correo Electrónico"
+        },
+        "calculationOptions": {
+          "average": "Promedio",
+          "instant": "Instantánea"
+        },
+        "validation": {
+          "required": "Se requiere",
+          "nan": "Debe ser un número"
+        },
+        "severityLevel": "Nivel de gravedad",
+        "ruleStatus": "La regla de estado",
+        "ruleEnabled": "Habilitado",
+        "ruleDisabled": "Movilidad",
+        "devicesAffected": "los dispositivos afectados por esta norma",
+        "summaryHeader": "Resumen",
+        "apply": "Aplicar",
+        "cancel": "Cancelar"
+      },
+      "deleteRule": {
+        "preDeleteText": "Vamos a mantener las alertas asociadas con esta regla, incluso después de que se elimina. Si desea eliminar los asociados alertas, vaya a la <1><0>url</0></1> y elegir las alertas que desea eliminar.",
+        "deleteConfirmation": "La regla ha sido eliminado.",
+        "postDeleteText": "Si desea eliminar las alertas asociadas con esta regla, vaya a la <1><0>url</0></1> y elegir las alertas que desea eliminar.",
+        "disableConfirmation": "La regla ha sido deshabilitada.",
+        "maintenancePage": "Página De Mantenimiento",
+        "title": "Eliminar La Regla",
+        "close": "Cerca de",
+        "delete": "Eliminar",
+        "cancel": "Cancelar"
+      }
+    }
+  },
+  "fileInput": {
+    "upload": "Subir"
+  },
+  "applicationSettings": {
+    "nameAndLogo": "El nombre y el logo",
+    "nameLogoDescription": "Editar el logo y el nombre en el encabezado del sitio.",
+    "replaceLogo": "Reemplazar la imagen de logotipo",
+    "logoDescription": "Se recomienda logo tamaño: 24 x 24 px.\nMáximo tamaño del logo: 300 KB.\nFormatos de archivo admitidos:\n.SVG\n.PNG\n.JPEG\n .JPG",
+    "applicationName": "Nombre de la aplicación",
+    "currentLogo": "Logo actual",
+    "edit": "Editar",
+    "checkmark": "Marca de verificación",
+    "uploadError": "No se pueden subir archivo, compruebe el tipo de archivo/tamaño e inténtelo de nuevo.",
+    "error": "Error"
+  },
+  "maintenance": {
+    "acknowledge": "Reconoce",
+    "acknowledged": "Reconoció",
+    "alertOccurrences": "Alerta De Ocurrencias",
+    "alertedDeviceTelemetry": "Alertado del dispositivo de telemetría",
+    "alertedDevices": "Alertó a los dispositivos",
+    "all": "Todos",
+    "close": "Cerca de",
+    "closed": "Cerrado",
+    "critical": "Crítica",
+    "delete": "Eliminar",
+    "devices": "Los dispositivos",
+    "failedJobs": "Los trabajos fallidos",
+    "jobs": "Puestos de trabajo",
+    "lastEvent": "Último evento",
+    "noData": "No hay datos",
+    "noOccurrenceSelected": "No hay incidencias seleccionado",
+    "notifications": "Alertas",
+    "open": "abierto",
+    "openAlerts": "Abierto Las Alertas",
+    "relatedInfo": "Información relacionada con",
+    "ruleDetail": "Regla detalle",
+    "ruleDetailsDesc": "Administrar alerta de sucesos asociados a esta regla en la sección de abajo, y el uso de la información asociada a solucionar los problemas de cada ocurrencia.",
+    "severity": "La gravedad",
+    "succeeded": "Éxito",
+    "telemetry": "Telemetría",
+    "title": "Mantenimiento",
+    "total": "Total",
+    "warning": "Advertencia",
+    "alertGrid": {
+      "totalCount": "El número Total de",
+      "open": "Abierto",
+      "acknowledged": "Reconoció",
+      "closed": "Cerrado",
+      "lastOccurrence": "La última aparición"
     },
-    "flyout": {
-        "closeTitle": "Cerca de"
+    "jobGrid": {
+      "jobName": "Nombre Del Trabajo",
+      "status": "Estado",
+      "operation": "La operación",
+      "noDevices": "No. de dispositivos",
+      "succeeded": "Éxito",
+      "failed": "Error",
+      "startTime": "Hora de inicio",
+      "endTime": "Hora de finalización"
     },
-    "settingsFlyout": {
-        "alerting": "Sistema Avanzado De Alertas",
-        "title": "La configuración del sistema",
-        "version": "La versión {{versión}}",
-        "viewRelNotes": "Ver notas de la versión",
-        "theme": "Tema",
-        "changeTheme": "Cambiar el color de la aplicación tema",
-        "switchTheme1": "Cambiar a {{nextTheme1}} tema",
-        "switchTheme2": "Cambiar a {{nextTheme2}} tema",
+    "jobStatusGrid": {
+      "deviceIdAffected": "ID de dispositivo afectado",
+      "lastReturnMsg": "Último mensaje de vuelta"
+    },
+    "alertOccGrid": {
+      "occurrence": "Ocurrencia",
+      "triggerDevice": "Gatillo dispositivo",
+      "time": "Tiempo"
+    },
+    "jobStatus": {
+      "1": "En la cola de espera",
+      "2": "Ejecución",
+      "3": "Completado",
+      "4": "Error",
+      "5": "Cancelada",
+      "6": "Programado",
+      "queued": "En la cola"
+    }
+  },
+  "timeInterval": {
+    "PT15M": "Los últimos 15 minutos",
+    "PT1H": "Última hora",
+    "P1D": "Último día",
+    "P7D": "La semana pasada",
+    "P1M": "El mes pasado",
+    "ariaLabel": "Intervalo de tiempo"
+  },
+  "timeSeriesInsights": {
+    "explore": "Explorar en las Series de Tiempo Conocimientos",
+    "exploreTooltip": "Para ver los datos de la Serie de Tiempo Conocimientos explorer, por favor, pregunte al propietario de la solución para conceder acceso a los datos. <1><0>learnMore</0></1>",
+    "learnMore": "Aprender más"
+  },
+  "deployments": {
+    "title": "Implementaciones",
+    "flyouts": {
+      "new": {
+        "contextMenuName": "Nueva implementación",
+        "title": "Nueva implementación",
         "apply": "Aplicar",
         "cancel": "Cancelar",
         "close": "Cerca de",
-        "flowing": "Fluye",
-        "optInButton": "Diagnóstico",
-        "simulationToggle": "Simulación",
-        "alertingToggle": "Start/Stop De Alerta",
-        "start": "Inicio",
-        "stop": "Parada",
-        "stopped": "Se detuvo",
-        "enable": "Habilitar",
-        "disable": "Deshabilitar",
-        "simulationData": "Datos de la simulación",
-        "loading": "La carga de",
-        "alertingDescription": "Iniciar o detener la avanzada de alerta. Detener la alerta de minimizar el costo de la solución. Reglas y alertas serán desactivados si la alerta se apaga.",
-        "simulationDescription": "Iniciar o detener la simulación de dispositivos. Dispositivo de parada de la simulación de minimizar el costo de la solución; no telemetría simulada será enviado a tu Io Hub y las alertas no se generará para los dispositivos simulados.",
-        "toggleError": "Error al actualizar la simulación de estado",
-        "setLogoError": "Error de actualización de logotipo",
-        "simulationLoadError": "Error al cargar la simulación de estado",
-        "sendDiagnosticsCheckbox": "Sí, compartir información con Microsoft",
-        "dontSendDiagnosticsCheckbox": "No, no comparten información con Microsoft",
-        "sendDiagnosticsMicrosoftPrivacyUrl": "Declaración De Privacidad",
-        "diagnosticsLoadError": "Error al actualizar el diagnóstico de preferencia"
-    },
-    "helpFlyout": {
-        "title": "Documentación"
-    },
-    "profileFlyout": {
-        "title": "Perfil De Usuario",
-        "description": "<0><0>learnMore</0></0> acerca de los roles y permisos.",
-        "learnMore": "Aprender más",
-        "logout": "Cierre de sesión",
-        "noUser": "El usuario No encontrado",
-        "roles": "Funciones",
-        "noRoles": "Funciones No encontrado",
-        "permissions": "Permisos",
-        "noPermissions": "No hay permisos encontrado",
-        "close": "Cerca de",
-        "tenants": {
-            "tenantHeader": "Los inquilinos",
-            "noTenant": "Sin Inquilinos encontrado",
-            "createTenant": "Crear Nuevo Inquilino",
-            "deleteTenant": "Eliminar",
-            "tenantNameColumn": "El inquilino",
-            "tenantRoleColumn": "Papel",
-            "tenantActionColumn": "Acción",
-            "saveTenant": "Guardar",
-            "cancel": "Cancelar"
-        }
-    },
-    "createDeviceQueryFlyout": {
-        "title": "Consulta los dispositivos",
-        "create": "Consulta",
-        "reset": "Reset",
-        "createDeviceGroup": "El grupo de dispositivos"
-    },
-    "resetActiveDeviceQuery": {
-        "title": "Restablecimiento de la consulta"
-    },
-    "deviceQueryConditions": {
-        "condition": "Condición {{headerCount}}",
-        "delete": "Eliminar",
-        "field": "Campo",
-        "fieldPlaceholder": "Seleccione el campo",
-        "operator": "Operador",
-        "operatorPlaceholder": "Seleccione operador",
-        "operatorOptions": {
-            "EQ": "= Es igual a",
-            "GT": "> Mayor que",
-            "LT": "< Menos de",
-            "GE": ">= Mayor que o igual",
-            "LE": "<= Menor o igual"
-        },
-        "value": "Valor",
-        "valuePlaceholder": "Introduzca el valor de",
-        "type": "Tipo de",
-        "typePlaceholder": "Seleccione el tipo de",
-        "typeOptions": {
-            "Number": "Número de",
-            "Text": "Texto"
-        },
-        "remove": "Quitar la condición de",
-        "add": "Agregar condición",
-        "errorMsg": {
-            "fieldCantBeEmpty": "El campo es obligatorio",
-            "operatorCantBeEmpty": "El operador se requiere",
-            "valueCantBeEmpty": "Valor es necesario",
-            "typeCantBeEmpty": "Tipo es necesario",
-            "selectedType": "Debe ser del tipo seleccionado"
-        }
-    },
-    "deviceGroupsFlyout": {
-        "actions": "Acciones",
-        "cancel": "Cancelar",
-        "title": "Administrar grupos de dispositivos",
-        "create": "Crear nuevo grupo de dispositivos",
-        "deviceGroupName": "Dispositivo nombre del grupo",
-        "new": "Nuevo grupo de dispositivos",
-        "edit": "Edición de un grupo de dispositivos",
+        "packageType": "Tipo de paquete",
+        "configType": "Tipo de configuración",
+        "deviceGroup": "El Grupo De Dispositivos",
         "name": "Nombre",
-        "namePlaceHolder": "Dispositivo nombre del grupo",
-        "save": "Guardar",
-        "errorMsg": {
-            "nameCantBeEmpty": "Es necesario introducir el nombre"
+        "priority": "Prioridad (valores Más altos indican mayor prioridad)",
+        "priorityToolTip": "Cuando dos implementaciones de destino el mismo dispositivo, la implementación con la prioridad más alta se aplica. Si dos implementaciones tienen la misma prioridad, la implementación y la posterior creación de la fecha en que se aplica. <1><0>Aprender</0></1>",
+        "priorityLearnMore": "Aprender más acerca de la prioridad",
+        "package": "Paquete",
+        "packageTypePlaceHolder": "Seleccione el tipo de paquete",
+        "configTypePlaceHolder": "Seleccionar tipo de configuración",
+        "packagePlaceHolder": "Seleccione el paquete de",
+        "deviceGroupPlaceHolder": "Seleccione el grupo de dispositivos",
+        "priorityPlaceHolder": "Introduzca prioridad",
+        "namePlaceHolder": "Introduzca el nombre de",
+        "targetText": "los dispositivos de destino",
+        "infoText": "Esta implementación se ejecuta de forma continua. Cada dispositivo (y cualquier agregar en el futuro) en el dispositivo seleccionado grupo va a recibir este paquete.",
+        "successText": "La vista de su estado de implementación de detalle para <1><0>{{deploymentName}}</0></1>.",
+        "creating": "La creación de la implementación de",
+        "validation": {
+          "required": "Se requiere",
+          "positiveInteger": "Debe ser un entero positivo menor que 2147483648",
+          "name": "nombre de más de 50 caracteres"
         }
+      },
+      "status": {
+        "title": "Estado De La Implementación De",
+        "relatedDeployment": {
+          "title": "Relacionados Con Las Implementaciones De",
+          "noRelatedDeploymentText": "No Relacionados con las implementaciones que existen para la implementación seleccionada."
+        },
+        "deploymentLimitText": "Su entorno está actualmente limitada a 100 activo de las implementaciones.",
+        "active": "Activo",
+        "inActive": "Inactivo",
+        "apply": "Aplicar",
+        "cancel": "Cancelar",
+        "close": "Cerca de",
+        "updating": "La Actualización De La Implementación De"
+      }
+    },
+    "details": {
+      "deploymentName": "Nombre de la implementación",
+      "deviceGroup": "El grupo de dispositivos",
+      "start": "Inicio",
+      "packageType": "Tipo de paquete",
+      "configType": "Tipo De Configuración",
+      "package": "Paquete",
+      "priority": "Prioridad",
+      "applied": "Aplica",
+      "targeted": "Dirigido",
+      "failed": "Error",
+      "succeeded": "Éxito",
+      "pending": "Pendiente",
+      "unknown": "desconocido",
+      "customMetrics": "Métricas Personalizadas",
+      "devicesAffected": "Los Dispositivos Afectados",
+      "grid": {
+        "name": "Nombre",
+        "deploymentStatus": "Estado De La Implementación De",
+        "firmware": "Firmware",
+        "lastMessage": "Último Mensaje",
+        "start": "Inicio",
+        "end": "Final"
+      }
+    },
+    "modals": {
+      "delete": {
+        "contextMenuName": "Eliminar",
+        "title": "Eliminar De La Implementación?",
+        "info": "Borrar '{{deploymentName}}' dejará de este despliegue de ser aplicado a estos dispositivos. Puede resultar en una baja prioridad a la implementación de ser aplicados."
+      }
+    },
+    "grid": {
+      "name": "Nombre",
+      "package": "Paquete",
+      "deviceGroup": "El grupo de dispositivos",
+      "priority": "Prioridad",
+      "packageType": "Tipo De Paquete",
+      "configType": "Tipo De Configuración",
+      "targeted": "Dirigido",
+      "targetedTooltip": "Número de dispositivo de gemelos que coinciden con la condición de destino.",
+      "applied": "Aplica",
+      "appliedTooltip": "Número de dispositivo de gemelos que han sido modificados por la configuración.",
+      "failed": "Error",
+      "succeeded": "Éxito",
+      "createdOn": "Creado En",
+      "status": "Estado",
+      "modifiedBy": "Modificado Por",
+      "modifiedOn": "Modificación",
+      "createdBy": "Creado Por"
+    }
+  },
+  "packages": {
+    "searchPlaceholder": "Búsqueda de paquetes...",
+    "noneFound": "Los paquetes No encontrado.",
+    "title": "Paquetes",
+    "total": "total de paquetes",
+    "new": "Nuevo De Paquete",
+    "delete": "Eliminar",
+    "activate": "Activar",
+    "deactivate": "Desactivar",
+    "grid": {
+      "name": "Nombre",
+      "packageType": "Tipo De Paquete",
+      "configType": "Tipo De Configuración",
+      "dateCreated": "Fecha De Creación",
+      "active": "Activo",
+      "tags": "Etiquetas",
+      "version": "Versión",
+      "lastModified": "Fecha De Última Modificación",
+      "lastModifedBy": "Modificado Por Última Vez Por"
+    },
+    "flyouts": {
+      "new": {
+        "title": "Nuevo De Paquete",
+        "header": "Subir un paquete",
+        "description": "Agregar un paquete a su solución",
+        "upload": "Subir",
+        "cancel": "Cancelar",
+        "close": "Cerca de",
+        "packageName": "Nombre Del Paquete",
+        "packageType": "Tipo De Paquete",
+        "version": "Versión",
+        "configType": "Tipo de configuración",
+        "customType": "Configuración personalizada de tipo",
+        "browse": "Navegar",
+        "browseFirmwareText": "para un archivo de firmware",
+        "browseText": "para un archivo de paquete",
+        "firmwareTemplateTip": "Inicial de datos JSON se deriva de su plantilla. Usted puede ver y editar esta plantilla desde el menú de Configuración.",
+        "firmwareJson": "Firmware JSON",
+        "packageNamePlaceholder": "Introduzca El Nombre Del Paquete",
+        "packageVersionPlaceholder": "Introduzca La Versión Del Paquete",
+        "packageTypePlaceholder": "Seleccione el tipo de paquete",
+        "configTypePlaceholder": "Seleccionar tipo de configuración",
+        "customTextPlaceholder": "Introduzca nombre personalizado",
+        "package": "Paquete",
+        "deploymentsPage": "Implementaciones de la página",
+        "newDeployment": "+ Nueva Implementación",
+        "deploymentText": "Implementar paquetes, vaya a la <1>Implementaciones de la página</1> y, a continuación, haga clic en <3>+ Nueva Implementación</3>.",
+        "validation": {
+          "required": "Se requiere",
+          "fileName": "Nombre de archivo mayor a 50 caracteres",
+          "fileType": "Tipo de archivo no válido",
+          "customConfig": "nombre de más de 50 caracteres",
+          "invalid": "entrada no válida",
+          "invalidVersion": "La Versión No Válida",
+          "unsupportedProperty": "No compatible el firmware de la propiedad en el contenido.deviceContent",
+          "unsupportedVersionKey": "Versión no compatible clave en las propiedades deseadas"
+        }
+      },
+      "packageJson": {
+        "title": "Paquete de Datos JSON"
+      }
+    },
+    "modals": {
+      "delete": {
+        "title": "Elimina El Paquete?",
+        "info": "La eliminación de paquete seleccionado va a eliminar. Ésta no afectará a ninguna de las implementaciones de este paquete."
+      }
+    }
+  },
+  "packageTypes": {
+    "edgeManifest": "Borde De Manifiesto",
+    "deviceConfiguration": "La Configuración Del Dispositivo",
+    "unknown": "Desconocido"
+  },
+  "configTypes": {
+    "firmware": "Firmware",
+    "custom": "Personalizado"
+  },
+  "modal": {
+    "delete": "Eliminar",
+    "cancel": "Cancelar"
+  },
+  "walkthrough": {
+    "tabs": {
+      "dashboard": "Tablero de instrumentos",
+      "basicPage": "Página Básica",
+      "pageWithFlyout": "Página Con Flotante",
+      "pageWithGrid": "Página Con Cuadrícula"
+    },
+    "basicPage": {
+      "pagePlaceholder": "Esta es una nueva página."
+    },
+    "pageWithFlyout": {
+      "title": "Flotante Ejemplo",
+      "pageBody": "Haga clic en el contexto botón de arriba para abrir un flotante.",
+      "open": "Abierto Flotante",
+      "flyouts": {
+        "example": {
+          "header": "Ejemplo Flotante",
+          "description": "Este ejemplo flotante contiene un sencillo formulario con los botones de acción.",
+          "insertFormHere": "Insertar controles de formulario aquí. Ver 'src/componentes/shared/formas' de forma específica los controles compartidos que usted puede aprovechar.",
+          "summaryHeader": "Resumen",
+          "affected": "elementos afectados",
+          "cancel": "Cancelar",
+          "apply": "Aplicar",
+          "pending": "la aplicación de cambios... ",
+          "applySuccess": "elementos actualizado correctamente!",
+          "close": "Cerca de"
+        }
+      }
+    },
+    "pageWithGrid": {
+      "grid": {
+        "name": "Nombre",
+        "description": "Descripción",
+        "btn1": "Botón 1",
+        "btn2": "Botón 2"
+      }
     },
     "dashboard": {
-        "noData": "No hay datos disponibles",
-        "panels": {
-            "alerts": {
-                "header": "Alertas",
-                "explore": "Explorar"
-            },
-            "analytics": {
-                "header": "Analytics",
-                "topRule": "Normas con alertas activas",
-                "deviceGroupAlerts": "Alerta por grupo de dispositivos",
-                "criticalAlerts": "Alertas críticas",
-                "currentWindow": "En la actualidad",
-                "previousWindow": "Previamente"
-            },
-            "map": {
-                "header": "Ubicaciones de dispositivos",
-                "runtimeError": "Se ha producido un error al procesar el mapa",
-                "notSupportedError": "Azure de mapas no es soportado en su región"
-            },
-            "overview": {
-                "header": "Las estadísticas del dispositivo",
-                "allDevices": "Todos los dispositivos",
-                "critical": "Crítica",
-                "warnings": "Advertencias",
-                "total": "Total",
-                "connected": "Conectado",
-                "notConnected": "Sin conexión"
-            },
-            "telemetry": {
-                "header": "Telemetría"
-            }
+      "panels": {
+        "example": {
+          "header": "Ejemplo De Panel De",
+          "panelBody": "Este es un nuevo panel."
         }
+      }
     },
-    "refreshBar": {
-        "refreshing": "Refrescante",
-        "lastRefreshed": "La última actualización",
-        "ariaLabel": "Actualización de la página"
-    },
-    "users": {
-        "title": "Gestión De Usuarios",
-        "ariaLabel": "De búsqueda de los usuarios",
-        "searchPlaceholder": "Los usuarios de la búsqueda...",
-        "grid": {
-            "userName": "Nombre",
-            "userType": "Tipo de",
-            "userId": "Guid",
-            "userRole": "Papel"
-        },
-        "flyouts": {
-            "new": {
-                "contextMenuName": "Nuevo usuario",
-                "addServicePrincipal": "Agregar Principal De Servicio",
-                "title": "Invitar a los usuarios",
-                "user": {
-                    "label": "Dirección De Correo Electrónico",
-                    "apply": "Enviar invitación",
-                    "applySuccess": "usuario correctamente invitados!"
-                },
-                "servicePrincipal": {
-                    "label": "Principal de servicio de id de la aplicación",
-                    "apply": "Agregar",
-                    "applySuccess": "Agregó principal de servicio"
-                },
-                "roles": {
-                    "hint": "Seleccione la función de usuario",
-                    "label": "El Papel De Usuario"
-                },
-                "systemAdmin":{
-                    "hint":"Select user",
-                    "label":"System Admin",
-                    "title":"Add System Admin",
-                    "add":"Add",
-                    "applySuccess": "Added system admin successfully!"
-                },
-                "apply": "Enviar invitación",
-                "cancel": "Cancelar",
-                "validation": {
-                    "required": "Se requiere",
-                    "invalid": "No válida de correo electrónico proporcionada",
-                    "invalidGuid": "Guid No Válido"
-                },
-                "summaryHeader": "Resumen",
-                "pending": "Eliminación de dispositivos... ",
-                "close": "Cerca de"
-            },
-            "delete": {
-                "title": "Eliminar",
-                "header": "Eliminar usuarios",
-                "description": "Esta acción eliminará el usuario seleccionado a partir de este inquilino.",
-                "confirmNo": "No, no retire los usuarios seleccionados a partir de este inquilino.",
-                "confirmYes": "Sí, por favor, retire los usuarios seleccionados a partir de este inquilino.",
-                "summaryHeader": "Resumen",
-                "affected": "Los usuarios afectados",
-                "cancel": "Cancelar",
-                "apply": "Eliminar",
-                "pending": "Eliminación de usuarios... ",
-                "applySuccess": "Los usuarios han eliminado con éxito!",
-                "close": "Cerca de"
-            }
-        }
-    },
-    "devices": {
-        "title": "Explorador De Dispositivos",
-        "ariaLabel": "Búsqueda de dispositivos",
-        "searchPlaceholder": "Búsqueda de dispositivos...",
-        "noneFound": "No se encuentran los dispositivos.",
-        "refresh": "Actualización",
-        "grid": {
-            "connected": "Conectado",
-            "deviceName": "Nombre de dispositivo",
-            "deviceType": "Tipo de dispositivo",
-            "firmware": "Firmware",
-            "lastConnection": "Última conexión",
-            "no": "No",
-            "offline": "Sin conexión",
-            "simulated": "Simulado",
-            "status": "Estado",
-            "telemetry": "Telemetría",
-            "yes": "Sí"
-        },
-        "flyouts": {
-            "createDeviceQuery": {
-                "title": "Consulta Los Dispositivos"
-            },
-            "details": {
-                "title": "Detalles Del Dispositivo",
-                "noDevice": "Uy, no fuimos capaces de encontrar el dispositivo.",
-                "close": "Cerca de",
-                "connected": "Conectado",
-                "notConnected": "Desconectado",
-                "simulated": "Simulado",
-                "notSimulated": "Física",
-                "diagnostics": {
-                    "title": "Diagnóstico",
-                    "description": "La información de diagnóstico del dispositivo",
-                    "keyHeader": "La propiedad",
-                    "valueHeader": "Valor",
-                    "status": "Estado",
-                    "lastMessage": "Último mensaje",
-                    "message": "Mensaje",
-                    "showMessage": "Haga clic aquí para ver raw mensaje"
-                },
-                "methods": {
-                    "title": "Métodos",
-                    "description": "Para ejecutar un método en uno o más dispositivos, cerca de este panel, seleccione la casilla de verificación para el dispositivo(s), haga clic en <1><0>{{empleos}}</0></1>, y, a continuación, seleccione <3><0>{{métodos}}</0></3>.",
-                    "noneExist": "No hay métodos para este dispositivo."
-                },
-                "modules": {
-                    "title": "Los mensajes de despliegue",
-                    "description": "Borde del módulo de mensajes en el dispositivo",
-                    "noneExist": "No hay mensajes encontrados para este dispositivo"
-                },
-                "properties": {
-                    "title": "Propiedades",
-                    "description": "Para cambiar una propiedad en uno o más dispositivos, cerca de este panel, seleccione la casilla de verificación para el dispositivo(s), haga clic en <1><0>{{empleos}}</0></1>, y, a continuación, seleccione <3><0>{{propiedades}}</0></3>.",
-                    "keyHeader": "La propiedad",
-                    "valueHeader": "Valor",
-                    "noneExist": "No hay propiedades para este dispositivo.",
-                    "copy": "Copia",
-                    "copyAllProperties": "Copiar una lista de todas las propiedades del dispositivo",
-                    "syncing": "{{reportedPropertyValue}} (Sincronización {{desiredPropertyValue}})"
-                },
-                "tags": {
-                    "title": "Etiquetas",
-                    "description": "Para agregar, eliminar o cambiar una etiqueta en uno o más dispositivos, cerca de este panel, seleccione la casilla de verificación para el dispositivo(s), haga clic en <1><0>{{empleos}}</0></1>, y, a continuación, seleccione <3><0>{{etiquetas}}</0></3>.",
-                    "keyHeader": "Clave",
-                    "valueHeader": "Valor",
-                    "noneExist": "No hay etiquetas para este dispositivo."
-                },
-                "telemetry": {
-                    "title": "Telemetría"
-                }
-            },
-            "delete": {
-                "title": "Eliminar",
-                "header": "Elimine el dispositivo",
-                "description": "Esta acción eliminará los dispositivos de forma permanente de la plataforma.",
-                "confirmNo": "No, no elimine el seleccionado de dispositivos físicos.",
-                "confirmYes": "Sí, por favor, elimine el seleccionado de dispositivos físicos.",
-                "simulatedNotSupported": "La eliminación de los dispositivos simulados no es compatible actualmente, esta acción será tomada únicamente en los dispositivos físicos.",
-                "summaryHeader": "Resumen",
-                "affected": "Dispositivos afectados",
-                "cancel": "Cancelar",
-                "apply": "Eliminar",
-                "pending": "Eliminación de dispositivos... ",
-                "applySuccess": "dispositivos eliminado con éxito!",
-                "close": "Cerca de"
-            },
-            "jobs": {
-                "title": "Puestos de trabajo",
-                "noDevices": "Uy, no fuimos capaces de encontrar cualquiera de los dispositivos seleccionados.",
-                "summaryHeader": "Resumen",
-                "affected": "Dispositivos afectados",
-                "cancel": "Cancelar",
-                "apply": "Aplicar",
-                "pending": "Presentación de trabajo...",
-                "applySuccess": "Trabajo enviado con éxito!",
-                "close": "Cerca de",
-                "selectJob": "Seleccione trabajo",
-                "jobName": "Nombre Del Trabajo",
-                "jobNameHint": "Introduzca el nombre del trabajo",
-                "jobNameHelpMessage": "Sólo letras y números están permitidos",
-                "viewStatus": "Ver el estado de trabajo",
-                "validation": {
-                    "required": "Se requiere"
-                },
-                "tags": {
-                    "radioLabel": "Etiquetas",
-                    "title": "Las etiquetas de los dispositivos seleccionados",
-                    "description": "Etiquetas en común en los dispositivos seleccionados",
-                    "keyHeader": "Clave",
-                    "valueHeader": "Valor",
-                    "typeHeader": "Tipo de",
-                    "typeNumber": "Número de",
-                    "typeString": "Texto",
-                    "noneExist": "No hay etiquetas comunes encontrados para los dispositivos seleccionados.",
-                    "add": "Añadir etiqueta"
-                },
-                "methods": {
-                    "radioLabel": "Métodos",
-                    "title": "Método de ejecución los dispositivos seleccionados",
-                    "description": "Todos los métodos disponibles para el dispositivo o grupo de dispositivos",
-                    "methodName": "Nombre de método",
-                    "methodNameHint": "Seleccione el método de",
-                    "firmwareVersion": "Versión De Firmware",
-                    "firmwareVersionHint": "1.0.1",
-                    "firmwareUri": "El Firmware de la URI",
-                    "firmwareUriHint": "Introduzca el firmware valor de URI"
-                },
-                "properties": {
-                    "radioLabel": "Propiedades",
-                    "title": "Propiedades de los dispositivos seleccionados",
-                    "description": "Propiedades disponibles y los valores para cambiar",
-                    "keyHeader": "La propiedad",
-                    "valueHeader": "Valor",
-                    "typeHeader": "Tipo de",
-                    "typeNumber": "Número de",
-                    "typeString": "Texto",
-                    "noneExist": "No hay propiedades comunes encontrados para los dispositivos seleccionados.",
-                    "syncing": "{{reportedPropertyValue}} (Sincronización {{desiredPropertyValue}})"
-                }
-            },
-            "new": {
-                "contextMenuName": "Nuevo dispositivo",
-                "title": "Nuevo dispositivo",
-                "summaryHeader": "Disposición resumen",
-                "affected": "Dispositivos para la provisión de",
-                "cancel": "Cancelar",
-                "apply": "Aplicar",
-                "pending": "El aprovisionamiento de dispositivos... ",
-                "applySuccess": "Los dispositivos de aprovisionado correctamente",
-                "simulatedRefreshMessage": "Los dispositivos simulados se crean en el fondo en el servidor. Por lo tanto, puede tomar un tiempo para aparecer cuando el dispositivo de la lista se actualiza.",
-                "close": "Cerca de",
-                "validation": {
-                    "required": "Se requiere",
-                    "greaterThanZero": "Debe ser mayor que cero"
-                },
-                "count": {
-                    "label": "Número de dispositivos"
-                },
-                "device": {
-                    "label": "Dispositivo",
-                    "device": "IoT dispositivo",
-                    "edgeDevice": "IoT dispositivo de Borde"
-                },
-                "deviceType": {
-                    "label": "Tipo de",
-                    "simulated": "Simulado",
-                    "physical": "Real"
-                },
-                "deviceId": {
-                    "label": "ID de dispositivo",
-                    "hint": "Introduzca la ID del dispositivo",
-                    "sysGenerated": "El sistema genera un Id de dispositivo."
-                },
-                "deviceIdExample": {
-                    "label": "ID de dispositivo de ejemplo",
-                    "format": "{{deviceName}}-{#####}",
-                    "deviceName": "{Nombre del dispositivo}"
-                },
-                "deviceModel": {
-                    "label": "Modelo de dispositivo",
-                    "hint": "Seleccione el tipo de dispositivo existente"
-                },
-                "authenticationType": {
-                    "label": "Tipo de autenticación",
-                    "symmetric": "Clave simétrica",
-                    "x509": "X. 509"
-                },
-                "authenticationKey": {
-                    "label": "Clave de autenticación",
-                    "generateKeys": "Generación automática de claves",
-                    "manualKeys": "Introduzca manualmente las claves",
-                    "hint": "Introduzca su clave aquí",
-                    "primaryKey": "Clave Principal",
-                    "primaryKeyConnection": "Cadena de conexión de la Clave principal",
-                    "secondaryKey": "La Clave Secundaria",
-                    "secondaryKeyConnection": "La cadena de conexión de la Clave secundaria",
-                    "primaryThumbprint": "Primaria de la huella digital",
-                    "secondaryThumbprint": "Secundaria huella digital"
-                }
-            },
-            "SIMManagement": {
-                "title": "Administración de la tarjeta SIM",
-                "provider": "Proveedor de",
-                "summaryHeader": "Resumen y las instrucciones",
-                "here": "aquí",
-                "select": "Seleccione...",
-                "header": {
-                    "telefonica": "Como Telefónica IoT cliente, usted tiene la ventaja de la adición de esta característica para enriquecer automáticamente su Azure Monitoreo Remoto de la Solución con la conectividad de datos disponibles en Telefónica IoT Conectividad de la Plataforma (Información de la Red, el Consumo de Datos y de Red Basada en la Ubicación)."
-                },
-                "description": {
-                    "telefonica": "Esta característica está en la vista previa. Con el fin de sincronización de conectividad de datos en Azure Monitoreo Remoto de la Solución, por favor llene una solicitud de <1><0>url</0></1>, seleccione la opción \"Azure Monitoreo Remoto\" e incluir tus datos de contacto y activaremos automáticamente de su cuenta. \n\nSi usted no es un cliente de Telefónica, sin embargo, y para poder disfrutar de este o de otros IoT Conectividad en la Nube Listo servicios, puede contactar con nosotros <1><0>url</0></1> y seleccionar la opción \"Conectividad\"; estaremos encantados de ayudarle."
-                },
-                "operator": {
-                    "telefonica": "Telefónica"
-                }
-            }
-        }
-    },
-    "rules": {
-        "title": "Reglas",
-        "searchPlaceholder": "Reglas de búsqueda de...",
-        "ariaLabel": "Reglas de búsqueda",
-        "severity": {
-            "info": "Info",
-            "warning": "Advertencia",
-            "critical": "Crítica"
-        },
-        "grid": {
-            "enabled": "Habilitado",
-            "disabled": "Movilidad",
-            "ruleName": "Nombre de la regla",
-            "description": "Descripción",
-            "severity": "La gravedad",
-            "deviceGroup": "El grupo de dispositivos",
-            "trigger": "Gatillo",
-            "notificationType": "Tipo de notificación",
-            "status": "Estado",
-            "count": "Contar",
-            "lastTrigger": "Último disparo",
-            "maintenanceLog": "Registro de mantenimiento",
-            "explore": "Explorar"
-        },
-        "flyouts": {
-            "edit": "Editar",
-            "statusToggle": "Estado",
-            "enable": "Habilitar",
-            "disable": "Deshabilitar",
-            "changeStatus": "Cambio de estado",
-            "newRule": "La nueva regla",
-            "editRule": "Editar regla",
-            "viewRule": "Detalles De La Regla",
-            "statusTitle": "Cambio de estado",
-            "delete": "Eliminar",
-            "ruleEditor": {
-                "ruleName": "Nombre de la regla",
-                "namePlaceholder": "Introduzca el nombre de la regla",
-                "description": "Descripción",
-                "descriptionPlaceholder": "Introduzca la descripción de la regla",
-                "deviceGroup": "El grupo de dispositivos",
-                "deviceGroupPlaceholder": "Seleccione el grupo de dispositivos",
-                "conditions": "Condiciones",
-                "addCondition": "Agregar condición",
-                "delete": "Eliminar",
-                "calculation": "Cálculo",
-                "calculationPlaceholder": "Seleccione",
-                "timePeriod": "Período de tiempo (en minutos)",
-                "condition": {
-                    "condition": "Condición",
-                    "field": "Campo",
-                    "fieldPlaceholder": "Seleccione el campo",
-                    "operator": "Operador",
-                    "operatorPlaceholder": "Seleccione operador",
-                    "operatorOptions": {
-                        "Equals": "= Es igual a",
-                        "GreaterThan": "> Mayor que",
-                        "LessThan": "< Menos de",
-                        "GreaterThanOrEqual": ">= Mayor que o igual",
-                        "LessThanOrEqual": "<= Menor o igual"
-                    },
-                    "value": "Valor",
-                    "valuePlaceholder": "Introduzca el valor de"
-                },
-                "actions": {
-                    "action": "Acción",
-                    "checkingEmailSetup": "Comprobación del estado de configuración de correo electrónico.",
-                    "setupEmail": "Para enviar alertas de correo electrónico, <1><0>outlookLogin</0></1> es necesario.",
-                    "outlookLogin": "iniciar sesión en Outlook",
-                    "emailSetupConfirmed": "Su configuración de correo electrónico ha sido completado con éxito.",
-                    "setupEmailError": "Ha habido un error de confirmar su configuración de correo electrónico. <1><0>tryAgain</0></1>",
-                    "setupEmailTimeout": "Comprobación de la configuración de correo electrónico se ha agotado el tiempo. <1><0>tryAgain</0></1>",
-                    "emailSetupHelp": "Envío de alertas por correo electrónico requiere la configuración manual. <1><0>learnMore</0></1>",
-                    "tryAgain": "Por favor, inténtelo de nuevo.",
-                    "learnMore": "Aprender más",
-                    "emailActionLabel": "Enviar correo electrónico",
-                    "emailAddresses": "Las direcciones de correo electrónico",
-                    "enterEmail": "Presione entrar para agregar destinatario de correo electrónico",
-                    "emailComments": "Notas Adicionales",
-                    "enterEmailComments": "Introducir notas adicionales para el mensaje de correo electrónico.",
-                    "emailSubject": "Asunto Del Correo Electrónico",
-                    "enterEmailSubject": "Entrar en asunto del correo electrónico",
-                    "syntaxError": "No es una dirección válida de correo electrónico",
-                    "on": "Correo electrónico habilitado",
-                    "off": "Correo electrónico deshabilitado",
-                    "defaultEmailSubject": "Azure IoT Monitoreo Remoto de alerta: {{ruleName}} fue provocado",
-                    "deleteEmail": "Eliminar Mensajes De Correo Electrónico"
-                },
-                "calculationOptions": {
-                    "average": "Promedio",
-                    "instant": "Instantánea"
-                },
-                "validation": {
-                    "required": "Se requiere",
-                    "nan": "Debe ser un número"
-                },
-                "severityLevel": "Nivel de gravedad",
-                "ruleStatus": "La regla de estado",
-                "ruleEnabled": "Habilitado",
-                "ruleDisabled": "Movilidad",
-                "devicesAffected": "los dispositivos afectados por esta norma",
-                "summaryHeader": "Resumen",
-                "apply": "Aplicar",
-                "cancel": "Cancelar"
-            },
-            "deleteRule": {
-                "preDeleteText": "Vamos a mantener las alertas asociadas con esta regla, incluso después de que se elimina. Si desea eliminar los asociados alertas, vaya a la <1><0>url</0></1> y elegir las alertas que desea eliminar.",
-                "deleteConfirmation": "La regla ha sido eliminado.",
-                "postDeleteText": "Si desea eliminar las alertas asociadas con esta regla, vaya a la <1><0>url</0></1> y elegir las alertas que desea eliminar.",
-                "disableConfirmation": "La regla ha sido deshabilitada.",
-                "maintenancePage": "Página De Mantenimiento",
-                "title": "Eliminar La Regla",
-                "close": "Cerca de",
-                "delete": "Eliminar",
-                "cancel": "Cancelar"
-            }
-        }
-    },
-    "fileInput": {
-        "upload": "Subir"
-    },
-    "applicationSettings": {
-        "nameAndLogo": "El nombre y el logo",
-        "nameLogoDescription": "Editar el logo y el nombre en el encabezado del sitio.",
-        "replaceLogo": "Reemplazar la imagen de logotipo",
-        "logoDescription": "Se recomienda logo tamaño: 24 x 24 px.\nMáximo tamaño del logo: 300 KB.\nFormatos de archivo admitidos:\n.SVG\n.PNG\n.JPEG\n.JPG",
-        "applicationName": "Nombre de la aplicación",
-        "currentLogo": "Logo actual",
-        "edit": "Editar",
-        "checkmark": "Marca de verificación",
-        "uploadError": "No se pueden subir archivo, compruebe el tipo de archivo/tamaño e inténtelo de nuevo.",
-        "error": "Error"
-    },
-    "maintenance": {
-        "acknowledge": "Reconoce",
-        "acknowledged": "Reconoció",
-        "alertOccurrences": "Alerta De Ocurrencias",
-        "alertedDeviceTelemetry": "Alertado del dispositivo de telemetría",
-        "alertedDevices": "Alertó a los dispositivos",
-        "all": "Todos",
-        "close": "Cerca de",
-        "closed": "Cerrado",
-        "critical": "Crítica",
-        "delete": "Eliminar",
-        "devices": "Los dispositivos",
-        "failedJobs": "Los trabajos fallidos",
-        "jobs": "Puestos de trabajo",
-        "lastEvent": "Último evento",
-        "noData": "No hay datos",
-        "noOccurrenceSelected": "No hay incidencias seleccionado",
-        "notifications": "Alertas",
-        "open": "abierto",
-        "openAlerts": "Abierto Las Alertas",
-        "relatedInfo": "Información relacionada con",
-        "ruleDetail": "Regla detalle",
-        "ruleDetailsDesc": "Administrar alerta de sucesos asociados a esta regla en la sección de abajo, y el uso de la información asociada a solucionar los problemas de cada ocurrencia.",
-        "severity": "La gravedad",
-        "succeeded": "Éxito",
-        "telemetry": "Telemetría",
-        "title": "Mantenimiento",
-        "total": "Total",
-        "warning": "Advertencia",
-        "alertGrid": {
-            "totalCount": "El número Total de",
-            "open": "Abierto",
-            "acknowledged": "Reconoció",
-            "closed": "Cerrado",
-            "lastOccurrence": "La última aparición"
-        },
-        "jobGrid": {
-            "jobName": "Nombre Del Trabajo",
-            "status": "Estado",
-            "operation": "La operación",
-            "noDevices": "No. de dispositivos",
-            "succeeded": "Éxito",
-            "failed": "Error",
-            "startTime": "Hora de inicio",
-            "endTime": "Hora de finalización"
-        },
-        "jobStatusGrid": {
-            "deviceIdAffected": "ID de dispositivo afectado",
-            "lastReturnMsg": "Último mensaje de vuelta"
-        },
-        "alertOccGrid": {
-            "occurrence": "Ocurrencia",
-            "triggerDevice": "Gatillo dispositivo",
-            "time": "Tiempo"
-        },
-        "jobStatus": {
-            "1": "En la cola de espera",
-            "2": "Ejecución",
-            "3": "Completado",
-            "4": "Error",
-            "5": "Cancelada",
-            "6": "Programado",
-            "queued": "En la cola"
-        }
-    },
-    "timeInterval": {
-        "PT1H": "Última hora",
-        "P1D": "Último día",
-        "P7D": "La semana pasada",
-        "P1M": "El mes pasado",
-        "ariaLabel": "Intervalo de tiempo"
-    },
-    "timeSeriesInsights": {
-        "explore": "Explorar en las Series de Tiempo Conocimientos",
-        "exploreTooltip": "Para ver los datos de la Serie de Tiempo Conocimientos explorer, por favor, pregunte al propietario de la solución para conceder acceso a los datos. <1><0>learnMore</0></1>",
-        "learnMore": "Aprender más"
-    },
-    "deployments": {
-        "title": "Implementaciones",
-        "flyouts": {
-            "new": {
-                "contextMenuName": "Nueva implementación",
-                "title": "Nueva implementación",
-                "apply": "Aplicar",
-                "cancel": "Cancelar",
-                "close": "Cerca de",
-                "packageType": "Tipo de paquete",
-                "configType": "Tipo de configuración",
-                "deviceGroup": "El Grupo De Dispositivos",
-                "name": "Nombre",
-                "priority": "Prioridad (valores Más altos indican mayor prioridad)",
-                "priorityToolTip": "Cuando dos implementaciones de destino el mismo dispositivo, la implementación con la prioridad más alta se aplica. Si dos implementaciones tienen la misma prioridad, la implementación y la posterior creación de la fecha en que se aplica. <1><0>Aprender</0></1>",
-                "priorityLearnMore": "Aprender más acerca de la prioridad",
-                "package": "Paquete",
-                "packageTypePlaceHolder": "Seleccione el tipo de paquete",
-                "configTypePlaceHolder": "Seleccionar tipo de configuración",
-                "packagePlaceHolder": "Seleccione el paquete de",
-                "deviceGroupPlaceHolder": "Seleccione el grupo de dispositivos",
-                "priorityPlaceHolder": "Introduzca prioridad",
-                "namePlaceHolder": "Introduzca el nombre de",
-                "targetText": "los dispositivos de destino",
-                "infoText": "Esta implementación se ejecuta de forma continua. Cada dispositivo (y cualquier agregar en el futuro) en el dispositivo seleccionado grupo va a recibir este paquete.",
-                "successText": "La vista de su estado de implementación de detalle para <1><0>{{deploymentName}}</0></1>.",
-                "creating": "La creación de la implementación de",
-                "validation": {
-                    "required": "Se requiere",
-                    "positiveInteger": "Debe ser un entero positivo menor que 2147483648",
-                    "name": "nombre de más de 50 caracteres"
-                }
-            },
-            "packageJson":{
-                "title":"Package JSON Data"
-            }
-        },
-        "details": {
-            "deploymentName": "Nombre de la implementación",
-            "deviceGroup": "El grupo de dispositivos",
-            "start": "Inicio",
-            "packageType": "Tipo de paquete",
-            "configType": "Tipo De Configuración",
-            "package": "Paquete",
-            "priority": "Prioridad",
-            "applied": "Aplica",
-            "targeted": "Dirigido",
-            "failed": "Error",
-            "succeeded": "Éxito",
-            "pending": "Pendiente",
-            "unknown": "desconocido",
-            "customMetrics": "Métricas Personalizadas",
-            "devicesAffected": "Los Dispositivos Afectados",
-            "grid": {
-                "name": "Nombre",
-                "deploymentStatus": "Estado De La Implementación De",
-                "firmware": "Firmware",
-                "lastMessage": "Último Mensaje",
-                "start": "Inicio",
-                "end": "Final"
-            }
-        },
-        "modals": {
-            "delete": {
-                "contextMenuName": "Eliminar",
-                "title": "Eliminar De La Implementación?",
-                "info": "Borrar '{{deploymentName}}' dejará de este despliegue de ser aplicado a estos dispositivos. Puede resultar en una baja prioridad a la implementación de ser aplicados."
-            }
-        },
-        "grid": {
-            "name": "Nombre",
-            "package": "Paquete",
-            "deviceGroup": "El grupo de dispositivos",
-            "priority": "Prioridad",
-            "packageType": "Tipo De Paquete",
-            "configType": "Tipo De Configuración",
-            "targeted": "Dirigido",
-            "targetedTooltip": "Número de dispositivo de gemelos que coinciden con la condición de destino.",
-            "applied": "Aplica",
-            "appliedTooltip": "Número de dispositivo de gemelos que han sido modificados por la configuración.",
-            "failed": "Error",
-            "succeeded": "Éxito",
-            "dateCreated": "Creado En"
-        }
-    },
-    "packages": {
-        "searchPlaceholder": "Búsqueda de paquetes...",
-        "noneFound": "Los paquetes No encontrado.",
-        "title": "Paquetes",
-        "total": "total de paquetes",
-        "new": "Nuevo De Paquete",
-        "delete": "Eliminar",
-        "grid": {
-            "name": "Nombre",
-            "packageType": "Tipo De Paquete",
-            "configType": "Tipo De Configuración",
-            "dateCreated": "Fecha De Creación"
-        },
-        "flyouts": {
-            "new": {
-                "title": "Nuevo De Paquete",
-                "header": "Subir un paquete",
-                "description": "Agregar un paquete a su solución",
-                "upload": "Subir",
-                "cancel": "Cancelar",
-                "close": "Cerca de",
-                "packageType": "Tipo de paquete",
-                "configType": "Tipo de configuración",
-                "customType": "Configuración personalizada de tipo",
-                "browse": "Navegar",
-                "browseFirmwareText": "para un archivo de firmware",
-                "browseText": "para un archivo de paquete",
-                "packageTypePlaceholder": "Seleccione el tipo de paquete",
-                "configTypePlaceholder": "Seleccionar tipo de configuración",
-                "customTextPlaceholder": "Introduzca nombre personalizado",
-                "package": "Paquete",
-                "deploymentsPage": "Implementaciones de la página",
-                "newDeployment": "+ Nueva Implementación",
-                "deploymentText": "Implementar paquetes, vaya a la <1>Implementaciones de la página</1> y, a continuación, haga clic en <3>+ Nueva Implementación</3>.",
-                "validation": {
-                    "required": "Se requiere",
-                    "fileName": "Nombre de archivo mayor a 50 caracteres",
-                    "fileType": "Tipo de archivo no válido",
-                    "customConfig": "nombre de más de 50 caracteres"
-                }
-            }
-        },
-        "modals": {
-            "delete": {
-                "title": "Elimina El Paquete?",
-                "info": "La eliminación de paquete seleccionado va a eliminar. Ésta no afectará a ninguna de las implementaciones de este paquete."
-            }
-        }
-    },
-    "packageTypes": {
-        "edgeManifest": "Borde De Manifiesto",
-        "deviceConfiguration": "La Configuración Del Dispositivo",
-        "unknown": "Desconocido"
-    },
-    "configTypes": {
-        "firmware": "Firmware",
-        "custom": "Personalizado"
-    },
-    "modal": {
-        "delete": "Eliminar",
-        "cancel": "Cancelar"
-    },
-    "walkthrough": {
-        "tabs": {
-            "dashboard": "Tablero de instrumentos",
-            "basicPage": "Página Básica",
-            "pageWithFlyout": "Página Con Flotante",
-            "pageWithGrid": "Página Con Cuadrícula"
-        },
-        "basicPage": {
-            "pagePlaceholder": "Esta es una nueva página."
-        },
-        "pageWithFlyout": {
-            "title": "Flotante Ejemplo",
-            "pageBody": "Haga clic en el contexto botón de arriba para abrir un flotante.",
-            "open": "Abierto Flotante",
-            "flyouts": {
-                "example": {
-                    "header": "Ejemplo Flotante",
-                    "description": "Este ejemplo flotante contiene un sencillo formulario con los botones de acción.",
-                    "insertFormHere": "Insertar controles de formulario aquí. Ver 'src/componentes/shared/formas' de forma específica los controles compartidos que usted puede aprovechar.",
-                    "summaryHeader": "Resumen",
-                    "affected": "elementos afectados",
-                    "cancel": "Cancelar",
-                    "apply": "Aplicar",
-                    "pending": "la aplicación de cambios... ",
-                    "applySuccess": "elementos actualizado correctamente!",
-                    "close": "Cerca de"
-                }
-            }
-        },
-        "pageWithGrid": {
-            "grid": {
-                "name": "Nombre",
-                "description": "Descripción",
-                "btn1": "Botón 1",
-                "btn2": "Botón 2"
-            }
-        },
-        "dashboard": {
-            "panels": {
-                "example": {
-                    "header": "Ejemplo De Panel De",
-                    "panelBody": "Este es un nuevo panel."
-                }
-            }
-        },
-        "panel": {
-            "header": "Ejemplo De Panel De",
-            "panelBody": "Este es un nuevo panel."
-        }
+    "panel": {
+      "header": "Ejemplo De Panel De",
+      "panelBody": "Este es un nuevo panel."
     }
+  }
 }

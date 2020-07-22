@@ -1,929 +1,1088 @@
 {
-    "header": {
-        "appName": "Azure IoT Giám Sát Từ Xa",
-        "companyName": "3M",
-        "profile": "Hồ sơ",
-        "more": "Hơn",
-        "getStarted": "Hãy bắt đầu",
-        "documentation": "Tài liệu",
-        "sendSuggestion": "Gửi một đề nghị"
+  "header": {
+    "appName": "Azure IoT Giám Sát Từ Xa",
+    "companyName": "3M",
+    "profile": "Hồ sơ",
+    "more": "Hơn",
+    "getStarted": "Hãy bắt đầu",
+    "documentation": "Tài liệu",
+    "sendSuggestion": "Gửi một đề nghị"
+  },
+  "globalNav": {
+    "expand": "Mở Rộng Hướng Bên Cạnh",
+    "collapse": "Sụp Đổ Hướng Bên Cạnh"
+  },
+  "accessDenied": {
+    "message": "Oops có vẻ như anh không có một người thuê nhà. Bạn có thể tạo ra một người thuê nhà mới của mở hồ sơ của bạn và nhấn vào 'Tạo Mới Thuê nhà' nút.",
+    "learnMore": "Tìm hiểu thêm",
+    "createTenant": "Tạo Ra Người Thuê Nhà"
+  },
+  "pageNotFound": {
+    "title": "404 không tìm thấy",
+    "message": "Oops, chúng tôi không thể tìm thấy trang bạn được yêu cầu."
+  },
+  "tabs": {
+    "dashboard": "Bảng điều khiển",
+    "devices": "Thiết Bị Explorer",
+    "users": "Người Quản Lý",
+    "rules": "Quy tắc",
+    "maintenance": "Bảo trì",
+    "packages": "Gói",
+    "deployments": "Triển khai"
+  },
+  "errorFormat": "Lỗi: {{tin nhắn}}",
+  "edgeAgentStatus": {
+    "200": "OK.",
+    "400": "Việc triển khai cấu hình là thay đổi hoặc không hợp lệ.",
+    "406": "Các thiết bị được ẩn hay không gửi báo cáo tình trạng.",
+    "412": "Việc triển khai cấu hình giản đồ phiên bản là không hợp lệ.",
+    "417": "Các thiết bị triển khai cấu hình không được thiết lập.",
+    "500": "Một lỗi xảy ra trong quá Nhiều Cạnh chạy.",
+    "unknown": "Một mã nhận được."
+  },
+  "errorCode": {
+    "noResponse": "Oops, không có phản ứng từ các máy chủ.",
+    "notLoggedIn": "Bạn cần phải login để gọi việc phục vụ.",
+    "notAuthorized": "Bạn không có quyền gọi dịch vụ.",
+    "notFound": "Oops, chúng tôi đã không thể tìm thấy những dịch vụ.",
+    "redirection": "Oops, chúng tôi có một hướng lỗi.",
+    "retryFailure": "Oops, chúng tôi có một lỗi tạm thời từ dịch vụ nhưng đã không thể phục hồi. Thử lại sau.",
+    "unknown": "Một lỗi không xảy ra."
+  },
+  "permissions": {
+    "ReadAll": "Xem giải pháp",
+    "CreateDeviceGroups": "Tạo các nhóm thiết bị",
+    "DeleteDeviceGroups": "Rõ ràng bị nhóm",
+    "UpdateDeviceGroups": "Bản thiết bị nhóm",
+    "CreateDevices": "Tạo ra các thiết bị",
+    "DeleteDevices": "Thiết bị xóa",
+    "UpdateDevices": "Thiết bị cập",
+    "CreateRules": "Tạo các quy tắc",
+    "DeleteRules": "Rõ ràng quy tắc",
+    "UpdateRules": "Cập nhật quy tắc",
+    "DeleteAlarms": "Loại bỏ các cảnh báo",
+    "UpdateAlarms": "Cập nhật thông báo",
+    "CreateJobs": "Tạo ra công việc",
+    "UpdateSIMManagement": "Cập nhật SIM quản lý",
+    "DeletePackages": "Rõ ràng gói",
+    "CreatePackages": "Tạo gói",
+    "CreateDeployments": "Tạo triển khai",
+    "DeleteDeployments": "Rõ ràng triển khai",
+    "InviteUsers": "Mời các người dùng",
+    "DeleteUsers": "Người xóa",
+    "DeleteTenant": "Rõ ràng thuê nhà",
+    "EnableAlerting": "Cho phép cảnh báo",
+    "DisableAlerting": "Vô hiệu hóa cảnh báo"
+  },
+  "protected": {
+    "permissionDenied": "Cho phép {{phép}} bị từ chối."
+  },
+  "deviceGroupDropDown": {
+    "ariaLabel": "Thiết bị nhóm"
+  },
+  "flyout": {
+    "closeTitle": "Gần"
+  },
+  "settingsFlyout": {
+    "title": "Thiết lập hệ thống",
+    "version": "Phiên bản {{phiên bản}}",
+    "viewRelNotes": "Xem ghi chú phát hành",
+    "theme": "Chủ đề",
+    "changeTheme": "Thay đổi các ứng dụng chủ đề màu sắc",
+    "switchTheme1": "Chuyển sang {{nextTheme1}} chủ đề",
+    "switchTheme2": "Chuyển sang {{nextTheme2}} chủ đề",
+    "apply": "Áp dụng",
+    "cancel": "Hủy",
+    "close": "Gần",
+    "flowing": "Chảy",
+    "optInButton": "Chẩn đoán",
+    "simulationToggle": "Mô phỏng",
+    "start": "Bắt đầu",
+    "stop": "Dừng lại",
+    "stopped": "Dừng lại",
+    "enable": "Cho phép",
+    "disable": "Vô hiệu hóa",
+    "simulationData": "Dữ liệu mô phỏng",
+    "loading": "Nạp",
+    "alerting": "Nâng Cao Cảnh Báo",
+    "alertingToggle": "Bắt Đầu/Dừng Cảnh Báo",
+    "alertingDescription": "Bắt đầu hoặc ngăn chặn nâng cao cảnh báo. Dừng lại cảnh báo sẽ giảm chi phí của các giải pháp. Quy tắc và cảnh báo cả hai sẽ được kích hoạt nếu cảnh báo là đã tắt.",
+    "alertingStarting": "Bắt đầu",
+    "alertingStopping": "Dừng lại",
+    "alertingChangeFail": "Thất bại",
+    "alertingPending": "Chờ",
+    "simulationDescription": "Bắt đầu hoặc ngăn chặn mô phỏng của các thiết bị. Thiết bị dừng mô phỏng sẽ giảm chi phí của các giải pháp, không có mô phỏng từ xa sẽ được gửi đến IoT của trung Tâm và cảnh báo sẽ không được tạo ra cho giả thiết bị.",
+    "toggleError": "Đề cập nhật mô phỏng tình trạng",
+    "setLogoError": "Đề cập nhật logo",
+    "simulationLoadError": "Lỗi nạp mô phỏng tình trạng",
+    "sendDiagnosticsCheckbox": "Vâng, đăng chẩn đoán thông tin",
+    "dontSendDiagnosticsCheckbox": "Không, không đăng nhập chẩn đoán thông tin",
+    "sendDiagnosticsMicrosoftPrivacyUrl": "Chính Tuyên Bố",
+    "diagnosticsLoadError": "Đề cập nhật chẩn đoán sở thích",
+    "firmware": {
+      "error": {
+        "noVersion": "Các giá trị ${phiên bản} phải được xác định trong phần mềm của bạn HỆT mẫu.",
+        "upload": "Một lỗi xảy ra trong khi tải lên phần mềm của bạn HỆT mẫu",
+        "invalid": "Không vững HỆT mẫu nhập",
+        "unknown": "Một lỗi không xảy ra.",
+        "retrieval": "Một lỗi xảy ra trong khi lấy phần vững hiện tại HỆT mẫu",
+        "doubleSlash": "Vững HỆT mẫu chìa khóa không thể chứa '//'",
+        "reserved": {
+          "id": "Chìa khóa 'id' là dành và không được sử dụng trong phần vững HỆT mẫu"
+        }
+      },
+      "name": "Vững HỆT Mẫu",
+      "description": "Tải lên một phần mềm trong c mẫu để sử dụng với phần mềm gói tải trên trang gói.",
+      "edit": "Chỉnh sửa",
+      "save": "Tiết kiệm",
+      "cancel": "Hủy",
+      "variables": {
+        "name": "Biến Mẫu",
+        "summary": "Sau biến mẫu có thể được sử dụng trong phần mềm của bạn HỆT mẫu. Sử dụng: ${cha mẹ.con}, e.g ${blobData.FileUri}",
+        "grid": {
+          "parent": "Phụ huynh",
+          "child": "Con",
+          "description": "Mô tả"
+        },
+        "descriptions": {
+          "version": "Cha mẹ chỉ. Biến này là cần thiết trong mẫu của bạn và là ghi đè với phần mềm của bạn gói là phiên bản giá trị. Sử dụng: ${phiên bản}",
+          "blobData": {
+            "FileUri": "Những Đốm lưu Trữ URI cho tải lên phần vững, tập tin",
+            "CheckSum": "Kiểm tra giá trị của đốm lí tập tin được tải lên"
+          },
+          "packageFile": {
+            "name": "Tên của bạn lên phần vững, tập tin",
+            "lastModified": "MS từ thời đại dấu thời gian",
+            "lastModifiedDate": "Con người có thể đọc được ngày dấu thời gian",
+            "size": "Kích thước tập tin trong nội",
+            "type": "Tập tin được tải lên loại"
+          },
+          "deployment": {
+            "id": "Khi triển khai của bạn gói giá trị này sẽ được thay thế bởi ID của bạn triển khai"
+          }
+        }
+      }
+    }
+  },
+  "helpFlyout": {
+    "title": "Tài liệu"
+  },
+  "profileFlyout": {
+    "title": "Dùng Hồ Sơ",
+    "description": "<0><0>hiểu biết</0></0> về vai trò và quyền.",
+    "learnMore": "Tìm hiểu thêm",
+    "logout": "Thoát",
+    "noUser": "Không dùng được tìm thấy",
+    "roles": "Vai trò",
+    "noRoles": "Không có vai trò tìm thấy",
+    "permissions": "Quyền",
+    "noPermissions": "Không có quyền tìm thấy",
+    "close": "Gần",
+    "tenants": {
+      "tenantHeader": "Người thuê nhà",
+      "noTenant": "Không tìm thấy người Thuê nhà",
+      "createTenant": "Tạo Mới Thuê Nhà",
+      "deleteTenant": "Xóa",
+      "tenantNameColumn": "Người thuê nhà",
+      "tenantRoleColumn": "Vai trò",
+      "tenantActionColumn": "Hành động",
+      "saveTenant": "Tiết kiệm",
+      "cancel": "Hủy"
+    }
+  },
+  "resetActiveDeviceQuery": {
+    "title": "Thiết lập lại truy"
+  },
+  "createDeviceQuery": {
+    "title": "Các Thiết Bị Truy",
+    "create": "Truy",
+    "reset": "Thiết lập lại",
+    "createDeviceGroup": "Thiết bị nhóm",
+    "allDevices": "Tất Cả Thiết Bị",
+    "nameAlreadyExists": "Một thiết bị nhóm đã tạo ra những điều kiện này."
+  },
+  "deviceQueryConditions": {
+    "condition": "Tình trạng {{headerCount}}",
+    "delete": "Xóa",
+    "field": "Field",
+    "fieldPlaceholder": "Chọn lĩnh vực",
+    "operator": "Điều hành",
+    "operatorPlaceholder": "Chọn nhà điều hành",
+    "operatorOptions": {
+      "EQ": "= Bằng",
+      "GT": "> Lớn hơn",
+      "LT": "< Ít hơn",
+      "GE": ">= Lớn hơn hoặc bằng",
+      "LE": "<= Ít hơn hoặc bằng"
     },
-    "globalNav": {
-        "expand": "Mở Rộng Hướng Bên Cạnh",
-        "collapse": "Sụp Đổ Hướng Bên Cạnh"
+    "value": "Giá trị",
+    "valuePlaceholder": "Nhập giá trị",
+    "type": "Loại",
+    "typePlaceholder": "Chọn loại",
+    "typeOptions": {
+      "Number": "Số",
+      "Text": "Văn bản"
     },
-    "accessDenied": {
-        "message": "Oops có vẻ như anh không có một người thuê nhà. Bạn có thể tạo ra một người thuê nhà mới của mở hồ sơ của bạn và nhấn vào 'Tạo Mới Thuê nhà' nút.",
-        "learnMore": "Tìm hiểu thêm",
-        "createTenant": "Tạo Ra Người Thuê Nhà"
+    "remove": "Bỏ tình trạng",
+    "add": "Thêm tình trạng",
+    "errorMsg": {
+      "fieldCantBeEmpty": "Là bắt buộc",
+      "operatorCantBeEmpty": "Điều hành là cần thiết",
+      "valueCantBeEmpty": "Giá trị là cần thiết",
+      "typeCantBeEmpty": "Loại là cần thiết",
+      "selectedType": "Phải có sự lựa chọn loại"
+    }
+  },
+  "deviceGroupsFlyout": {
+    "actions": "Hành động",
+    "cancel": "Hủy",
+    "reset": "Thiết lập lại",
+    "title": "Quản lý bị nhóm",
+    "create": "Tạo thiết bị mới nhóm",
+    "deviceGroupName": "Thiết bị tên nhóm",
+    "pinned": "Gắn Thiết Bị Nhóm",
+    "unpinned": "Bỏ Khóa Bị Nhóm",
+    "new": "Thiết bị mới nhóm",
+    "edit": "Chỉnh sửa một thiết bị nhóm",
+    "name": "Tên",
+    "namePlaceHolder": "Thiết bị tên nhóm",
+    "save": "Tiết kiệm",
+    "errorMsg": {
+      "nameCantBeEmpty": "Tên là cần thiết"
     },
-    "pageNotFound": {
-        "title": "404 không tìm thấy",
-        "message": "Oops, chúng tôi không thể tìm thấy trang bạn được yêu cầu."
+    "delete": {
+      "title": "Xóa",
+      "header": "Rõ ràng bị nhóm",
+      "description": "Hành động này sẽ xóa các '{{deviceGroupName}}' bị nhóm vĩnh viễn từ nền tảng.",
+      "confirmNo": "Không, không xóa các thiết bị nhóm.",
+      "confirmYes": "Vâng, xin vui lòng xóa các thiết bị nhóm.",
+      "summaryHeader": "Tóm tắt",
+      "affected": "Bị ảnh hưởng bị nhóm",
+      "cancel": "Hủy",
+      "apply": "Xóa",
+      "pending": "Xóa bị nhóm... ",
+      "applySuccess": "Thiết bị nhóm xóa thành công!",
+      "close": "Gần"
     },
-    "tabs": {
-        "dashboard": "Bảng điều khiển",
-        "devices": "Thiết Bị Explorer",
-        "users": "Người Quản Lý",
-        "rules": "Quy tắc",
-        "maintenance": "Bảo trì",
-        "packages": "Gói",
-        "deployments": "Triển khai"
+    "format": {
+      "add": "Thêm",
+      "keyHeader": "Chìa khóa",
+      "displayNameHeader": "Hiển Thị Tên",
+      "telemetryFormatHeader": "Từ Xa Dạng",
+      "validation": {
+        "required": "Yêu cầu không được"
+      }
     },
-    "errorFormat": "Lỗi: {{tin nhắn}}",
-    "edgeAgentStatus": {
-        "200": "OK.",
-        "400": "Việc triển khai cấu hình là thay đổi hoặc không hợp lệ.",
-        "406": "Các thiết bị được ẩn hay không gửi báo cáo tình trạng.",
-        "412": "Việc triển khai cấu hình giản đồ phiên bản là không hợp lệ.",
-        "417": "Các thiết bị triển khai cấu hình không được thiết lập.",
-        "500": "Một lỗi xảy ra trong quá Nhiều Cạnh chạy.",
-        "unknown": "Một mã nhận được."
+    "supportedMethods": {
+      "add": "Thêm",
+      "methodHeader": "Tên Phương Pháp",
+      "supportedMethodHeader": "Phương Pháp Hỗ Trợ",
+      "validation": {
+        "required": "Yêu cầu không được"
+      }
+    }
+  },
+  "dashboard": {
+    "noData": "Không có dữ liệu",
+    "panels": {
+      "alerts": {
+        "header": "Cảnh báo",
+        "explore": "Khám phá"
+      },
+      "analytics": {
+        "header": "Phân tích",
+        "topRule": "Đầu quy tắc với báo động",
+        "deviceGroupAlerts": "Cảnh báo bằng thiết bị nhóm",
+        "criticalAlerts": "Cảnh báo quan trọng",
+        "currentWindow": "Hiện nay",
+        "previousWindow": "Trước đây"
+      },
+      "map": {
+        "header": "Thiết bị địa điểm",
+        "runtimeError": "Một lỗi xảy ra khi vẽ bản đồ",
+        "notSupportedError": "Azure bản đồ không được hỗ trợ ở khu vực của bạn"
+      },
+      "overview": {
+        "header": "Thiết bị thống kê",
+        "allDevices": "Tất cả thiết bị",
+        "critical": "Quan trọng",
+        "warnings": "Cảnh báo",
+        "total": "Tổng",
+        "connected": "Kết nối",
+        "notConnected": "Ẩn"
+      },
+      "telemetry": {
+        "header": "Từ xa",
+        "timezoneDisplay": "Hiển thị trong múi giờ địa phương:",
+        "limitExceededWarning": "Tối đa số tin nhắn đã nhận. Trước đó liệu có thể được rút ngắn."
+      }
+    }
+  },
+  "refreshBar": {
+    "refreshing": "Mới mẻ",
+    "lastRefreshed": "Làm mới cuối cùng",
+    "ariaLabel": "Làm mới trang"
+  },
+  "users": {
+    "title": "Người Quản Lý",
+    "ariaLabel": "Tìm kiếm người sử dụng",
+    "searchPlaceholder": "Tìm kiếm người sử dụng...",
+    "grid": {
+      "userName": "Tên",
+      "userType": "Loại",
+      "userId": "Hướng dẫn",
+      "userRole": "Vai trò"
     },
-    "errorCode": {
-        "noResponse": "Oops, không có phản ứng từ các máy chủ.",
-        "notLoggedIn": "Bạn cần phải login để gọi việc phục vụ.",
-        "notAuthorized": "Bạn không có quyền gọi dịch vụ.",
-        "notFound": "Oops, chúng tôi đã không thể tìm thấy những dịch vụ.",
-        "redirection": "Oops, chúng tôi có một hướng lỗi.",
-        "retryFailure": "Oops, chúng tôi có một lỗi tạm thời từ dịch vụ nhưng đã không thể phục hồi. Thử lại sau.",
-        "unknown": "Một lỗi không xảy ra."
+    "flyouts": {
+      "new": {
+        "contextMenuName": "Dùng mới",
+        "addServicePrincipal": "Thêm Dịch Vụ Chính",
+        "title": "Mời các người dùng",
+        "user": {
+          "label": "Địa Chỉ Email",
+          "apply": "Gửi lời mời",
+          "applySuccess": "dùng thành công mời!"
+        },
+        "servicePrincipal": {
+          "label": "Dịch vụ chính ứng dụng id",
+          "apply": "Thêm",
+          "applySuccess": "Thêm dịch vụ chính"
+        },
+        "roles": {
+          "hint": "Chọn vai trò người dùng",
+          "label": "Dùng Vai Trò"
+        },
+        "systemAdmin": {
+          "hint": "Chọn người",
+          "label": "Hệ Thống Trị",
+          "title": "Thêm Hệ Thống Trị",
+          "add": "Thêm",
+          "applySuccess": "Thêm hệ thống trị thành công!"
+        },
+        "apply": "Gửi lời mời",
+        "cancel": "Hủy",
+        "validation": {
+          "required": "Là cần thiết",
+          "invalid": "Không hợp lệ email cung cấp",
+          "invalidGuid": "Không Hợp Lệ Hướng Dẫn"
+        },
+        "summaryHeader": "Tóm tắt",
+        "pending": "Xóa các thiết bị... ",
+        "close": "Gần"
+      },
+      "delete": {
+        "title": "Xóa",
+        "header": "Người xóa",
+        "description": "Hành động này sẽ loại bỏ sự chọn người dùng từ này, người thuê nhà.",
+        "confirmNo": "Không, không bỏ được chọn người dùng từ này, người thuê nhà.",
+        "confirmYes": "Vâng, xin vui lòng bỏ chọn người dùng từ này, người thuê nhà.",
+        "summaryHeader": "Tóm tắt",
+        "affected": "Ảnh hưởng đến người",
+        "cancel": "Hủy",
+        "apply": "Xóa",
+        "pending": "Xóa người sử dụng... ",
+        "applySuccess": "Người xóa thành công!",
+        "close": "Gần",
+        "systemAdmin": {
+          "hint": "Chọn người",
+          "label": "Hệ Thống Trị",
+          "title": "Rõ Ràng Hệ Thống Trị",
+          "add": "Xóa",
+          "applySuccess": "Xóa hệ thống trị thành công!"
+        }
+      }
+    }
+  },
+  "devices": {
+    "title": "Thiết Bị Explorer",
+    "ariaLabel": "Tìm kiếm thiết bị",
+    "searchPlaceholder": "Tìm kiếm các thiết bị...",
+    "noneFound": "Không có thiết bị tìm thấy.",
+    "refresh": "Làm mới",
+    "grid": {
+      "connected": "Kết nối",
+      "deviceName": "Tên thiết bị",
+      "deviceType": "Bị loại",
+      "firmware": "Vững",
+      "lastConnection": "Cuối cùng kết nối",
+      "no": "Không có",
+      "offline": "Ẩn",
+      "simulated": "Mô phỏng",
+      "status": "Tình trạng",
+      "telemetry": "Từ xa",
+      "yes": "Yes"
     },
-    "permissions": {
-        "ReadAll": "Xem giải pháp",
-        "CreateDeviceGroups": "Tạo các nhóm thiết bị",
-        "DeleteDeviceGroups": "Rõ ràng bị nhóm",
-        "UpdateDeviceGroups": "Bản thiết bị nhóm",
-        "CreateDevices": "Tạo ra các thiết bị",
-        "DeleteDevices": "Thiết bị xóa",
-        "UpdateDevices": "Thiết bị cập",
-        "CreateRules": "Tạo các quy tắc",
-        "DeleteRules": "Rõ ràng quy tắc",
-        "UpdateRules": "Cập nhật quy tắc",
-        "DeleteAlarms": "Loại bỏ các cảnh báo",
-        "UpdateAlarms": "Cập nhật thông báo",
-        "CreateJobs": "Tạo ra công việc",
-        "UpdateSIMManagement": "Cập nhật SIM quản lý",
-        "DeletePackages": "Rõ ràng gói",
-        "CreatePackages": "Tạo gói",
-        "CreateDeployments": "Tạo triển khai",
-        "DeleteDeployments": "Rõ ràng triển khai",
-        "InviteUsers": "Mời các người dùng",
-        "DeleteUsers": "Người xóa",
-        "DeleteTenant": "Rõ ràng thuê nhà",
-        "EnableAlerting": "Cho phép cảnh báo",
-        "DisableAlerting": "Vô hiệu hóa cảnh báo"
+    "flyouts": {
+      "details": {
+        "title": "Thiết Bị Thông Tin Chi Tiết",
+        "noDevice": "Oops, chúng tôi đã không thể tìm các thiết bị.",
+        "close": "Gần",
+        "connected": "Kết nối",
+        "notConnected": "Ngắt kết nối",
+        "simulated": "Mô phỏng",
+        "notSimulated": "Vật chất",
+        "diagnostics": {
+          "title": "Chẩn đoán",
+          "description": "Chẩn đoán thông tin từ điện thoại",
+          "keyHeader": "Tài sản",
+          "valueHeader": "Giá trị",
+          "status": "Tình trạng",
+          "lastMessage": "Thông báo cuối cùng",
+          "message": "Tin nhắn",
+          "showMessage": "Bấm vào đây để xem liệu tin nhắn"
+        },
+        "methods": {
+          "title": "Phương pháp",
+          "description": "Để chạy một phương pháp trên một hoặc nhiều thiết bị, đóng cửa sổ này, chọn kiểm cho các thiết bị(s), nhấn vào <1><0>{{việc làm}}</0></1>, và sau đó chọn <3><0>{{phương pháp}}</0></3>.",
+          "noneExist": "Không có phương pháp tìm thấy thiết bị này."
+        },
+        "modules": {
+          "title": "Triển khai tin nhắn",
+          "description": "Cạnh module tin nhắn trên điện thoại",
+          "noneExist": "Không có tin nhắn tìm thấy thiết bị này"
+        },
+        "properties": {
+          "title": "Tính",
+          "description": "Để thay đổi một chỗ trên một hoặc nhiều thiết bị, đóng cửa sổ này, chọn kiểm cho các thiết bị(s), nhấn vào <1><0>{{việc làm}}</0></1>, và sau đó chọn <3><0>{{tính}}</0></3>.",
+          "keyHeader": "Tài sản",
+          "valueHeader": "Giá trị",
+          "noneExist": "Không tìm thấy chỗ ở cho thiết bị này.",
+          "copy": "Copy",
+          "copyAllProperties": "Sao chép một danh sách của tất cả chỗ ở cho các thiết bị",
+          "syncing": "{{reportedPropertyValue}} (đồng Bộ hoá {{desiredPropertyValue}})"
+        },
+        "tags": {
+          "title": "Tags",
+          "description": "Để thêm, rõ ràng, hoặc thay đổi một thẻ trên một hoặc nhiều thiết bị, đóng cửa sổ này, chọn kiểm cho các thiết bị(s), nhấn vào <1><0>{{việc làm}}</0></1>, và sau đó chọn <3><0>{{tags}}</0></3>.",
+          "keyHeader": "Chìa khóa",
+          "valueHeader": "Giá trị",
+          "noneExist": "Không có thẻ tìm thấy thiết bị này."
+        },
+        "telemetry": {
+          "title": "Từ xa"
+        },
+        "deviceUploads": {
+          "title": "Thiết Bị Ơn",
+          "description": "Tập tin Cập nhật từ thiết Bị",
+          "noneExist": "Không Tin được tải lên từ thiết Bị.",
+          "fileName": "Tên File",
+          "action": "Hành động",
+          "property": "Tài sản",
+          "value": "Giá trị"
+        }
+      },
+      "delete": {
+        "title": "Xóa",
+        "header": "Thiết bị xóa",
+        "description": "Hành động này sẽ xóa các thiết bị vĩnh viễn từ nền tảng.",
+        "confirmNo": "Không, không phải xóa bỏ những lựa chọn thiết bị vật lý.",
+        "confirmYes": "Vâng, xin vui lòng hủy bỏ được lựa chọn thiết bị vật lý.",
+        "simulatedNotSupported": "Xóa mô phỏng các thiết bị hiện không được hỗ trợ, hành động này sẽ chỉ được đưa vào các thiết bị vật lý.",
+        "summaryHeader": "Tóm tắt",
+        "affected": "Thiết bị ảnh hưởng",
+        "cancel": "Hủy",
+        "apply": "Xóa",
+        "pending": "Xóa các thiết bị... ",
+        "applySuccess": "thiết bị xóa thành công!",
+        "close": "Gần"
+      },
+      "c2dMessage": {
+        "sendMessage": "Gửi Tin Nhắn",
+        "title": "Thông Báo Thiết Bị",
+        "header": "Gửi tin Nhắn C2D",
+        "description": "Điều này sẽ gửi đến tất cả các thiết bị được lựa chọn",
+        "simulatedNotSupported": "Gửi để mô phỏng các thiết bị hiện không được hỗ trợ, hành động này sẽ chỉ được đưa vào các thiết bị vật lý.",
+        "summaryHeader": "Tóm tắt",
+        "affected": "Thiết bị ảnh hưởng",
+        "cancel": "Hủy",
+        "apply": "Gửi",
+        "pending": "Gửi đến các thiết bị... ",
+        "applySuccess": "các tin nhắn được gửi thành công!",
+        "close": "Gần",
+        "validation": {
+          "invalid": "Hệt là không hợp lệ!"
+        },
+        "jsonPayloadMessage": "Tin nhắn trọng cho các thiết bị:"
+      },
+      "jobs": {
+        "title": "Công việc",
+        "noDevices": "Oops, chúng tôi đã không thể tìm thấy bất kỳ thiết bị được lựa chọn.",
+        "summaryHeader": "Tóm tắt",
+        "affected": "Thiết bị ảnh hưởng",
+        "cancel": "Hủy",
+        "apply": "Áp dụng",
+        "pending": "Trình làm việc...",
+        "applySuccess": "Công việc đã đệ trình thành công!",
+        "close": "Gần",
+        "selectJob": "Chọn công việc",
+        "jobName": "Tên Công Việc",
+        "jobNameHint": "Nhập công việc tên",
+        "jobNameHelpMessage": "Chỉ số và chữ được phép",
+        "viewStatus": "Xem tình trạng công việc",
+        "validation": {
+          "required": "Là cần thiết",
+          "invalid": "không hợp lệ nhập"
+        },
+        "tags": {
+          "radioLabel": "Tags",
+          "title": "Loại vào các thiết bị được chọn",
+          "description": "Loại chung trên thiết bị được lựa chọn",
+          "keyHeader": "Chìa khóa",
+          "valueHeader": "Giá trị",
+          "typeHeader": "Loại",
+          "typeNumber": "Số",
+          "typeString": "Văn bản",
+          "noneExist": "Không phổ biến loại tìm thấy cho các thiết bị được lựa chọn.",
+          "add": "Thêm tag"
+        },
+        "methods": {
+          "radioLabel": "Phương pháp",
+          "title": "Chạy phương pháp trên thiết bị được lựa chọn",
+          "description": "Tất cả đều có phương pháp bị hoặc một nhóm các thiết bị",
+          "methodName": "Tên phương pháp",
+          "methodNameHint": "Phương pháp chọn",
+          "firmwareVersion": "Phiên Bản Phần Mềm",
+          "firmwareVersionHint": "1.0.1",
+          "firmwareUri": "Vững URI",
+          "firmwareUriHint": "Nhập vững URI giá trị",
+          "jsonPayload": "Trọng tải (tùy chọn)",
+          "jsonPayloadMessage": "Nhập HỆT yêu cầu trọng cho các thiết bị phương pháp."
+        },
+        "properties": {
+          "radioLabel": "Tính",
+          "title": "Chỗ ở trên thiết bị được lựa chọn",
+          "description": "Sẵn chỗ ở và giá trị để thay đổi",
+          "keyHeader": "Tài sản",
+          "valueHeader": "Giá trị",
+          "typeHeader": "Loại",
+          "typeNumber": "Số",
+          "typeString": "Văn bản",
+          "noneExist": "Không phổ biến tìm thấy chỗ ở cho các thiết bị được lựa chọn.",
+          "syncing": "{{reportedPropertyValue}} (đồng Bộ hoá {{desiredPropertyValue}})"
+        }
+      },
+      "new": {
+        "contextMenuName": "Thiết bị mới",
+        "title": "Thiết bị mới",
+        "summaryHeader": "Cung cấp bản tóm tắt",
+        "affected": "Các thiết bị để cung cấp",
+        "cancel": "Hủy",
+        "apply": "Áp dụng",
+        "pending": "Cung cấp thiết bị... ",
+        "applySuccess": "Thiết bị dự thành công",
+        "simulatedRefreshMessage": "Giả thiết bị được tạo ra trong nền trên máy chủ. Vì vậy, họ có thể mất một thời gian để bị danh sách được cập nhật.",
+        "close": "Gần",
+        "validation": {
+          "required": "Là cần thiết",
+          "greaterThanZero": "Phải lớn hơn không"
+        },
+        "count": {
+          "label": "Số các thiết bị"
+        },
+        "device": {
+          "label": "Thiết bị",
+          "device": "Thiết bị IoT",
+          "edgeDevice": "IoT Cạnh thiết bị"
+        },
+        "deviceType": {
+          "label": "Loại",
+          "simulated": "Mô phỏng",
+          "physical": "Bất"
+        },
+        "deviceId": {
+          "label": "Thiết bị ID",
+          "hint": "Nhập bị ID ",
+          "sysGenerated": "Hệ thống thiết bị tạo ra Id"
+        },
+        "deviceIdExample": {
+          "label": "ID thiết bị dụ",
+          "format": "{{deviceName}}-{#####}",
+          "deviceName": "{Tên thiết bị}"
+        },
+        "deviceModel": {
+          "label": "Thiết bị mẫu",
+          "hint": "Chọn hiện có loại thiết bị"
+        },
+        "authenticationType": {
+          "label": "Loại xác thực,",
+          "symmetric": "Khóa đối xứng",
+          "x509": "509 X."
+        },
+        "authenticationKey": {
+          "label": "Chính xác thực",
+          "generateKeys": "Tự động tạo ra chìa khóa",
+          "manualKeys": "Nhập chìa khóa tay",
+          "hint": "Nhập chìa khóa của bạn ở đây",
+          "primaryKey": "Chính Chìa Khóa",
+          "primaryKeyConnection": "Kết nối dây chính chìa Khóa",
+          "secondaryKey": "Thứ Quan Trọng",
+          "secondaryKeyConnection": "Kết nối dây thứ quan Trọng",
+          "primaryThumbprint": "Chính vân tay",
+          "secondaryThumbprint": "Thứ vân tay"
+        }
+      },
+      "SIMManagement": {
+        "title": "SIM Quản lý",
+        "provider": "Cung cấp",
+        "summaryHeader": "Tóm tắt và hướng dẫn",
+        "here": "ở đây",
+        "select": "Chọn...",
+        "header": {
+          "telefonica": "Như một Telefonica Nhiều khách hàng, bạn có lợi thế của thêm này năng để làm giàu tự động của bạn Azure Giám sát từ Xa Giải pháp với các kết nối dữ liệu có sẵn trong Telefonica IoT kết Nối nền Tảng (Mạng thông Tin dữ Liệu và Mạng Dựa trên Trí)."
+        },
+        "description": {
+          "telefonica": "Đây là trong Xem thử. Để đồng bộ hóa của bạn kết nối dữ liệu vào Azure Giám sát từ Xa Giải pháp, xin vui lòng điền vào một yêu cầu <1><0>url</0></1>, chọn lựa chọn \"Azure Giám sát từ Xa\" và bao gồm bạn dữ liệu liên lạc và chúng tôi sẽ tự động kích hoạt tài khoản của bạn. \n\nNếu bạn không có một Telefonica khách hàng sơ và em muốn tận hưởng này hoặc khác IoT kết Nối đám Mây đã sẵn Sàng dịch vụ, bạn có thể liên lạc với chúng tôi <1><0>url</0></1> và lựa chọn \"kết Nối\", chúng tôi sẽ rất vui để giúp bạn."
+        },
+        "operator": {
+          "telefonica": "Telefonica"
+        }
+      }
+    }
+  },
+  "rules": {
+    "title": "Quy tắc",
+    "searchPlaceholder": "Tìm kiếm các quy tắc...",
+    "ariaLabel": "Quy tắc tìm kiếm",
+    "alertingOnForRules": "Cảnh báo này phải được quay trên để sử dụng nội Quy",
+    "turnOnRulesText": "Bạn có thể biến tính năng này bằng cách cài đặt đơn (bánh biểu tượng) ở trên bên phải màn hình",
+    "severity": {
+      "info": "Thông tin",
+      "warning": "Cảnh báo",
+      "critical": "Quan trọng"
     },
-    "protected": {
-        "permissionDenied": "Cho phép {{phép}} bị từ chối."
+    "grid": {
+      "enabled": "Kích hoạt",
+      "disabled": "Vô hiệu hóa",
+      "ruleName": "Quy tắc tên",
+      "description": "Mô tả",
+      "severity": "Mức độ nghiêm trọng",
+      "deviceGroup": "Thiết bị nhóm",
+      "trigger": "Kích hoạt",
+      "notificationType": "Loại thông báo",
+      "status": "Tình trạng",
+      "count": "Đếm",
+      "lastTrigger": "Cuối cùng kích hoạt",
+      "maintenanceLog": "Bảo trì đăng",
+      "explore": "Khám phá"
     },
-    "deviceGroupDropDown": {
-        "ariaLabel": "Thiết bị nhóm"
+    "flyouts": {
+      "edit": "Chỉnh sửa",
+      "statusToggle": "Tình trạng",
+      "enable": "Cho phép",
+      "disable": "Vô hiệu hóa",
+      "changeStatus": "Thay đổi tình trạng",
+      "newRule": "Quy tắc mới",
+      "editRule": "Sửa quy tắc",
+      "viewRule": "Quy Tắc Thông Tin Chi Tiết",
+      "statusTitle": "Thay đổi tình trạng",
+      "delete": "Xóa",
+      "ruleEditor": {
+        "ruleName": "Quy tắc tên",
+        "namePlaceholder": "Nhập quy tắc tên",
+        "description": "Mô tả",
+        "descriptionPlaceholder": "Nhập tả quy tắc",
+        "deviceGroup": "Thiết bị nhóm",
+        "deviceGroupPlaceholder": "Chọn bị nhóm",
+        "conditions": "Điều kiện",
+        "addCondition": "Thêm tình trạng",
+        "delete": "Xóa",
+        "calculation": "Tính toán",
+        "calculationPlaceholder": "Chọn",
+        "timePeriod": "Khoảng thời gian (trong vài phút)",
+        "condition": {
+          "description": "Để cư trường, một thiết bị cần phải có báo cáo tài sản với chìa khóa ở dạng: <0><0>{{dạng}}</0></0>.",
+          "condition": "Tình trạng",
+          "field": "Field",
+          "fieldPlaceholder": "Chọn lĩnh vực",
+          "operator": "Điều hành",
+          "operatorPlaceholder": "Chọn nhà điều hành",
+          "operatorOptions": {
+            "Equals": "= Bằng",
+            "GreaterThan": "> Lớn hơn",
+            "LessThan": "< Ít hơn",
+            "GreaterThanOrEqual": ">= Lớn hơn hoặc bằng",
+            "LessThanOrEqual": "<= Ít hơn hoặc bằng"
+          },
+          "value": "Giá trị",
+          "valuePlaceholder": "Nhập giá trị"
+        },
+        "actions": {
+          "action": "Hành động",
+          "checkingEmailSetup": "Kiểm tra tình trạng của cấu hình email.",
+          "setupEmail": "Để gửi email thông báo, <1><0>outlookLogin</0></1> là cần thiết.",
+          "outlookLogin": "đừng để Vọng",
+          "emailSetupConfirmed": "Email của cấu hình đã được hoàn thành thành công.",
+          "setupEmailError": "Đã có một lỗi xác nhận email của bạn thiết lập. <1><0>tryAgain</0></1>",
+          "setupEmailTimeout": "Kiểm tra email thiết lập đã hết thời gian. <1><0>tryAgain</0></1>",
+          "emailSetupHelp": "Gửi email thông báo yêu cầu cấu hình. <1><0>hiểu biết</0></1>",
+          "tryAgain": "Hãy cố gắng một lần nữa.",
+          "learnMore": "Tìm hiểu thêm",
+          "emailActionLabel": "Gửi email",
+          "emailAddresses": "Địa chỉ Email",
+          "enterEmail": "Nhấn enter để thêm người nhận email",
+          "emailComments": "Chú Thêm",
+          "enterEmailComments": "Nhập thêm ghi chú cho các tin nhắn gửi email.",
+          "emailSubject": "Đề Email",
+          "enterEmailSubject": "Nhập đề email",
+          "syntaxError": "Không phải là một địa chỉ email",
+          "on": "Email kích hoạt",
+          "off": "Email vô hiệu hóa",
+          "defaultEmailSubject": "Azure IoT Giám sát từ Xa cảnh báo: {{ruleName}} đã được kích hoạt",
+          "deleteEmail": "Rõ Ràng Email"
+        },
+        "calculationOptions": {
+          "average": "Trung bình",
+          "instant": "Ngay lập tức"
+        },
+        "validation": {
+          "required": "Là cần thiết",
+          "nan": "Phải có một số"
+        },
+        "severityLevel": "Mức độ nghiêm trọng",
+        "ruleStatus": "Quy tắc tình trạng",
+        "ruleEnabled": "Kích hoạt",
+        "ruleDisabled": "Vô hiệu hóa",
+        "devicesAffected": "thiết bị ảnh hưởng bởi quy tắc này",
+        "summaryHeader": "Tóm tắt",
+        "apply": "Áp dụng",
+        "cancel": "Hủy"
+      },
+      "deleteRule": {
+        "preDeleteText": "Chúng tôi sẽ giữ cho bất kỳ thông báo kết hợp với quy tắc này, thậm chí ngay sau khi xóa. Nếu bạn muốn xóa các liên quan đến cảnh báo tới các <1><0>url</0></1> và chọn những cảnh báo bạn muốn bỏ.",
+        "deleteConfirmation": "Quy luật đã được xóa.",
+        "postDeleteText": "Nếu bạn muốn để loại bỏ các cảnh báo kết hợp với quy tắc này, đi đến <1><0>url</0></1> và chọn những cảnh báo bạn muốn bỏ.",
+        "disableConfirmation": "Quy luật đã được vô hiệu hóa.",
+        "maintenancePage": "Bảo Trì Trang",
+        "title": "Loại Bỏ Nguyên Tắc",
+        "close": "Gần",
+        "delete": "Xóa",
+        "cancel": "Hủy"
+      }
+    }
+  },
+  "fileInput": {
+    "upload": "Tải lên"
+  },
+  "applicationSettings": {
+    "nameAndLogo": "Tên và logo",
+    "nameLogoDescription": "Chỉnh sửa logo và tên trong những trang đầu.",
+    "replaceLogo": "Thay hình ảnh logo",
+    "logoDescription": "Đề nghị logo kích thước: 24 x 24 px.\nTối đa logo kích thước: 300.\nTập tin được hỗ trợ dạng:\n.BONNIE\n.PNG\n.JPEG\n .JPG",
+    "applicationName": "Tên ứng dụng",
+    "currentLogo": "Hiện tại logo",
+    "edit": "Chỉnh sửa",
+    "checkmark": "Đánh dấu",
+    "uploadError": "Không thể tải lên tập tin, hãy kiểm tra các tập tin loại/kích thước và cố gắng một lần nữa.",
+    "error": "Lỗi"
+  },
+  "maintenance": {
+    "acknowledge": "Thừa nhận",
+    "acknowledged": "Thừa nhận",
+    "alertOccurrences": "Cảnh Báo Lần Xuất Hiện",
+    "alertedDeviceTelemetry": "Cảnh báo thiết bị đo từ xa",
+    "alertedDevices": "Cảnh báo các thiết bị",
+    "all": "Tất cả",
+    "close": "Gần",
+    "closed": "Đóng cửa",
+    "critical": "Quan trọng",
+    "delete": "Xóa",
+    "devices": "Thiết bị",
+    "failedJobs": "Thất bại trong công việc",
+    "jobs": "Công việc",
+    "lastEvent": "Cuối cùng sự kiện",
+    "noData": "Không có dữ liệu",
+    "noOccurrenceSelected": "Không có sự xuất hiện lựa chọn",
+    "notifications": "Cảnh báo",
+    "open": "mở",
+    "openAlerts": "Mở Cảnh Báo",
+    "relatedInfo": "Thông tin liên quan",
+    "ruleDetail": "Quy tắc chi tiết",
+    "ruleDetailsDesc": "Quản lý thông báo sự xuất hiện liên quan đến quy tắc này trong phần dưới đây, và sử dụng, các thông tin liên quan đến sự cố mỗi lần xuất hiện.",
+    "severity": "Mức độ nghiêm trọng",
+    "succeeded": "Đã thành công",
+    "telemetry": "Từ xa",
+    "title": "Bảo trì",
+    "total": "Tổng",
+    "warning": "Cảnh báo",
+    "alertGrid": {
+      "totalCount": "Tổng số",
+      "open": "Mở",
+      "acknowledged": "Thừa nhận",
+      "closed": "Đóng cửa",
+      "lastOccurrence": "Cuối cùng xuất hiện"
     },
-    "flyout": {
-        "closeTitle": "Gần"
+    "jobGrid": {
+      "jobName": "Tên Công Việc",
+      "status": "Tình trạng",
+      "operation": "Hoạt động",
+      "noDevices": "Không có. các thiết bị",
+      "succeeded": "Đã thành công",
+      "failed": "Thất bại",
+      "startTime": "Bắt đầu thời gian",
+      "endTime": "Kết thúc thời gian"
     },
-    "settingsFlyout": {
-        "alerting": "Nâng Cao Cảnh Báo",
-        "title": "Thiết lập hệ thống",
-        "version": "Phiên bản {{phiên bản}}",
-        "viewRelNotes": "Xem ghi chú phát hành",
-        "theme": "Chủ đề",
-        "changeTheme": "Thay đổi các ứng dụng chủ đề màu sắc",
-        "switchTheme1": "Chuyển sang {{nextTheme1}} chủ đề",
-        "switchTheme2": "Chuyển sang {{nextTheme2}} chủ đề",
+    "jobStatusGrid": {
+      "deviceIdAffected": "ID thiết bị ảnh hưởng",
+      "lastReturnMsg": "Cuối cùng trở lại tin nhắn"
+    },
+    "alertOccGrid": {
+      "occurrence": "Sự xuất hiện",
+      "triggerDevice": "Kích hoạt thiết bị",
+      "time": "Thời gian"
+    },
+    "jobStatus": {
+      "1": "Enqueued",
+      "2": "Chạy",
+      "3": "Hoàn thành",
+      "4": "Thất bại",
+      "5": "Hủy",
+      "6": "Theo lịch trình,",
+      "queued": "Xếp hàng"
+    }
+  },
+  "timeInterval": {
+    "PT15M": "15 phút cuối cùng",
+    "PT1H": "Giờ cuối cùng",
+    "P1D": "Ngày cuối cùng",
+    "P7D": "Lần cuối tuần",
+    "P1M": "Tháng cuối cùng",
+    "ariaLabel": "Khoảng thời gian"
+  },
+  "timeSeriesInsights": {
+    "explore": "Khám phá trong Chuỗi Thời gian Insights",
+    "exploreTooltip": "Để xem dữ liệu trong Chuỗi Thời gian Hiểu biết thám, xin hỏi giải pháp chủ cấp cho bạn truy cập vào dữ liệu. <1><0>hiểu biết</0></1>",
+    "learnMore": "Tìm hiểu thêm"
+  },
+  "deployments": {
+    "title": "Triển khai",
+    "flyouts": {
+      "new": {
+        "contextMenuName": "Triển khai mới",
+        "title": "Triển khai mới",
         "apply": "Áp dụng",
         "cancel": "Hủy",
         "close": "Gần",
-        "flowing": "Chảy",
-        "optInButton": "Chẩn đoán",
-        "simulationToggle": "Mô phỏng",
-        "alertingToggle": "Bắt Đầu/Dừng Cảnh Báo",
-        "start": "Bắt đầu",
-        "stop": "Dừng lại",
-        "stopped": "Dừng lại",
-        "enable": "Cho phép",
-        "disable": "Vô hiệu hóa",
-        "simulationData": "Dữ liệu mô phỏng",
-        "loading": "Nạp",
-        "alertingDescription": "Bắt đầu hoặc ngăn chặn nâng cao cảnh báo. Dừng lại cảnh báo sẽ giảm chi phí của các giải pháp. Quy tắc và cảnh báo cả hai sẽ được kích hoạt nếu cảnh báo là đã tắt.",
-        "simulationDescription": "Bắt đầu hoặc ngăn chặn mô phỏng của các thiết bị. Thiết bị dừng mô phỏng sẽ giảm chi phí của các giải pháp, không có mô phỏng từ xa sẽ được gửi đến IoT của trung Tâm và cảnh báo sẽ không được tạo ra cho giả thiết bị.",
-        "toggleError": "Đề cập nhật mô phỏng tình trạng",
-        "setLogoError": "Đề cập nhật logo",
-        "simulationLoadError": "Lỗi nạp mô phỏng tình trạng",
-        "sendDiagnosticsCheckbox": "Vâng, chia sẻ thông tin với Microsoft",
-        "dontSendDiagnosticsCheckbox": "Không, không chia sẻ thông tin với Microsoft",
-        "sendDiagnosticsMicrosoftPrivacyUrl": "Chính Tuyên Bố",
-        "diagnosticsLoadError": "Đề cập nhật chẩn đoán sở thích"
-    },
-    "helpFlyout": {
-        "title": "Tài liệu"
-    },
-    "profileFlyout": {
-        "title": "Dùng Hồ Sơ",
-        "description": "<0><0>hiểu biết</0></0> về vai trò và quyền.",
-        "learnMore": "Tìm hiểu thêm",
-        "logout": "Thoát",
-        "noUser": "Không dùng được tìm thấy",
-        "roles": "Vai trò",
-        "noRoles": "Không có vai trò tìm thấy",
-        "permissions": "Quyền",
-        "noPermissions": "Không có quyền tìm thấy",
-        "close": "Gần",
-        "tenants": {
-            "tenantHeader": "Người thuê nhà",
-            "noTenant": "Không tìm thấy người Thuê nhà",
-            "createTenant": "Tạo Mới Thuê Nhà",
-            "deleteTenant": "Xóa",
-            "tenantNameColumn": "Người thuê nhà",
-            "tenantRoleColumn": "Vai trò",
-            "tenantActionColumn": "Hành động",
-            "saveTenant": "Tiết kiệm",
-            "cancel": "Hủy"
-        }
-    },
-    "createDeviceQueryFlyout": {
-        "title": "Các thiết bị truy",
-        "create": "Truy",
-        "reset": "Thiết lập lại",
-        "createDeviceGroup": "Thiết bị nhóm"
-    },
-    "resetActiveDeviceQuery": {
-        "title": "Thiết lập lại truy"
-    },
-    "deviceQueryConditions": {
-        "condition": "Tình trạng {{headerCount}}",
-        "delete": "Xóa",
-        "field": "Field",
-        "fieldPlaceholder": "Chọn lĩnh vực",
-        "operator": "Điều hành",
-        "operatorPlaceholder": "Chọn nhà điều hành",
-        "operatorOptions": {
-            "EQ": "= Bằng",
-            "GT": "> Lớn hơn",
-            "LT": "< Ít hơn",
-            "GE": ">= Lớn hơn hoặc bằng",
-            "LE": "<= Ít hơn hoặc bằng"
-        },
-        "value": "Giá trị",
-        "valuePlaceholder": "Nhập giá trị",
-        "type": "Loại",
-        "typePlaceholder": "Chọn loại",
-        "typeOptions": {
-            "Number": "Số",
-            "Text": "Văn bản"
-        },
-        "remove": "Bỏ tình trạng",
-        "add": "Thêm tình trạng",
-        "errorMsg": {
-            "fieldCantBeEmpty": "Là bắt buộc",
-            "operatorCantBeEmpty": "Điều hành là cần thiết",
-            "valueCantBeEmpty": "Giá trị là cần thiết",
-            "typeCantBeEmpty": "Loại là cần thiết",
-            "selectedType": "Phải có sự lựa chọn loại"
-        }
-    },
-    "deviceGroupsFlyout": {
-        "actions": "Hành động",
-        "cancel": "Hủy",
-        "title": "Quản lý bị nhóm",
-        "create": "Tạo thiết bị mới nhóm",
-        "deviceGroupName": "Thiết bị tên nhóm",
-        "new": "Thiết bị mới nhóm",
-        "edit": "Chỉnh sửa một thiết bị nhóm",
+        "packageType": "Loại gói",
+        "configType": "Cấu hình loại",
+        "deviceGroup": "Thiết Bị Nhóm",
         "name": "Tên",
-        "namePlaceHolder": "Thiết bị tên nhóm",
-        "save": "Tiết kiệm",
-        "errorMsg": {
-            "nameCantBeEmpty": "Tên là cần thiết"
+        "priority": "Ưu tiên (Cao hơn giá trị chỉ ưu tiên cao)",
+        "priorityToolTip": "Khi hai triển khai mục tiêu cùng một thiết bị triển khai với các ưu tiên cao hơn được áp dụng. Nếu hai triển khai có cùng ưu tiên việc triển khai với sau ngày tạo được áp dụng. <1><0>tìm Hiểu</0></1>",
+        "priorityLearnMore": "Tìm hiểu thêm về ưu tiên",
+        "package": "Gói",
+        "packageTypePlaceHolder": "Chọn loại gói",
+        "configTypePlaceHolder": "Chọn cấu hình loại",
+        "packagePlaceHolder": "Chọn gói",
+        "deviceGroupPlaceHolder": "Chọn bị nhóm",
+        "priorityPlaceHolder": "Nhập ưu tiên",
+        "namePlaceHolder": "Nhập tên",
+        "targetText": "mục tiêu thiết bị",
+        "infoText": "Này triển khai chạy liên tục. Tất cả các thiết bị (và bất kỳ bạn thêm vào trong tương lai) trong các thiết bị được lựa chọn sẽ nhận được cái gói này.",
+        "successText": "Xem triển khai của bạn tình trạng chi tiết cho <1><0>{{deploymentName}}</0></1>.",
+        "creating": "Việc triển khai",
+        "validation": {
+          "required": "Là cần thiết",
+          "positiveInteger": "Phải có một số nguyên dương ít hơn 2147483648",
+          "name": "tên lớn hơn 50 nhân vật"
         }
+      },
+      "status": {
+        "title": "Triển Khai Tình Trạng",
+        "relatedDeployment": {
+          "title": "Liên Quan Triển Khai",
+          "noRelatedDeploymentText": "Không Liên quan triển khai tồn tại cho các lựa chọn triển khai."
+        },
+        "deploymentLimitText": "Môi trường của bạn là điểm giới hạn hoạt động 100 triển khai.",
+        "active": "Hoạt động",
+        "inActive": "Không hoạt động",
+        "apply": "Áp dụng",
+        "cancel": "Hủy",
+        "close": "Gần",
+        "updating": "Cập Nhật Triển Khai"
+      }
+    },
+    "details": {
+      "deploymentName": "Triển khai tên",
+      "deviceGroup": "Thiết bị nhóm",
+      "start": "Bắt đầu",
+      "packageType": "Loại gói",
+      "configType": "Cấu Hình Loại",
+      "package": "Gói",
+      "priority": "Ưu tiên",
+      "applied": "Áp dụng",
+      "targeted": "Mục tiêu",
+      "failed": "Thất bại",
+      "succeeded": "Đã thành công",
+      "pending": "Chờ",
+      "unknown": "không rõ",
+      "customMetrics": "Chỉ Số Tùy Chỉnh",
+      "devicesAffected": "Thiết Bị Ảnh Hưởng",
+      "grid": {
+        "name": "Tên",
+        "deploymentStatus": "Triển Khai Tình Trạng",
+        "firmware": "Vững",
+        "lastMessage": "Thông Báo Cuối Cùng",
+        "start": "Bắt đầu",
+        "end": "Kết thúc"
+      }
+    },
+    "modals": {
+      "delete": {
+        "contextMenuName": "Xóa",
+        "title": "Rõ Ràng Triển Khai?",
+        "info": "Xóa '{{deploymentName}}' sẽ dừng lại triển khai này được áp dụng cho các thiết bị này. Nó có thể dẫn đến một ưu tiên hơn triển khai đang được áp dụng."
+      }
+    },
+    "grid": {
+      "name": "Tên",
+      "package": "Gói",
+      "deviceGroup": "Thiết bị nhóm",
+      "priority": "Ưu tiên",
+      "packageType": "Loại Gói",
+      "configType": "Cấu Hình Loại",
+      "targeted": "Mục tiêu",
+      "targetedTooltip": "Số thiết bị sinh đôi đó phù hợp điều kiện mục tiêu.",
+      "applied": "Áp dụng",
+      "appliedTooltip": "Số thiết bị sinh đôi đó đã bị sửa đổi bởi cấu hình.",
+      "failed": "Thất bại",
+      "succeeded": "Đã thành công",
+      "createdOn": "Tạo Ra Trên",
+      "status": "Tình trạng",
+      "modifiedBy": "Sửa Đổi Bởi",
+      "modifiedOn": "Thay Vào",
+      "createdBy": "Được Tạo Ra Bởi"
+    }
+  },
+  "packages": {
+    "searchPlaceholder": "Tìm kiếm gói...",
+    "noneFound": "Không tìm thấy gói.",
+    "title": "Gói",
+    "total": "tổng gói",
+    "new": "Mới Gói",
+    "delete": "Xóa",
+    "activate": "Kích hoạt",
+    "deactivate": "Tắt",
+    "grid": {
+      "name": "Tên",
+      "packageType": "Loại Gói",
+      "configType": "Cấu Hình Loại",
+      "dateCreated": "Ngày Tạo Ra",
+      "active": "Hoạt động",
+      "tags": "Tags",
+      "version": "Phiên bản",
+      "lastModified": "Ngày Sửa Đổi Cuối Cùng",
+      "lastModifedBy": "Cuối Cùng Sửa Đổi Bởi"
+    },
+    "flyouts": {
+      "new": {
+        "title": "Mới Gói",
+        "header": "Tải lên một gói",
+        "description": "Thêm một gói để giải pháp của bạn",
+        "upload": "Tải lên",
+        "cancel": "Hủy",
+        "close": "Gần",
+        "packageName": "Tên Gói",
+        "packageType": "Loại Gói",
+        "version": "Phiên bản",
+        "configType": "Cấu hình loại",
+        "customType": "Cấu hình loại",
+        "browse": "Duyệt",
+        "browseFirmwareText": "cho một phần vững, tập tin",
+        "browseText": "cho một gói tập tin",
+        "firmwareTemplateTip": "Ban đầu HỆT dữ liệu có nguồn gốc từ mẫu của bạn. Bạn có thể xem và sửa mẫu này từ các đơn Cài đặt.",
+        "firmwareJson": "Vững trong c",
+        "packageNamePlaceholder": "Nhập Tên Gói",
+        "packageVersionPlaceholder": "Nhập Phiên Bản Gói",
+        "packageTypePlaceholder": "Chọn loại gói",
+        "configTypePlaceholder": "Chọn cấu hình loại",
+        "customTextPlaceholder": "Nhập tùy tên",
+        "package": "Gói",
+        "deploymentsPage": "Triển khai trang",
+        "newDeployment": "+ Triển Khai Mới",
+        "deploymentText": "Để triển khai các gói đi đến <1>triển khai trang</1>, và sau đó nhấn vào <3> Mới triển Khai</3>.",
+        "validation": {
+          "required": "Là cần thiết",
+          "fileName": "Tên tập tin lớn hơn 50 nhân vật",
+          "fileType": "Không hợp lệ loại tập tin",
+          "customConfig": "tên lớn hơn 50 nhân vật",
+          "invalid": "không hợp lệ nhập",
+          "invalidVersion": "Không Hợp Lệ Phiên Bản",
+          "unsupportedProperty": "Không được hỗ trợ vững tài sản được sử dụng trong nội dung.deviceContent",
+          "unsupportedVersionKey": "Không được hỗ trợ phiên bản chìa khóa trong tính mong muốn"
+        }
+      },
+      "packageJson": {
+        "title": "Gói dữ Liệu HỆT"
+      }
+    },
+    "modals": {
+      "delete": {
+        "title": "Xóa Gói?",
+        "info": "Xóa gói lựa chọn sẽ bị loại bỏ nó. Nó sẽ không ảnh hưởng đến bất kỳ của việc triển khai của gói này."
+      }
+    }
+  },
+  "packageTypes": {
+    "edgeManifest": "Cạnh Manifest",
+    "deviceConfiguration": "Cấu Hình Thiết Bị",
+    "unknown": "Không rõ"
+  },
+  "configTypes": {
+    "firmware": "Vững",
+    "custom": "Tuỳ"
+  },
+  "modal": {
+    "delete": "Xóa",
+    "cancel": "Hủy"
+  },
+  "walkthrough": {
+    "tabs": {
+      "dashboard": "Bảng điều khiển",
+      "basicPage": "Cơ Bản Trang",
+      "pageWithFlyout": "Trang Với Hiện Ra",
+      "pageWithGrid": "Trang Với Lưới"
+    },
+    "basicPage": {
+      "pagePlaceholder": "Đây là một trang mới."
+    },
+    "pageWithFlyout": {
+      "title": "Hiển Thị Dụ",
+      "pageBody": "Nhấn vào ngữ cảnh nút trên để mở một hiện ra.",
+      "open": "Mở Hiện Ra",
+      "flyouts": {
+        "example": {
+          "header": "Ví Dụ Hiện Ra",
+          "description": "Ví dụ này hiện ra có một hình thức đơn giản với hành động nút.",
+          "insertFormHere": "Chèn mẫu điều khiển ở đây. Xem 'l/thành phần chia sẻ/hình thức' cho mẫu cụ thể chia sẻ điều khiển bạn có thể đòn bẩy.",
+          "summaryHeader": "Tóm tắt",
+          "affected": "hàng bị ảnh hưởng",
+          "cancel": "Hủy",
+          "apply": "Áp dụng",
+          "pending": "áp dụng thay đổi... ",
+          "applySuccess": "mục cập nhật thành công!",
+          "close": "Gần"
+        }
+      }
+    },
+    "pageWithGrid": {
+      "grid": {
+        "name": "Tên",
+        "description": "Mô tả",
+        "btn1": "1 nút",
+        "btn2": "Nút 2"
+      }
     },
     "dashboard": {
-        "noData": "Không có dữ liệu",
-        "panels": {
-            "alerts": {
-                "header": "Cảnh báo",
-                "explore": "Khám phá"
-            },
-            "analytics": {
-                "header": "Phân tích",
-                "topRule": "Đầu quy tắc với báo động",
-                "deviceGroupAlerts": "Cảnh báo theo nhóm thiết bị",
-                "criticalAlerts": "Cảnh báo quan trọng",
-                "currentWindow": "Hiện nay",
-                "previousWindow": "Trước đây"
-            },
-            "map": {
-                "header": "Thiết bị địa điểm",
-                "runtimeError": "Một lỗi xảy ra khi vẽ bản đồ",
-                "notSupportedError": "Azure bản đồ không được hỗ trợ ở khu vực của bạn"
-            },
-            "overview": {
-                "header": "Thiết bị thống kê",
-                "allDevices": "Tất cả thiết bị",
-                "critical": "Quan trọng",
-                "warnings": "Cảnh báo",
-                "total": "Tổng",
-                "connected": "Kết nối",
-                "notConnected": "Ẩn"
-            },
-            "telemetry": {
-                "header": "Từ xa"
-            }
+      "panels": {
+        "example": {
+          "header": "Ví Dụ Bảng Điều Khiển",
+          "panelBody": "Đây là một bảng điều khiển."
         }
+      }
     },
-    "refreshBar": {
-        "refreshing": "Mới mẻ",
-        "lastRefreshed": "Làm mới cuối cùng",
-        "ariaLabel": "Làm mới trang"
-    },
-    "users": {
-        "title": "Người Quản Lý",
-        "ariaLabel": "Tìm kiếm người sử dụng",
-        "searchPlaceholder": "Tìm kiếm người sử dụng...",
-        "grid": {
-            "userName": "Tên",
-            "userType": "Loại",
-            "userId": "Hướng dẫn",
-            "userRole": "Vai trò"
-        },
-        "flyouts": {
-            "new": {
-                "contextMenuName": "Dùng mới",
-                "addServicePrincipal": "Thêm Dịch Vụ Chính",
-                "title": "Mời các người dùng",
-                "user": {
-                    "label": "Địa Chỉ Email",
-                    "apply": "Gửi lời mời",
-                    "applySuccess": "dùng thành công mời!"
-                },
-                "servicePrincipal": {
-                    "label": "Dịch vụ chính ứng dụng id",
-                    "apply": "Thêm",
-                    "applySuccess": "Thêm dịch vụ chính"
-                },
-                "roles": {
-                    "hint": "Chọn vai trò người dùng",
-                    "label": "Dùng Vai Trò"
-                },
-                "systemAdmin":{
-                    "hint":"Select user",
-                    "label":"System Admin",
-                    "title":"Add System Admin",
-                    "add":"Add",
-                    "applySuccess": "Added system admin successfully!"
-                },
-                "apply": "Gửi lời mời",
-                "cancel": "Hủy",
-                "validation": {
-                    "required": "Là cần thiết",
-                    "invalid": "Không hợp lệ email cung cấp",
-                    "invalidGuid": "Không Hợp Lệ Hướng Dẫn"
-                },
-                "summaryHeader": "Tóm tắt",
-                "pending": "Xóa các thiết bị... ",
-                "close": "Gần"
-            },
-            "delete": {
-                "title": "Xóa",
-                "header": "Người xóa",
-                "description": "Hành động này sẽ loại bỏ sự chọn người dùng từ này, người thuê nhà.",
-                "confirmNo": "Không, không bỏ được chọn người dùng từ này, người thuê nhà.",
-                "confirmYes": "Vâng, xin vui lòng bỏ chọn người dùng từ này, người thuê nhà.",
-                "summaryHeader": "Tóm tắt",
-                "affected": "Ảnh hưởng đến người",
-                "cancel": "Hủy",
-                "apply": "Xóa",
-                "pending": "Xóa người sử dụng... ",
-                "applySuccess": "Người xóa thành công!",
-                "close": "Gần"
-            }
-        }
-    },
-    "devices": {
-        "title": "Thiết Bị Explorer",
-        "ariaLabel": "Tìm kiếm thiết bị",
-        "searchPlaceholder": "Tìm kiếm các thiết bị...",
-        "noneFound": "Không có thiết bị tìm thấy.",
-        "refresh": "Làm mới",
-        "grid": {
-            "connected": "Kết nối",
-            "deviceName": "Tên thiết bị",
-            "deviceType": "Bị loại",
-            "firmware": "Vững",
-            "lastConnection": "Cuối cùng kết nối",
-            "no": "Không có",
-            "offline": "Ẩn",
-            "simulated": "Mô phỏng",
-            "status": "Tình trạng",
-            "telemetry": "Từ xa",
-            "yes": "Yes"
-        },
-        "flyouts": {
-            "createDeviceQuery": {
-                "title": "Các Thiết Bị Truy"
-            },
-            "details": {
-                "title": "Thiết Bị Thông Tin Chi Tiết",
-                "noDevice": "Oops, chúng tôi đã không thể tìm các thiết bị.",
-                "close": "Gần",
-                "connected": "Kết nối",
-                "notConnected": "Ngắt kết nối",
-                "simulated": "Mô phỏng",
-                "notSimulated": "Vật chất",
-                "diagnostics": {
-                    "title": "Chẩn đoán",
-                    "description": "Chẩn đoán thông tin từ điện thoại",
-                    "keyHeader": "Tài sản",
-                    "valueHeader": "Giá trị",
-                    "status": "Tình trạng",
-                    "lastMessage": "Thông báo cuối cùng",
-                    "message": "Tin nhắn",
-                    "showMessage": "Bấm vào đây để xem liệu tin nhắn"
-                },
-                "methods": {
-                    "title": "Phương pháp",
-                    "description": "Để chạy một phương pháp trên một hoặc nhiều thiết bị, đóng cửa sổ này, chọn kiểm cho các thiết bị(s), nhấn vào <1><0>{{việc làm}}</0></1>, và sau đó chọn <3><0>{{phương pháp}}</0></3>.",
-                    "noneExist": "Không có phương pháp tìm thấy thiết bị này."
-                },
-                "modules": {
-                    "title": "Triển khai tin nhắn",
-                    "description": "Cạnh module tin nhắn trên điện thoại",
-                    "noneExist": "Không có tin nhắn tìm thấy thiết bị này"
-                },
-                "properties": {
-                    "title": "Tính",
-                    "description": "Để thay đổi một chỗ trên một hoặc nhiều thiết bị, đóng cửa sổ này, chọn kiểm cho các thiết bị(s), nhấn vào <1><0>{{việc làm}}</0></1>, và sau đó chọn <3><0>{{tính}}</0></3>.",
-                    "keyHeader": "Tài sản",
-                    "valueHeader": "Giá trị",
-                    "noneExist": "Không tìm thấy chỗ ở cho thiết bị này.",
-                    "copy": "Copy",
-                    "copyAllProperties": "Sao chép một danh sách của tất cả chỗ ở cho các thiết bị",
-                    "syncing": "{{reportedPropertyValue}} (đồng Bộ hoá {{desiredPropertyValue}})"
-                },
-                "tags": {
-                    "title": "Tags",
-                    "description": "Để thêm, rõ ràng, hoặc thay đổi một thẻ trên một hoặc nhiều thiết bị, đóng cửa sổ này, chọn kiểm cho các thiết bị(s), nhấn vào <1><0>{{việc làm}}</0></1>, và sau đó chọn <3><0>{{tags}}</0></3>.",
-                    "keyHeader": "Chìa khóa",
-                    "valueHeader": "Giá trị",
-                    "noneExist": "Không có thẻ tìm thấy thiết bị này."
-                },
-                "telemetry": {
-                    "title": "Từ xa"
-                }
-            },
-            "delete": {
-                "title": "Xóa",
-                "header": "Thiết bị xóa",
-                "description": "Hành động này sẽ xóa các thiết bị vĩnh viễn từ nền tảng.",
-                "confirmNo": "Không, không phải xóa bỏ những lựa chọn thiết bị vật lý.",
-                "confirmYes": "Vâng, xin vui lòng hủy bỏ được lựa chọn thiết bị vật lý.",
-                "simulatedNotSupported": "Xóa mô phỏng các thiết bị hiện không được hỗ trợ, hành động này sẽ chỉ được đưa vào các thiết bị vật lý.",
-                "summaryHeader": "Tóm tắt",
-                "affected": "Thiết bị ảnh hưởng",
-                "cancel": "Hủy",
-                "apply": "Xóa",
-                "pending": "Xóa các thiết bị... ",
-                "applySuccess": "thiết bị xóa thành công!",
-                "close": "Gần"
-            },
-            "jobs": {
-                "title": "Công việc",
-                "noDevices": "Oops, chúng tôi đã không thể tìm thấy bất kỳ thiết bị được lựa chọn.",
-                "summaryHeader": "Tóm tắt",
-                "affected": "Thiết bị ảnh hưởng",
-                "cancel": "Hủy",
-                "apply": "Áp dụng",
-                "pending": "Trình làm việc...",
-                "applySuccess": "Công việc đã đệ trình thành công!",
-                "close": "Gần",
-                "selectJob": "Chọn công việc",
-                "jobName": "Tên Công Việc",
-                "jobNameHint": "Nhập công việc tên",
-                "jobNameHelpMessage": "Chỉ số và chữ được phép",
-                "viewStatus": "Xem tình trạng công việc",
-                "validation": {
-                    "required": "Là cần thiết"
-                },
-                "tags": {
-                    "radioLabel": "Tags",
-                    "title": "Loại vào các thiết bị được chọn",
-                    "description": "Loại chung trên thiết bị được lựa chọn",
-                    "keyHeader": "Chìa khóa",
-                    "valueHeader": "Giá trị",
-                    "typeHeader": "Loại",
-                    "typeNumber": "Số",
-                    "typeString": "Văn bản",
-                    "noneExist": "Không phổ biến loại tìm thấy cho các thiết bị được lựa chọn.",
-                    "add": "Thêm tag"
-                },
-                "methods": {
-                    "radioLabel": "Phương pháp",
-                    "title": "Chạy phương pháp trên thiết bị được lựa chọn",
-                    "description": "Tất cả đều có phương pháp bị hoặc một nhóm các thiết bị",
-                    "methodName": "Tên phương pháp",
-                    "methodNameHint": "Phương pháp chọn",
-                    "firmwareVersion": "Phiên Bản Phần Mềm",
-                    "firmwareVersionHint": "1.0.1",
-                    "firmwareUri": "Vững URI",
-                    "firmwareUriHint": "Nhập vững URI giá trị"
-                },
-                "properties": {
-                    "radioLabel": "Tính",
-                    "title": "Chỗ ở trên thiết bị được lựa chọn",
-                    "description": "Sẵn chỗ ở và giá trị để thay đổi",
-                    "keyHeader": "Tài sản",
-                    "valueHeader": "Giá trị",
-                    "typeHeader": "Loại",
-                    "typeNumber": "Số",
-                    "typeString": "Văn bản",
-                    "noneExist": "Không phổ biến tìm thấy chỗ ở cho các thiết bị được lựa chọn.",
-                    "syncing": "{{reportedPropertyValue}} (đồng Bộ hoá {{desiredPropertyValue}})"
-                }
-            },
-            "new": {
-                "contextMenuName": "Thiết bị mới",
-                "title": "Thiết bị mới",
-                "summaryHeader": "Cung cấp bản tóm tắt",
-                "affected": "Các thiết bị để cung cấp",
-                "cancel": "Hủy",
-                "apply": "Áp dụng",
-                "pending": "Cung cấp thiết bị... ",
-                "applySuccess": "Thiết bị dự thành công",
-                "simulatedRefreshMessage": "Giả thiết bị được tạo ra trong nền trên máy chủ. Vì vậy, họ có thể mất một thời gian để bị danh sách được cập nhật.",
-                "close": "Gần",
-                "validation": {
-                    "required": "Là cần thiết",
-                    "greaterThanZero": "Phải lớn hơn không"
-                },
-                "count": {
-                    "label": "Số các thiết bị"
-                },
-                "device": {
-                    "label": "Thiết bị",
-                    "device": "Thiết bị IoT",
-                    "edgeDevice": "IoT Cạnh thiết bị"
-                },
-                "deviceType": {
-                    "label": "Loại",
-                    "simulated": "Mô phỏng",
-                    "physical": "Bất"
-                },
-                "deviceId": {
-                    "label": "Thiết bị ID",
-                    "hint": "Nhập bị ID",
-                    "sysGenerated": "Hệ thống thiết bị tạo ra Id"
-                },
-                "deviceIdExample": {
-                    "label": "ID thiết bị dụ",
-                    "format": "{{deviceName}}-{#####}",
-                    "deviceName": "{Tên thiết bị}"
-                },
-                "deviceModel": {
-                    "label": "Thiết bị mẫu",
-                    "hint": "Chọn hiện có loại thiết bị"
-                },
-                "authenticationType": {
-                    "label": "Loại xác thực,",
-                    "symmetric": "Khóa đối xứng",
-                    "x509": "509 X."
-                },
-                "authenticationKey": {
-                    "label": "Chính xác thực",
-                    "generateKeys": "Tự động tạo ra chìa khóa",
-                    "manualKeys": "Nhập chìa khóa tay",
-                    "hint": "Nhập chìa khóa của bạn ở đây",
-                    "primaryKey": "Chính Chìa Khóa",
-                    "primaryKeyConnection": "Kết nối dây chính chìa Khóa",
-                    "secondaryKey": "Thứ Quan Trọng",
-                    "secondaryKeyConnection": "Kết nối dây thứ quan Trọng",
-                    "primaryThumbprint": "Chính vân tay",
-                    "secondaryThumbprint": "Thứ vân tay"
-                }
-            },
-            "SIMManagement": {
-                "title": "SIM Quản lý",
-                "provider": "Cung cấp",
-                "summaryHeader": "Tóm tắt và hướng dẫn",
-                "here": "ở đây",
-                "select": "Chọn...",
-                "header": {
-                    "telefonica": "Như một Telefonica Nhiều khách hàng, bạn có lợi thế của thêm này năng để làm giàu tự động của bạn Azure Giám sát từ Xa Giải pháp với các kết nối dữ liệu có sẵn trong Telefonica IoT kết Nối nền Tảng (Mạng thông Tin dữ Liệu và Mạng Dựa trên Trí)."
-                },
-                "description": {
-                    "telefonica": "Đây là trong Xem thử. Để đồng bộ hóa của bạn kết nối dữ liệu vào Azure Giám sát từ Xa Giải pháp, xin vui lòng điền vào một yêu cầu <1><0>url</0></1>, chọn lựa chọn \"Azure Giám sát từ Xa\" và bao gồm bạn dữ liệu liên lạc và chúng tôi sẽ tự động kích hoạt tài khoản của bạn. \n\nNếu bạn không có một Telefonica khách hàng sơ và em muốn tận hưởng này hoặc khác IoT kết Nối đám Mây đã sẵn Sàng dịch vụ, bạn có thể liên lạc với chúng tôi <1><0>url</0></1> và lựa chọn \"kết Nối\", chúng tôi sẽ rất vui để giúp bạn."
-                },
-                "operator": {
-                    "telefonica": "Telefonica"
-                }
-            }
-        }
-    },
-    "rules": {
-        "title": "Quy tắc",
-        "searchPlaceholder": "Tìm kiếm các quy tắc...",
-        "ariaLabel": "Quy tắc tìm kiếm",
-        "severity": {
-            "info": "Thông tin",
-            "warning": "Cảnh báo",
-            "critical": "Quan trọng"
-        },
-        "grid": {
-            "enabled": "Kích hoạt",
-            "disabled": "Vô hiệu hóa",
-            "ruleName": "Quy tắc tên",
-            "description": "Mô tả",
-            "severity": "Mức độ nghiêm trọng",
-            "deviceGroup": "Thiết bị nhóm",
-            "trigger": "Kích hoạt",
-            "notificationType": "Loại thông báo",
-            "status": "Tình trạng",
-            "count": "Đếm",
-            "lastTrigger": "Cuối cùng kích hoạt",
-            "maintenanceLog": "Bảo trì đăng",
-            "explore": "Khám phá"
-        },
-        "flyouts": {
-            "edit": "Chỉnh sửa",
-            "statusToggle": "Tình trạng",
-            "enable": "Cho phép",
-            "disable": "Vô hiệu hóa",
-            "changeStatus": "Thay đổi tình trạng",
-            "newRule": "Quy tắc mới",
-            "editRule": "Sửa quy tắc",
-            "viewRule": "Quy Tắc Thông Tin Chi Tiết",
-            "statusTitle": "Thay đổi tình trạng",
-            "delete": "Xóa",
-            "ruleEditor": {
-                "ruleName": "Quy tắc tên",
-                "namePlaceholder": "Nhập quy tắc tên",
-                "description": "Mô tả",
-                "descriptionPlaceholder": "Nhập tả quy tắc",
-                "deviceGroup": "Thiết bị nhóm",
-                "deviceGroupPlaceholder": "Chọn bị nhóm",
-                "conditions": "Điều kiện",
-                "addCondition": "Thêm tình trạng",
-                "delete": "Xóa",
-                "calculation": "Tính toán",
-                "calculationPlaceholder": "Chọn",
-                "timePeriod": "Khoảng thời gian (trong vài phút)",
-                "condition": {
-                    "condition": "Tình trạng",
-                    "field": "Field",
-                    "fieldPlaceholder": "Chọn lĩnh vực",
-                    "operator": "Điều hành",
-                    "operatorPlaceholder": "Chọn nhà điều hành",
-                    "operatorOptions": {
-                        "Equals": "= Bằng",
-                        "GreaterThan": "> Lớn hơn",
-                        "LessThan": "< Ít hơn",
-                        "GreaterThanOrEqual": ">= Lớn hơn hoặc bằng",
-                        "LessThanOrEqual": "<= Ít hơn hoặc bằng"
-                    },
-                    "value": "Giá trị",
-                    "valuePlaceholder": "Nhập giá trị"
-                },
-                "actions": {
-                    "action": "Hành động",
-                    "checkingEmailSetup": "Kiểm tra tình trạng của cấu hình email.",
-                    "setupEmail": "Để gửi email thông báo, <1><0>outlookLogin</0></1> là cần thiết.",
-                    "outlookLogin": "đừng để Vọng",
-                    "emailSetupConfirmed": "Email của cấu hình đã được hoàn thành thành công.",
-                    "setupEmailError": "Đã có một lỗi xác nhận email của bạn thiết lập. <1><0>tryAgain</0></1>",
-                    "setupEmailTimeout": "Kiểm tra email thiết lập đã hết thời gian. <1><0>tryAgain</0></1>",
-                    "emailSetupHelp": "Gửi email thông báo yêu cầu cấu hình. <1><0>hiểu biết</0></1>",
-                    "tryAgain": "Hãy cố gắng một lần nữa.",
-                    "learnMore": "Tìm hiểu thêm",
-                    "emailActionLabel": "Gửi email",
-                    "emailAddresses": "Địa chỉ Email",
-                    "enterEmail": "Nhấn enter để thêm người nhận email",
-                    "emailComments": "Chú Thêm",
-                    "enterEmailComments": "Nhập thêm ghi chú cho các tin nhắn gửi email.",
-                    "emailSubject": "Đề Email",
-                    "enterEmailSubject": "Nhập đề email",
-                    "syntaxError": "Không phải là một địa chỉ email",
-                    "on": "Email kích hoạt",
-                    "off": "Email vô hiệu hóa",
-                    "defaultEmailSubject": "Azure IoT Giám sát từ Xa cảnh báo: {{ruleName}} đã được kích hoạt",
-                    "deleteEmail": "Rõ Ràng Email"
-                },
-                "calculationOptions": {
-                    "average": "Trung bình",
-                    "instant": "Ngay lập tức"
-                },
-                "validation": {
-                    "required": "Là cần thiết",
-                    "nan": "Phải có một số"
-                },
-                "severityLevel": "Mức độ nghiêm trọng",
-                "ruleStatus": "Quy tắc tình trạng",
-                "ruleEnabled": "Kích hoạt",
-                "ruleDisabled": "Vô hiệu hóa",
-                "devicesAffected": "thiết bị ảnh hưởng bởi quy tắc này",
-                "summaryHeader": "Tóm tắt",
-                "apply": "Áp dụng",
-                "cancel": "Hủy"
-            },
-            "deleteRule": {
-                "preDeleteText": "Chúng tôi sẽ giữ cho bất kỳ thông báo kết hợp với quy tắc này, thậm chí ngay sau khi xóa. Nếu bạn muốn xóa các liên quan đến cảnh báo tới các <1><0>url</0></1> và chọn những cảnh báo bạn muốn bỏ.",
-                "deleteConfirmation": "Quy luật đã được xóa.",
-                "postDeleteText": "Nếu bạn muốn để loại bỏ các cảnh báo kết hợp với quy tắc này, đi đến <1><0>url</0></1> và chọn những cảnh báo bạn muốn bỏ.",
-                "disableConfirmation": "Quy luật đã được vô hiệu hóa.",
-                "maintenancePage": "Bảo Trì Trang",
-                "title": "Loại Bỏ Nguyên Tắc",
-                "close": "Gần",
-                "delete": "Xóa",
-                "cancel": "Hủy"
-            }
-        }
-    },
-    "fileInput": {
-        "upload": "Tải lên"
-    },
-    "applicationSettings": {
-        "nameAndLogo": "Tên và logo",
-        "nameLogoDescription": "Chỉnh sửa logo và tên trong những trang đầu.",
-        "replaceLogo": "Thay hình ảnh logo",
-        "logoDescription": "Đề nghị logo kích thước: 24 x 24 px.\nTối đa logo kích thước: 300.\nTập tin được hỗ trợ dạng:\n.BONNIE\n.PNG\n.JPEG\n.JPG",
-        "applicationName": "Tên ứng dụng",
-        "currentLogo": "Hiện tại logo",
-        "edit": "Chỉnh sửa",
-        "checkmark": "Đánh dấu",
-        "uploadError": "Không thể tải lên tập tin, hãy kiểm tra các tập tin loại/kích thước và cố gắng một lần nữa.",
-        "error": "Lỗi"
-    },
-    "maintenance": {
-        "acknowledge": "Thừa nhận",
-        "acknowledged": "Thừa nhận",
-        "alertOccurrences": "Cảnh Báo Lần Xuất Hiện",
-        "alertedDeviceTelemetry": "Cảnh báo thiết bị đo từ xa",
-        "alertedDevices": "Cảnh báo các thiết bị",
-        "all": "Tất cả",
-        "close": "Gần",
-        "closed": "Đóng cửa",
-        "critical": "Quan trọng",
-        "delete": "Xóa",
-        "devices": "Thiết bị",
-        "failedJobs": "Thất bại trong công việc",
-        "jobs": "Công việc",
-        "lastEvent": "Cuối cùng sự kiện",
-        "noData": "Không có dữ liệu",
-        "noOccurrenceSelected": "Không có sự xuất hiện lựa chọn",
-        "notifications": "Cảnh báo",
-        "open": "mở",
-        "openAlerts": "Mở Cảnh Báo",
-        "relatedInfo": "Thông tin liên quan",
-        "ruleDetail": "Quy tắc chi tiết",
-        "ruleDetailsDesc": "Quản lý thông báo sự xuất hiện liên quan đến quy tắc này trong phần dưới đây, và sử dụng, các thông tin liên quan đến sự cố mỗi lần xuất hiện.",
-        "severity": "Mức độ nghiêm trọng",
-        "succeeded": "Đã thành công",
-        "telemetry": "Từ xa",
-        "title": "Bảo trì",
-        "total": "Tổng",
-        "warning": "Cảnh báo",
-        "alertGrid": {
-            "totalCount": "Tổng số",
-            "open": "Mở",
-            "acknowledged": "Thừa nhận",
-            "closed": "Đóng cửa",
-            "lastOccurrence": "Cuối cùng xuất hiện"
-        },
-        "jobGrid": {
-            "jobName": "Tên Công Việc",
-            "status": "Tình trạng",
-            "operation": "Hoạt động",
-            "noDevices": "Không có. các thiết bị",
-            "succeeded": "Đã thành công",
-            "failed": "Thất bại",
-            "startTime": "Bắt đầu thời gian",
-            "endTime": "Kết thúc thời gian"
-        },
-        "jobStatusGrid": {
-            "deviceIdAffected": "ID thiết bị ảnh hưởng",
-            "lastReturnMsg": "Cuối cùng trở lại tin nhắn"
-        },
-        "alertOccGrid": {
-            "occurrence": "Sự xuất hiện",
-            "triggerDevice": "Kích hoạt thiết bị",
-            "time": "Thời gian"
-        },
-        "jobStatus": {
-            "1": "Enqueued",
-            "2": "Chạy",
-            "3": "Hoàn thành",
-            "4": "Thất bại",
-            "5": "Hủy",
-            "6": "Theo lịch trình,",
-            "queued": "Xếp hàng"
-        }
-    },
-    "timeInterval": {
-        "PT1H": "Giờ cuối cùng",
-        "P1D": "Ngày cuối cùng",
-        "P7D": "Lần cuối tuần",
-        "P1M": "Tháng cuối cùng",
-        "ariaLabel": "Khoảng thời gian"
-    },
-    "timeSeriesInsights": {
-        "explore": "Khám phá trong Chuỗi Thời gian Insights",
-        "exploreTooltip": "Để xem dữ liệu trong Chuỗi Thời gian Hiểu biết thám, xin hỏi giải pháp chủ cấp cho bạn truy cập vào dữ liệu. <1><0>hiểu biết</0></1>",
-        "learnMore": "Tìm hiểu thêm"
-    },
-    "deployments": {
-        "title": "Triển khai",
-        "flyouts": {
-            "new": {
-                "contextMenuName": "Triển khai mới",
-                "title": "Triển khai mới",
-                "apply": "Áp dụng",
-                "cancel": "Hủy",
-                "close": "Gần",
-                "packageType": "Loại gói",
-                "configType": "Cấu hình loại",
-                "deviceGroup": "Thiết Bị Nhóm",
-                "name": "Tên",
-                "priority": "Ưu tiên (Cao hơn giá trị chỉ ưu tiên cao)",
-                "priorityToolTip": "Khi hai triển khai mục tiêu cùng một thiết bị triển khai với các ưu tiên cao hơn được áp dụng. Nếu hai triển khai có cùng ưu tiên việc triển khai với sau ngày tạo được áp dụng. <1><0>tìm Hiểu</0></1>",
-                "priorityLearnMore": "Tìm hiểu thêm về ưu tiên",
-                "package": "Gói",
-                "packageTypePlaceHolder": "Chọn loại gói",
-                "configTypePlaceHolder": "Chọn cấu hình loại",
-                "packagePlaceHolder": "Chọn gói",
-                "deviceGroupPlaceHolder": "Chọn bị nhóm",
-                "priorityPlaceHolder": "Nhập ưu tiên",
-                "namePlaceHolder": "Nhập tên",
-                "targetText": "mục tiêu thiết bị",
-                "infoText": "Này triển khai chạy liên tục. Tất cả các thiết bị (và bất kỳ bạn thêm vào trong tương lai) trong các thiết bị được lựa chọn sẽ nhận được cái gói này.",
-                "successText": "Xem triển khai của bạn tình trạng chi tiết cho <1><0>{{deploymentName}}</0></1>.",
-                "creating": "Việc triển khai",
-                "validation": {
-                    "required": "Là cần thiết",
-                    "positiveInteger": "Phải có một số nguyên dương ít hơn 2147483648",
-                    "name": "tên lớn hơn 50 nhân vật"
-                }
-            },
-            "packageJson":{
-                "title":"Package JSON Data"
-            }
-        },
-        "details": {
-            "deploymentName": "Triển khai tên",
-            "deviceGroup": "Thiết bị nhóm",
-            "start": "Bắt đầu",
-            "packageType": "Loại gói",
-            "configType": "Cấu Hình Loại",
-            "package": "Gói",
-            "priority": "Ưu tiên",
-            "applied": "Áp dụng",
-            "targeted": "Mục tiêu",
-            "failed": "Thất bại",
-            "succeeded": "Đã thành công",
-            "pending": "Chờ",
-            "unknown": "không rõ",
-            "customMetrics": "Chỉ Số Tùy Chỉnh",
-            "devicesAffected": "Thiết Bị Ảnh Hưởng",
-            "grid": {
-                "name": "Tên",
-                "deploymentStatus": "Triển Khai Tình Trạng",
-                "firmware": "Vững",
-                "lastMessage": "Thông Báo Cuối Cùng",
-                "start": "Bắt đầu",
-                "end": "Kết thúc"
-            }
-        },
-        "modals": {
-            "delete": {
-                "contextMenuName": "Xóa",
-                "title": "Rõ Ràng Triển Khai?",
-                "info": "Xóa '{{deploymentName}}' sẽ dừng lại triển khai này được áp dụng cho các thiết bị này. Nó có thể dẫn đến một ưu tiên hơn triển khai đang được áp dụng."
-            }
-        },
-        "grid": {
-            "name": "Tên",
-            "package": "Gói",
-            "deviceGroup": "Thiết bị nhóm",
-            "priority": "Ưu tiên",
-            "packageType": "Loại Gói",
-            "configType": "Cấu Hình Loại",
-            "targeted": "Mục tiêu",
-            "targetedTooltip": "Số thiết bị sinh đôi đó phù hợp điều kiện mục tiêu.",
-            "applied": "Áp dụng",
-            "appliedTooltip": "Số thiết bị sinh đôi đó đã bị sửa đổi bởi cấu hình.",
-            "failed": "Thất bại",
-            "succeeded": "Đã thành công",
-            "dateCreated": "Tạo Ra Trên"
-        }
-    },
-    "packages": {
-        "searchPlaceholder": "Tìm kiếm gói...",
-        "noneFound": "Không tìm thấy gói.",
-        "title": "Gói",
-        "total": "tổng gói",
-        "new": "Mới Gói",
-        "delete": "Xóa",
-        "grid": {
-            "name": "Tên",
-            "packageType": "Loại Gói",
-            "configType": "Cấu Hình Loại",
-            "dateCreated": "Ngày Tạo Ra"
-        },
-        "flyouts": {
-            "new": {
-                "title": "Mới Gói",
-                "header": "Tải lên một gói",
-                "description": "Thêm một gói để giải pháp của bạn",
-                "upload": "Tải lên",
-                "cancel": "Hủy",
-                "close": "Gần",
-                "packageType": "Loại gói",
-                "configType": "Cấu hình loại",
-                "customType": "Cấu hình loại",
-                "browse": "Duyệt",
-                "browseFirmwareText": "cho một phần vững, tập tin",
-                "browseText": "cho một gói tập tin",
-                "packageTypePlaceholder": "Chọn loại gói",
-                "configTypePlaceholder": "Chọn cấu hình loại",
-                "customTextPlaceholder": "Nhập tùy tên",
-                "package": "Gói",
-                "deploymentsPage": "Triển khai trang",
-                "newDeployment": "+ Triển Khai Mới",
-                "deploymentText": "Để triển khai các gói đi đến <1>triển khai trang</1>, và sau đó nhấn vào <3> Mới triển Khai</3>.",
-                "validation": {
-                    "required": "Là cần thiết",
-                    "fileName": "Tên tập tin lớn hơn 50 nhân vật",
-                    "fileType": "Không hợp lệ loại tập tin",
-                    "customConfig": "tên lớn hơn 50 nhân vật"
-                }
-            }
-        },
-        "modals": {
-            "delete": {
-                "title": "Xóa Gói?",
-                "info": "Xóa gói lựa chọn sẽ bị loại bỏ nó. Nó sẽ không ảnh hưởng đến bất kỳ của việc triển khai của gói này."
-            }
-        }
-    },
-    "packageTypes": {
-        "edgeManifest": "Cạnh Manifest",
-        "deviceConfiguration": "Cấu Hình Thiết Bị",
-        "unknown": "Không rõ"
-    },
-    "configTypes": {
-        "firmware": "Vững",
-        "custom": "Tuỳ"
-    },
-    "modal": {
-        "delete": "Xóa",
-        "cancel": "Hủy"
-    },
-    "walkthrough": {
-        "tabs": {
-            "dashboard": "Bảng điều khiển",
-            "basicPage": "Cơ Bản Trang",
-            "pageWithFlyout": "Trang Với Hiện Ra",
-            "pageWithGrid": "Trang Với Lưới"
-        },
-        "basicPage": {
-            "pagePlaceholder": "Đây là một trang mới."
-        },
-        "pageWithFlyout": {
-            "title": "Hiển Thị Dụ",
-            "pageBody": "Nhấn vào ngữ cảnh nút trên để mở một hiện ra.",
-            "open": "Mở Hiện Ra",
-            "flyouts": {
-                "example": {
-                    "header": "Ví Dụ Hiện Ra",
-                    "description": "Ví dụ này hiện ra có một hình thức đơn giản với hành động nút.",
-                    "insertFormHere": "Chèn mẫu điều khiển ở đây. Xem 'l/thành phần chia sẻ/hình thức' cho mẫu cụ thể chia sẻ điều khiển bạn có thể đòn bẩy.",
-                    "summaryHeader": "Tóm tắt",
-                    "affected": "hàng bị ảnh hưởng",
-                    "cancel": "Hủy",
-                    "apply": "Áp dụng",
-                    "pending": "áp dụng thay đổi... ",
-                    "applySuccess": "mục cập nhật thành công!",
-                    "close": "Gần"
-                }
-            }
-        },
-        "pageWithGrid": {
-            "grid": {
-                "name": "Tên",
-                "description": "Mô tả",
-                "btn1": "1 nút",
-                "btn2": "Nút 2"
-            }
-        },
-        "dashboard": {
-            "panels": {
-                "example": {
-                    "header": "Ví Dụ Bảng Điều Khiển",
-                    "panelBody": "Đây là một bảng điều khiển."
-                }
-            }
-        },
-        "panel": {
-            "header": "Ví Dụ Bảng Điều Khiển",
-            "panelBody": "Đây là một bảng điều khiển."
-        }
+    "panel": {
+      "header": "Ví Dụ Bảng Điều Khiển",
+      "panelBody": "Đây là một bảng điều khiển."
     }
+  }
 }
