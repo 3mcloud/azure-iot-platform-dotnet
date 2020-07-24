@@ -152,5 +152,12 @@ namespace Mmm.Iot.IdentityGateway.Services
 
             return new UserListModel("GetAllUsers", allUsers);
         }
+
+        public async Task<UserTenantListModel> GetUserTenantListModelAsync()
+        {
+            TableQuery<UserTenantModel> query = new TableQuery<UserTenantModel>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.NotEqual, string.Empty));
+            List<UserTenantModel> result = await this.TableStorageClient.QueryAsync<UserTenantModel>(this.TableName, query);
+            return new UserTenantListModel(result);
+        }
     }
 }
