@@ -9,6 +9,15 @@ To easily get a list of committed changes between current master and the previou
 git log --oneline --no-decorate --topo-order ^<previousRelease> master
 where <previousRelease> is the release name e.g 5.1.0
 -->
+## [5.2.2] - 2020-07-26
+### Fixed
+- Added and updated translations for phrases for German, English, French, Spanish, Hindi, Tamil, and Vietnamese
+- Pinned device groups are now properly saved
+- Active device group now switches on new session
+- Fixed issues with alerts being disabled for rules affecting device groups with numeric conditions
+- Re-enable cross-partition queries for alarms
+- Location for DPS now uses configuration value instead of hard-coded "eastus"
+
 ## [5.2.1] - 2020-07-15
 ### Fixed
 - Corrected the application version number
@@ -65,6 +74,7 @@ where <previousRelease> is the release name e.g 5.1.0
 - Application configuration uses Azure App Configuration service in addition to Azure Key Vault
 - Code base rearchitected to use common library and reduce duplication
 
+[5.2.2]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.2.2
 [5.2.1]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.2.1
 [5.2.0]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.2.0
 [5.1.0]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.1.0

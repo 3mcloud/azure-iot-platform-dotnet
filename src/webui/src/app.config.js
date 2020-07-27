@@ -14,7 +14,7 @@ const baseUrl = process.env.REACT_APP_BASE_SERVICE_URL || "",
             tenantManager: `${baseUrl}/tenantmanager/api/`,
             privacy: "https://privacy.microsoft.com/privacystatement",
             gitHubReleases:
-                "https://api.github.com/repos/3mcloud/azure-iot-platform-dotnet/releases/tags/5.2.1",
+                "https://api.github.com/repos/3mcloud/azure-iot-platform-dotnet/releases/tags/5.2.2",
         },
         contextHelpUrls: {
             accessDenied:
