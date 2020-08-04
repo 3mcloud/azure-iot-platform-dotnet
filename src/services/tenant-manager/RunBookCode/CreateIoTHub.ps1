@@ -278,6 +278,34 @@ function writeToTableStorage(){
         }    
 }
 
+#Adding the users as SysAdmins for Newly created Tenant
+function addUsersAsAdminsForNewTenant(){
+    try{
+        Write-Output ("Trying to write to 'User' table storage")
+        $storageAccount = $data.storageAccount
+        $sysAdminTableName = "SystemAdmin"
+        $usersTableName = "user"
+        $resourceGroup  =  $data.resourceGroup
+        $adminTable = Get-AzTableTable -resourceGroup $resourceGroup -tableName $sysAdminTableName -storageAccountName $storageAccount
+        $usersTable = Get-AzTableTable -resourceGroup $resourceGroup -tableName $usersTableName -storageAccountName $storageAccount
+        $adminUsers = Get-AzTableRow -table $adminTable
+        foreach ($user in $adminUsers) {
+            $timeStamp = Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.fffffffZ'
+            Write-Output $user
+            Write-Output $user.Name.toString()
+            if($user.Name -ne $null){
+                $result = Add-AzTableRow -table $usersTable -partitionKey $user.PartitionKey `
+                        -rowKey $data.tenantId `
+                        -property @{"Timestamp"=$timeStamp;"Name"=$user.Name;"Roles"='["admin"]';"Type"="Member"}
+            }
+        }
+        Write-Output ("Added admin users to user table for new tenant $($data.tenantId).")
+    }
+    catch {
+        Write-Error -Message $_.Exception
+    }
+}
+
 try {
     # Call the functions 
     createIoThubUsingRestApi
@@ -286,6 +314,7 @@ try {
     addDPSToIoThub -connectionString $connString
     addIoTHubConnStringToAppconfig -connectionString $connString
     writeToTableStorage
+    addUsersAsAdminsForNewTenant
 }
 catch {
     Write-Error -Message $_.Exception
