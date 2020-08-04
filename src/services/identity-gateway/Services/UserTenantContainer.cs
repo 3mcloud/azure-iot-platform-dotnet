@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Logging;
 using Mmm.Iot.Common.Services.External.TableStorage;
+using Mmm.Iot.IdentityGateway.Services.External;
 using Mmm.Iot.IdentityGateway.Services.Models;
 
 namespace Mmm.Iot.IdentityGateway.Services
@@ -16,16 +17,18 @@ namespace Mmm.Iot.IdentityGateway.Services
     public class UserTenantContainer : UserContainer, IUserContainer<UserTenantModel, UserTenantInput>
     {
         private readonly ILogger logger;
+        private readonly ITenantManagerClient tenantManagerClient;
 
         public UserTenantContainer(ILogger<UserTenantContainer> logger)
         {
             this.logger = logger;
         }
 
-        public UserTenantContainer(ITableStorageClient tableStorageClient, ILogger<UserTenantContainer> logger)
+        public UserTenantContainer(ITableStorageClient tableStorageClient, ILogger<UserTenantContainer> logger, ITenantManagerClient tenantManagerClient)
             : base(tableStorageClient)
         {
             this.logger = logger;
+            this.tenantManagerClient = tenantManagerClient;
         }
 
         public override string TableName => "user";
@@ -183,6 +186,11 @@ namespace Mmm.Iot.IdentityGateway.Services
             {
                 throw new Exception("Unable to retrieve the active tenants from table storage", e);
             }
+        }
+
+        public async Task<TenantListModel> GetAllActiveTenantAsync()
+        {
+            return await this.tenantManagerClient.GetAllActiveTenantAsync();
         }
     }
 }
