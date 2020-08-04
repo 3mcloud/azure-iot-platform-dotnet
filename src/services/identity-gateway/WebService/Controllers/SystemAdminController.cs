@@ -104,11 +104,11 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
         {
             if (result != null)
             {
-                var allUsersAcrossTenants = this.userTenantcontainer.GetUserTenantListModelAsync();
-                if (allUsersAcrossTenants != null && allUsersAcrossTenants.Result != null && allUsersAcrossTenants.Result.Models != null)
+                TenantListModel activeTenants = await this.userTenantcontainer.GetAllActiveTenantAsync();
+                if (activeTenants != null && activeTenants.Models != null && activeTenants.Models.Count > 0)
                 {
-                    List<string> pendingTenants = allUsersAcrossTenants.Result.Models.Select(x => x.RowKey).Distinct().ToList();
-                    if (pendingTenants != null && pendingTenants.Count > 0)
+                    List<string> activeTenantIds = activeTenants.Models.Select(x => x.PartitionKey).ToList();
+                    if (activeTenantIds != null && activeTenantIds.Count > 0)
                     {
                         UserTenantInput userInput = new UserTenantInput()
                         {
@@ -117,10 +117,12 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
                             Roles = JsonConvert.SerializeObject(new List<string>() { AdminRole }),
                             Type = MemberType,
                         };
-                        for (int i = 0; i < pendingTenants.Count; i++)
+                        UserTenantListModel existingTenants = await this.userTenantcontainer.GetAllAsync(userInput);
+                        for (int i = 0; i < activeTenantIds.Count; i++)
                         {
-                            userInput.Tenant = pendingTenants[i];
-                            if (allUsersAcrossTenants.Result.Models.FirstOrDefault(x => x.UserId == userInput.UserId && x.TenantId == userInput.Tenant) == null)
+                            userInput.Tenant = activeTenantIds[i];
+                            if (existingTenants != null &&
+                                (existingTenants.Models.Count == 0 || existingTenants.Models.FirstOrDefault(x => x.UserId == userInput.UserId && x.TenantId == userInput.Tenant) == null))
                             {
                                 var createdUser = await this.userTenantcontainer.CreateAsync(userInput);
                             }

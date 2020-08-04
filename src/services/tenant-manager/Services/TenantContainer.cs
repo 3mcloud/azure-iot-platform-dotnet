@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Logging;
 using Mmm.Iot.Common.Services.Exceptions;
 using Mmm.Iot.Common.Services.External.AppConfiguration;
@@ -171,6 +172,21 @@ namespace Mmm.Iot.TenantManager.Services
             catch (Exception e)
             {
                 throw new Exception("Unable to retrieve the tenant from table storage", e);
+            }
+        }
+
+        public async Task<TenantListModel> GetAllActiveTenantAsync()
+        {
+            try
+            {
+                // Load the tenant from table storage
+                TableQuery<TenantModel> query = new TableQuery<TenantModel>().Where(TableQuery.GenerateFilterCondition("IsIotHubDeployed", QueryComparisons.Equal, true.ToString()));
+                List<TenantModel> result = await this.tableStorageClient.QueryAsync<TenantModel>(TenantTableId, query);
+                return new TenantListModel(result);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to retrieve the active tenants from table storage", e);
             }
         }
 
