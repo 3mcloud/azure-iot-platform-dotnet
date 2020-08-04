@@ -175,6 +175,21 @@ namespace Mmm.Iot.TenantManager.Services
             }
         }
 
+        public async Task<TenantListModel> GetAllActiveTenantAsync()
+        {
+            try
+            {
+                // Load the tenant from table storage
+                TableQuery<TenantModel> query = new TableQuery<TenantModel>().Where(TableQuery.GenerateFilterCondition("IsIotHubDeployed", QueryComparisons.Equal, true.ToString()));
+                List<TenantModel> result = await this.tableStorageClient.QueryAsync<TenantModel>(TenantTableId, query);
+                return new TenantListModel(result);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to retrieve the active tenants from table storage", e);
+            }
+        }
+
         public async Task<DeleteTenantModel> DeleteTenantAsync(string tenantId, string userId, bool ensureFullyDeployed = true)
         {
             Dictionary<string, bool> deletionRecord = new Dictionary<string, bool> { };
