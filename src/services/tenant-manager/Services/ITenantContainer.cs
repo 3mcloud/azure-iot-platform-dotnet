@@ -20,5 +20,7 @@ namespace Mmm.Iot.TenantManager.Services
         Task<TenantModel> UpdateTenantAsync(string tenantId, string tenantName);
 
         Task<UserTenantListModel> GetAllTenantsAsync(string userId);
+
+        Task<TenantListModel> GetAllActiveTenantAsync();
     }
 }
