@@ -107,7 +107,7 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
                 TenantListModel activeTenants = await this.userTenantcontainer.GetAllActiveTenantAsync();
                 if (activeTenants != null && activeTenants.Models != null && activeTenants.Models.Count > 0)
                 {
-                    List<string> activeTenantIds = activeTenants.Models.Select(x => x.PartitionKey).ToList();
+                    List<string> activeTenantIds = activeTenants.Models.Select(x => x.TenantId).ToList();
                     if (activeTenantIds != null && activeTenantIds.Count > 0)
                     {
                         UserTenantInput userInput = new UserTenantInput()
@@ -121,8 +121,8 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
                         for (int i = 0; i < activeTenantIds.Count; i++)
                         {
                             userInput.Tenant = activeTenantIds[i];
-                            if (existingTenants != null &&
-                                (existingTenants.Models.Count == 0 || existingTenants.Models.FirstOrDefault(x => x.UserId == userInput.UserId && x.TenantId == userInput.Tenant) == null))
+                            if (existingTenants != null && existingTenants.Models != null &&
+                                existingTenants.Models.FirstOrDefault(x => x.UserId == userInput.UserId && x.TenantId == userInput.Tenant) == null)
                             {
                                 var createdUser = await this.userTenantcontainer.CreateAsync(userInput);
                             }
