@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Logging;
 using Mmm.Iot.Common.Services.External.TableStorage;
-using Mmm.Iot.IdentityGateway.Services.External;
 using Mmm.Iot.IdentityGateway.Services.Models;
 
 namespace Mmm.Iot.IdentityGateway.Services
@@ -17,21 +16,21 @@ namespace Mmm.Iot.IdentityGateway.Services
     public class UserTenantContainer : UserContainer, IUserContainer<UserTenantModel, UserTenantInput>
     {
         private readonly ILogger logger;
-        private readonly ITenantManagerClient tenantManagerClient;
 
         public UserTenantContainer(ILogger<UserTenantContainer> logger)
         {
             this.logger = logger;
         }
 
-        public UserTenantContainer(ITableStorageClient tableStorageClient, ILogger<UserTenantContainer> logger, ITenantManagerClient tenantManagerClient)
+        public UserTenantContainer(ITableStorageClient tableStorageClient, ILogger<UserTenantContainer> logger)
             : base(tableStorageClient)
         {
             this.logger = logger;
-            this.tenantManagerClient = tenantManagerClient;
         }
 
         public override string TableName => "user";
+
+        public string TenantTableId => "tenant";
 
         public virtual async Task<UserTenantListModel> GetAllAsync(UserTenantInput input)
         {
@@ -165,7 +164,17 @@ namespace Mmm.Iot.IdentityGateway.Services
 
         public async Task<TenantListModel> GetAllActiveTenantAsync()
         {
-            return await this.tenantManagerClient.GetAllActiveTenantAsync();
+            try
+            {
+                // Load the tenant from table storage
+                TableQuery<TenantModel> query = new TableQuery<TenantModel>().Where(TableQuery.GenerateFilterConditionForBool("IsIotHubDeployed", QueryComparisons.Equal, true));
+                List<TenantModel> result = await this.TableStorageClient.QueryAsync<TenantModel>(this.TenantTableId, query);
+                return new TenantListModel(result);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to retrieve the active tenants from table storage", e);
+            }
         }
     }
 }
