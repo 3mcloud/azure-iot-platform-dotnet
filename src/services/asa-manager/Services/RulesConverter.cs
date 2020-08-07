@@ -47,7 +47,7 @@ namespace Mmm.Iot.AsaManager.Services
             ValueListApiModel rules = null;
             try
             {
-                rules = await this.StorageAdapterClient.GetAllAsync(this.Entity);
+                rules = await this.StorageAdapterClient.GetAllAsync(this.Entity, tenantId);
             }
             catch (Exception e)
             {

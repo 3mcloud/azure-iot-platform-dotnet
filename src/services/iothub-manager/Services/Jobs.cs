@@ -15,7 +15,7 @@ using Mmm.Iot.IoTHubManager.Services.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using DeviceJobStatus = Mmm.Iot.IoTHubManager.Services.Models.DeviceJobStatus;
-using JobStatus = Mmm.Iot.IoTHubManager.Services.Models.JobStatus;
+using JobStatus = Mmm.Iot.Common.Services.Models.JobStatus;
 using JobType = Mmm.Iot.IoTHubManager.Services.Models.JobType;
 
 namespace Mmm.Iot.IoTHubManager.Services
@@ -52,7 +52,7 @@ namespace Mmm.Iot.IoTHubManager.Services
 
             var query = this.tenantConnectionHelper.GetJobClient().CreateQuery(
                 JobServiceModel.ToJobTypeAzureModel(jobType),
-                JobServiceModel.ToJobStatusAzureModel(jobStatus),
+                JobServiceModel.ToJobStatusAzureModel((Microsoft.Azure.Devices.JobStatus?)jobStatus),
                 pageSize);
 
             var results = new List<JobServiceModel>();
@@ -109,7 +109,7 @@ namespace Mmm.Iot.IoTHubManager.Services
                 twin.ToAzureModel(),
                 startTimeUtc.DateTime,
                 maxExecutionTimeInSeconds);
-            await this.asaManager.BeginDeviceGroupsConversionAsync();
+            await this.asaManager.BeginJobDelayDeviceGroupsConversionAsync(jobId);
 
             // Update the deviceProperties cache, no need to wait
             var model = new DevicePropertyServiceModel();

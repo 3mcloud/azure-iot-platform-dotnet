@@ -68,13 +68,13 @@ export class IdentityGatewayService {
 
     static getUserActiveDeviceGroup() {
         return HttpClient.get(`${ENDPOINT}settings/ActiveDeviceGroup`).map(
-            (setting) => setting.value
+            (setting) => setting && setting.value
         );
     }
 
     static updateUserActiveDeviceGroup(value) {
         return HttpClient.put(
             `${ENDPOINT}settings/ActiveDeviceGroup/${value}`
-        ).map((setting) => setting.value);
+        ).map((setting) => setting && setting.value);
     }
 }

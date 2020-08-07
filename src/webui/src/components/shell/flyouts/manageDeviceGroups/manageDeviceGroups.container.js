@@ -16,7 +16,7 @@ const mapStateToProps = (state) => ({
     }),
     mapDispatchToProps = (dispatch) => ({
         changeDeviceGroup: (id) =>
-            dispatch(appRedux.actions.updateActiveDeviceGroup(id)),
+            dispatch(appEpics.actions.updateActiveDeviceGroup(id)),
         closeFlyout: () =>
             dispatch(appRedux.actions.setDeviceGroupFlyoutStatus(false)),
         deleteDeviceGroups: (ids) =>

@@ -2,62 +2,71 @@ trigger: none
 pr: none
 pool:
   vmImage: ubuntu-latest
-jobs:
-  - job: checkParameters
+stages:
+  - stage: checkParameters
     displayName: Check parameters
-    steps:
-      - checkout: none
-
-      - script: |-
-          set -Eeuxo pipefail
-          echo "Environment name: '$(environmentName)'"
-          if [ -z "$(environmentName)" ]
-          then
-            echo "A value for the 'environmentName' variable must be provided" > /dev/stderr
-            exit 1
-          fi
-
-          echo "Subscription name: '$(subscriptionName)'"
-          if [ -z "$(subscriptionName)" ]
-          then
-            echo "A value for the 'subscriptionName' variable must be provided" > /dev/stderr
-            exit 1
-          fi
-
-          echo "Application code: '$(applicationCode)'"
-          if [ -z "$(applicationCode)" ]
-          then
-            echo "A value for the 'applicationCode' variable must be provided" > /dev/stderr
-            exit 1
-          fi
-
-          echo "Application short code: '$(applicationShortCode)'"
-          if [ -z "$(applicationShortCode)" ]
-          then
-            echo "A value for the 'applicationShortCode' variable must be provided" > /dev/stderr
-            exit 1
-          fi
-
-          echo "Environment category: '$(environmentCategory)'"
-          if [ -z "$(environmentCategory)" ]
-          then
-            echo "A value for the 'environmentCategory' variable must be provided" > /dev/stderr
-            exit 1
-          fi
-
-          echo "Image tag: '$(imageTag)'"
-          if [ -z "$(imageTag)" ]
-          then
-            echo "A value for the 'imageTag' variable must be provided" > /dev/stderr
-            exit 1
-          fi
+    dependsOn: []
+    jobs:
+      - job: checkParameters
         displayName: Check parameters
+        steps:
+          - checkout: none
 
-  - template: ../templates/jobs-deploy-code.yaml
-    parameters:
-      environmentName: $(environmentName)
-      subscriptionName: $(subscriptionName)
-      applicationCode: $(applicationCode)
-      applicationShortCode: $(applicationShortCode)
-      environmentCategory: $(environmentCategory)
-      imageTag: $(imageTag)
+          - script: |-
+              set -Eeuxo pipefail
+              echo "Environment name: '$(environmentName)'"
+              if [ -z "$(environmentName)" ]
+              then
+                echo "A value for the 'environmentName' variable must be provided" > /dev/stderr
+                exit 1
+              fi
+
+              echo "Subscription name: '$(subscriptionName)'"
+              if [ -z "$(subscriptionName)" ]
+              then
+                echo "A value for the 'subscriptionName' variable must be provided" > /dev/stderr
+                exit 1
+              fi
+
+              echo "Application code: '$(applicationCode)'"
+              if [ -z "$(applicationCode)" ]
+              then
+                echo "A value for the 'applicationCode' variable must be provided" > /dev/stderr
+                exit 1
+              fi
+
+              echo "Application short code: '$(applicationShortCode)'"
+              if [ -z "$(applicationShortCode)" ]
+              then
+                echo "A value for the 'applicationShortCode' variable must be provided" > /dev/stderr
+                exit 1
+              fi
+
+              echo "Environment category: '$(environmentCategory)'"
+              if [ -z "$(environmentCategory)" ]
+              then
+                echo "A value for the 'environmentCategory' variable must be provided" > /dev/stderr
+                exit 1
+              fi
+
+              echo "Image tag: '$(imageTag)'"
+              if [ -z "$(imageTag)" ]
+              then
+                echo "A value for the 'imageTag' variable must be provided" > /dev/stderr
+                exit 1
+              fi
+            displayName: Check parameters
+
+  - stage: deployCode
+    displayName: Deploy code
+    dependsOn:
+      - checkParameters
+    jobs:
+      - template: ../templates/jobs-deploy-code.yaml
+        parameters:
+          environmentName: $(environmentName)
+          subscriptionName: $(subscriptionName)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          imageTag: $(imageTag)

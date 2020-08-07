@@ -187,11 +187,6 @@ export const epics = createEpicScenario({
                         Object.keys(getDeviceGroupEntities(store.getState()))[0]
                 )
                 .map(
-                    (value) =>
-                        value ||
-                        Object.keys(getDeviceGroupEntities(store.getState()))[0]
-                )
-                .map(
                     toActionCreator(
                         redux.actions.updateActiveDeviceGroup,
                         fromAction
@@ -452,6 +447,14 @@ const deviceGroupSchema = new schema.Entity("deviceGroups"),
         if (state.deviceGroups[payload]) {
             return update(state, { activeDeviceGroupId: { $set: payload } });
         }
+
+        const deviceGroupId = Object.keys(state.deviceGroups)[0];
+        if (deviceGroupId) {
+            return update(state, {
+                activeDeviceGroupId: { $set: deviceGroupId },
+            });
+        }
+
         return state;
     },
     updateThemeReducer = (state, { payload }) =>

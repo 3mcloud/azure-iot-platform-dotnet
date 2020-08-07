@@ -117,11 +117,17 @@ stages:
             name: getAppConfigurationConnectionString
             inputs:
               azureSubscription: $(subscriptionName)
-              scriptType: bash
+              scriptType: pscore
               scriptLocation: inlineScript
               inlineScript: |-
-                appConfigurationConnectionString=`az appconfig credential list --name $(appConfigurationName) --resource-group $(resourceGroupName) --query "[?name=='Primary'].connectionString | [0]" --output tsv`
+                $appConfigurationConnectionString = az appconfig credential list --name $(appConfigurationName) --resource-group $(resourceGroupName) --query "[?name=='Primary'].connectionString | [0]" --output tsv
                 echo "##vso[task.setvariable variable=AppConfigurationConnectionString;isOutput=true]$appConfigurationConnectionString"
+                $tableExists = az storage table exists --name $(tableStorageName) --account-name $(storageAccountName) --output tsv
+                if ($tableExists -eq $False)
+                {
+                  az storage table create --name $(tableStorageName) --account-name $(storageAccountName)
+                }
+
                 az storage entity insert --entity PartitionKey=$(tableStoragePartition) RowKey=$(tableStorageRowKeyPrefix)$(tableStorageAppConfigurationConnectionStringRowKey) Content="$appConfigurationConnectionString" --table-name $(tableStorageName) --account-name $(storageAccountName)
 
       - job: build
@@ -454,7 +460,7 @@ stages:
           - task: KubectlInstaller@0
             displayName: Install kubectl
             inputs:
-              kubectlVersion: 1.16.7
+              kubectlVersion: 1.18.2
 
           - task: AzureCLI@2
             displayName: Create namespace
@@ -468,6 +474,7 @@ stages:
                 if (!$namespaceAlreadyExists) {
                   kubectl create namespace $(kubernetesNamespace) --output json
                 }
+
                 az storage entity insert --entity PartitionKey=$(tableStoragePartition) RowKey=$(tableStorageRowKeyPrefix)$(kubernetesNamespaceWasCreatedRowKey) Content="true" --table-name $(tableStorageName) --account-name $(storageAccountName)
 
           - template: ../templates/steps-install-helm.yaml
