@@ -118,9 +118,9 @@ namespace Mmm.Iot.DeviceTelemetry.Services
                         .Select(doc => new Alarm(doc))
                         .ToList();
             }
-            catch (ResourceNotFoundException)
+            catch (ResourceNotFoundException e)
             {
-                return new List<Alarm>();
+                throw new ResourceNotFoundException($"No alarms exist in CosmosDb. The alarms collection {this.CollectionId} does not exist.", e);
             }
         }
 
@@ -172,9 +172,9 @@ namespace Mmm.Iot.DeviceTelemetry.Services
                         .Select(doc => new Alarm(doc))
                         .ToList();
             }
-            catch (ResourceNotFoundException)
+            catch (ResourceNotFoundException e)
             {
-                return new List<Alarm>();
+                throw new ResourceNotFoundException($"No alarms exist in CosmosDb. The alarms collection {this.CollectionId} does not exist.", e);
             }
         }
 
@@ -213,9 +213,9 @@ namespace Mmm.Iot.DeviceTelemetry.Services
                     queryOptions,
                     sql);
             }
-            catch (ResourceNotFoundException)
+            catch (ResourceNotFoundException e)
             {
-                return 0;
+                throw new ResourceNotFoundException($"No alarms exist in CosmosDb. The alarms collection {this.CollectionId} does not exist.", e);
             }
         }
 
