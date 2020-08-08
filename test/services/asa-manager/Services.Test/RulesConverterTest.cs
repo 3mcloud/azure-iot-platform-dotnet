@@ -56,7 +56,8 @@ namespace Mmm.Iot.AsaManager.Services.Test
 
             this.mockStorageAdapterClient
                 .Setup(c => c.GetAllAsync(
-                    It.Is<string>(s => s == this.converter.Entity)))
+                    It.Is<string>(s => s == this.converter.Entity),
+                    It.IsAny<string>()))
                 .ReturnsAsync(rules);
 
             this.mockBlobStorageClient
@@ -71,7 +72,8 @@ namespace Mmm.Iot.AsaManager.Services.Test
             this.mockStorageAdapterClient
                 .Verify(
                     c => c.GetAllAsync(
-                        It.Is<string>(s => s == this.converter.Entity)),
+                        It.Is<string>(s => s == this.converter.Entity),
+                        It.IsAny<string>()),
                     Times.Once);
             this.mockBlobStorageClient
                 .Verify(
@@ -96,7 +98,8 @@ namespace Mmm.Iot.AsaManager.Services.Test
 
             this.mockStorageAdapterClient
                 .Setup(c => c.GetAllAsync(
-                    It.Is<string>(s => s == this.converter.Entity)))
+                    It.Is<string>(s => s == this.converter.Entity),
+                    It.IsAny<string>()))
                 .ReturnsAsync(rules);
 
             Func<Task> conversion = async () => await this.converter.ConvertAsync(tenantId);

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Mmm.Iot.Common.Services.Filters;
+using Mmm.Iot.Common.Services.Models;
 using Mmm.Iot.IoTHubManager.Services;
 using Mmm.Iot.IoTHubManager.Services.Models;
 using Mmm.Iot.IoTHubManager.WebService.Models;

@@ -53,7 +53,7 @@ namespace Mmm.Iot.AsaManager.Services
             ValueListApiModel deviceGroups = null;
             try
             {
-                deviceGroups = await this.StorageAdapterClient.GetAllAsync(this.Entity);
+                deviceGroups = await this.StorageAdapterClient.GetAllAsync(this.Entity, tenantId);
             }
             catch (Exception e)
             {

@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Mmm.Iot.Common.Services.Models;
 using Mmm.Iot.IoTHubManager.Services.Models;
 using Newtonsoft.Json;
 
@@ -27,7 +28,7 @@ namespace Mmm.Iot.IoTHubManager.WebService.Models
                 this.EndTimeUtc = serviceModel.EndTimeUtc;
                 this.MaxExecutionTimeInSeconds = serviceModel.MaxExecutionTimeInSeconds;
                 this.Type = serviceModel.Type;
-                this.Status = serviceModel.Status;
+                this.Status = (JobStatus)serviceModel.Status;
                 this.MethodParameter = serviceModel.MethodParameter == null ? null : new MethodParameterApiModel(serviceModel.MethodParameter);
                 this.UpdateTwin = serviceModel.UpdateTwin == null ? null : new JobUpdateTwinApiModel(null, serviceModel.UpdateTwin);
                 this.FailureReason = serviceModel.FailureReason;

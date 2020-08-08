@@ -26,6 +26,12 @@ namespace Mmm.Iot.Common.Services.External.AsaManager
             return await this.BeginConversionAsync("devicegroups");
         }
 
+        public async Task<BeginConversionApiModel> BeginJobDelayDeviceGroupsConversionAsync(string jobId)
+        {
+            string url = $"{this.ServiceUri}/devicegroups/iothubjobdelay/{jobId}";
+            return await this.RequestHelper.ProcessRequestAsync<BeginConversionApiModel>(HttpMethod.Post, url);
+        }
+
         private async Task<BeginConversionApiModel> BeginConversionAsync(string entity)
         {
             string url = $"{this.ServiceUri}/{entity}";
