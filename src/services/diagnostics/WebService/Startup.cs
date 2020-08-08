@@ -1,10 +1,11 @@
-﻿// <copyright file="Startup.cs" company="3M">
+// <copyright file="Startup.cs" company="3M">
 // Copyright (c) 3M. All rights reserved.
 // </copyright>
 
 using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Mmm.Iot.Common.Services.AIPreprocessors;
 using Mmm.Iot.Common.Services.Auth;
+using Mmm.Iot.Common.Services.Config;
 
 namespace Mmm.Iot.Diagnostics.WebService
 {
@@ -34,6 +37,11 @@ namespace Mmm.Iot.Diagnostics.WebService
                 c.SwaggerDoc($"v1", new OpenApiInfo { Title = "IoTHub Manager API", Version = "v1" });
             });
             services.AddCors();
+
+            var applicationInsightsOptions = new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions();
+            applicationInsightsOptions.EnableAdaptiveSampling = false;
+            services.AddApplicationInsightsTelemetry(applicationInsightsOptions);
+            services.AddApplicationInsightsTelemetryProcessor<HealthProbeTelemetryProcessor>();
             services.AddMvc().AddControllersAsServices().AddNewtonsoftJson();
             services.AddHttpContextAccessor();
             this.ApplicationContainer = new DependencyResolution().Setup(services, this.Configuration);
@@ -43,7 +51,8 @@ namespace Mmm.Iot.Diagnostics.WebService
         public void Configure(
             IApplicationBuilder app,
             ICorsSetup corsSetup,
-            IHostApplicationLifetime appLifetime)
+            IHostApplicationLifetime appLifetime,
+            AppConfig config)
         {
             app.UseRouting();
             app.UseSwagger();
@@ -52,6 +61,7 @@ namespace Mmm.Iot.Diagnostics.WebService
                 c.SwaggerEndpoint("./swagger/v1/swagger.json", "V1");
                 c.RoutePrefix = string.Empty;
             });
+            SetupTelemetry(app, config);
             app.UseMiddleware<AuthMiddleware>();
             corsSetup.UseMiddleware(app);
             app.UseEndpoints(endpoints =>
@@ -59,6 +69,17 @@ namespace Mmm.Iot.Diagnostics.WebService
                 endpoints.MapControllers();
             });
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
+        }
+
+        private static void SetupTelemetry(IApplicationBuilder app, AppConfig config)
+        {
+            var configuration = app.ApplicationServices.GetService<TelemetryConfiguration>();
+            var builder = configuration.DefaultTelemetrySink.TelemetryProcessorChainBuilder;
+
+            // Using fixed rate sampling
+            double fixedSamplingPercentage = config.Global.FixedSamplingPercentage == 0 ? 10 : config.Global.FixedSamplingPercentage;
+            builder.UseSampling(fixedSamplingPercentage);
+            builder.Build();
         }
     }
 }
