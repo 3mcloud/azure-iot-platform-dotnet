@@ -666,6 +666,7 @@ stages:
 
           - task: DotNetCoreCLI@2
             displayName: Run functional tests
+            continueOnError: true
             inputs:
               command: test
               arguments: >-
