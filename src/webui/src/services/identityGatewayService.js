@@ -77,4 +77,23 @@ export class IdentityGatewayService {
             `${ENDPOINT}settings/ActiveDeviceGroup/${value}`
         ).map((setting) => setting && setting.value);
     }
+
+    static VerifyAndRefreshCache() {
+        HttpClient.get(
+            `${ENDPOINT}/settings/LatestDeploymentDate`
+        )
+            .map((setting) => setting && setting.value)
+            .subscribe((value) => {
+                if (
+                    HttpClient.getLocalStorageValue("latestDeployedDate") !==
+                    value
+                ) {
+                    window.location.reload(true);
+                    HttpClient.setLocalStorageValue(
+                        "latestDeployedDate",
+                        value
+                    );
+                }
+            });
+    }
 }

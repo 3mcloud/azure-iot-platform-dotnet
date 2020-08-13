@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Mmm.Iot.Common.Services;
+using Mmm.Iot.Common.Services.Config;
 using Mmm.Iot.Common.Services.Filters;
 using Mmm.Iot.IdentityGateway.Services;
 using Mmm.Iot.IdentityGateway.Services.Models;
@@ -18,10 +19,17 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
     public class UserSettingsController : Controller
     {
         private UserSettingsContainer container;
+        private AppConfig config;
 
         public UserSettingsController(UserSettingsContainer container)
         {
             this.container = container;
+        }
+
+        public UserSettingsController(UserSettingsContainer container, AppConfig config)
+        {
+            this.container = container;
+            this.config = config;
         }
 
         [HttpGet("all")]
@@ -127,6 +135,12 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
                 SettingKey = setting,
             };
             return await this.container.DeleteAsync(input);
+        }
+
+        [HttpGet("LatestDeploymentDate")]
+        public UserSettingsModel GetLatestDeploymentDate()
+        {
+            return new UserSettingsModel() { Value = this.config.Global.LatestDeploymentDate };
         }
 
         private string GetUserActiveDeviceGroupKey()
