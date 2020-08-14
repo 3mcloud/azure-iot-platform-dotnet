@@ -10,7 +10,7 @@ jobs:
   - template: get-approval.yaml
     parameters:
       environmentName: ${{parameters.environmentName}}
-
+      
   - job: deploy
     displayName: Deploy
     variables:
@@ -97,6 +97,8 @@ jobs:
 
   - job: addKey
     displayName: Update Application Configuration with BuildNumber
+    variables:
+      - template: variables-all.yaml
     dependsOn:
      - deploy
     steps:
