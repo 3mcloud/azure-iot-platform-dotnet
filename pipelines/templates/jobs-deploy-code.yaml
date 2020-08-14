@@ -98,16 +98,7 @@ jobs:
   - job: addKey
     displayName: Update Application Configuration with BuildNumber
     dependsOn:
-     - Deploy asa-manager
-     - Deploy config
-     - Deploy device-telemetry
-     - Deploy reverse-proxy
-     - Deploy diagnostics
-     - Deploy identity-gateway
-     - Deploy iothub-manager
-     - Deploy storage-adapter
-     - Deploy tenant-manager
-     - Deploy webui
+     - deploy
     steps:
       - task: AzureCLI@2
         inputs:
