@@ -99,6 +99,9 @@ jobs:
     displayName: Update Application Configuration with BuildNumber
     variables:
       - template: variables-all.yaml
+      - name: appConfigurationName
+        value: ${{parameters.applicationCode}}-$(appConfigurationPartialName)-${{parameters.environmentCategory}}
+
     dependsOn:
      - deploy
     steps:

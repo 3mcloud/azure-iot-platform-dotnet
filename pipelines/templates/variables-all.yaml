@@ -22,4 +22,3 @@ variables:
   resourceGroupPartialName: rg
   storageAccountPartialName: storageacct
   sendgridAccountPartialName: sendgrid
-  appConfigurationName: ggktech-appconfig-dev
