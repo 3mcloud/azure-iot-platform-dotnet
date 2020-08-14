@@ -930,7 +930,8 @@
       "delete": {
         "contextMenuName": "நீக்கு",
         "title": "நீக்கு அனுப்புவது?",
-        "info": "நீக்குதல் '{{deploymentName}}' நிறுத்த வேண்டும் இந்த பயன்படுத்தல் இருந்து வருகிறது பயன்படுத்தப்படும் இந்த சாதனங்கள். அது ஏற்படலாம் ஒரு குறைந்த முன்னுரிமை பயன்படுத்தல் தடவப்படுகிறது."
+        "info": "நீக்குதல் '{{deploymentName}}' நிறுத்த வேண்டும் இந்த பயன்படுத்தல் இருந்து வருகிறது பயன்படுத்தப்படும் இந்த சாதனங்கள். அது ஏற்படலாம் ஒரு குறைந்த முன்னுரிமை பயன்படுத்தல் தடவப்படுகிறது.",
+        "gridInfo": "Deleting selected deployment(s) will stop deployment from being applied to the devices. It may result in a lower priority deployment being applied if any"
       }
     },
     "grid": {

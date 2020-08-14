@@ -53,7 +53,10 @@ export class DeploymentDetails extends Component {
 
         this.props.updateCurrentWindow("DeploymentDetails");
 
-        props.fetchDeployment(props.match.params.id);
+        props.fetchDeployment(
+            props.match.params.id,
+            props.match.params.isLatest
+        );
     }
 
     componentWillUnmount() {
@@ -141,6 +144,7 @@ export class DeploymentDetails extends Component {
                 configType,
                 packageName,
                 customMetrics,
+                isLatest,
             } = currentDeployment,
             isADMDeployment = packageType === packagesEnum.deviceConfiguration;
         let customArray = [
@@ -169,7 +173,7 @@ export class DeploymentDetails extends Component {
                             </Btn>
                         </Protected>
                         <RefreshBar
-                            refresh={() => fetchDeployment(id)}
+                            refresh={() => fetchDeployment(id, isLatest)}
                             time={lastUpdated}
                             isPending={isPending}
                             t={t}

@@ -10,3 +10,30 @@
   flex-flow: column nowrap;
   padding: $baseContentPadding;
 }
+
+.small-green-circle {
+  height: 15px !important;
+  width: 15px !important;
+  background-color: green;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 15px;
+  padding: 7px;
+}
+
+.small-red-circle {
+  height: 15px !important;
+  width: 15px !important;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 15px;
+  padding: 7px;
+}
+
+.right-corner{
+  float: right;
+  position: absolute;
+  right: 0px;
+  margin: 20px; 
+}

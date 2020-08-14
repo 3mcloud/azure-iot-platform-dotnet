@@ -43,26 +43,36 @@ namespace Mmm.Iot.IoTHubManager.Services.Helpers
                 throw new InvalidInputException("Deployment type does not match with package contents.");
             }
 
-            var deploymentId = Guid.NewGuid().ToString().ToLower();
+            var deploymentId = string.IsNullOrWhiteSpace(model.Id) ? Guid.NewGuid().ToString().ToLower() : model.Id;
             var configuration = new Configuration(deploymentId);
             configuration.Content = packageConfiguration.Content;
 
-            var targetCondition = QueryConditionTranslator.ToQueryString(model.DeviceGroupQuery);
-            if (model.DeviceIds != null && model.DeviceIds.Any())
+            // Model.TargetCondition will not be empty when synced from IoTHub to Cosmos, which will be used
+            // while reactivating the deployment
+            if (string.IsNullOrWhiteSpace(model.TargetCondition))
             {
-                string deviceIdCondition = $"({string.Join(" or ", model.DeviceIds.Select(v => $"deviceId = '{v}'"))})";
-                if (!string.IsNullOrWhiteSpace(targetCondition))
+                var targetCondition = QueryConditionTranslator.ToQueryString(model.DeviceGroupQuery);
+                if (model.DeviceIds != null && model.DeviceIds.Any())
                 {
-                    string[] conditions = { targetCondition, deviceIdCondition };
-                    targetCondition = string.Join(" or ", conditions);
+                    string deviceIdCondition = $"({string.Join(" or ", model.DeviceIds.Select(v => $"deviceId = '{v}'"))})";
+                    if (!string.IsNullOrWhiteSpace(targetCondition))
+                    {
+                        string[] conditions = { targetCondition, deviceIdCondition };
+                        targetCondition = string.Join(" or ", conditions);
+                    }
+                    else
+                    {
+                        targetCondition = deviceIdCondition;
+                    }
                 }
-                else
-                {
-                    targetCondition = deviceIdCondition;
-                }
+
+                configuration.TargetCondition = string.IsNullOrEmpty(targetCondition) ? "*" : targetCondition;
+            }
+            else
+            {
+                configuration.TargetCondition = model.TargetCondition;
             }
 
-            configuration.TargetCondition = string.IsNullOrEmpty(targetCondition) ? "*" : targetCondition;
             configuration.Priority = model.Priority;
             configuration.ETag = string.Empty;
             configuration.Labels = packageConfiguration.Labels ?? new Dictionary<string, string>();

@@ -15,6 +15,8 @@ export const gridValueFormatters = {
 /** A the class name for the first row in a grid (used for soft and hard selection ) */
 export const FIRST_COLUMN_CLASS = "first-child-column";
 export const CHECKBOX_COLUMN_CLASS = "checkbox-column";
+export const SMALL_GREEN_CIRCLE = "small-green-circle";
+export const SMALL_RED_CIRCLE = "small-red-circle";
 
 export const checkboxColumn = {
     lockPosition: true,

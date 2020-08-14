@@ -14,7 +14,7 @@ export const DeploymentsRouter = () => (
         />
         <Route
             exact
-            path={"/deployments/:id"}
+            path={"/deployments/:id/:isLatest"}
             render={(routeProps) => (
                 <DeploymentDetailsContainer {...routeProps} />
             )}

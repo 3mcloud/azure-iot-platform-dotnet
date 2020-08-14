@@ -92,9 +92,9 @@ export class IoTHubManagerService {
     }
 
     /** Returns deployment */
-    static getDeployment(id) {
+    static getDeployment(id, isLatest) {
         return HttpClient.get(
-            `${ENDPOINT}deployments/${id}?includeDeviceStatus=true`
+            `${ENDPOINT}deployments/${id}?includeDeviceStatus=true&isLatest=${isLatest}`
         ).map(toDeploymentModel);
     }
 
@@ -112,6 +112,13 @@ export class IoTHubManagerService {
         );
     }
 
+    static getDevicesByQueryForDeployment(id, query, isLatest) {
+        return HttpClient.post(
+            `${ENDPOINT}deployments/devices/${id}?isLatest=${isLatest}`,
+            query
+        ).map(toDevicesModel);
+    }
+
     /** Create a deployment */
     static createDeployment(deploymentModel) {
         return HttpClient.post(
@@ -121,8 +128,18 @@ export class IoTHubManagerService {
     }
 
     /** Delete a deployment */
-    static deleteDeployment(id) {
-        return HttpClient.delete(`${ENDPOINT}deployments/${id}`).map(() => id);
+    static deleteDeployment(id, isDelete = true) {
+        return HttpClient.delete(
+            `${ENDPOINT}deployments/${id}?isDelete=${isDelete}`
+        ).map(() => id);
+    }
+
+    static reactivateDeployment(id) {
+        return HttpClient.put(
+            `${ENDPOINT}deployments/${id}`,
+            {},
+            { timeout: 120000 }
+        );
     }
 
     /** Returns deployments */
