@@ -81,6 +81,7 @@ jobs:
           echo "serviceName: $(serviceName)"
           echo "servicePort: $(servicePort)"
           echo "serviceProbesEnabled: $(serviceProbesEnabled)"
+          echo "appconfigurationName": $(appconfigurationName)"
         displayName: Print job variables
 
       - template: steps-deploy-individual-service.yaml
@@ -93,3 +94,18 @@ jobs:
           serviceProbesEnabled: $(serviceProbesEnabled)
           helmVersion: $(helmVersion)
           imageTag: ${{parameters.imageTag}}
+      
+      - task: AzureCLI@2
+        displayName: Update Application Configuration with BuidNumber
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          addSpnToEnvironment: true
+          scriptLocation: inlineScript
+          scriptType: bash
+          inlineScript: |-
+            set -Eeuxo pipefail
+            az appconfig kv set --key Global:BuildNumber --value $(Build.BuildId) --name $(appConfigurationName)  --yes
+
+
+
+
