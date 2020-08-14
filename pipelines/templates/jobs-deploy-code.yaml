@@ -97,7 +97,7 @@ jobs:
 
   - job: addKey
     displayName: Update Application Configuration with BuildNumber
-
+    steps:
       - task: AzureCLI@2
         inputs:
           azureSubscription: ${{parameters.subscriptionName}}
