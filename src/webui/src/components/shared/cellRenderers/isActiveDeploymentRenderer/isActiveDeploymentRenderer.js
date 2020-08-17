@@ -8,7 +8,7 @@ export const IsActiveDeploymentRenderer = ({ value, context: { t } }) => (
         {value ? (
             <div className="small-green-circle"></div>
         ) : (
-            <div className="small-red-circle"></div>
+            <div className="small-black-circle"></div>
         )}
     </div>
 );

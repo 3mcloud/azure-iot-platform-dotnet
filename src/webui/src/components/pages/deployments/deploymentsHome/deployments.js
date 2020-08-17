@@ -199,7 +199,9 @@ export class Deployments extends Component {
                                 </div>
                             }
                         >
-                            {allActiveDeployments.length}
+                            {100 -
+                                allActiveDeployments.filter((x) => x.isActive)
+                                    .length}
                         </Balloon>
                     </h1>
                     {!!error && <AjaxError t={t} error={error} />}
