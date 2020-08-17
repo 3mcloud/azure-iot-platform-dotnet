@@ -143,6 +143,11 @@ namespace Mmm.Iot.IoTHubManager.Services
 
                 model.Tags.Add(LatestTag);
             }
+            else
+            {
+                // Update the Device Statuses for the DeploymentId for future references.
+                model.DeploymentMetrics = result.DeploymentMetrics;
+            }
 
             // Store the deployment details in Cosmos DB
             await this.StoreDeploymentInSecondaryStorage(model, userId);
@@ -240,6 +245,11 @@ namespace Mmm.Iot.IoTHubManager.Services
                 if (deployment != null && deployment.DeploymentMetrics != null)
                 {
                     deployment.PackageContent = null;
+                    if (deployment.DeploymentMetrics.DeviceStatuses == null)
+                    {
+                        deployment.DeploymentMetrics.DeviceStatuses = new Dictionary<string, DeploymentStatus>();
+                    }
+
                     deployment.DeploymentMetrics.DeviceMetrics = this.CalculateDeviceMetrics(deployment.DeploymentMetrics.DeviceStatuses);
                     deployment.DeploymentMetrics.DeviceStatuses = includeDeviceStatus ? deployment.DeploymentMetrics.DeviceStatuses : null;
                 }
