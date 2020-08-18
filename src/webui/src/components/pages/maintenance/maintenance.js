@@ -12,7 +12,11 @@ import { RuleDetailsContainer } from "./ruleDetails/ruleDetails.container";
 import { JobDetailsContainer } from "./jobDetails/jobDetails.container";
 import { getIntervalParams } from "utilities";
 
-import { TelemetryService, IoTHubManagerService, IdentityGatewayService } from "services";
+import {
+    TelemetryService,
+    IoTHubManagerService,
+    IdentityGatewayService,
+} from "services";
 import { toDiagnosticsModel } from "services/models";
 
 import "./maintenance.scss";

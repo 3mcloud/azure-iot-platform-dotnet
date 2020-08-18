@@ -79,9 +79,7 @@ export class IdentityGatewayService {
     }
 
     static VerifyAndRefreshCache() {
-        HttpClient.get(
-            `${ENDPOINT}settings/LatestDeploymentDate`
-        )
+        HttpClient.get(`${ENDPOINT}settings/LatestDeploymentDate`)
             .map((setting) => setting && setting.value)
             .subscribe((value) => {
                 if (
