@@ -293,7 +293,9 @@ function addUsersAsAdminsForNewTenant(){
             $timeStamp = Get-Date -Format 'yyyy-MM-ddTHH:mm:ss.fffffffZ'
             Write-Output $user
             Write-Output $user.Name.toString()
-            if($user.Name -ne $null){
+            $row = Get-AzTableRowByPartitionKeyRowKey -Table $usersTable -PartitionKey $user.PartitionKey  -RowKey $data.tenantId
+
+            if($user.Name -ne $null -and ($row -eq $null)){
                 $result = Add-AzTableRow -table $usersTable -partitionKey $user.PartitionKey `
                         -rowKey $data.tenantId `
                         -property @{"Timestamp"=$timeStamp;"Name"=$user.Name;"Roles"='["admin"]';"Type"="Member"}
