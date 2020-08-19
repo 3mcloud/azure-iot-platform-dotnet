@@ -137,10 +137,10 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
             return await this.container.DeleteAsync(input);
         }
 
-        [HttpGet("LatestDeploymentDate")]
-        public UserSettingsModel GetLatestDeploymentDate()
+        [HttpGet("LatestBuildNumber")]
+        public UserSettingsModel GetLatestBuildNumber()
         {
-            return new UserSettingsModel() { Value = this.config.Global.BuildNumber };
+            return new UserSettingsModel() { Value = this.config.Global.BuildNumber.ToString() };
         }
 
         private string GetUserActiveDeviceGroupKey()

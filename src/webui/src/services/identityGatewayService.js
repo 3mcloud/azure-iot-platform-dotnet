@@ -79,16 +79,16 @@ export class IdentityGatewayService {
     }
 
     static VerifyAndRefreshCache() {
-        HttpClient.get(`${ENDPOINT}settings/LatestDeploymentDate`)
+        HttpClient.get(`${ENDPOINT}settings/LatestBuildNumber`)
             .map((setting) => setting && setting.value)
             .subscribe((value) => {
                 if (
-                    HttpClient.getLocalStorageValue("latestDeployedDate") !==
+                    HttpClient.getLocalStorageValue("latestBuildNumber") !==
                     value
                 ) {
                     window.location.reload(true);
                     HttpClient.setLocalStorageValue(
-                        "latestDeployedDate",
+                        "latestBuildNumber",
                         value
                     );
                 }
