@@ -87,10 +87,7 @@ export class IdentityGatewayService {
                     value
                 ) {
                     window.location.reload(true);
-                    HttpClient.setLocalStorageValue(
-                        "latestBuildNumber",
-                        value
-                    );
+                    HttpClient.setLocalStorageValue("latestBuildNumber", value);
                 }
             });
     }
