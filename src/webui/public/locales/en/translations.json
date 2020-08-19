@@ -932,7 +932,8 @@
             "delete": {
                 "contextMenuName": "Delete",
                 "title": "Delete Deployment?",
-                "info": "Deleting '{{deploymentName}}' will stop this deployment from being applied to these devices. It may result in a lower priority deployment being applied."
+                "info": "Deleting '{{deploymentName}}' will stop this deployment from being applied to these devices. It may result in a lower priority deployment being applied.",
+                "gridInfo": "Deleting selected deployment(s) will stop deployment from being applied to the devices. It may result in a lower priority deployment being applied if any"
             }
         },
         "grid": {

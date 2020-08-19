@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using Mmm.Iot.Common.Services.Models;
 using Mmm.Iot.IoTHubManager.Services;
 using Mmm.Iot.IoTHubManager.Services.Models;
 using Newtonsoft.Json;
@@ -11,8 +12,11 @@ using Newtonsoft.Json.Converters;
 
 namespace Mmm.Iot.IoTHubManager.WebService.Models
 {
-    public class DeploymentApiModel
+    public class DeploymentApiModel : AuditApiModel
     {
+        private const string LatestTag = "reserved.latest";
+        private const string InActiveTag = "reserved.inactive";
+
         public DeploymentApiModel()
         {
             this.Metadata = new Dictionary<string, string>
@@ -36,6 +40,8 @@ namespace Mmm.Iot.IoTHubManager.WebService.Models
             this.Priority = serviceModel.Priority;
             this.PackageType = serviceModel.PackageType;
             this.ConfigType = serviceModel.ConfigType;
+            this.IsActive = !(serviceModel.Tags != null && serviceModel.Tags.Contains(InActiveTag));
+            this.IsLatest = serviceModel.Tags != null && serviceModel.Tags.Contains(LatestTag);
             this.Metrics = new DeploymentMetricsApiModel(serviceModel.DeploymentMetrics)
             {
                 DeviceStatuses = serviceModel.DeploymentMetrics?.DeviceStatuses,
@@ -45,6 +51,10 @@ namespace Mmm.Iot.IoTHubManager.WebService.Models
                 { "$type", $"DevicePropertyList;1" },
                 { "$url", $"/v1/deviceproperties" },
             };
+            this.CreatedDate = serviceModel.CreatedDate;
+            this.CreatedBy = serviceModel.CreatedBy;
+            this.ModifiedDate = serviceModel.ModifiedDate;
+            this.ModifiedBy = serviceModel.ModifiedBy;
         }
 
         [JsonProperty(PropertyName = "Id")]
@@ -92,6 +102,12 @@ namespace Mmm.Iot.IoTHubManager.WebService.Models
 
         [JsonProperty(PropertyName = "DeviceIds")]
         public IEnumerable<string> DeviceIds { get; set; }
+
+        [JsonProperty("IsActive")]
+        public bool IsActive { get; set; }
+
+        [JsonProperty("IsLatest")]
+        public bool IsLatest { get; set; }
 
         public DeploymentServiceModel ToServiceModel()
         {

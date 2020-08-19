@@ -43,6 +43,8 @@ variables:
     value: ${{parameters.applicationCode}}-$(functionApp1PartialName)-${{parameters.environmentCategory}}
   - name: functionApp2Name
     value: ${{parameters.applicationCode}}-$(functionApp2PartialName)-${{parameters.environmentCategory}}
+  - name: functionApp4Name
+    value: ${{parameters.applicationCode}}-$(functionApp4PartialName)-${{parameters.environmentCategory}}
   - name: keyVaultName
     value: ${{parameters.applicationCode}}-$(keyVaultPartialName)-${{parameters.environmentCategory}}
   - name: mapsName

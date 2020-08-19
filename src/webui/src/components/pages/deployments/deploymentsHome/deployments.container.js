@@ -9,6 +9,7 @@ import {
     getDeployments,
     getDeploymentsLastUpdated,
     epics as deploymentsEpics,
+    getAllDeployments,
 } from "store/reducers/deploymentsReducer";
 import {
     redux as appRedux,
@@ -23,6 +24,7 @@ const mapStateToProps = (state) => ({
         deployments: getDeployments(state),
         lastUpdated: getDeploymentsLastUpdated(state),
         activeDeviceQueryConditions: getActiveDeviceQueryConditions(state),
+        allActiveDeployments: getAllDeployments(state),
     }),
     // Wrap the dispatch methods
     mapDispatchToProps = (dispatch) => ({

@@ -11,5 +11,7 @@ namespace Mmm.Iot.Common.Services.External.AsaManager
         Task<BeginConversionApiModel> BeginRulesConversionAsync();
 
         Task<BeginConversionApiModel> BeginDeviceGroupsConversionAsync();
+
+        Task<BeginConversionApiModel> BeginJobDelayDeviceGroupsConversionAsync(string jobId);
     }
 }

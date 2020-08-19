@@ -930,7 +930,8 @@
       "delete": {
         "contextMenuName": "Xóa",
         "title": "Rõ Ràng Triển Khai?",
-        "info": "Xóa '{{deploymentName}}' sẽ dừng lại triển khai này được áp dụng cho các thiết bị này. Nó có thể dẫn đến một ưu tiên hơn triển khai đang được áp dụng."
+        "info": "Xóa '{{deploymentName}}' sẽ dừng lại triển khai này được áp dụng cho các thiết bị này. Nó có thể dẫn đến một ưu tiên hơn triển khai đang được áp dụng.",
+        "gridInfo": "Deleting selected deployment(s) will stop deployment from being applied to the devices. It may result in a lower priority deployment being applied if any"
       }
     },
     "grid": {

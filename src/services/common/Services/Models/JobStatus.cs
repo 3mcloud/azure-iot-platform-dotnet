@@ -2,7 +2,7 @@
 // Copyright (c) 3M. All rights reserved.
 // </copyright>
 
-namespace Mmm.Iot.IoTHubManager.Services.Models
+namespace Mmm.Iot.Common.Services.Models
 {
     public enum JobStatus
     {

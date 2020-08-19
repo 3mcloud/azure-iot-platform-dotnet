@@ -5,11 +5,12 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Azure.Devices;
+using Mmm.Iot.Common.Services.Models;
 using Mmm.Iot.IoTHubManager.Services.Helpers;
 
 namespace Mmm.Iot.IoTHubManager.Services.Models
 {
-    public class DeploymentServiceModel
+    public class DeploymentServiceModel : Audit
     {
         public DeploymentServiceModel(Configuration deployment)
         {
@@ -91,6 +92,12 @@ namespace Mmm.Iot.IoTHubManager.Services.Models
         public string ConfigType { get; set; }
 
         public IEnumerable<string> DeviceIds { get; set; }
+
+        public IList<string> Tags { get; set; }
+
+        public string ETag { get; set; }
+
+        public string TargetCondition { get; set; }
 
         private void VerifyConfigurationLabel(Configuration deployment, string labelName)
         {

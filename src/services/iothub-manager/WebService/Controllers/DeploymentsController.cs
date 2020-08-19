@@ -88,21 +88,35 @@ namespace Mmm.Iot.IoTHubManager.WebService.Controllers
         [Authorize("ReadAll")]
         public async Task<DeploymentListApiModel> GetAsync()
         {
-            return new DeploymentListApiModel(await this.deployments.ListAsync());
+            return new DeploymentListApiModel(await this.deployments.ListFromStorageAsync());
         }
 
         [HttpGet("{id}")]
         [Authorize("ReadAll")]
-        public async Task<DeploymentApiModel> GetAsync(string id, [FromQuery] bool includeDeviceStatus = false)
+        public async Task<DeploymentApiModel> GetAsync(string id, [FromQuery] bool includeDeviceStatus = false, [FromQuery] bool isLatest = true)
         {
-            return new DeploymentApiModel(await this.deployments.GetAsync(id, includeDeviceStatus));
+            return new DeploymentApiModel(await this.deployments.GetAsync(id, includeDeviceStatus, isLatest));
         }
 
         [HttpDelete("{id}")]
         [Authorize("DeleteDeployments")]
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(string id, [FromQuery] bool isDelete = true)
         {
-            await this.deployments.DeleteAsync(id, this.GetClaimsUserDetails(), this.GetTenantId());
+            await this.deployments.DeleteAsync(id, this.GetClaimsUserDetails(), this.GetTenantId(), isDelete);
+        }
+
+        [HttpPut("{id}")]
+        [Authorize("CreateDeployments")]
+        public async Task ReactivateAsync(string id)
+        {
+            await this.deployments.ReactivateDeploymentAsyc(id, this.GetClaimsUserDetails(), this.GetTenantId());
+        }
+
+        [HttpPost("Devices/{id}")]
+        [Authorize("ReadAll")]
+        public async Task<DeviceListApiModel> GetDeploymentImpactedDevices(string id, [FromBody] string query, [FromQuery] bool isLatest = false)
+        {
+            return new DeviceListApiModel(await this.deployments.GetDeviceListAsync(id, query, isLatest));
         }
 
         private async Task HydrateDeploymentWithPackageDetails(DeploymentApiModel deployment)

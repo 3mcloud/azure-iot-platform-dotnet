@@ -1,5 +1,3 @@
-[![Build Status](https://dev.azure.com/3M-Bluebird/AzurePlatform/_apis/build/status/serenity/build/test-pr?branchName=master)](https://dev.azure.com/3M-Bluebird/AzurePlatform/_build/latest?definitionId=198&branchName=master)
-
 # Overview
 ![Demo of Platform](./img/demo_shot.PNG)
 
