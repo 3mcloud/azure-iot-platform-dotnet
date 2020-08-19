@@ -95,6 +95,8 @@ variables:
     value: dependenciesReport
   - name: commitsSinceLastReleaseArtifactName
     value: commitsSinceLastRelease
+  - name: testResultFileExists
+    value: false
 resources:
   repositories:
     - repository: azure-iot-functional-tests
@@ -664,12 +666,24 @@ stages:
 
           - task: DotNetCoreCLI@2
             displayName: Run functional tests
+            continueOnError: true
             inputs:
               command: test
               arguments: >-
                 --configuration $(dotnetBuildConfiguration)
                 --logger trx
                 --filter 'Category!=Flaky'
+
+          - bash: |
+              if [ -d $(System.DefaultWorkingDirectory)/src/bin/$(dotnetBuildConfiguration)/netcoreapp$(dotnetCoreRuntimeVersion)/screenshots ]; then
+                echo "##vso[task.setvariable variable=testResultFileExists]true"
+              fi
+
+          - publish: $(System.DefaultWorkingDirectory)/src/bin/$(dotnetBuildConfiguration)/netcoreapp$(dotnetCoreRuntimeVersion)/screenshots
+            artifact: UITestScreenshots
+            displayName: Publish UI Test screenshots artifacts
+            condition: eq(variables.testResultFileExists, 'true')
+            continueOnError: true
 
   - stage: enumerateDependencies
     displayName: Enumerate dependencies

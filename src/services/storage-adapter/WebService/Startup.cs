@@ -5,13 +5,16 @@
 using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Mmm.Iot.Common.Services.AIPreprocessors;
 using Mmm.Iot.Common.Services.Auth;
+using Mmm.Iot.Common.Services.Config;
 
 namespace Mmm.Iot.StorageAdapter.WebService
 {
@@ -32,6 +35,11 @@ namespace Mmm.Iot.StorageAdapter.WebService
             {
                 c.SwaggerDoc($"v1", new OpenApiInfo { Title = "Storage Adapter API", Version = "v1" });
             });
+
+            var applicationInsightsOptions = new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions();
+            applicationInsightsOptions.EnableAdaptiveSampling = false;
+            services.AddApplicationInsightsTelemetry(applicationInsightsOptions);
+            services.AddApplicationInsightsTelemetryProcessor<HealthProbeTelemetryProcessor>();
             services.AddMvc().AddControllersAsServices().AddNewtonsoftJson();
             services.AddHttpContextAccessor();
             this.ApplicationContainer = new DependencyResolution().Setup(services, this.Configuration);
@@ -41,7 +49,8 @@ namespace Mmm.Iot.StorageAdapter.WebService
         public void Configure(
             IApplicationBuilder app,
             IWebHostEnvironment env,
-            IHostApplicationLifetime appLifetime)
+            IHostApplicationLifetime appLifetime,
+            AppConfig config)
         {
             app.UseRouting();
             app.UseSwagger();
@@ -50,12 +59,25 @@ namespace Mmm.Iot.StorageAdapter.WebService
                 c.SwaggerEndpoint("./swagger/v1/swagger.json", "V1");
                 c.RoutePrefix = string.Empty;
             });
+
+            SetupTelemetry(app, config);
             app.UseMiddleware<ClientToClientAuthMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
+        }
+
+        private static void SetupTelemetry(IApplicationBuilder app, AppConfig config)
+        {
+            var configuration = app.ApplicationServices.GetService<TelemetryConfiguration>();
+            var builder = configuration.DefaultTelemetrySink.TelemetryProcessorChainBuilder;
+
+            // Using fixed rate sampling
+            double fixedSamplingPercentage = config.Global.FixedSamplingPercentage == 0 ? 10 : config.Global.FixedSamplingPercentage;
+            builder.UseSampling(fixedSamplingPercentage);
+            builder.Build();
         }
     }
 }

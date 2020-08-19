@@ -930,7 +930,8 @@
       "delete": {
         "contextMenuName": "हटाना",
         "title": "हटाने तैनाती?",
-        "info": "हटाने '{{deploymentName}}' बंद हो जाएगा इस तैनाती से लागू किया जा रहा करने के लिए इन उपकरणों । यह परिणाम हो सकता है में एक कम प्राथमिकता तैनाती लागू किया जा रहा है."
+        "info": "हटाने '{{deploymentName}}' बंद हो जाएगा इस तैनाती से लागू किया जा रहा करने के लिए इन उपकरणों । यह परिणाम हो सकता है में एक कम प्राथमिकता तैनाती लागू किया जा रहा है.",
+        "gridInfo": "Deleting selected deployment(s) will stop deployment from being applied to the devices. It may result in a lower priority deployment being applied if any"
       }
     },
     "grid": {

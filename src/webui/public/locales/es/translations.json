@@ -930,7 +930,8 @@
       "delete": {
         "contextMenuName": "Eliminar",
         "title": "Eliminar De La Implementación?",
-        "info": "Borrar '{{deploymentName}}' dejará de este despliegue de ser aplicado a estos dispositivos. Puede resultar en una baja prioridad a la implementación de ser aplicados."
+        "info": "Borrar '{{deploymentName}}' dejará de este despliegue de ser aplicado a estos dispositivos. Puede resultar en una baja prioridad a la implementación de ser aplicados.",
+        "gridInfo": "Deleting selected deployment(s) will stop deployment from being applied to the devices. It may result in a lower priority deployment being applied if any"
       }
     },
     "grid": {

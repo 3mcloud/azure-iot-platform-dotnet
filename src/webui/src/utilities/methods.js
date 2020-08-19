@@ -220,6 +220,7 @@ export const formatConditions = (rule) => {
 
 /** The default formatting for dates */
 export const DEFAULT_TIME_FORMAT = "hh:mm:ss A MM.DD.YYYY";
+export const DEFAULT_DATE_FORMAT = "MM.DD.YYYY";
 
 // Helper to format time in displayable format
 export const formatTime = (value) => {
@@ -227,6 +228,16 @@ export const formatTime = (value) => {
         const time = moment.utc(value).local();
         return time.unix() > 0
             ? time.format(DEFAULT_TIME_FORMAT)
+            : "" || Config.emptyFieldValue;
+    }
+    return value;
+};
+
+export const formatDate = (value) => {
+    if (value) {
+        const time = moment.utc(value).local();
+        return time.unix() > 0
+            ? time.format(DEFAULT_DATE_FORMAT)
             : "" || Config.emptyFieldValue;
     }
     return value;

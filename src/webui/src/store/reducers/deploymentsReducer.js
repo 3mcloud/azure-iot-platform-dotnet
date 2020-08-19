@@ -55,7 +55,10 @@ export const epics = createEpicScenario({
     fetchDeployment: {
         type: "DEPLOYMENT_DETAILS_FETCH",
         epic: (fromAction) =>
-            IoTHubManagerService.getDeployment(fromAction.payload)
+            IoTHubManagerService.getDeployment(
+                fromAction.payload.id,
+                fromAction.payload.isLatest
+            )
                 .flatMap((response) => [
                     toActionCreator(
                         redux.actions.updateDeployment,
@@ -73,8 +76,12 @@ export const epics = createEpicScenario({
                 fromAction.payload.packageType ===
                 packagesEnum.deviceConfiguration
             ) {
-                return IoTHubManagerService.getDevicesByQuery(
-                    createDevicesQuery(getDeployedDeviceIds(fromAction.payload))
+                return IoTHubManagerService.getDevicesByQueryForDeployment(
+                    fromAction.payload.id,
+                    createDevicesQuery(
+                        getDeployedDeviceIds(fromAction.payload)
+                    ),
+                    fromAction.payload.isLatest
                 )
                     .map(
                         toActionCreator(
@@ -123,6 +130,18 @@ export const epics = createEpicScenario({
                 )
                 .catch(handleError(fromAction)),
     },
+    reactivateDeployment: {
+        type: "DEPLOYMENTS_REACTIVATE",
+        epic: (fromAction) =>
+            IoTHubManagerService.reactivateDeployment(fromAction.payload)
+                .map(
+                    toActionCreator(
+                        redux.actions.reactivateDeployment,
+                        fromAction
+                    )
+                )
+                .catch(handleError(fromAction)),
+    },
 });
 // ========================= Epics - END
 
@@ -154,6 +173,14 @@ const deploymentSchema = new schema.Entity("deployments"),
         });
     },
     deleteDeploymentReducer = (state, { fromAction }) => {
+        const idx = state.items.indexOf(fromAction.payload);
+        return update(state, {
+            entities: { deployments: { $unset: [fromAction.payload] } },
+            items: { $splice: [[idx, 1]] },
+            ...setPending(fromAction.type, false),
+        });
+    },
+    reactivateDeploymentReducer = (state, { fromAction }) => {
         const idx = state.items.indexOf(fromAction.payload);
         return update(state, {
             entities: { deployments: { $unset: [fromAction.payload] } },
@@ -246,6 +273,7 @@ const deploymentSchema = new schema.Entity("deployments"),
         epics.actionTypes.createDeployment,
         epics.actionTypes.deleteDeployment,
         epics.actionTypes.fetchDeployedDevices,
+        epics.actionTypes.reactivateDeployment,
     ];
 
 export const redux = createReducerScenario({
@@ -256,6 +284,10 @@ export const redux = createReducerScenario({
     deleteDeployment: {
         type: "DEPLOYMENTS_DELETE",
         reducer: deleteDeploymentReducer,
+    },
+    reactivateDeployment: {
+        type: "DEPLOYMENTS_REACTIVATE",
+        reducer: reactivateDeploymentReducer,
     },
     updateDeployments: {
         type: "DEPLOYMENTS_UPDATE",
@@ -318,6 +350,17 @@ export const getDeleteDeploymentPendingStatus = (state) =>
         getDeploymentsReducer(state),
         epics.actionTypes.deleteDeployment
     );
+
+export const getReactivateDeploymentError = (state) =>
+    getError(
+        getDeploymentsReducer(state),
+        epics.actionTypes.reactivateDeployment
+    );
+export const getReactivateDeploymentPendingStatus = (state) =>
+    getPending(
+        getDeploymentsReducer(state),
+        epics.actionTypes.reactivateDeployment
+    );
 export const getDeployments = createSelector(
     getDeploymentsEntities,
     getItems,
@@ -334,6 +377,15 @@ export const getDeployments = createSelector(
                 !activeDeviceGroup
                 ? [...acc, deployment]
                 : acc;
+        }, [])
+);
+export const getAllDeployments = createSelector(
+    getDeploymentsEntities,
+    getItems,
+    (deployments, items) =>
+        items.reduce((acc, id) => {
+            const deployment = deployments[id];
+            return deployment ? [...acc, deployment] : acc;
         }, [])
 );
 export const getCurrentDeploymentDetails = (state) =>

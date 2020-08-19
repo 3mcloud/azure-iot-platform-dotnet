@@ -150,14 +150,19 @@ export class Dashboard extends Component {
                                 ...previousIntervalParams,
                                 devices,
                             };
+                        if (this.props.alerting.isActive) {
+                            return Observable.forkJoin(
+                                TelemetryService.getActiveAlerts(currentParams),
+                                TelemetryService.getActiveAlerts(
+                                    previousParams
+                                ),
 
-                        return Observable.forkJoin(
-                            TelemetryService.getActiveAlerts(currentParams),
-                            TelemetryService.getActiveAlerts(previousParams),
-
-                            TelemetryService.getAlerts(currentParams),
-                            TelemetryService.getAlerts(previousParams)
-                        );
+                                TelemetryService.getAlerts(currentParams),
+                                TelemetryService.getAlerts(previousParams)
+                            );
+                        } else {
+                            return Observable.forkJoin([], [], [], []);
+                        }
                     })
                     .map(
                         ([
