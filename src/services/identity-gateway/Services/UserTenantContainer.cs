@@ -155,7 +155,7 @@ namespace Mmm.Iot.IdentityGateway.Services
             return new UserListModel("GetAllUsers", allUsers);
         }
 
-        public async Task<TenantListModel> GetAllActiveTenantAsync()
+        public virtual async Task<TenantListModel> GetAllActiveTenantAsync()
         {
             try
             {
