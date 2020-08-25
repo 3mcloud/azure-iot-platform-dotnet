@@ -963,6 +963,71 @@ jobs:
                 "SendGridApiKey"="$sendGridApiKey" \
                 "ActionsEventHubConsumerGroup"="alertingactions" \
               --resource-group $(resourceGroupName)
+  - job: function4
+    displayName: Create azure iot Deployment Function
+    dependsOn:
+      - appInsights
+      - storageAccount
+      - populateKeyVault
+    variables:
+      - template: variables-deploy-infra.yaml
+        parameters:
+          subscriptionName: ${{parameters.subscriptionName}}
+          locationName: ${{parameters.locationName}}
+          environmentName: ${{parameters.environmentName}}
+          subscriptionId: ${{parameters.subscriptionId}}
+          applicationCode: ${{parameters.applicationCode}}
+          applicationShortCode: ${{parameters.applicationShortCode}}
+          environmentCategory: ${{parameters.environmentCategory}}
+    steps:
+      - checkout: self
+        displayName: Checkout repository
+
+      - template: apply-arm-tags.yaml
+        parameters:
+          environment: ${{parameters.environmentName}}
+
+      - task: AzureResourceGroupDeployment@2
+        displayName: Create IOT Deployment Azure Function
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          action: Create Or Update Resource Group
+          resourceGroupName: $(resourceGroupName)
+          location: ${{parameters.locationName}}
+          templateLocation: Linked artifact
+          csmFile: $(armTemplatesDirectory)/functions.json
+          csmParametersFile: $(armParametersDirectory)/functions.json
+          overrideParameters: -functionAppName $(functionApp4Name) -appInsightsLocation ${{parameters.appInsightsLocation}} -appInsightsName $(appInsightsName) -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
+          deploymentMode: Incremental
+          deploymentName: $(functionApp4PartialName)-$(Build.BuildId)
+          addSpnToEnvironment: true
+
+      - template: steps-delete-oldest-deployment.yaml
+        parameters:
+          subscriptionName: ${{parameters.subscriptionName}}
+          deploymentPartialName: $(functionApp4PartialName)
+          resourceGroupName: $(resourceGroupName)
+
+      - task: AzureCLI@2
+        displayName: Set app settings for Deployment Sync function
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          scriptLocation: inlineScript
+          scriptType: bash
+          inlineScript: |-
+            functionName=$(functionApp4Name)
+            cosmosDbConn=$(az keyvault secret show --name "Global--CosmosDb--DocumentDbConnectionString" --vault-name $(keyVaultName) | grep value | awk -F '\"' '{print $4}')
+            appConfigurationConnectionString=$(az appconfig credential list --name $(appConfigurationName) -g $(resourceGroupName) | jq -r .[0].connectionString)
+            blobStorageKey=$(az storage account keys list -g $(resourceGroupName) -n $(storageAccountName) --query "[?contains(keyName, 'key1')]".value --output tsv)
+            blobStorageConnString="DefaultEndpointsProtocol=https;AccountName=$(storageAccountName);AccountKey=$blobStorageKey;EndpointSuffix=core.windows.net"
+            az functionapp config appsettings set --name $functionName \
+              --settings \
+                "CosmosDbConnectionString"="$cosmosDbConn" \
+                "AppConfigurationConnectionString"="$appConfigurationConnectionString" \
+                "TableStorageConnectionString"="$blobStorageConnString" \
+                "AzureStorageConnectionString"="$blobStorageConnString" \
+                "DeploymentsDatabaseId"="pcs-storage" \
+              --resource-group $(resourceGroupName)
 
   - job: automationAccount
     displayName: Provision Azure Automation and Sendgrid accounts

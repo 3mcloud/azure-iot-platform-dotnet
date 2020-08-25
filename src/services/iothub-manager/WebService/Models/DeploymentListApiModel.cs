@@ -22,7 +22,7 @@ namespace Mmm.Iot.IoTHubManager.WebService.Models
         public DeploymentListApiModel(DeploymentServiceListModel deployments)
         {
             this.Items = new List<DeploymentApiModel>();
-            deployments.Items.ForEach(deployment => this.Items.Add(new DeploymentApiModel(deployment)));
+            deployments.Items?.ForEach(deployment => this.Items.Add(new DeploymentApiModel(deployment)));
 
             this.Metadata = new Dictionary<string, string>
             {

@@ -9,8 +9,11 @@ using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Devices;
+using Microsoft.Azure.Devices.Shared;
+using Microsoft.Azure.Documents;
 using Microsoft.Extensions.Logging;
 using Mmm.Iot.Common.Services.Config;
+using Mmm.Iot.Common.Services.External.StorageAdapter;
 using Mmm.Iot.Common.Services.Helpers;
 using Mmm.Iot.Common.Services.Models;
 using Mmm.Iot.Common.TestHelpers;
@@ -18,6 +21,7 @@ using Mmm.Iot.IoTHubManager.Services.External;
 using Mmm.Iot.IoTHubManager.Services.Helpers;
 using Mmm.Iot.IoTHubManager.Services.Models;
 using Moq;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Mmm.Iot.IoTHubManager.Services.Test
@@ -165,6 +169,8 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
         private readonly string ioTHubHostName = "mockIoTHub";
         private Mock<ITenantConnectionHelper> tenantHelper;
         private Mock<IConfigClient> packageConfigClient;
+        private Mock<IStorageAdapterClient> storageAdapterClient;
+        private Mock<IDevices> devices;
         private string packageTypeLabel = "Type";
 
         public DeploymentsTest()
@@ -172,9 +178,11 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
             this.registry = new Mock<RegistryManager>();
             this.tenantHelper = new Mock<ITenantConnectionHelper>();
             this.packageConfigClient = new Mock<IConfigClient>();
+            this.storageAdapterClient = new Mock<IStorageAdapterClient>();
             this.tenantHelper.Setup(e => e.GetIotHubName()).Returns(this.ioTHubHostName);
             this.tenantHelper.Setup(e => e.GetRegistry()).Returns(this.registry.Object);
             TelemetryClient mockTelemetryClient = this.InitializeMockTelemetryChannel();
+            this.devices = new Mock<IDevices>();
 
             MockIdentity.MockClaims("one");
             this.deployments = new Deployments(
@@ -188,7 +196,9 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
                 new Mock<ILogger<Deployments>>().Object,
                 new Mock<IDeploymentEventLog>().Object,
                 this.tenantHelper.Object,
-                this.packageConfigClient.Object);
+                this.packageConfigClient.Object,
+                this.storageAdapterClient.Object,
+                this.devices.Object);
         }
 
         [Theory]
@@ -221,6 +231,18 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
             var userId = "testUser";
             var tenantId = "testTenat";
 
+            var existingConfig = new Configuration("test-config1")
+            {
+                Labels = new Dictionary<string, string>()
+                {
+                    { DeploymentNameLabel, deploymentName },
+                    { this.packageTypeLabel, PackageType.EdgeManifest.ToString() },
+                    { DeploymentGroupIdLabel, deviceGroupId },
+                    { RmCreatedLabel, bool.TrueString },
+                },
+                Priority = priority,
+            };
+
             var newConfig = new Configuration("test-config")
             {
                 Labels = new Dictionary<string, string>()
@@ -242,6 +264,31 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
                     c.Labels[RmCreatedLabel] == bool.TrueString)))
                 .ReturnsAsync(newConfig);
 
+            this.registry.Setup(r => r.CreateQuery(It.IsAny<string>())).Returns(new ResultQuery(0));
+
+            this.registry.Setup(r => r.GetConfigurationAsync(It.IsAny<string>())).ReturnsAsync(existingConfig);
+
+            this.tenantHelper.Setup(e => e.GetRegistry()).Returns(this.registry.Object);
+
+            this.storageAdapterClient.Setup(s => s.UpdateAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>())).ReturnsAsync(new ValueApiModel());
+
+            this.storageAdapterClient.Setup(s => s.CreateAsync(
+            It.IsAny<string>(),
+            It.IsAny<string>())).ReturnsAsync(new ValueApiModel());
+
+            var deploymentStorageData = this.CreateDeploymentStorageData(0);
+            this.storageAdapterClient.Setup(r => r.GetAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(deploymentStorageData);
+
+            this.devices.Setup(d => d.GetListAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new DeviceServiceListModel(new List<DeviceServiceModel>()));
+
+            var configurations = new List<Configuration>();
+            configurations.Add(existingConfig);
+
+            this.registry.Setup(r => r.GetConfigurationsAsync(100)).ReturnsAsync(configurations);
             this.tenantHelper.Setup(e => e.GetRegistry()).Returns(this.registry.Object);
 
             // Act
@@ -309,6 +356,36 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
             }
         }
 
+        [Theory]
+        [Trait(Constants.Type, Constants.UnitTest)]
+        [InlineData(1)]
+        public async Task GetDeploymentsFromStorageTest(int numDeployments)
+        {
+            // Arrange
+            var configurations = new List<Configuration>();
+            this.registry.Setup(r => r.GetConfigurationsAsync(100)).ReturnsAsync(configurations);
+            this.tenantHelper.Setup(e => e.GetRegistry()).Returns(this.registry.Object);
+
+            var storageData = new List<ValueApiModel>();
+            for (int i = numDeployments - 1; i >= 0; i--)
+            {
+                storageData.Add(this.CreateDeploymentStorageData(i));
+            }
+
+            this.storageAdapterClient.Setup(r => r.GetAllAsync(It.IsAny<string>())).ReturnsAsync(new ValueListApiModel() { Items = storageData });
+
+            // Act
+            var returnedDeployments = await this.deployments.ListFromStorageAsync();
+
+            // Assert
+            Assert.Equal(numDeployments, returnedDeployments.Items.Count);
+
+            for (int i = 0; i < numDeployments; i++)
+            {
+                Assert.True(returnedDeployments.Items.Exists(item => item.Name == $"deployment{i}"));
+            }
+        }
+
         [Fact]
         [Trait(Constants.Type, Constants.UnitTest)]
         public async Task GetDeploymentsWithDeviceStatusTest()
@@ -323,6 +400,9 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
 
             this.tenantHelper.Setup(e => e.GetRegistry()).Returns(this.registry.Object);
 
+            var deploymentStorageData = this.CreateDeploymentStorageData(0);
+            this.storageAdapterClient.Setup(r => r.GetAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(deploymentStorageData);
+
             // Act
             var returnedDeployment = await this.deployments.GetAsync(deploymentId, true);
             var deviceStatuses = returnedDeployment.DeploymentMetrics.DeviceStatuses;
@@ -332,6 +412,14 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
             returnedDeployment = await this.deployments.GetAsync(deploymentId);
             deviceStatuses = returnedDeployment.DeploymentMetrics.DeviceStatuses;
             Assert.Null(deviceStatuses);
+
+            returnedDeployment = await this.deployments.GetAsync("deployment0", false, false);
+            deviceStatuses = returnedDeployment.DeploymentMetrics.DeviceStatuses;
+            Assert.Null(deviceStatuses);
+
+            returnedDeployment = await this.deployments.GetAsync("deployment0", true, false);
+            deviceStatuses = returnedDeployment.DeploymentMetrics.DeviceStatuses;
+            Assert.NotNull(deviceStatuses);
         }
 
         [Theory]
@@ -408,7 +496,6 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
 
         [Theory]
         [Trait(Constants.Type, Constants.UnitTest)]
-        [InlineData(true)]
         [InlineData(false)]
         public async Task GetDeploymentMetricsTest(bool isEdgeDeployment)
         {
@@ -441,10 +528,17 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
             this.registry.Setup(r => r.CreateQuery(It.IsAny<string>())).Returns(new ResultQuery(0));
             this.tenantHelper.Setup(e => e.GetRegistry()).Returns(this.registry.Object);
 
+            var deploymentStorageData = this.CreateDeploymentStorageData(0);
+            this.storageAdapterClient.Setup(r => r.GetAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(deploymentStorageData);
+
             // Act
             var returnedDeployment = await this.deployments.GetAsync(deploymentId);
 
             // Assert Should return Deplyment metrics according to label
+            Assert.NotNull(returnedDeployment.DeploymentMetrics.DeviceMetrics);
+            Assert.Equal(3, returnedDeployment.DeploymentMetrics.DeviceMetrics.Count());
+
+            returnedDeployment = await this.deployments.GetAsync("deployment0", false, false);
             Assert.NotNull(returnedDeployment.DeploymentMetrics.DeviceMetrics);
             Assert.Equal(3, returnedDeployment.DeploymentMetrics.DeviceMetrics.Count());
         }
@@ -611,6 +705,37 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
             }
 
             return conf;
+        }
+
+        private ValueApiModel CreateDeploymentStorageData(int idx)
+        {
+            // Arrange
+            var deviceGroupId = "dvcGroupId";
+            var deviceGroupName = "dvcGroupName";
+            var deviceGroupQuery = "dvcGroupQuery";
+            var packageName = "packageName";
+            var deploymentName = "deployment";
+            var priority = 10;
+            var userid = "testUser";
+
+            var deployment = new DeploymentServiceModel()
+            {
+                Name = deploymentName + idx,
+                DeviceGroupId = deviceGroupId,
+                DeviceGroupName = deviceGroupName,
+                DeviceGroupQuery = deviceGroupQuery,
+                PackageContent = TestEdgePackageJson,
+                PackageName = packageName,
+                Priority = priority,
+                CreatedBy = userid,
+                CreatedDateTimeUtc = DateTime.UtcNow,
+                CreatedDateTime = DateTime.UtcNow,
+                DeploymentMetrics = new DeploymentMetricsServiceModel() { DeviceStatuses = new Dictionary<string, DeploymentStatus> { { "device1", DeploymentStatus.Pending } } },
+            };
+            var jsonValue = JsonConvert.SerializeObject(deployment);
+            ValueApiModel value = new ValueApiModel() { Key = idx.ToString(), Data = jsonValue };
+
+            return value;
         }
     }
 }

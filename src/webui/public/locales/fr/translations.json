@@ -930,7 +930,8 @@
       "delete": {
         "contextMenuName": "Supprimer",
         "title": "Supprimer Le Déploiement?",
-        "info": "La suppression de '{{deploymentName}}' arrêtera ce déploiement de ces dispositifs. Il peut en résulter une moindre priorité de déploiement d'être appliquée."
+        "info": "La suppression de '{{deploymentName}}' arrêtera ce déploiement de ces dispositifs. Il peut en résulter une moindre priorité de déploiement d'être appliquée.",
+        "gridInfo": "Deleting selected deployment(s) will stop deployment from being applied to the devices. It may result in a lower priority deployment being applied if any"
       }
     },
     "grid": {

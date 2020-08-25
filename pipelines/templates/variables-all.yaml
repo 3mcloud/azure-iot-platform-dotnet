@@ -15,6 +15,7 @@ variables:
   eventHubPartialName: eventhub
   functionApp1PartialName: devicetwinfuncapp
   functionApp2PartialName: appconfigfuncapp
+  functionApp4PartialName: iotdeploymentfuncapp
   keyVaultPartialName: keyvault
   mapsPartialName: maps
   omsWorkspacePartialName: loganalyticsws

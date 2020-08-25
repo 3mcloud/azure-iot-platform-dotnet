@@ -17,6 +17,10 @@ namespace Mmm.Iot.IoTHubManager.Services.Models
             this.CustomMetrics = customMetrics?.Results;
         }
 
+        public DeploymentMetricsServiceModel()
+        {
+        }
+
         public IDictionary<string, long> SystemMetrics { get; set; }
 
         public IDictionary<string, long> CustomMetrics { get; set; }

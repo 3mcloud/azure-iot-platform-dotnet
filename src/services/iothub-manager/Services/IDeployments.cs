@@ -14,12 +14,18 @@ namespace Mmm.Iot.IoTHubManager.Services
 
         Task<DeploymentServiceListModel> ListAsync();
 
-        Task<DeploymentServiceModel> GetAsync(string id, bool includeDeviceStatus);
+        Task<DeploymentServiceListModel> ListFromStorageAsync();
 
-        Task DeleteAsync(string deploymentId, string userId, string tenantId);
+        Task<DeploymentServiceModel> GetAsync(string id, bool includeDeviceStatus, bool isLatest);
+
+        Task DeleteAsync(string deploymentId, string userId, string tenantId, bool isDelete);
 
         Task<PackageApiModel> GetPackageAsync(string packageId);
 
         Task<DeviceGroup> GetDeviceGroupAsync(string deviceGroupId);
+
+        Task ReactivateDeploymentAsyc(string deploymentId, string userId, string tenantId);
+
+        Task<DeviceServiceListModel> GetDeviceListAsync(string deploymentId, string query, bool isLatest);
     }
 }
