@@ -1,9 +1,5 @@
 trigger: none
-pr:
-  autoCancel: true
-  branches:
-    include:
-    - master
+
 schedules:
   - cron: 0 6 * * *
     displayName: Daily midnight (CST) build
