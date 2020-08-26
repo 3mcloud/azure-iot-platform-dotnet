@@ -1,8 +1,4 @@
-trigger:
-  batch: true
-  branches:
-    include:
-      - master
+trigger: none
 pr:
   autoCancel: true
   branches:
@@ -22,9 +18,9 @@ variables:
   - name: buildId
     value: build-$(Build.BuildId)
   - name: applicationCode
-    value: crsliot
+    value: ggktech
   - name: applicationShortCode
-    value: crsl
+    value: ggk
   - name: environmentCategory
     value: dev
   - name: subscriptionName
@@ -70,7 +66,7 @@ variables:
   - name: mmmIotPlatformIngressHelmChartReleaseName
     value: ingress-$(buildId)
   - name: serenityDevTenantId
-    value: 233a1ca2-6855-43c5-8b9c-c7f85a1dd520
+    value: 6ce336d3-a508-4cb5-bc41-32b0ab05b346
   - name: testPipelineDomain
     value: iot.cld.3m.com
   - name: testPipelineFqdn
@@ -97,6 +93,16 @@ variables:
     value: commitsSinceLastRelease
   - name: testResultFileExists
     value: false
+  - name: testAccountAdmin
+    value: a05e1a04-31bf-4219-9c1b-b7fa7bfedbfc
+  - name: testAccountUser
+    value: 9745b86e-c1b1-481a-8628-7db8dfaeedf6
+  - name: testAccountSysAdmin
+    value: b013febd-466d-4694-8f0d-c151ad32023b
+  - name: usersTableName
+    value: user
+  - name: sysAdminTableName
+    value: SystemAdmin    
 resources:
   repositories:
     - repository: azure-iot-functional-tests
