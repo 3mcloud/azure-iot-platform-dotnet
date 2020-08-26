@@ -210,7 +210,7 @@ stages:
               Write-Output "previousReleaseTag: $previousReleaseTag"
               Write-Output 'Build.SourceVersion: $(Build.SourceVersion)'
               git log --oneline --no-decorate --topo-order ^$previousReleaseTag $(Build.SourceVersion) |
-                Tee-Object $logFilePath -Append
+                Tee-Object $logFilePath -Append 
 
             displayName: List commits since last release
 
