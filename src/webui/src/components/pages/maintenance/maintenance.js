@@ -315,9 +315,10 @@ export class Maintenance extends Component {
                 <Route
                     exact
                     path={"/maintenance/:path(notifications|jobs)"}
-                    render={() => (
+                    render={(routeProps) => (
                         <SummaryContainer
                             {...generalProps}
+                            {...routeProps}
                             criticalAlertCount={criticalAlertCount}
                             warningAlertCount={warningAlertCount}
                             alertCount={alertCount}

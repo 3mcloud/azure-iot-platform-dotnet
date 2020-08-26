@@ -24,12 +24,33 @@ import {
     StatGroup,
     StatProperty,
 } from "components/shared";
-import { svgs, renderUndefined } from "utilities";
+import { svgs, renderUndefined, getDeviceGroupParam } from "utilities";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
 
 import "./summary.scss";
 
 export class Summary extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedDeviceGroupId: undefined,
+        }
+    }
+
+    componentWillMount() {
+        if(this.props.location.search)
+        {
+            this.setState({selectedDeviceGroupId: getDeviceGroupParam(this.props.location.search)});
+        }
+    }
+
+    componentDidMount() {
+        if(this.state.selectedDeviceGroupId)
+        {
+            window.history.replaceState({}, document.title, this.props.location.pathname);
+        }
+    }
+
     tabClickHandler = (tabName) => {
         this.props.logEvent(toDiagnosticsModel(tabName + "_Click", {}));
     };
@@ -39,7 +60,7 @@ export class Summary extends Component {
             <ComponentArray>
                 <ContextMenu>
                     <ContextMenuAlign left={true}>
-                        <DeviceGroupDropdown />
+                        <DeviceGroupDropdown deviceGroupIdFromUrl={this.state.selectedDeviceGroupId} />
                         <Protected permission={permissions.updateDeviceGroups}>
                             <ManageDeviceGroupsBtn />
                         </Protected>
