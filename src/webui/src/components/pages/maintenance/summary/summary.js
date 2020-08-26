@@ -34,20 +34,26 @@ export class Summary extends Component {
         super(props);
         this.state = {
             selectedDeviceGroupId: undefined,
-        }
+        };
     }
 
     componentWillMount() {
-        if(this.props.location.search)
-        {
-            this.setState({selectedDeviceGroupId: getDeviceGroupParam(this.props.location.search)});
+        if (this.props.location.search) {
+            this.setState({
+                selectedDeviceGroupId: getDeviceGroupParam(
+                    this.props.location.search
+                ),
+            });
         }
     }
 
     componentDidMount() {
-        if(this.state.selectedDeviceGroupId)
-        {
-            window.history.replaceState({}, document.title, this.props.location.pathname);
+        if (this.state.selectedDeviceGroupId) {
+            window.history.replaceState(
+                {},
+                document.title,
+                this.props.location.pathname
+            );
         }
     }
 
@@ -60,7 +66,11 @@ export class Summary extends Component {
             <ComponentArray>
                 <ContextMenu>
                     <ContextMenuAlign left={true}>
-                        <DeviceGroupDropdown deviceGroupIdFromUrl={this.state.selectedDeviceGroupId} />
+                        <DeviceGroupDropdown
+                            deviceGroupIdFromUrl={
+                                this.state.selectedDeviceGroupId
+                            }
+                        />
                         <Protected permission={permissions.updateDeviceGroups}>
                             <ManageDeviceGroupsBtn />
                         </Protected>

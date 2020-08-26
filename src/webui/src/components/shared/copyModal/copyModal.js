@@ -21,14 +21,12 @@ export class CopyModal extends Component {
     copyAndClose = (copyLink) => {
         copyToClipboard(copyLink);
         this.genericCloseClick("CopyModal_ModalClose");
-    }
+    };
     render() {
         const { t, title, copyLink } = this.props;
 
         return (
-            <Modal
-                className="copy-modal-container"
-            >
+            <Modal className="copy-modal-container">
                 <div className="copy-header-container">
                     <div className="copy-title">{title}</div>
                 </div>

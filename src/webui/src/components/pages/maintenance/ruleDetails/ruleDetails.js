@@ -19,7 +19,12 @@ import {
     Protected,
     RefreshBarContainer as RefreshBar,
 } from "components/shared";
-import { svgs, joinClasses, renderUndefined, getDeviceGroupParam } from "utilities";
+import {
+    svgs,
+    joinClasses,
+    renderUndefined,
+    getDeviceGroupParam,
+} from "utilities";
 import { DevicesGridContainer } from "components/pages/devices/devicesGrid/devicesGrid.container";
 import { DeviceGroupDropdownContainer as DeviceGroupDropdown } from "components/shell/deviceGroupDropdown";
 import { ManageDeviceGroupsBtnContainer as ManageDeviceGroupsBtn } from "components/shell/manageDeviceGroupsBtn";
@@ -83,16 +88,22 @@ export class RuleDetails extends Component {
     }
 
     componentWillMount() {
-        if(this.props.location.search)
-        {
-            this.setState({selectedDeviceGroupId: getDeviceGroupParam(this.props.location.search)});
+        if (this.props.location.search) {
+            this.setState({
+                selectedDeviceGroupId: getDeviceGroupParam(
+                    this.props.location.search
+                ),
+            });
         }
     }
 
     componentDidMount() {
-        if(this.state.selectedDeviceGroupId)
-        {
-            window.history.replaceState({}, document.title, this.props.location.pathname);
+        if (this.state.selectedDeviceGroupId) {
+            window.history.replaceState(
+                {},
+                document.title,
+                this.props.location.pathname
+            );
         }
 
         // Telemetry stream - START
@@ -379,7 +390,11 @@ export class RuleDetails extends Component {
             <ComponentArray>
                 <ContextMenu className="rule-details-context-menu-container">
                     <ContextMenuAlign left={true}>
-                        <DeviceGroupDropdown deviceGroupIdFromUrl={this.state.selectedDeviceGroupId} />
+                        <DeviceGroupDropdown
+                            deviceGroupIdFromUrl={
+                                this.state.selectedDeviceGroupId
+                            }
+                        />
                         <Protected permission={permissions.updateDeviceGroups}>
                             <ManageDeviceGroupsBtn />
                         </Protected>

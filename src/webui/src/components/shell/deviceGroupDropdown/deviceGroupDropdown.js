@@ -18,12 +18,12 @@ export class DeviceGroupDropdown extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            deviceGroupIdFromUrl: this.props.deviceGroupIdFromUrl
+            deviceGroupIdFromUrl: this.props.deviceGroupIdFromUrl,
         };
     }
 
     onChange = (deviceGroupIds) => (value) => {
-        this.setState({deviceGroupIdFromUrl: null});
+        this.setState({ deviceGroupIdFromUrl: null });
         this.props.logEvent(toDiagnosticsModel("DeviceGroupFilter_Select", {}));
         // Don't try to update the device group if the device id doesn't exist
         if (deviceGroupIds.indexOf(value) > -1) {
@@ -98,7 +98,9 @@ export class DeviceGroupDropdown extends Component {
                     value={activeDeviceGroupId}
                     onChange={this.onChange(deviceGroupIds)}
                 />
-                <Btn svg={svgs.copyLink} onClick={this.openModal("copy-link")}>Get Link</Btn>
+                <Btn svg={svgs.copyLink} onClick={this.openModal("copy-link")}>
+                    Get Link
+                </Btn>
                 {this.getOpenModal()}
             </ComponentArray>
         );
