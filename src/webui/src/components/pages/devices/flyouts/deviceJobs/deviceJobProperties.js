@@ -111,13 +111,13 @@ export class DeviceJobProperties extends LinkedComponent {
             Object.keys(device.properties).forEach((propertyName) => {
                 const reported = device.properties[propertyName],
                     desired = device.desiredProperties[propertyName],
-                    inSync = !desired || reported === desired,
-                    display = inSync
-                        ? reported
-                        : t("devices.flyouts.jobs.properties.syncing", {
-                              reportedPropertyValue: reported,
-                              desiredPropertyValue: desired,
-                          });
+                    inSync =
+                        !desired ||
+                        (typeof device.properties[propertyName] === "object"
+                            ? JSON.stringify(desired) ===
+                              JSON.stringify(reported)
+                            : reported === desired),
+                    display = inSync ? reported : desired;
                 properties[propertyName] = {
                     reported,
                     desired,
@@ -127,7 +127,7 @@ export class DeviceJobProperties extends LinkedComponent {
             });
             return { id: device.id, properties };
         });
-
+        debugger;
         this.populateStateSubscription = Observable.from(devicesWithProps)
             .map(({ properties }) => new Set(Object.keys(properties)))
             .reduce((commonProperties, deviceProperties) =>
@@ -478,6 +478,11 @@ export class DeviceJobProperties extends LinkedComponent {
                                                         }
                                                     />
                                                 </div>
+                                                {readOnly.value && (
+                                                    <div>Syncing</div>
+                                                )}
+                                                &nbsp;&nbsp; &nbsp;
+                                                &nbsp;&nbsp; &nbsp;
                                                 &nbsp;&nbsp; &nbsp;
                                                 <div>{type.value}</div>
                                             </Row>
