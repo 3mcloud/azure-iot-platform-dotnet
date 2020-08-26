@@ -138,7 +138,7 @@ export class DeviceJobProperties extends LinkedComponent {
             });
             return { id: device.id, properties };
         });
-
+        debugger;
         this.populateStateSubscription = Observable.from(devicesWithProps)
             .map(({ properties }) => new Set(Object.keys(properties)))
             .reduce((commonProperties, deviceProperties) =>
