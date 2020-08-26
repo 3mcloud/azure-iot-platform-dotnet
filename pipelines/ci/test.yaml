@@ -754,7 +754,7 @@ stages:
                   Select-Object -ExpandProperty Chart -Unique |
                   Where-Object { $_ -notmatch 'mmm-iot' } |
                   Sort-Object |
-                  Set-Content (Join-Path $(dependenciesReportArtifactName) helm.txt)
+                  Set-Content (Join-Path $(dependenciesReportArtifactName) helm.txt) 
 
           - publish: $(dependenciesReportArtifactName)
             artifact: $(dependenciesReportArtifactName)
