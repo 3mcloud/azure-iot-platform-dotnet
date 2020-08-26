@@ -5,10 +5,9 @@ import { SelectInput } from "@microsoft/azure-iot-ux-fluent-controls/lib/compone
 
 import { toDiagnosticsModel } from "services/models";
 import { svgs, compareByProperty } from "utilities";
-import { ComponentArray, Btn } from "components/shared";
+import { ComponentArray, Btn, CopyModal } from "components/shared";
 
 import "./deviceGroupDropdown.scss";
-import { CopyModal } from "components/shared/copyModal/copyModal";
 
 const closedModalState = {
     openModalName: undefined,
