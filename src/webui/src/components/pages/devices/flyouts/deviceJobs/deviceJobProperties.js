@@ -203,6 +203,9 @@ export class DeviceJobProperties extends LinkedComponent {
                                 {
                                     name,
                                     value: valueData.display,
+                                    jsonValue: {
+                                        jsObject: valueData.display,
+                                    },
                                     type: valueData.type,
                                     readOnly:
                                         name ===
@@ -223,13 +226,13 @@ export class DeviceJobProperties extends LinkedComponent {
     }
 
     apply = (event) => {
+        debugger;
         event.preventDefault();
         if (this.formIsValid()) {
             this.setState({ isPending: true });
             this.props.logEvent(
                 toDiagnosticsModel("Devices_NewJobApply_Click", {})
             );
-
             const { devices } = this.props,
                 { commonProperties, deletedProperties } = this.state,
                 updatedProperties = commonProperties.filter(
@@ -286,8 +289,19 @@ export class DeviceJobProperties extends LinkedComponent {
         return t("devices.flyouts.jobs.affected");
     }
 
+    onJsonChange = (e) => {
+        var stateCommonProperties = this.state.commonProperties;
+        console.log(stateCommonProperties);
+        stateCommonProperties.forEach((property) => {
+            property.value = property.jsonValue.jsObject;
+        });
+        this.setState({
+            commonProperties: stateCommonProperties,
+        });
+    };
+
     render() {
-        const { t, onClose, devices } = this.props,
+        const { t, onClose, devices, theme } = this.props,
             {
                 isPending,
                 error,
@@ -318,6 +332,14 @@ export class DeviceJobProperties extends LinkedComponent {
                                     "devices.flyouts.jobs.validation.required"
                                 )
                             ),
+                        jsonValue = propertyLink
+                            .forkTo("jsonValue")
+                            .check(
+                                Validator.notEmpty,
+                                this.props.t(
+                                    "devices.flyouts.jobs.validation.required"
+                                )
+                            ),
                         type = propertyLink
                             .forkTo("type")
                             .map(({ value }) => value)
@@ -333,7 +355,15 @@ export class DeviceJobProperties extends LinkedComponent {
                             (edited &&
                                 (name.error || value.error || type.error)) ||
                             "";
-                    return { name, value, type, readOnly, edited, error };
+                    return {
+                        name,
+                        value,
+                        jsonValue,
+                        type,
+                        readOnly,
+                        edited,
+                        error,
+                    };
                 }
             ),
             editedProperties = propertyLinks.filter(({ edited }) => edited),
@@ -409,6 +439,7 @@ export class DeviceJobProperties extends LinkedComponent {
                                     (
                                         {
                                             name,
+                                            jsonValue,
                                             value,
                                             type,
                                             readOnly,
@@ -419,29 +450,36 @@ export class DeviceJobProperties extends LinkedComponent {
                                     ) => (
                                         <ComponentArray>
                                             <Row
+                                                id={idx}
                                                 className={
                                                     error
                                                         ? "error-data-row"
                                                         : ""
                                                 }
                                             >
-                                                <Cell className="col-3 text-only">
-                                                    {name.value}
-                                                </Cell>
-                                                <Cell className="col-3">
+                                                <div>{name.value}</div>
+                                                <br />
+                                                <div className="col-3">
                                                     <FormControl
                                                         className="small"
-                                                        type="text"
-                                                        link={value}
+                                                        type="jsoninput"
+                                                        link={jsonValue}
+                                                        theme={
+                                                            theme
+                                                                ? theme
+                                                                : "light"
+                                                        }
                                                         errorState={!!error}
                                                         readOnly={
                                                             readOnly.value
                                                         }
+                                                        onChange={
+                                                            this.onJsonChange
+                                                        }
                                                     />
-                                                </Cell>
-                                                <Cell className="col-3 text-only">
-                                                    {type.value}
-                                                </Cell>
+                                                </div>
+                                                &nbsp;&nbsp; &nbsp;
+                                                <div>{type.value}</div>
                                             </Row>
                                             {error ? (
                                                 <Row className="error-msg-row">
