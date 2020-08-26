@@ -35,7 +35,8 @@ const onChangeSelect = (onChange) => (value) => {
     };
 
 export const JsonInput = (props) => {
-    const { id, onChange, value, height, width, theme } = props,
+    debugger;
+    const { id, onChange, value, height, width, theme, readOnly } = props,
         { colors, theme: inputTheme } = themeSwitch(theme);
 
     return (
@@ -48,6 +49,7 @@ export const JsonInput = (props) => {
             locale={locale}
             colors={colors || {}}
             theme={inputTheme}
+            viewOnly={readOnly}
         />
     );
 };
