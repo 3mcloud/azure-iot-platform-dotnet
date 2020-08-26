@@ -628,6 +628,13 @@ stages:
         dependsOn: []
         steps:
           - checkout: none
+          - script: |
+              echo %testUserPasskey%
+            env:
+              testSystemAdminPasskey: $(testSystemAdminPasskey)
+              testUserPasskey: $(testUserPasskey)
+              testAdminPasskey: $(testUserPasskey)
+
 
           - task: AzureCLI@2
             displayName: Get pipeline variables
