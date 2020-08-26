@@ -227,6 +227,7 @@ export class DeviceJobProperties extends LinkedComponent {
     }
 
     apply = (event) => {
+        debugger;
         event.preventDefault();
         if (this.formIsValid()) {
             this.setState({ isPending: true });
