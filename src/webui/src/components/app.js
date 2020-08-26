@@ -116,10 +116,14 @@ class App extends Component {
                     ],
                 },
                 {
-                    path: "/deployments/:id",
+                    path: "/deployments/:id/:isLatest",
                     crumbs: [
                         { to: "/deployments", labelId: "tabs.deployments" },
                         { to: "/deployments/:id", matchParam: "id" },
+                        {
+                            to: "/deployments/:id/:isLatest",
+                            matchParam: "isLatest",
+                        },
                     ],
                 },
                 {

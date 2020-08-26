@@ -76,7 +76,7 @@ namespace Mmm.Iot.IoTHubManager.WebService.Test.Controllers
         public async Task GetDeploymentTest()
         {
             // Arrange
-            this.deploymentsMock.Setup(x => x.GetAsync(DeploymentId, false)).ReturnsAsync(new DeploymentServiceModel()
+            this.deploymentsMock.Setup(x => x.GetAsync(DeploymentId, false, true)).ReturnsAsync(new DeploymentServiceModel()
             {
                 Name = DeploymentName,
                 DeviceGroupId = DeviceGroupId,
@@ -112,7 +112,7 @@ namespace Mmm.Iot.IoTHubManager.WebService.Test.Controllers
         public async Task VerifyGroupAndPackageNameLabelsTest()
         {
             // Arrange
-            this.deploymentsMock.Setup(x => x.GetAsync(DeploymentId, false)).ReturnsAsync(new DeploymentServiceModel()
+            this.deploymentsMock.Setup(x => x.GetAsync(DeploymentId, false, true)).ReturnsAsync(new DeploymentServiceModel()
             {
                 Name = DeploymentName,
                 DeviceGroupId = DeviceGroupId,
@@ -176,7 +176,7 @@ namespace Mmm.Iot.IoTHubManager.WebService.Test.Controllers
                 });
             }
 
-            this.deploymentsMock.Setup(x => x.ListAsync()).ReturnsAsync(
+            this.deploymentsMock.Setup(x => x.ListFromStorageAsync()).ReturnsAsync(
                 new DeploymentServiceListModel(deploymentsList));
 
             // Act
@@ -325,6 +325,47 @@ namespace Mmm.Iot.IoTHubManager.WebService.Test.Controllers
 
             // Act
             await Assert.ThrowsAsync<InvalidInputException>(async () => await this.controller.PostAsync(depApiModel));
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(5)]
+        [Trait(Constants.Type, Constants.UnitTest)]
+        public async Task GetDeploymentImpactedDevicesTest(int numDevices)
+        {
+            // Arrange
+            string deploymentId = "deploymentId";
+            var devices = new List<DeviceServiceModel>();
+            var auth = new AuthenticationMechanismServiceModel()
+            {
+                AuthenticationType = AuthenticationType.Sas,
+            };
+
+            for (var i = 0; i < numDevices; i++)
+            {
+                devices.Add(new DeviceServiceModel(
+                etag: "etag",
+                id: "deviceId" + i,
+                c2DMessageCount: 0,
+                lastActivity: DateTime.Now,
+                connected: true,
+                enabled: true,
+                isEdgeDevice: true,
+                lastStatusUpdated: DateTime.Now,
+                twin: null,
+                ioTHubHostName: string.Empty,
+                authentication: auth));
+            }
+
+            this.deploymentsMock.Setup(x => x.GetDeviceListAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(
+                new DeviceServiceListModel(devices));
+
+            // Act
+            var results = await this.controller.GetDeploymentImpactedDevices(deploymentId, string.Empty);
+
+            // Assert
+            Assert.Equal(numDevices, results.Items.Count);
         }
 
         public void Dispose()

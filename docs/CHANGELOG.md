@@ -9,6 +9,18 @@ To easily get a list of committed changes between current master and the previou
 git log --oneline --no-decorate --topo-order ^<previousRelease> master
 where <previousRelease> is the release name e.g 5.1.0
 -->
+## [5.2.3] - 2020-08-18
+### Fixed
+= Asa-maager twin update job properly triggers device group conversion
+- Updated methods to throw expcetion when there is no collection
+- Prevent Azure Function calls when alerting is diabled
+- Updated ResourceNotFoundException in Rules Methods
+- Removed telemetry entries in health probes to reduce logging costs
+
+### Added
+- Improved control over tracking and managing the deployments imposed by IoT Hub
+
+
 ## [5.2.2] - 2020-07-26
 ### Fixed
 - Added and updated translations for phrases for German, English, French, Spanish, Hindi, Tamil, and Vietnamese
