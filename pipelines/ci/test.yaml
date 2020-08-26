@@ -639,6 +639,66 @@ stages:
               inlineScript: |-
                 appConfigurationConnectionString=`az storage entity query --filter "PartitionKey eq '$(tableStoragePartition)' and RowKey eq '$(tableStorageRowKeyPrefix)$(tableStorageAppConfigurationConnectionStringRowKey)'" --select Content --query items[].Content --output tsv --table-name $(tableStorageName) --account-name $(storageAccountName)`
                 echo "##vso[task.setvariable variable=appConfigurationConnectionString;isOutput=true]$appConfigurationConnectionString"
+          - task: AzureCLI@2
+            displayName: Add TestAccount details  to App Configuration
+            inputs:
+              azureSubscription: $(subscriptionName)
+              addSpnToEnvironment: true
+              scriptLocation: inlineScript
+              scriptType: bash
+              inlineScript: |-
+                set -Eeuxo pipefail
+                az appconfig kv set --key TestUserCredentials:Admin:Password --value $(testSystemAdminPasskey) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:Admin:UserEmail --value $(testUserEmail) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:Readonly:Password --value $(testUserPasskey) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:Readonly:UserEmail --value $(testUserPasskey) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:SystemAdmin:Password --value $(testSystemAdminPasskey) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:SystemAdmin:UserEmail --value $(testSystemAdminEmail) --name $(appConfigurationName)  --yes          
+          
+               
+          - task: AzurePowerShell@5
+            displayName: Verify and add Test Account in the User Table
+            inputs:
+              azureSubscription: $(subscriptionName)
+              azurePowerShellVersion: LatestVersion
+              ScriptType: InlineScript
+              Inline: |
+                $table = Get-AzTableTable -resourceGroup $(resourceGroupName) -tableName $(usersTableName) -storageAccountName $(storageAccountName)
+                $saTable = Get-AzTableTable -resourceGroup $(resourceGroupName) -tableName $(sysAdminTableName) -storageAccountName $(storageAccountName)
+
+                $datetimevariable = Get-Date -Format "yyyy-MM-ddTHH:mm:ss:fffffffZ"
+
+                $testUser = Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountUser) -RowKey $(SerenityTenantId)
+                $testAdmin =Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountAdmin) -RowKey $(SerenityTenantId)
+                $testSystemAdmin = Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountSysAdmin) -RowKey $(SerenityTenantId)
+
+                $saTestSystemAdmin = Get-AzTableRowByPartitionKey -Table $saTable -PartitionKey $(testAccountSysAdmin)
+              
+                if(($testUser -eq $Null) -or ($testUser.Roles -ne '["readonly"]')){
+                    Add-AzTableRow `
+                    -table $table `
+                    -partitionKey $(testAccountUser) `
+                    -rowKey $(SerenityTenantId) -property @{"Timestamp"=$(datetimevariable);"Roles"="["readonly"]";"Name"="TestAccount - User";"Type"="Member"}
+                }
+                if(($testAdmin -eq $Null) -or ($testAdmin.Roles -ne '["admin"]')){
+                    Add-AzTableRow `
+                    -table $table `
+                    -partitionKey $(testAccountAdmin) `
+                    -rowKey $(SerenityTenantId) -property @{"Timestamp"=$(datetimevariable);"Roles"="["admin"]";"Name"="TestAccount - Admin";"Type"="Member"}
+                }
+                if(($testSystemAdmin -eq $Null) -or ($testSystemAdmin.Roles -ne '["admin"]')){
+                    Add-AzTableRow `
+                    -table $table `
+                    -partitionKey $(testAccountSysAdmin) `
+                    -rowKey $(SerenityTenantId) -property @{"Timestamp"=$(datetimevariable);"Roles"="["admin"]";"Name"="TestAccount - SystemAdmin";"Type"="Member"}
+                }
+
+                if($saTestSystemAdmin -eq $Null){
+                    Add-AzTableRow `
+                    -table $saTable `
+                    -partitionKey $(testAccountSysAdmin) `
+                    -rowKey $(testAccountSysAdmin) -property @{"Timestamp"=$(datetimevariable);"Name"="TestAccount - SystemAdmin";"Type"="Member"}
+                }           
 
       - job: functionalTest
         displayName: Functional test
