@@ -17,13 +17,14 @@ import {
 } from "components/shell/flyouts";
 import {
     DashboardContainer,
-    DevicesContainer,
+    // DevicesContainer,
     UsersContainer,
     RulesContainer,
     MaintenanceContainer,
     PackagesContainer,
     DeploymentsRouter,
 } from "./pages";
+import { DevicesRouter } from "./pages/devices/deviceRouter";
 
 class App extends Component {
     constructor(props) {
@@ -54,7 +55,7 @@ class App extends Component {
                     exact: false,
                     svg: svgs.tabs.devices,
                     labelId: "tabs.devices",
-                    component: DevicesContainer,
+                    component: DevicesRouter,
                 },
                 {
                     to: "/users",
@@ -100,6 +101,13 @@ class App extends Component {
                 {
                     path: "/devices",
                     crumbs: [{ to: "/devices", labelId: "tabs.devices" }],
+                },
+                {
+                    path: "/devices/:id",
+                    crumbs: [
+                        { to: "/devices", labelId: "tabs.devices" },
+                        { to: "/devices/:id", matchParam: "id" },
+                    ],
                 },
                 {
                     path: "/rules",
