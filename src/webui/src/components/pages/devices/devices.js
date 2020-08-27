@@ -18,6 +18,7 @@ import {
     Protected,
     RefreshBarContainer as RefreshBar,
     SearchInput,
+    JsonEditorModal,
 } from "components/shared";
 import { DeviceNewContainer } from "./flyouts/deviceNew";
 import { SIMManagementContainer } from "./flyouts/SIMManagement";
@@ -27,6 +28,10 @@ import { svgs } from "utilities";
 import "./devices.scss";
 
 const closedFlyoutState = { openFlyoutName: undefined };
+
+const closedModalState = {
+    openModalName: undefined,
+};
 
 export class Devices extends Component {
     constructor(props) {
@@ -84,6 +89,32 @@ export class Devices extends Component {
 
     onSearchClick = () => {
         this.props.logEvent(toDiagnosticsModel("Devices_Search", {}));
+    };
+
+    openModal = (modalName, jsonValue) => {
+        this.setState({
+            openModalName: modalName,
+            modalJson: jsonValue,
+        });
+    };
+
+    closeModal = () => this.setState(closedModalState);
+
+    getOpenModal = () => {
+        const { t, theme, logEvent } = this.props;
+        if (this.state.openModalName === "json-editor") {
+            return (
+                <JsonEditorModal
+                    t={t}
+                    title={t("devices.flyouts.details.properties.editPropertyValue")}
+                    onClose={this.closeModal}
+                    jsonData={this.state.modalJson}
+                    logEvent={logEvent}
+                    theme={theme ? theme : "light"}
+                />
+            );
+        }
+        return null;
     };
 
     render() {
@@ -155,7 +186,12 @@ export class Devices extends Component {
                 <PageContent className="devices-container">
                     <PageTitle titleValue={t("devices.title")} />
                     {!!error && <AjaxError t={t} error={error} />}
-                    {!error && <DevicesGridContainer {...gridProps} />}
+                    {!error && (
+                        <DevicesGridContainer
+                            {...gridProps}
+                            openPropertyEditorModal={this.openModal}
+                        />
+                    )}
                     {newDeviceFlyoutOpen && (
                         <DeviceNewContainer onClose={this.closeFlyout} />
                     )}
@@ -163,6 +199,7 @@ export class Devices extends Component {
                         <SIMManagementContainer onClose={this.closeFlyout} />
                     )}
                 </PageContent>
+                {this.getOpenModal()}
             </ComponentArray>
         );
     }
