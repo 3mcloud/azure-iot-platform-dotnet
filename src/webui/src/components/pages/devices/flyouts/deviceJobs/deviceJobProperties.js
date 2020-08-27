@@ -313,7 +313,7 @@ export class DeviceJobProperties extends LinkedComponent {
                 property.name,
                 property.value
             );
-            if (this.checkIfPropertiesExceedLimit(serializedProperty) > 2) {
+            if (this.checkIfPropertiesExceedLimit(serializedProperty) > 6) {
                 this.setState({
                     error: { message: "JSON exceeds maximum depth" },
                 });
@@ -601,21 +601,25 @@ export class DeviceJobProperties extends LinkedComponent {
                                                         )}
                                                 </div>
                                                 <div>
-                                                    {readOnly.value && (
-                                                        <div>Syncing</div>
-                                                    )}
-                                                    {!readOnly.value && (
-                                                        <Btn
-                                                            className="linkToButton"
-                                                            svg={svgs.linkTo}
-                                                            onClick={() =>
-                                                                openPropertyEditorModal(
-                                                                    "json-editor",
-                                                                    jsonValue
-                                                                )
-                                                            }
-                                                        ></Btn>
-                                                    )}
+                                                    {isJSON.value &&
+                                                        readOnly.value && (
+                                                            <div>Syncing</div>
+                                                        )}
+                                                    {isJSON.value &&
+                                                        !readOnly.value && (
+                                                            <Btn
+                                                                className="linkToButton"
+                                                                svg={
+                                                                    svgs.linkTo
+                                                                }
+                                                                onClick={() =>
+                                                                    openPropertyEditorModal(
+                                                                        "json-editor",
+                                                                        jsonValue
+                                                                    )
+                                                                }
+                                                            ></Btn>
+                                                        )}
                                                 </div>
                                                 &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;
                                                 <div>{type.value}</div>
