@@ -112,18 +112,28 @@ export class DeviceJobProperties extends LinkedComponent {
             Object.keys(device.properties).forEach((propertyName) => {
                 const reported = device.properties[propertyName],
                     desired = device.desiredProperties[propertyName],
+                    isJSON =
+                        typeof device.properties[propertyName] === "object",
                     inSync =
                         !desired ||
-                        (typeof device.properties[propertyName] === "object"
+                        (isJSON
                             ? JSON.stringify(desired) ===
                               JSON.stringify(reported)
                             : reported === desired),
-                    display = inSync ? reported : desired;
+                    display = inSync
+                        ? reported
+                        : isJSON
+                        ? desired
+                        : t("devices.flyouts.jobs.properties.syncing", {
+                              reportedPropertyValue: reported,
+                              desiredPropertyValue: desired,
+                          });
                 properties[propertyName] = {
                     reported,
                     desired,
                     display,
                     inSync,
+                    isJSON,
                 };
             });
             return { id: device.id, properties };
@@ -164,7 +174,10 @@ export class DeviceJobProperties extends LinkedComponent {
             .reduce(
                 (newState, [name, values]) => {
                     const valueData = values.reduce(
-                        (valAcc, { reported, desired, display, inSync }) => {
+                        (
+                            valAcc,
+                            { reported, desired, display, inSync, isJSON }
+                        ) => {
                             if (!valAcc.reported) {
                                 valAcc.reported = reported;
                                 valAcc.display = display;
@@ -189,6 +202,7 @@ export class DeviceJobProperties extends LinkedComponent {
                             if (!isNumeric(reported)) {
                                 valAcc.type = propertyJobConstants.stringType;
                             }
+                            valAcc.isJSON = isJSON;
                             return valAcc;
                         },
                         {
@@ -196,6 +210,7 @@ export class DeviceJobProperties extends LinkedComponent {
                             display: undefined,
                             anyOutOfSync: false,
                             type: propertyJobConstants.numberType,
+                            isJSON: false,
                         }
                     );
                     return update(newState, {
@@ -212,6 +227,7 @@ export class DeviceJobProperties extends LinkedComponent {
                                         name ===
                                             propertyJobConstants.firmware ||
                                         valueData.anyOutOfSync,
+                                    isJSON: valueData.isJSON,
                                 },
                             ],
                         },
@@ -297,7 +313,7 @@ export class DeviceJobProperties extends LinkedComponent {
                 property.name,
                 property.value
             );
-            if (this.checkIfPropertiesExceedLimit(serializedProperty) > 2) {
+            if (this.checkIfPropertiesExceedLimit(serializedProperty) > 6) {
                 this.setState({
                     error: { message: "JSON exceeds maximum depth" },
                 });
@@ -394,6 +410,7 @@ export class DeviceJobProperties extends LinkedComponent {
                                 )
                             ),
                         readOnly = propertyLink.forkTo("readOnly"),
+                        isJSON = propertyLink.forkTo("isJSON"),
                         edited = !(!name.value && !value.value && !type.value),
                         error =
                             (edited &&
@@ -405,6 +422,7 @@ export class DeviceJobProperties extends LinkedComponent {
                         jsonValue,
                         type,
                         readOnly,
+                        isJSON,
                         edited,
                         error,
                     };
@@ -453,8 +471,7 @@ export class DeviceJobProperties extends LinkedComponent {
                                         "devices.flyouts.jobs.properties.valueHeader"
                                     )}
                                 </Cell>
-                                <Cell className="col-4">
-                                </Cell>
+                                <Cell className="col-4"></Cell>
                                 <Cell className="col-4">
                                     {t(
                                         "devices.flyouts.jobs.properties.typeHeader"
@@ -489,6 +506,7 @@ export class DeviceJobProperties extends LinkedComponent {
                                             value,
                                             type,
                                             readOnly,
+                                            isJSON,
                                             edited,
                                             error,
                                         },
@@ -503,46 +521,66 @@ export class DeviceJobProperties extends LinkedComponent {
                                                         : ""
                                                 }
                                             >
-                                                <div>{name.value}</div>
+                                                <div>
+                                                    {name.value}
+                                                    &nbsp;&nbsp;&nbsp;
+                                                </div>
                                                 <br />
                                                 <div className="col-3 jsonValueDivMaxHeight">
-                                                    <FormControl
-                                                        className="small"
-                                                        type="jsoninput"
-                                                        link={jsonValue}
-                                                        theme={
-                                                            theme
-                                                                ? theme
-                                                                : "light"
-                                                        }
-                                                        errorState={!!error}
-                                                        readOnly={
-                                                            readOnly.value
-                                                        }
-                                                        onChange={
-                                                            this.onJsonChange
-                                                        }
-                                                    />
+                                                    {isJSON.value && (
+                                                        <FormControl
+                                                            className="small"
+                                                            type="jsoninput"
+                                                            link={jsonValue}
+                                                            theme={
+                                                                theme
+                                                                    ? theme
+                                                                    : "light"
+                                                            }
+                                                            errorState={!!error}
+                                                            readOnly={
+                                                                readOnly.value
+                                                            }
+                                                            onChange={
+                                                                this
+                                                                    .onJsonChange
+                                                            }
+                                                        />
+                                                    )}
+                                                    {!isJSON.value && (
+                                                        <FormControl
+                                                            className="large"
+                                                            type="text"
+                                                            link={value}
+                                                            errorState={!!error}
+                                                            readOnly={
+                                                                readOnly.value
+                                                            }
+                                                        />
+                                                    )}
                                                 </div>
                                                 <div>
-                                                    {readOnly.value && (
-                                                        <div>Syncing</div>
-                                                    )}
-                                                    {!readOnly.value && (
-                                                        <Btn
-                                                            className="linkToButton"
-                                                            svg={svgs.linkTo}
-                                                            onClick={() =>
-                                                                openPropertyEditorModal(
-                                                                    "json-editor",
-                                                                    jsonValue
-                                                                )
-                                                            }
-                                                        ></Btn>
-                                                    )}
+                                                    {isJSON.value &&
+                                                        readOnly.value && (
+                                                            <div>Syncing</div>
+                                                        )}
+                                                    {isJSON.value &&
+                                                        !readOnly.value && (
+                                                            <Btn
+                                                                className="linkToButton"
+                                                                svg={
+                                                                    svgs.linkTo
+                                                                }
+                                                                onClick={() =>
+                                                                    openPropertyEditorModal(
+                                                                        "json-editor",
+                                                                        jsonValue
+                                                                    )
+                                                                }
+                                                            ></Btn>
+                                                        )}
                                                 </div>
                                                 &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;
-                                                &nbsp; &nbsp;&nbsp; &nbsp;
                                                 <div>{type.value}</div>
                                             </Row>
                                             {error ? (

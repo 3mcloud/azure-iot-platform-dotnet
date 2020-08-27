@@ -51,7 +51,7 @@ class App extends Component {
                 },
                 {
                     to: "/devices",
-                    exact: false,
+                    exact: true,
                     svg: svgs.tabs.devices,
                     labelId: "tabs.devices",
                     component: DevicesContainer,
