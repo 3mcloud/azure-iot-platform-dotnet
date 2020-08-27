@@ -70,7 +70,7 @@ export class DeviceJobProperties extends LinkedComponent {
             .reject(nonAlphaNumeric)
             .check(Validator.notEmpty, () =>
                 this.props.t("devices.flyouts.jobs.validation.required")
-            );
+        );
 
         this.propertiesLink = this.linkTo("commonProperties");
     }
@@ -138,7 +138,7 @@ export class DeviceJobProperties extends LinkedComponent {
             });
             return { id: device.id, properties };
         });
-        debugger;
+
         this.populateStateSubscription = Observable.from(devicesWithProps)
             .map(({ properties }) => new Set(Object.keys(properties)))
             .reduce((commonProperties, deviceProperties) =>
@@ -243,7 +243,6 @@ export class DeviceJobProperties extends LinkedComponent {
     }
 
     apply = (event) => {
-        debugger;
         event.preventDefault();
         if (this.formIsValid()) {
             this.setState({ isPending: true });
@@ -296,7 +295,7 @@ export class DeviceJobProperties extends LinkedComponent {
 
     getSummaryMessage() {
         const { t } = this.props,
-            { isPending, changesApplied } = this.state;
+        { isPending, changesApplied } = this.state;
 
         if (isPending) {
             return t("devices.flyouts.jobs.pending");
