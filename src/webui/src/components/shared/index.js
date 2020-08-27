@@ -9,6 +9,7 @@ export * from "./deleteModal/deleteModal";
 export * from "./flyout";
 export * from "./forms";
 export * from "./indicator/indicator";
+export * from "./jsonEditorModal/jsonEditorModal";
 export * from "./modal";
 export * from "./pageTitle/pageTitle";
 export * from "./pageStats";
