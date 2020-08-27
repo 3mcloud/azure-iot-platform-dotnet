@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Mmm.Iot.Common.Services.AIPreprocessors;
 using Mmm.Iot.Common.Services.Auth;
 using Mmm.Iot.Common.Services.Config;
 
@@ -37,6 +38,7 @@ namespace Mmm.Iot.IdentityGateway.WebService
             var applicationInsightsOptions = new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions();
             applicationInsightsOptions.EnableAdaptiveSampling = false;
             services.AddApplicationInsightsTelemetry(applicationInsightsOptions);
+            services.AddApplicationInsightsTelemetryProcessor<HealthProbeTelemetryProcessor>();
             services.AddMvc().AddControllersAsServices().AddNewtonsoftJson();
             services.AddHttpContextAccessor();
             services.AddSwaggerGenNewtonsoftSupport();
@@ -74,6 +76,7 @@ namespace Mmm.Iot.IdentityGateway.WebService
             // Using fixed rate sampling
             double fixedSamplingPercentage = config.Global.FixedSamplingPercentage == 0 ? 10 : config.Global.FixedSamplingPercentage;
             builder.UseSampling(fixedSamplingPercentage);
+            builder.Use(next => new HealthProbeTelemetryProcessor(next));
             builder.Build();
         }
     }
