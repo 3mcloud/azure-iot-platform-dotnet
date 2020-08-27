@@ -313,7 +313,7 @@ export class DeviceJobProperties extends LinkedComponent {
                 property.name,
                 property.value
             );
-            if (this.checkIfPropertiesExceedLimit(serializedProperty) > 6) {
+            if (this.checkIfPropertiesExceedLimit(serializedProperty) > 2) {
                 this.setState({
                     error: { message: "JSON exceeds maximum depth" },
                 });
