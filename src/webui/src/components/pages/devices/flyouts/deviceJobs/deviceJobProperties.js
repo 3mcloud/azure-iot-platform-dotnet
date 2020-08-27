@@ -57,6 +57,7 @@ const initialState = {
     jobId: undefined,
     commonProperties: [],
     deletedProperties: [],
+    selecteddeviceID: [],
 };
 
 export class DeviceJobProperties extends LinkedComponent {
@@ -69,7 +70,7 @@ export class DeviceJobProperties extends LinkedComponent {
             .reject(nonAlphaNumeric)
             .check(Validator.notEmpty, () =>
                 this.props.t("devices.flyouts.jobs.validation.required")
-            );
+        );
 
         this.propertiesLink = this.linkTo("commonProperties");
     }
@@ -127,7 +128,7 @@ export class DeviceJobProperties extends LinkedComponent {
             });
             return { id: device.id, properties };
         });
-        debugger;
+
         this.populateStateSubscription = Observable.from(devicesWithProps)
             .map(({ properties }) => new Set(Object.keys(properties)))
             .reduce((commonProperties, deviceProperties) =>
@@ -226,7 +227,6 @@ export class DeviceJobProperties extends LinkedComponent {
     }
 
     apply = (event) => {
-        debugger;
         event.preventDefault();
         if (this.formIsValid()) {
             this.setState({ isPending: true });
@@ -279,7 +279,7 @@ export class DeviceJobProperties extends LinkedComponent {
 
     getSummaryMessage() {
         const { t } = this.props,
-            { isPending, changesApplied } = this.state;
+        { isPending, changesApplied } = this.state;
 
         if (isPending) {
             return t("devices.flyouts.jobs.pending");
@@ -291,13 +291,49 @@ export class DeviceJobProperties extends LinkedComponent {
 
     onJsonChange = (e) => {
         var stateCommonProperties = this.state.commonProperties;
-        console.log(stateCommonProperties);
         stateCommonProperties.forEach((property) => {
             property.value = property.jsonValue.jsObject;
+            var serializedProperty = this.serializeNestedDeviceProperties(
+                property.name,
+                property.value
+            );
+            if (this.checkIfPropertiesExceedLimit(serializedProperty) > 1) {
+                e.target.value.error = {reason: "Maximum nested limit reached"};
+                e.target.value.jsObject = undefined;
+            }
         });
         this.setState({
             commonProperties: stateCommonProperties,
         });
+    };
+
+    checkIfPropertiesExceedLimit = (properties) => {
+        let propertyCount = 0;
+        Object.entries(properties).forEach(([key, value]) => {
+            let count = key.split(".").length - 1;
+            propertyCount = propertyCount > count ? propertyCount : count;
+        });
+        return propertyCount;
+    };
+
+    serializeNestedDeviceProperties = (parentName, value) => {
+        if (typeof value !== "object" || value === null) {
+            let prop = {};
+            prop[parentName] = value;
+            return prop;
+        }
+
+        let nestedProperties = {};
+        Object.entries(value).forEach(([key, value]) => {
+            nestedProperties = {
+                ...nestedProperties,
+                ...this.serializeNestedDeviceProperties(
+                    `${parentName}.${key}`,
+                    value
+                ),
+            };
+        });
+        return nestedProperties;
     };
 
     render() {
@@ -481,9 +517,8 @@ export class DeviceJobProperties extends LinkedComponent {
                                                 {readOnly.value && (
                                                     <div>Syncing</div>
                                                 )}
-                                                &nbsp;&nbsp; &nbsp;
-                                                &nbsp;&nbsp; &nbsp;
-                                                &nbsp;&nbsp; &nbsp;
+                                                &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;
+                                                &nbsp; &nbsp;&nbsp; &nbsp;
                                                 <div>{type.value}</div>
                                             </Row>
                                             {error ? (
