@@ -451,7 +451,8 @@
                     "noneExist": "No properties found for this device.",
                     "copy": "Copy",
                     "copyAllProperties": "Copy a list of all properties for the device",
-                    "syncing": "{{reportedPropertyValue}} (Syncing {{desiredPropertyValue}})"
+                    "syncing": "{{reportedPropertyValue}} (Syncing {{desiredPropertyValue}})",
+                    "editPropertyValue": "Edit property value"
                 },
                 "tags": {
                     "title": "Tags",
@@ -1036,7 +1037,8 @@
     },
     "modal": {
         "delete": "Delete",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "close": "Close"
     },
     "walkthrough": {
         "tabs": {
