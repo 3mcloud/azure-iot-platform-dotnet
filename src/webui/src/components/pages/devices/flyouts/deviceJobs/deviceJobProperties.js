@@ -543,15 +543,23 @@ export class DeviceJobProperties extends LinkedComponent {
                                                             this.onJsonChange
                                                         }
                                                     />
-                                                    <Btn
-                                                        svg={svgs.linkTo}
-                                                        onClick={() =>
-                                                            openPropertyEditorModal(
-                                                                "json-editor",
-                                                                jsonValue
-                                                            )
-                                                        }
-                                                    ></Btn>
+                                                </div>
+                                                <div>
+                                                    {readOnly.value && (
+                                                        <div>Syncing</div>
+                                                    )}
+                                                    {!readOnly.value && (
+                                                        <Btn
+                                                            className="linkToButton"
+                                                            svg={svgs.linkTo}
+                                                            onClick={() =>
+                                                                openPropertyEditorModal(
+                                                                    "json-editor",
+                                                                    jsonValue
+                                                                )
+                                                            }
+                                                        ></Btn>
+                                                    )}
                                                 </div>
                                                 <div>
                                                     {readOnly.value && (
