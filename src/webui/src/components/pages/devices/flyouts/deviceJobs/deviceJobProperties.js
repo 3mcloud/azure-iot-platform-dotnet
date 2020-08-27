@@ -543,6 +543,15 @@ export class DeviceJobProperties extends LinkedComponent {
                                                             this.onJsonChange
                                                         }
                                                     />
+                                                    <Btn
+                                                        svg={svgs.linkTo}
+                                                        onClick={() =>
+                                                            openPropertyEditorModal(
+                                                                "json-editor",
+                                                                jsonValue
+                                                            )
+                                                        }
+                                                    ></Btn>
                                                 </div>
                                                 <div>
                                                     {readOnly.value && (
