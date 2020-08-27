@@ -337,7 +337,13 @@ export class DeviceJobProperties extends LinkedComponent {
     };
 
     render() {
-        const { t, onClose, devices, theme } = this.props,
+        const {
+                t,
+                onClose,
+                devices,
+                theme,
+                openPropertyEditorModal,
+            } = this.props,
             {
                 isPending,
                 error,
@@ -513,6 +519,15 @@ export class DeviceJobProperties extends LinkedComponent {
                                                             this.onJsonChange
                                                         }
                                                     />
+                                                    <Btn
+                                                        svg={svgs.linkTo}
+                                                        onClick={() =>
+                                                            openPropertyEditorModal(
+                                                                "json-editor",
+                                                                jsonValue
+                                                            )
+                                                        }
+                                                    ></Btn>
                                                 </div>
                                                 {readOnly.value && (
                                                     <div>Syncing</div>
