@@ -106,7 +106,9 @@ export class Devices extends Component {
             return (
                 <JsonEditorModal
                     t={t}
-                    title={t("devices.flyouts.details.properties.editPropertyValue")}
+                    title={t(
+                        "devices.flyouts.details.properties.editPropertyValue"
+                    )}
                     onClose={this.closeModal}
                     jsonData={this.state.modalJson}
                     logEvent={logEvent}
