@@ -70,7 +70,7 @@ export class DeviceJobProperties extends LinkedComponent {
             .reject(nonAlphaNumeric)
             .check(Validator.notEmpty, () =>
                 this.props.t("devices.flyouts.jobs.validation.required")
-        );
+            );
 
         this.propertiesLink = this.linkTo("commonProperties");
     }
@@ -295,7 +295,7 @@ export class DeviceJobProperties extends LinkedComponent {
 
     getSummaryMessage() {
         const { t } = this.props,
-        { isPending, changesApplied } = this.state;
+            { isPending, changesApplied } = this.state;
 
         if (isPending) {
             return t("devices.flyouts.jobs.pending");
