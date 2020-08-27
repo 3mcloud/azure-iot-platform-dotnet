@@ -297,11 +297,11 @@ export class DeviceJobProperties extends LinkedComponent {
                 property.name,
                 property.value
             );
-            if (this.checkIfPropertiesExceedLimit(serializedProperty) > 1) {
-                e.target.value.error = {
-                    reason: "Maximum nested limit reached",
-                };
-                e.target.value.jsObject = undefined;
+            if (this.checkIfPropertiesExceedLimit(serializedProperty) > 6) {
+                this.setState({
+                    error: { message: "JSON exceeds maximum depth" },
+                });
+                return;
             }
         });
         this.setState({
@@ -443,17 +443,19 @@ export class DeviceJobProperties extends LinkedComponent {
                     <Grid className="data-grid">
                         <GridHeader>
                             <Row>
-                                <Cell className="col-3">
+                                <Cell className="col-4">
                                     {t(
                                         "devices.flyouts.jobs.properties.keyHeader"
                                     )}
                                 </Cell>
-                                <Cell className="col-3">
+                                <Cell className="col-4">
                                     {t(
                                         "devices.flyouts.jobs.properties.valueHeader"
                                     )}
                                 </Cell>
-                                <Cell className="col-3">
+                                <Cell className="col-4">
+                                </Cell>
+                                <Cell className="col-4">
                                     {t(
                                         "devices.flyouts.jobs.properties.typeHeader"
                                     )}
@@ -521,19 +523,24 @@ export class DeviceJobProperties extends LinkedComponent {
                                                             this.onJsonChange
                                                         }
                                                     />
-                                                    <Btn
-                                                        svg={svgs.linkTo}
-                                                        onClick={() =>
-                                                            openPropertyEditorModal(
-                                                                "json-editor",
-                                                                jsonValue
-                                                            )
-                                                        }
-                                                    ></Btn>
                                                 </div>
-                                                {readOnly.value && (
-                                                    <div>Syncing</div>
-                                                )}
+                                                <div>
+                                                    {readOnly.value && (
+                                                        <div>Syncing</div>
+                                                    )}
+                                                    {!readOnly.value && (
+                                                        <Btn
+                                                            className="linkToButton"
+                                                            svg={svgs.linkTo}
+                                                            onClick={() =>
+                                                                openPropertyEditorModal(
+                                                                    "json-editor",
+                                                                    jsonValue
+                                                                )
+                                                            }
+                                                        ></Btn>
+                                                    )}
+                                                </div>
                                                 &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;
                                                 &nbsp; &nbsp;&nbsp; &nbsp;
                                                 <div>{type.value}</div>
