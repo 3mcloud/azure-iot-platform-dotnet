@@ -35,7 +35,6 @@ const onChangeSelect = (onChange) => (value) => {
     };
 
 export const JsonInput = (props) => {
-    debugger;
     const { id, onChange, value, height, width, theme, readOnly } = props,
         { colors, theme: inputTheme } = themeSwitch(theme);
 
