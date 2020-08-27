@@ -140,7 +140,9 @@ export class DeviceJobs extends LinkedComponent {
                                         onClose={onClose}
                                         devices={devices}
                                         updateProperties={updateProperties}
-                                        openPropertyEditorModal={openPropertyEditorModal}
+                                        openPropertyEditorModal={
+                                            openPropertyEditorModal
+                                        }
                                     />
                                 ) : null}
                             </ComponentArray>
