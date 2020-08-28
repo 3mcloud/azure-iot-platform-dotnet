@@ -42,6 +42,7 @@ import RadioSelectedIconPath from "assets/icons/radioSelected.svg";
 import RadioUnselectedIconPath from "assets/icons/radioUnselected.svg";
 import ReconfigureIconPath from "assets/icons/reconfigure.svg";
 import RefreshIconPath from "assets/icons/refresh.svg";
+import ReturnIconPath from "assets/icons/return.svg";
 import RuleDisabledIconPath from "assets/icons/ruleDisabled.svg";
 import RuleEnabledIconPath from "assets/icons/ruleEnabled.svg";
 import SIMManagementIconPath from "assets/icons/SIMManagement.svg";
@@ -116,6 +117,7 @@ export const svgs = {
     radioUnselected: RadioUnselectedIconPath,
     reconfigure: ReconfigureIconPath,
     refresh: RefreshIconPath,
+    return: ReturnIconPath,
     ruleDisabled: RuleDisabledIconPath,
     ruleEnabled: RuleEnabledIconPath,
     search: SearchIconPath,

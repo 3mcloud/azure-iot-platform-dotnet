@@ -857,6 +857,7 @@
     },
     "deployments": {
         "title": "Deployments",
+        "returnToDeployments": "Deployments",
         "flyouts": {
             "new": {
                 "contextMenuName": "New deployment",
@@ -896,7 +897,7 @@
                 },
                 "deploymentLimitText": "Your environment is currently limited to 100 active deployments.",
                 "active": "Active",
-                "inActive": "InActive",
+                "inActive": "Inactive",
                 "apply": "Apply",
                 "cancel": "Cancel",
                 "close": "Close",
@@ -934,6 +935,12 @@
                 "title": "Delete Deployment?",
                 "info": "Deleting '{{deploymentName}}' will stop this deployment from being applied to these devices. It may result in a lower priority deployment being applied.",
                 "gridInfo": "Deleting selected deployment(s) will stop deployment from being applied to the devices. It may result in a lower priority deployment being applied if any"
+            },
+            "statusChange": {
+                "contextMenuName": "StatusChange",
+                "title": "Update Deployment?",
+                "inactivate": "Do you want to inactivate the Deployment?",
+                "reactivate": "Do you want to re-activate the Deployment?"
             }
         },
         "grid": {
@@ -1036,7 +1043,8 @@
     },
     "modal": {
         "delete": "Delete",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "ok": "Ok"
     },
     "walkthrough": {
         "tabs": {
