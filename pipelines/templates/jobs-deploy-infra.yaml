@@ -683,7 +683,7 @@ jobs:
             az appconfig kv set --key Global:StorageAccount:Name                  --value $(storageAccountName) --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:CosmosDb:AccountName                 --value $(cosmosDbAccountName) --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:EventHub:Name                        --value $(eventHubName) --name $(appConfigurationName) --yes
-            az appconfig kv set --key Global:EventHub:RootKey                     --value $(az eventhubs namespace authorization-rule keys list --resource-group $() --namespace-name $(eventHubName) --name RootManageSharedAccessKey --query primaryKey --output tsv) --name $(appConfigurationName) --yes
+            az appconfig kv set --key Global:EventHub:RootKey                     --value $(az eventhubs namespace authorization-rule keys list --resource-group $(resourceGroupName) --namespace-name $(eventHubName) --name RootManageSharedAccessKey --query primaryKey --output tsv) --name $(appConfigurationName) --yes
             az appconfig kv set --key TenantManagerService:EventHubNamespaceName  --value $(eventHubName) --name $(appConfigurationName) --yes
             az appconfig kv set --key TenantManagerService:AutomationAccountName  --value $(automationName) --name $(appConfigurationName) --yes
 
