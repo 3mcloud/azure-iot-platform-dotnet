@@ -121,6 +121,14 @@ export class HttpClient {
                 timeout: options.timeout || Config.defaultAjaxTimeout,
             }));
     }
+
+    static getLocalStorageValue(key) {
+        return localStorage.getItem(key);
+    }
+
+    static setLocalStorageValue(key, value) {
+        localStorage.setItem(key, value);
+    }
 }
 
 // HttpClient helper methods

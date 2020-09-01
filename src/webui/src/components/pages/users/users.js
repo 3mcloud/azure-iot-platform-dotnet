@@ -23,6 +23,7 @@ import { svgs } from "utilities";
 import "./users.scss";
 import { SystemAdminNewContainer } from "./flyouts/systemAdminNew";
 import { SystemAdminDeleteContainer } from "./flyouts/systemAdminDelete";
+import { IdentityGatewayService } from "services";
 
 const closedFlyoutState = { openFlyoutName: undefined };
 
@@ -35,6 +36,10 @@ export class Users extends Component {
         };
 
         this.props.updateCurrentWindow("Users");
+    }
+
+    componentWillMount() {
+        IdentityGatewayService.VerifyAndRefreshCache();
     }
 
     componentWillReceiveProps(nextProps) {
