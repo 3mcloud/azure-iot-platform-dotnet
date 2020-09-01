@@ -354,26 +354,6 @@ export class DeviceJobProperties extends LinkedComponent {
         return nestedProperties;
     };
 
-    serializeNestedDeviceProperties = (parentName, value) => {
-        if (typeof value !== "object" || value === null) {
-            let prop = {};
-            prop[parentName] = value;
-            return prop;
-        }
-
-        let nestedProperties = {};
-        Object.entries(value).forEach(([key, value]) => {
-            nestedProperties = {
-                ...nestedProperties,
-                ...this.serializeNestedDeviceProperties(
-                    `${parentName}.${key}`,
-                    value
-                ),
-            };
-        });
-        return nestedProperties;
-    };
-
     render() {
         const {
                 t,
