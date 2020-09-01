@@ -10,7 +10,7 @@ jobs:
   - template: get-approval.yaml
     parameters:
       environmentName: ${{parameters.environmentName}}
-
+      
   - job: deploy
     displayName: Deploy
     variables:
@@ -93,3 +93,28 @@ jobs:
           serviceProbesEnabled: $(serviceProbesEnabled)
           helmVersion: $(helmVersion)
           imageTag: ${{parameters.imageTag}}
+
+
+  - job: addKey
+    displayName: Update Application Configuration with BuildNumber
+    variables:
+      - template: variables-all.yaml
+      - name: appConfigurationName
+        value: ${{parameters.applicationCode}}-$(appConfigurationPartialName)-${{parameters.environmentCategory}}
+
+    dependsOn:
+     - deploy
+    steps:
+      - task: AzureCLI@2
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          addSpnToEnvironment: true
+          scriptLocation: inlineScript
+          scriptType: bash
+          inlineScript: |-
+            set -Eeuxo pipefail
+            az appconfig kv set --key Global:BuildNumber --value $(Build.BuildId) --name $(appConfigurationName)  --yes
+
+
+
+

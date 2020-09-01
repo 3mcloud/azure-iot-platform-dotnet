@@ -5,7 +5,7 @@ import { Observable, Subject } from "rxjs";
 import moment from "moment";
 
 import Config from "app.config";
-import { TelemetryService } from "services";
+import { TelemetryService, IdentityGatewayService } from "services";
 import { permissions } from "services/models";
 import { compareByProperty, getIntervalParams, retryHandler } from "utilities";
 import { Grid, Cell } from "./grid";
@@ -79,6 +79,10 @@ export class Dashboard extends Component {
         this.panelsRefresh$ = new Subject();
 
         this.props.updateCurrentWindow("Dashboard");
+    }
+
+    componentWillMount() {
+        IdentityGatewayService.VerifyAndRefreshCache();
     }
 
     componentDidMount() {
