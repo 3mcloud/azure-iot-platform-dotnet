@@ -30,6 +30,8 @@ namespace Mmm.Iot.IdentityGateway.Services
 
         public override string TableName => "user";
 
+        public string TenantTableId => "tenant";
+
         public virtual async Task<UserTenantListModel> GetAllAsync(UserTenantInput input)
         {
             TableQuery<UserTenantModel> query = new TableQuery<UserTenantModel>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, input.UserId));
@@ -151,6 +153,21 @@ namespace Mmm.Iot.IdentityGateway.Services
             }
 
             return new UserListModel("GetAllUsers", allUsers);
+        }
+
+        public virtual async Task<TenantListModel> GetAllActiveTenantAsync()
+        {
+            try
+            {
+                // Load the tenant from table storage
+                TableQuery<TenantModel> query = new TableQuery<TenantModel>().Where(TableQuery.GenerateFilterConditionForBool("IsIotHubDeployed", QueryComparisons.Equal, true));
+                List<TenantModel> result = await this.TableStorageClient.QueryAsync<TenantModel>(this.TenantTableId, query);
+                return new TenantListModel(result);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to retrieve the active tenants from table storage", e);
+            }
         }
     }
 }

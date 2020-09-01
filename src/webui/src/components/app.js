@@ -24,12 +24,17 @@ import {
     PackagesContainer,
     DeploymentsRouter,
 } from "./pages";
+import { IdentityGatewayService } from "services";
 
 class App extends Component {
     constructor(props) {
         super(props);
 
         this.state = { openFlyout: "" };
+    }
+
+    componentWillMount() {
+        IdentityGatewayService.VerifyAndRefreshCache();
     }
 
     closeFlyout = () => this.setState({ openFlyout: "" });
