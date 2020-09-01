@@ -21,6 +21,7 @@ import "./packages.scss";
 import { DeviceGroupDropdownContainer as DeviceGroupDropdown } from "../../shell/deviceGroupDropdown";
 import { ManageDeviceGroupsBtnContainer as ManageDeviceGroupsBtn } from "../../shell/manageDeviceGroupsBtn";
 import { PackageJSONContainer } from "./flyouts/packageJSON";
+import { IdentityGatewayService } from "services";
 
 const closedFlyoutState = { openFlyoutName: undefined };
 
@@ -47,6 +48,7 @@ export class Packages extends Component {
                 ),
             });
         }
+        IdentityGatewayService.VerifyAndRefreshCache();
     }
 
     componentWillReceiveProps(nextProps) {

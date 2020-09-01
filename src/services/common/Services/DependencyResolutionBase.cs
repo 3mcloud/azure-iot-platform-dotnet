@@ -15,6 +15,7 @@ using Mmm.Iot.Common.Services.Auth;
 using Mmm.Iot.Common.Services.Config;
 using Mmm.Iot.Common.Services.External.AppConfiguration;
 using Mmm.Iot.Common.Services.External.AsaManager;
+using Mmm.Iot.Common.Services.External.Azure;
 using Mmm.Iot.Common.Services.External.BlobStorage;
 using Mmm.Iot.Common.Services.External.CosmosDb;
 using Mmm.Iot.Common.Services.External.StorageAdapter;
@@ -55,6 +56,8 @@ namespace Mmm.Iot.Common.Services
             builder.RegisterType<TimeSeriesClient>().As<ITimeSeriesClient>().SingleInstance();
             builder.RegisterType<CloudTableClientFactory>().As<ICloudTableClientFactory>().SingleInstance();
             builder.RegisterType<TableStorageClient>().As<ITableStorageClient>().SingleInstance();
+            builder.RegisterType<AzureManagementClientFactory>().As<IAzureManagementClientFactory>().SingleInstance();
+            builder.RegisterType<AzureManagementClient>().As<IAzureManagementClient>().SingleInstance();
             builder.RegisterType<BlobStorageClient>().As<IBlobStorageClient>().SingleInstance();
             this.SetupCustomRules(builder);
             var container = builder.Build();

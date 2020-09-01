@@ -25,6 +25,7 @@ import { toSinglePropertyDiagnosticsModel } from "services/models";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
 
 import "./rules.scss";
+import { IdentityGatewayService } from "services";
 
 const closedFlyoutState = {
     openFlyoutName: "",
@@ -62,6 +63,7 @@ export class Rules extends Component {
                 ),
             });
         }
+        IdentityGatewayService.VerifyAndRefreshCache();
     }
 
     componentWillReceiveProps(nextProps) {

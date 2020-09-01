@@ -325,6 +325,15 @@ namespace Mmm.Iot.IoTHubManager.Services
                 }
             }
 
+            if (!string.IsNullOrWhiteSpace(deploymentFromStorage.DeviceGroupId) && string.IsNullOrWhiteSpace(deploymentFromStorage.DeviceGroupQuery))
+            {
+                var deviceGroup = await this.GetDeviceGroupAsync(deploymentFromStorage.DeviceGroupId);
+                if (deviceGroup != null)
+                {
+                    deploymentFromStorage.DeviceGroupQuery = JsonConvert.SerializeObject(deviceGroup.Conditions);
+                }
+            }
+
             await this.CreateAsync(deploymentFromStorage, userId, tenantId);
 
             await this.MarkDeploymentAsActive(deploymentId, userId);

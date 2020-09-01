@@ -5,7 +5,7 @@ import { Observable, Subject } from "rxjs";
 import moment from "moment";
 
 import Config from "app.config";
-import { TelemetryService } from "services";
+import { TelemetryService, IdentityGatewayService } from "services";
 import { permissions } from "services/models";
 import {
     compareByProperty,
@@ -95,6 +95,10 @@ export class Dashboard extends Component {
                 ),
             });
         }
+    }
+
+    componentWillMount() {
+        IdentityGatewayService.VerifyAndRefreshCache();
     }
 
     componentDidMount() {

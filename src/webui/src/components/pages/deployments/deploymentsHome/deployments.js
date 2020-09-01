@@ -28,6 +28,7 @@ import {
 } from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Balloon/Balloon";
 
 import "./deployments.scss";
+import { IdentityGatewayService } from "services";
 
 const closedFlyoutState = { openFlyoutName: undefined };
 
@@ -55,6 +56,7 @@ export class Deployments extends Component {
                 ),
             });
         }
+        IdentityGatewayService.VerifyAndRefreshCache();
     }
 
     componentWillReceiveProps(nextProps) {
