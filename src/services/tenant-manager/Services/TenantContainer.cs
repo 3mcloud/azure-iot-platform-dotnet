@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Logging;
 using Mmm.Iot.Common.Services.Exceptions;
 using Mmm.Iot.Common.Services.External.AppConfiguration;
@@ -22,6 +23,7 @@ namespace Mmm.Iot.TenantManager.Services
         private const string IotDatabaseId = "iot";
         private const string StorageAdapterDatabaseId = "pcs-storage";
         private const string TenantTableId = "tenant";
+        private const string TenantOperationTable = "tenantOperations";
         private const string UserTableId = "user";
         private const string UserSettingsTableId = "userSettings";
         private const string LastUsedSettingKey = "LastUsedTenant";
@@ -92,10 +94,9 @@ namespace Mmm.Iot.TenantManager.Services
 
             // Create a new tenant and save it to table storage
             var tenant = new TenantModel(tenantId);
+            tenant.IotHubName = iotHubName;
+            tenant.DpsName = dpsName;
             await this.tableStorageClient.InsertAsync<TenantModel>(TenantTableId, tenant);
-
-            // kick off provisioning runbooks
-            await this.runbookHelper.CreateIotHub(tenantId, iotHubName, dpsName);
 
             // Give the requesting user an admin role to the new tenant
             try
@@ -238,29 +239,41 @@ namespace Mmm.Iot.TenantManager.Services
             string iotHubName = this.FormatResourceName(this.iotHubNameFormat, tenantId);
             string dpsName = this.FormatResourceName(this.dpsNameFormat, tenantId);
 
-            // trigger delete iothub runbook
+            // trigger delete iothub
             try
             {
-                await this.runbookHelper.DeleteIotHub(tenantId, iotHubName, dpsName);
+                var result = await this.tableStorageClient.InsertAsync(TenantOperationTable, new TenantOperationModel(tenantId, TenantOperation.IoTHubDeletion, iotHubName));
                 deletionRecord["iotHub"] = true;
             }
             catch (Exception e)
             {
-                this.logger.LogInformation(e, "Unable to successfully trigger Delete IoTHub Runbook for tenant {tenantId}", tenantId);
+                this.logger.LogInformation(e, "Unable to successfully add Delete IoTHub Operation for tenant {tenantId}", tenantId);
                 deletionRecord["iotHub"] = false;
+            }
+
+            // trigger delete dps
+            try
+            {
+                var result = await this.tableStorageClient.InsertAsync(TenantOperationTable, new TenantOperationModel(tenantId, TenantOperation.DpsDeletion, dpsName));
+                deletionRecord["dps"] = true;
+            }
+            catch (Exception e)
+            {
+                this.logger.LogInformation(e, "Unable to successfully add Delete IoTHub Operation for tenant {tenantId}", tenantId);
+                deletionRecord["dps"] = false;
             }
 
             string saJobName = this.FormatResourceName(this.streamAnalyticsNameFormat, tenantId);
 
-            // trigger delete SA runbook
+            // trigger job deletion
             try
             {
-                await this.runbookHelper.DeleteAlerting(tenantId, saJobName);
+                await this.tableStorageClient.InsertAsync(TenantOperationTable, new TenantOperationModel(tenantId, TenantOperation.SaJobDeletion, saJobName));
                 deletionRecord["alerting"] = true;
             }
             catch (Exception e)
             {
-                this.logger.LogInformation(e, "Unable to successfully trigger Delete Alerting runbook for tenant {tenantId}", tenantId);
+                this.logger.LogInformation(e, "Unable to successfully add Delete Alerting Operation for tenant {tenantId}", tenantId);
                 deletionRecord["alerting"] = false;
             }
 

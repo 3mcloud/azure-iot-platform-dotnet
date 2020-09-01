@@ -1,0 +1,349 @@
+{{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {{}},
+    "variables": {{}},
+    "resources": [
+        {{
+            "type": "Microsoft.StreamAnalytics/streamingjobs",
+            "apiVersion": "2016-03-01",
+            "name": "{0}",
+            "location": "{1}",
+            "properties": {{
+                "sku": {{
+                    "name": "Standard"
+                }},
+                "eventsOutOfOrderPolicy": "Adjust",
+                "outputErrorPolicy": "Stop",
+                "eventsOutOfOrderMaxDelayInSeconds": 10,
+                "eventsLateArrivalMaxDelayInSeconds": 5,
+                "dataLocale": "en-US",
+                "compatibilityLevel": "1.1"
+            }}
+        }},
+        {{
+            "type": "Microsoft.StreamAnalytics/streamingjobs/functions",
+            "apiVersion": "2016-03-01",
+            "name": "{0}/applyRuleFilter",
+            "dependsOn": [
+                "[resourceId('Microsoft.StreamAnalytics/streamingjobs', '{0}')]"
+            ],
+            "properties": {{
+                "type": "Scalar",
+                "properties": {{
+                    "inputs": [
+                        {{
+                            "dataType": "record"
+                        }}
+                    ],
+                    "output": {{
+                        "dataType": "any"
+                    }},
+                    "binding": {{
+                        "type": "Microsoft.StreamAnalytics/JavascriptUdf",
+                        "properties": {{
+                            "script": "function main(record) {{\n    let ruleFunction = new Function('record', record.__rulefilterjs);\n    return ruleFunction(record);\n}}"
+                        }}
+                    }}
+                }}
+            }}
+        }},
+        {{
+            "type": "Microsoft.StreamAnalytics/streamingjobs/functions",
+            "apiVersion": "2016-03-01",
+            "name": "{0}/flattenMeasurements",
+            "dependsOn": [
+                "[resourceId('Microsoft.StreamAnalytics/streamingjobs', '{0}')]"
+            ],
+            "properties": {{
+                "type": "Scalar",
+                "properties": {{
+                    "inputs": [
+                        {{
+                            "dataType": "record"
+                        }}
+                    ],
+                    "output": {{
+                        "dataType": "any"
+                    }},
+                    "binding": {{
+                        "type": "Microsoft.StreamAnalytics/JavascriptUdf",
+                        "properties": {{
+                            "script": "function main(record) {{\n\n    let flatRecord = {{\n        '__deviceid': record.__deviceid,\n        '__ruleid': record.__ruleid\n    }};\n\n    record.Measurements.forEach(function (item) {{\n        if (item.hasOwnProperty('MeasurementValue')) {{\n            flatRecord[item.MeasurementName] = item.MeasurementValue;\n        }}\n        else {{\n            flatRecord[item.MeasurementName] = {{\n                'avg': item.avg,\n                'max': item.max,\n                'min': item.min,\n                'count': item.count\n            }};\n        }}\n    }});\n\n    return flatRecord;\n}}"
+                        }}
+                    }}
+                }}
+            }}
+        }},
+        {{
+            "type": "Microsoft.StreamAnalytics/streamingjobs/functions",
+            "apiVersion": "2016-03-01",
+            "name": "{0}/getBatchedChannelIndex",
+            "dependsOn": [
+                "[resourceId('Microsoft.StreamAnalytics/streamingjobs', '{0}')]"
+            ],
+            "properties": {{
+                "type": "Scalar",
+                "properties": {{
+                    "inputs": [
+                        {{
+                            "dataType": "any"
+                        }},
+                        {{
+                            "dataType": "any"
+                        }}
+                    ],
+                    "output": {{
+                        "dataType": "any"
+                    }},
+                    "binding": {{
+                        "type": "Microsoft.StreamAnalytics/JavascriptUdf",
+                        "properties": {{
+                            "script": "function main(record, channelValue) {{\n    if (record.hasOwnProperty('channels')) {{\n        return record.channels.indexOf(channelValue);\n    }}\n    else {{\n        return -1;\n    }}\n}}"
+                        }}
+                    }}
+                }}
+            }}
+        }},
+        {{
+            "type": "Microsoft.StreamAnalytics/streamingjobs/functions",
+            "apiVersion": "2016-03-01",
+            "name": "{0}/getReceivedTime",
+            "dependsOn": [
+                "[resourceId('Microsoft.StreamAnalytics/streamingjobs', '{0}')]"
+            ],
+            "properties": {{
+                "type": "Scalar",
+                "properties": {{
+                    "inputs": [
+                        {{
+                            "dataType": "any"
+                        }},
+                        {{
+                            "dataType": "any"
+                        }},
+                        {{
+                            "dataType": "any"
+                        }}
+                    ],
+                    "output": {{
+                        "dataType": "any"
+                    }},
+                    "binding": {{
+                        "type": "Microsoft.StreamAnalytics/JavascriptUdf",
+                        "properties": {{
+                            "script": "function main(record, dataPoint, isBatched) {{\n    let iotHubTimestamp = record.EventEnqueuedUtcTime;\n    if (isBatched == 'true' && record.hasOwnProperty('data') && record.hasOwnProperty('channels')) {{\n        let lowerCaseChannels = record.channels.map(channel => channel.toLowerCase());\n        let timestampIndex = lowerCaseChannels.indexOf('unixts');\n        if (timestampIndex == -1) {{\n            return iotHubTimestamp;\n        }}\n        else {{\n            let timestampValue = dataPoint[timestampIndex];\n            let timestampMeasurementIndex = lowerCaseChannels.indexOf('unixtsmeasurement');\n\n            // default the measurement to seconds if we're using the data point timestamp and the measurement field was not given\n            let timestampMeasurement = timestampMeasurementIndex != -1\n                ? dataPoint[timestampMeasurementIndex]\n                : 's';\n\n            switch (timestampMeasurement) {{\n                case 's':  // seconds\n                    timestampValue *= 1000;  // convert to ms\n                    break;\n            }}\n\n            // The timestamp in the data point is a millisecond unix timestamp, and must be converted to 1970-01-01T00:00:00.000Z format\n            let receviedTime = new Date(timestampValue);\n            return receviedTime.toISOString();\n        }}\n    }}\n    else {{\n        return iotHubTimestamp;\n    }}\n}}"
+                        }}
+                    }}
+                }}
+            }}
+        }},
+        {{
+            "type": "Microsoft.StreamAnalytics/streamingjobs/functions",
+            "apiVersion": "2016-03-01",
+            "name": "{0}/getTelemetryDataArrayIfExists",
+            "dependsOn": [
+                "[resourceId('Microsoft.StreamAnalytics/streamingjobs', '{0}')]"
+            ],
+            "properties": {{
+                "type": "Scalar",
+                "properties": {{
+                    "inputs": [
+                        {{
+                            "dataType": "any"
+                        }},
+                        {{
+                            "dataType": "any"
+                        }}
+                    ],
+                    "output": {{
+                        "dataType": "array"
+                    }},
+                    "binding": {{
+                        "type": "Microsoft.StreamAnalytics/JavascriptUdf",
+                        "properties": {{
+                            "script": "function main(record, isBatched) {{\n    if (isBatched == 'true' && record.hasOwnProperty('data') && record.data instanceof Array) {{\n        return record.data\n    }}\n    else {{\n        // This array is exploded later in the ASA query\n        // As such, if this array does not exist and the current record does not contain batched data\n        // then we want to return a data array with a single data point whose value will not be used\n        // without the single data point, a non-batch data record cannot be exploded, and its true value will not be selected\n        return [[1]];\n    }}\n}}"
+                        }}
+                    }}
+                }}
+            }}
+        }},
+        {{
+            "type": "Microsoft.StreamAnalytics/streamingjobs/functions",
+            "apiVersion": "2016-03-01",
+            "name": "{0}/removeUnusedProperties",
+            "dependsOn": [
+                "[resourceId('Microsoft.StreamAnalytics/streamingjobs', '{0}')]"
+            ],
+            "properties": {{
+                "type": "Scalar",
+                "properties": {{
+                    "inputs": [
+                        {{
+                            "dataType": "record"
+                        }}
+                    ],
+                    "output": {{
+                        "dataType": "any"
+                    }},
+                    "binding": {{
+                        "type": "Microsoft.StreamAnalytics/JavascriptUdf",
+                        "properties": {{
+                            "script": "function main(record) {{\n    if (record) {{\n        record.IoTHub && delete record.IoTHub;\n        record.PartitionId && delete record.PartitionId;\n        record.EventEnqueuedUtcTime && delete record.EventEnqueuedUtcTime;\n        record.EventProcessedUtcTime && delete record.EventProcessedUtcTime;\n    }}\n    return record;\n}}"
+                        }}
+                    }}
+                }}
+            }}
+        }},
+        {{
+            "type": "Microsoft.StreamAnalytics/streamingjobs/inputs",
+            "apiVersion": "2016-03-01",
+            "name": "{0}/DeviceGroups",
+            "dependsOn": [
+                "[resourceId('Microsoft.StreamAnalytics/streamingjobs', '{0}')]"
+            ],
+            "properties": {{
+                "type": "Reference",
+                "datasource": {{
+                    "type": "Microsoft.Storage/Blob",
+                    "properties": {{
+                        "storageAccounts": [
+                            {{
+                                "accountName": "{2}",
+                                "accountKey": "{3}"
+                            }}
+                        ],
+                        "container": "{6}",
+                        "pathPattern": "alertinginput/{{date}}/{{time}}/devicegroups.csv",
+                        "dateFormat": "yyyy-MM-dd",
+                        "timeFormat": "HH-mm"
+                    }}
+                }},
+                "serialization": {{
+                    "type": "Csv",
+                    "properties": {{
+                        "fieldDelimiter": ",",
+                        "encoding": "UTF8"
+                    }}
+                }}
+            }}
+        }},
+        {{
+            "type": "Microsoft.StreamAnalytics/streamingjobs/inputs",
+            "apiVersion": "2016-03-01",
+            "name": "{0}/DeviceTelemetry",
+            "dependsOn": [
+                "[resourceId('Microsoft.StreamAnalytics/streamingjobs', '{0}')]"
+            ],
+            "properties": {{
+                "type": "Stream",
+                "datasource": {{
+                    "type": "Microsoft.Devices/IotHubs",
+                    "properties": {{
+                        "iotHubNamespace": "{4}",
+                        "sharedAccessPolicyName": "iothubowner",
+                        "sharedAccessPolicyKey": "{5}",
+                        "endpoint": "messages/events",
+                        "consumerGroupName": "sajobconsumergroup"
+                    }}
+                }},
+                "serialization": {{
+                    "type": "Json",
+                    "properties": {{
+                        "encoding": "UTF8"
+                    }}
+                }}
+            }}
+        }},
+        {{
+            "type": "Microsoft.StreamAnalytics/streamingjobs/inputs",
+            "apiVersion": "2016-03-01",
+            "name": "{0}/Rules",
+            "dependsOn": [
+                "[resourceId('Microsoft.StreamAnalytics/streamingjobs', '{0}')]"
+            ],
+            "properties": {{
+                "type": "Reference",
+                "datasource": {{
+                    "type": "Microsoft.Storage/Blob",
+                    "properties": {{
+                        "storageAccounts": [
+                            {{
+                                "accountName": "{2}",
+                                "accountKey": "{3}"
+                            }}
+                        ],
+                        "container": "{6}",
+                        "pathPattern": "alertinginput/{{date}}/{{time}}/rules.json",
+                        "dateFormat": "yyyy-MM-dd",
+                        "timeFormat": "HH-mm"
+                    }}
+                }},
+                "serialization": {{
+                    "type": "Json",
+                    "properties": {{
+                        "encoding": "UTF8"
+                    }}
+                }}
+            }}
+        }},
+        {{
+            "type": "Microsoft.StreamAnalytics/streamingjobs/outputs",
+            "apiVersion": "2016-03-01",
+            "name": "{0}/Actions",
+            "dependsOn": [
+                "[resourceId('Microsoft.StreamAnalytics/streamingjobs', '{0}')]"
+            ],
+            "properties": {{
+                "datasource": {{
+                    "type": "Microsoft.ServiceBus/EventHub",
+                    "properties": {{
+                        "eventHubName": "actions-eventhub",
+                        "serviceBusNamespace": "{7}",
+                        "sharedAccessPolicyName": "RootManageSharedAccessKey",
+                        "sharedAccessPolicyKey": "{8}"
+                    }}
+                }},
+                "serialization": {{
+                    "type": "Json",
+                    "properties": {{
+                        "encoding": "UTF8",
+                        "format": "LineSeparated"
+                    }}
+                }}
+            }}
+        }},
+        {{
+            "type": "Microsoft.StreamAnalytics/streamingjobs/outputs",
+            "apiVersion": "2016-03-01",
+            "name": "{0}/Alarms",
+            "dependsOn": [
+                "[resourceId('Microsoft.StreamAnalytics/streamingjobs', '{0}')]"
+            ],
+            "properties": {{
+                "datasource": {{
+                    "type": "Microsoft.Storage/DocumentDB",
+                    "properties": {{
+                        "accountId": "{9}",
+                        "accountKey": "{10}",
+                        "database": "iot",
+                        "collectionNamePattern": "alarms-{6}"
+                    }}
+                }}
+            }}
+        }},
+        {{
+            "name":"{0}/MyTransformation",
+            "type":"Microsoft.StreamAnalytics/streamingjobs/transformations",
+            "apiVersion": "2016-03-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.StreamAnalytics/streamingjobs', '{0}')]"
+            ],
+            "properties":{{
+                "streamingUnits":1,
+                "script":null,
+                "query":"WITH MessageData AS\n                (\n                    SELECT\n                        *,\n                        GetMetadataPropertyValue(DeviceTelemetry, '[User].[batchedTelemetry]') AS __isbatched,\n                        DeviceTelemetry.IotHub.ConnectionDeviceId AS __deviceId,\n                        udf.getTelemetryDataArrayIfExists(DeviceTelemetry, GetMetadataPropertyValue(DeviceTelemetry, '[User].[batchedTelemetry]')) AS __dataArray\n                    FROM\n                        DeviceTelemetry PARTITION BY PartitionId TIMESTAMP BY DeviceTelemetry.EventEnqueuedUtcTime\n                ),\n                ProcessedTelemetry AS\n                (\n                    SELECT\n                        *, -- This value is selected 'AS Message' When using ProcessedTelemetry later in the query\n                        Message.PartitionId,\n                        Message.__isBatched,\n                        Message.__deviceId,\n                        DataPoints.ArrayValue AS __batchedDataPoints,\n                        udf.getReceivedTime(Message, DataPoints.ArrayValue, Message.__isBatched) AS __receivedTime\n                    FROM\n                        MessageData Message\n                        CROSS APPLY GetArrayElements(Message.__dataArray) AS DataPoints\n                ),\n                TelemetryAndRules AS\n                (\n                    SELECT\n                        T.__deviceId,\n                        T.__receivedTime,\n                        T.PartitionId,\n                        R.Id as __ruleid,\n                        R.AggregationWindow,\n                        Fields.ArrayValue as MeasurementName,\n                        CASE \n                            WHEN T.__isBatched = 'true' THEN BatchedDataPoints.ArrayValue\n                            ELSE GetRecordPropertyValue(T.Message, Fields.ArrayValue)\n                        END AS MeasurementValue\n                    FROM\n                        ProcessedTelemetry T  -- T.Message represents the raw message selected from the DeviceTelemetry input\n                        JOIN DeviceGroups G ON T.__deviceid = G.DeviceId\n                        JOIN Rules R ON R.GroupId = G.GroupId\n                        CROSS APPLY GetArrayElements(R.Fields) AS Fields\n                        CROSS APPLY GetArrayElements(T.__batchedDataPoints) AS BatchedDataPoints\n                    WHERE\n                        T.__isBatched != 'true'\n                        OR T.__isBatched is null\n                        OR BatchedDataPoints.ArrayIndex = udf.getBatchedChannelIndex(T.Message, Fields.ArrayValue)\n                ),\n                AggregateMultipleWindows AS (\n                    SELECT\n                        TR.__deviceid,\n                        TR.__ruleid,\n                        TR.PartitionId,\n                        TR.MeasurementName,\n                        AVG(TR.MeasurementValue),\n                        MAX(TR.MeasurementValue),\n                        MIN(TR.MeasurementValue),\n                        COUNT(TR.MeasurementValue),\n                        MAX(DATEDIFF(millisecond, '1970-01-01T00:00:00Z', TR.__receivedtime)) as __lastReceivedTime\n                    FROM\n                        TelemetryAndRules TR PARTITION BY PartitionId\n                    WHERE\n                        TR.AggregationWindow = 'tumblingwindow1minutes'\n                    GROUP BY\n                        TR.__deviceid,\n                        TR.__ruleid,\n                        TR.PartitionId,\n                        TR.MeasurementName,\n                        TumblingWindow(minute, 1)\n                \n                    UNION\n                \n                    SELECT\n                        TR.__deviceid,\n                        TR.__ruleid,\n                        TR.PartitionId,\n                        TR.MeasurementName,\n                        AVG(TR.MeasurementValue),\n                        MAX(TR.MeasurementValue),\n                        MIN(TR.MeasurementValue),\n                        COUNT(TR.MeasurementValue),\n                        MAX(DATEDIFF(millisecond, '1970-01-01T00:00:00Z', TR.__receivedtime)) as __lastReceivedTime\n                    FROM\n                        TelemetryAndRules TR PARTITION BY PartitionId\n                    WHERE\n                        TR.AggregationWindow = 'tumblingwindow5minutes'\n                    GROUP BY\n                        TR.__deviceid,\n                        TR.__ruleid,\n                        TR.PartitionId,\n                        TR.MeasurementName,\n                        TumblingWindow(minute, 5)\n                \n                    UNION\n                \n                    SELECT\n                        TR.__deviceid,\n                        TR.__ruleid,\n                        TR.PartitionId,\n                        TR.MeasurementName,\n                        AVG(TR.MeasurementValue),\n                        MAX(TR.MeasurementValue),\n                        MIN(TR.MeasurementValue),\n                        COUNT(TR.MeasurementValue),\n                        MAX(DATEDIFF(millisecond, '1970-01-01T00:00:00Z', TR.__receivedtime)) as __lastReceivedTime\n                    FROM\n                        TelemetryAndRules TR PARTITION BY PartitionId\n                    WHERE\n                        TR.AggregationWindow = 'tumblingwindow10minutes'\n                    GROUP BY\n                        TR.__deviceid,\n                        TR.__ruleid,\n                        TR.PartitionId,\n                        TR.MeasurementName,\n                        TumblingWindow(minute, 10)\n                ),\n                GroupAggregatedMeasurements AS (\n                    SELECT\n                        AM.__deviceid,\n                        AM.__ruleid,\n                        AM.PartitionId,\n                        AM.__lastReceivedTime,\n                        Collect() AS Measurements\n                    FROM\n                        AggregateMultipleWindows AM PARTITION BY PartitionId\n                    GROUP BY\n                        AM.__deviceid,\n                        AM.__ruleid,\n                        AM.PartitionId,\n                        AM.__lastReceivedTime,\n                        System.Timestamp\n                ),\n                FlatAggregatedMeasurements AS (\n                    SELECT\n                        GA.__deviceid,\n                        GA.__ruleid,\n                        GA.__lastReceivedTime,\n                        udf.flattenMeasurements(GA) AS __aggregates\n                    FROM\n                        GroupAggregatedMeasurements GA PARTITION BY PartitionId\n                ),\n                CombineAggregatedMeasurementsAndRules AS (\n                    SELECT\n                        FA.__deviceid,\n                        FA.__ruleid,\n                        FA.__aggregates,\n                        FA.__lastReceivedTime,\n                        R.Description as __description,\n                        R.Severity as __severity,\n                        R.Actions as __actions,\n                        R.__rulefilterjs as __rulefilterjs\n                    FROM\n                        FlatAggregatedMeasurements FA PARTITION BY PartitionId\n                        JOIN Rules R ON FA.__ruleid = R.Id\n                ),\n                ApplyAggregatedRuleFilters AS\n                (\n                    SELECT\n                        CMR.*\n                    FROM\n                        CombineAggregatedMeasurementsAndRules CMR PARTITION BY PartitionId\n                    WHERE TRY_CAST(udf.applyRuleFilter(CMR) AS bigint) = 1\n                ),\n                GroupInstantMeasurements AS (\n                    SELECT\n                        TR.__deviceid,\n                        TR.__ruleid,\n                        TR.PartitionId,\n                        TR.__receivedTime,\n                        Collect() AS Measurements\n                    FROM\n                        TelemetryAndRules TR PARTITION BY PartitionId\n                    WHERE\n                        TR.AggregationWindow = 'instant'\n                    GROUP BY\n                        TR.__deviceid,\n                        TR.__ruleid,\n                        TR.PartitionId,\n                        TR.__receivedTime,\n                        System.Timestamp\n                ),\n                FlatInstantMeasurements AS (\n                    SELECT\n                        GI.__deviceid,\n                        GI.__ruleid,\n                        GI.__receivedTime,\n                        udf.flattenMeasurements(GI) AS __aggregates\n                    FROM\n                        GroupInstantMeasurements GI PARTITION BY PartitionId\n                ),\n                CombineInstantMeasurementsAndRules as\n                (\n                    SELECT\n                        FI.__deviceid,\n                        FI.__ruleid,\n                        FI.__receivedtime,\n                        FI.__aggregates,\n                        R.Description as __description,\n                        R.Severity as __severity,\n                        R.Actions as __actions,\n                        R.__rulefilterjs as __rulefilterjs\n                    FROM\n                        FlatInstantMeasurements FI PARTITION BY PartitionId\n                        JOIN Rules R ON FI.__ruleid = R.Id\n                ),\n                ApplyInstantRuleFilters as\n                (\n                    SELECT\n                        CI.*\n                    FROM\n                        CombineInstantMeasurementsAndRules CI PARTITION BY PartitionId\n                    WHERE TRY_CAST(udf.applyRuleFilter(CI) AS bigint) = 1\n                ),\n                CombineAlarms as\n                (\n                    SELECT\n                        1 as _schemaVersion,\n                        'alarm' as _schema,\n                        'open' as status,\n                        '1Rule-1Device-NMessage' as logic,\n                        DATEDIFF(millisecond, '1970-01-01T00:00:00Z', System.Timestamp) as created,\n                        DATEDIFF(millisecond, '1970-01-01T00:00:00Z', System.Timestamp) as modified,\n                        AA.__description as ruleDescription,\n                        AA.__severity as ruleSeverity,\n                        AA.__actions as ruleActions,\n                        AA.__ruleid as ruleId,\n                        AA.__deviceId as deviceId,\n                        AA.__aggregates,\n                        AA.__lastReceivedTime as deviceMsgReceived\n                    FROM\n                        ApplyAggregatedRuleFilters AA PARTITION BY PartitionId\n                \n                    UNION\n                \n                    SELECT\n                        1 as _schemaVersion,\n                        'alarm' as _schema,\n                        'open' as status,\n                        '1Rule-1Device-NMessage' as logic,\n                        DATEDIFF(millisecond, '1970-01-01T00:00:00Z', System.Timestamp) as created,\n                        DATEDIFF(millisecond, '1970-01-01T00:00:00Z', System.Timestamp) as modified,\n                        AI.__description as ruleDescription,\n                        AI.__severity as ruleSeverity,\n                        AI.__actions as ruleActions,\n                        AI.__ruleid as ruleId,\n                        AI.__deviceId as deviceId,\n                        AI.__aggregates,\n                        DATEDIFF(millisecond, '1970-01-01T00:00:00Z', AI.__receivedTime) as deviceMsgReceived\n                    FROM\n                        ApplyInstantRuleFilters AI PARTITION BY PartitionId\n                )\n                \n                SELECT\n                    CA._schemaVersion,\n                    CA._schema,\n                    CA.status,\n                    CA.logic,\n                    CA.created,\n                    CA.modified,\n                    CA.ruleDescription,\n                    CA.ruleSeverity,\n                    CA.ruleId,\n                    CA.deviceId,\n                    CA.deviceMsgReceived\n                INTO\n                    Alarms\n                FROM\n                    CombineAlarms CA PARTITION BY PartitionId\n                \n                SELECT\n                    CA.created,\n                    CA.modified,\n                    CA.ruleDescription,\n                    CA.ruleSeverity,\n                    CA.ruleId,\n                    CA.ruleActions,\n                    CA.deviceId,\n                    CA.deviceMsgReceived\n                INTO\n                    Actions\n                FROM\n                    CombineAlarms CA PARTITION BY __partitionid\n                WHERE\n                    CA.ruleActions IS NOT NULL"
+            }}
+        }}
+    ]
+}}
