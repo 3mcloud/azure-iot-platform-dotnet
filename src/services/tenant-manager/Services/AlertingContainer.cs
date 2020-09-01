@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Mmm.Iot.Common.Services.Exceptions;
 using Mmm.Iot.Common.Services.External.AppConfiguration;
 using Mmm.Iot.Common.Services.External.CosmosDb;
+using Mmm.Iot.Common.Services.External.TableStorage;
 using Mmm.Iot.TenantManager.Services.Helpers;
 using Mmm.Iot.TenantManager.Services.Models;
 
@@ -25,8 +26,10 @@ namespace Mmm.Iot.TenantManager.Services
         private readonly IRunbookHelper runbookHelper;
         private readonly IStorageClient cosmosDb;
         private readonly IAppConfigurationClient appConfig;
+        private readonly ITableStorageClient tableStorageClient;
 
         public AlertingContainer(
+            ITableStorageClient tableStorageClient,
             ITenantContainer tenantContainer,
             IStreamAnalyticsHelper streamAnalyticsHelper,
             IRunbookHelper runbookHelper,
@@ -38,6 +41,7 @@ namespace Mmm.Iot.TenantManager.Services
             this.runbookHelper = runbookHelper;
             this.cosmosDb = cosmosDb;
             this.appConfig = appConfig;
+            this.tableStorageClient = tableStorageClient;
         }
 
         public bool SaJobExists(StreamAnalyticsJobModel saJobModel)
@@ -79,7 +83,10 @@ namespace Mmm.Iot.TenantManager.Services
 
             TenantModel tenant = await this.GetTenantFromContainerAsync(tenantId);
             string saJobName = string.Format(SaNameFormat, tenantId.Substring(0, 8));
-            await this.runbookHelper.CreateAlerting(tenantId, saJobName, tenant.IotHubName);
+
+            await this.tableStorageClient.InsertAsync(
+                "tenantOperations",
+                new TenantOperationModel(tenantId, TenantOperation.SaJobCreation, saJobName));
 
             return new StreamAnalyticsJobModel
             {
@@ -93,7 +100,12 @@ namespace Mmm.Iot.TenantManager.Services
         public async Task<StreamAnalyticsJobModel> RemoveAlertingAsync(string tenantId)
         {
             TenantModel tenant = await this.GetTenantFromContainerAsync(tenantId);
-            await this.runbookHelper.DeleteAlerting(tenantId, tenant.SAJobName);
+            await this.tableStorageClient.InsertAsync(
+                "tenantOperations",
+                new TenantOperationModel(tenantId, TenantOperation.SaJobDeletion, tenant.SAJobName));
+            tenant.SAJobName = null;
+            await this.tableStorageClient.InsertOrMergeAsync("tenant", tenant);
+
             return new StreamAnalyticsJobModel
             {
                 TenantId = tenant.TenantId,

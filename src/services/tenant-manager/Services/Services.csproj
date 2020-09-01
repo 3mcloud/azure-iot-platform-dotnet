@@ -1,14 +1,29 @@
-<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <AssemblyName>Mmm.Iot.TenantManager.Services</AssemblyName>
-        <RootNamespace>$(AssemblyName)</RootNamespace>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Azure.Management.Automation" Version="2.0.7" />
-        <PackageReference Include="Microsoft.Azure.Management.StreamAnalytics" Version="2.1.0"/>
-        <PackageReference Include="Microsoft.Rest.ClientRuntime.Azure.Authentication" Version="2.4.0"/>
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\..\common\Services\Services.csproj" />
-    </ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Mmm.Iot.TenantManager.Services</AssemblyName>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Management.Automation" Version="2.0.7" />
+    <PackageReference Include="Microsoft.Azure.Management.StreamAnalytics" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Rest.ClientRuntime.Azure.Authentication" Version="2.4.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\common\Services\Services.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Tasks\ARMTemplates\iothub.json">
+      <Link>Tasks\ARMTemplates\iothub.json</Link>
+      <LogicalName>iothub.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tasks\ARMTemplates\dps.json">
+      <Link>Tasks\ARMTemplates\dps.json</Link>
+      <LogicalName>dps.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tasks\ARMTemplates\sajob.json">
+      <Link>Tasks\ARMTemplates\sajob.json</Link>
+      <LogicalName>sajob.json</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

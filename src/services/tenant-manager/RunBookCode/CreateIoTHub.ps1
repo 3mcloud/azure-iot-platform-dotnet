@@ -152,6 +152,13 @@ $iotHubTemplate = @"
                 }
             ]
         }
+    },
+    "storageEndpoints": {
+        "$$default": {
+            "sasTtlAsIso8601": "PT1H",
+            "connectionString": "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=crsliotstorageacctdev;AccountKey=****",
+            "containerName": "209d7f79-39aa-4e2a-8e9c-56f04f7633f9-iot-file-upload"
+        }
     }
 }
 "@
