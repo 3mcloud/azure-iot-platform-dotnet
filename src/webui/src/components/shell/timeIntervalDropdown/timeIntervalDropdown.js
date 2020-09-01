@@ -38,7 +38,7 @@ export class TimeIntervalDropdown extends Component {
     render() {
         let filteredOptions = [];
         let { limitExceeded, activeDeviceGroup } = this.props;
-        if (hasValueChanged && currentDeviceGroup == activeDeviceGroup) {
+        if (hasValueChanged && currentDeviceGroup === activeDeviceGroup) {
             if (limitExceeded) {
                 maxLimitValue = currentValue;
             }
