@@ -95,9 +95,6 @@ export class Dashboard extends Component {
                 ),
             });
         }
-    }
-
-    componentWillMount() {
         IdentityGatewayService.VerifyAndRefreshCache();
     }
 
