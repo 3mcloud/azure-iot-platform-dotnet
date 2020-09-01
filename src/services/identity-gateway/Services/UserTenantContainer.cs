@@ -169,35 +169,5 @@ namespace Mmm.Iot.IdentityGateway.Services
                 throw new Exception("Unable to retrieve the active tenants from table storage", e);
             }
         }
-
-        public async Task<TenantListModel> GetAllActiveTenantAsync()
-        {
-            try
-            {
-                // Load the tenant from table storage
-                TableQuery<TenantModel> query = new TableQuery<TenantModel>().Where(TableQuery.GenerateFilterConditionForBool("IsIotHubDeployed", QueryComparisons.Equal, true));
-                List<TenantModel> result = await this.TableStorageClient.QueryAsync<TenantModel>(this.TenantTableId, query);
-                return new TenantListModel(result);
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Unable to retrieve the active tenants from table storage", e);
-            }
-        }
-
-        public async Task<TenantListModel> GetAllActiveTenantAsync()
-        {
-            try
-            {
-                // Load the tenant from table storage
-                TableQuery<TenantModel> query = new TableQuery<TenantModel>().Where(TableQuery.GenerateFilterConditionForBool("IsIotHubDeployed", QueryComparisons.Equal, true));
-                List<TenantModel> result = await this.TableStorageClient.QueryAsync<TenantModel>(this.TenantTableId, query);
-                return new TenantListModel(result);
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Unable to retrieve the active tenants from table storage", e);
-            }
-        }
     }
 }
