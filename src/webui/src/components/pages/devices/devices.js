@@ -26,6 +26,7 @@ import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "component
 import { svgs } from "utilities";
 
 import "./devices.scss";
+import { IdentityGatewayService } from "services";
 
 const closedFlyoutState = { openFlyoutName: undefined };
 
@@ -42,6 +43,10 @@ export class Devices extends Component {
         };
 
         this.props.updateCurrentWindow("Devices");
+    }
+
+    componentWillMount() {
+        IdentityGatewayService.VerifyAndRefreshCache();
     }
 
     componentWillReceiveProps(nextProps) {
