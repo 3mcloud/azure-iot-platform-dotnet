@@ -7,6 +7,7 @@ import {
     toSinglePropertyDiagnosticsModel,
     packagesEnum,
 } from "services/models";
+import { IoTHubManagerService } from "services";
 import {
     AjaxError,
     Btn,
@@ -116,6 +117,22 @@ export class DeploymentDetails extends Component {
         this.props.history.push("/deployments");
     };
 
+    downloadFile = () => {
+        IoTHubManagerService.getDeploymentReport(
+            this.props.match.params.id,
+            this.props.match.params.isLatest
+        ).subscribe((response) => {
+            var blob = new Blob([response.response], {
+                type: response.response.type,
+            });
+            let url = window.URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = "DeploymentReport.xlsx";
+            a.click();
+        });
+    };
+
     render() {
         const {
                 t,
@@ -172,6 +189,13 @@ export class DeploymentDetails extends Component {
                                 {t("deployments.modals.delete.contextMenuName")}
                             </Btn>
                         </Protected>
+                        <Btn
+                            svg={svgs.upload}
+                            className="download-deploymentStatus"
+                            onClick={this.downloadFile}
+                        >
+                            {t("deployments.details.downloadReport")}
+                        </Btn>
                         <RefreshBar
                             refresh={() => fetchDeployment(id, isLatest)}
                             time={lastUpdated}

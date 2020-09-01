@@ -162,8 +162,6 @@
                     }
                 }
             }
-
-
         }
     },
     "helpFlyout": {
@@ -238,12 +236,12 @@
     "deviceGroupsFlyout": {
         "actions": "Actions",
         "cancel": "Cancel",
-        "reset":"Reset",
+        "reset": "Reset",
         "title": "Manage device groups",
         "create": "Create new device group",
         "deviceGroupName": "Device group name",
-        "pinned":"Pinned Device Group",
-        "unpinned":"Unpinned Device Group",
+        "pinned": "Pinned Device Group",
+        "unpinned": "Unpinned Device Group",
         "new": "New device group",
         "edit": "Edit a device group",
         "name": "Name",
@@ -888,11 +886,11 @@
                     "name": "name greater than 50 characters"
                 }
             },
-            "status":{
+            "status": {
                 "title": "Deployment Status",
                 "relatedDeployment": {
                     "title": "Related Deployments",
-                    "noRelatedDeploymentText":"No Related deployments exist for the selected deployment."
+                    "noRelatedDeploymentText": "No Related deployments exist for the selected deployment."
                 },
                 "deploymentLimitText": "Your environment is currently limited to 100 active deployments.",
                 "active": "Active",
@@ -926,7 +924,8 @@
                 "lastMessage": "Last Message",
                 "start": "Start",
                 "end": "End"
-            }
+            },
+            "downloadReport": "Download"
         },
         "modals": {
             "delete": {

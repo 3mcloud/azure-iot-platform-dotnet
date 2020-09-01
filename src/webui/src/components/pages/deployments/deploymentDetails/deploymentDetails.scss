@@ -73,3 +73,7 @@
     .deployment-details-devices-affected { border-color: themed('colorHeaderBorderColor'); }
   }
 }
+
+.download-deploymentStatus > .svg-container.btn-icon{
+  transform: rotate(180deg) !important;
+}

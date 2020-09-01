@@ -4,12 +4,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
 using Mmm.Iot.Common.Services;
 using Mmm.Iot.Common.Services.Exceptions;
 using Mmm.Iot.Common.Services.Filters;
+using Mmm.Iot.Common.Services.Helpers;
 using Mmm.Iot.IoTHubManager.Services;
 using Mmm.Iot.IoTHubManager.Services.Models;
 using Mmm.Iot.IoTHubManager.WebService.Models;
@@ -119,6 +124,35 @@ namespace Mmm.Iot.IoTHubManager.WebService.Controllers
             return new DeviceListApiModel(await this.deployments.GetDeviceListAsync(id, query, isLatest));
         }
 
+        [HttpGet("Report/{id}")]
+        [Authorize("ReadAll")]
+        public async Task<IActionResult> ExportDeploymentReport(string id, [FromQuery] bool isLatest = true)
+        {
+            List<DeviceDeploymentStatus> deviceDeploymentStatuses = new List<DeviceDeploymentStatus>();
+
+            var deploymentStatuses = await this.deployments.GetDeploymentStatusReport(id, isLatest);
+
+            if (deploymentStatuses != null && deploymentStatuses.Count > 0)
+            {
+                foreach (var deploymentStatus in deploymentStatuses)
+                {
+                    deviceDeploymentStatuses.Add(new DeviceDeploymentStatus(deploymentStatus));
+                }
+            }
+
+            var stream = new MemoryStream();
+
+            using (SpreadsheetDocument package = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook))
+            {
+                this.CreatePartsForExcel(package, deviceDeploymentStatuses);
+            }
+
+            stream.Position = 0;
+            string excelName = $"DeploymentReport-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+
+            return this.File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
+        }
+
         private async Task HydrateDeploymentWithPackageDetails(DeploymentApiModel deployment)
         {
             var package = await this.deployments.GetPackageAsync(deployment.PackageId);
@@ -147,6 +181,67 @@ namespace Mmm.Iot.IoTHubManager.WebService.Controllers
 
             deployment.DeviceGroupName = deviceGroup.DisplayName;
             deployment.DeviceGroupQuery = JsonConvert.SerializeObject(deviceGroup.Conditions);
+        }
+
+        private void CreatePartsForExcel(SpreadsheetDocument document, List<DeviceDeploymentStatus> data)
+        {
+            SheetData partSheetData = this.GenerateSheetdataForDetails(data);
+
+            WorkbookPart workbookPart = document.AddWorkbookPart();
+            this.GenerateWorkbookPartContent(workbookPart);
+
+            WorkbookStylesPart workbookStylesPart = workbookPart.AddNewPart<WorkbookStylesPart>("rId3");
+            OpenXMLHelper.GenerateWorkbookStylesPartContent(workbookStylesPart);
+
+            WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>("rId1");
+            OpenXMLHelper.GenerateWorksheetPartContent(worksheetPart, partSheetData);
+        }
+
+        private void GenerateWorkbookPartContent(WorkbookPart workbookPart)
+        {
+            Workbook workbook = new Workbook();
+            Sheets sheets = new Sheets();
+            Sheet sheet = new Sheet() { Name = "Deployment Report", SheetId = (UInt32Value)1U, Id = "rId1" };
+            sheets.Append(sheet);
+            workbook.Append(sheets);
+            workbookPart.Workbook = workbook;
+        }
+
+        private SheetData GenerateSheetdataForDetails(List<DeviceDeploymentStatus> data)
+        {
+            SheetData sheetData = new SheetData();
+            sheetData.Append(this.CreateHeaderRowForExcel());
+
+            foreach (DeviceDeploymentStatus testmodel in data)
+            {
+                Row partsRows = this.GenerateRowForChildPartDetail(testmodel);
+                sheetData.Append(partsRows);
+            }
+
+            return sheetData;
+        }
+
+        private Row CreateHeaderRowForExcel()
+        {
+            Row workRow = new Row();
+            workRow.Append(OpenXMLHelper.CreateCell("Name", 2U));
+            workRow.Append(OpenXMLHelper.CreateCell("Deployment Status", 2U));
+            workRow.Append(OpenXMLHelper.CreateCell("Firmware", 2U));
+            workRow.Append(OpenXMLHelper.CreateCell("Start", 2U));
+            workRow.Append(OpenXMLHelper.CreateCell("End", 2U));
+            return workRow;
+        }
+
+        private Row GenerateRowForChildPartDetail(DeviceDeploymentStatus testmodel)
+        {
+            Row tRow = new Row();
+            tRow.Append(OpenXMLHelper.CreateCell(testmodel.Name));
+            tRow.Append(OpenXMLHelper.CreateCell(testmodel.DeploymentStatus));
+            tRow.Append(OpenXMLHelper.CreateCell(testmodel.Firmware));
+            tRow.Append(OpenXMLHelper.CreateCell(testmodel.Start));
+            tRow.Append(OpenXMLHelper.CreateCell(testmodel.End));
+
+            return tRow;
         }
     }
 }
