@@ -364,7 +364,7 @@ namespace Mmm.Iot.IoTHubManager.Services
             List<DeviceDeploymentStatusServiceModel> deviceDeploymentStatuses = new List<DeviceDeploymentStatusServiceModel>();
             var deploymentDetails = await this.GetAsync(id, true, isLatest);
 
-            if (deploymentDetails != null && deploymentDetails.DeploymentMetrics != null && deploymentDetails.DeploymentMetrics.DeviceStatuses != null)
+            if (deploymentDetails != null && deploymentDetails.DeploymentMetrics != null && deploymentDetails.DeploymentMetrics.DeviceStatuses != null && deploymentDetails.DeploymentMetrics.DeviceStatuses.Keys.Count > 0)
             {
                 string deviceQuery = @"deviceId IN [{0}]";
                 var deviceIdsQuery = string.Join(",", deploymentDetails.DeploymentMetrics.DeviceStatuses.Keys.Select(d => $"'{d}'"));
