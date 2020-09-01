@@ -1,0 +1,116 @@
+{{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {{
+    }},
+    "resources": [
+        {{
+            "apiVersion": "2020-04-01",
+            "type": "Microsoft.Devices/IotHubs",
+            "name": "{0}",
+            "location": "{1}",
+            "sku": {{
+                "name": "S1",
+                "tier": "Standard",
+                "capacity":1
+            }},
+            "properties": {{
+                "routing": {{
+                    "enrichments": [
+                        {{
+                            "key": "tenant",
+                            "value": "{4}",
+                            "endpointNames": [
+                                "event-hub-telemetry",
+                                "event-hub-twin-change",
+                                "event-hub-lifecycle"
+                            ]
+                        }},
+                        {{
+                            "key": "batchedTelemetry",
+                            "value": "{5}",
+                            "endpointNames": [
+                                "event-hub-telemetry",
+                                "events"
+                            ]
+                        }}
+                    ],
+                    "endpoints": {{
+                        "serviceBusQueues": [
+
+                        ],
+                        "serviceBusTopics": [
+
+                        ],
+                        "eventHubs": [
+                            {{
+                                "connectionString": "{6}",
+                                "name": "event-hub-telemetry",
+                                "subscriptionId": "{2}",
+                                "resourceGroup": "{3}"
+                            }},
+                            {{
+                                "connectionString": "{7}",
+                                "name": "event-hub-twin-change",
+                                "subscriptionId": "{2}",
+                                "resourceGroup": "{3}"
+                            }},
+                            {{
+                                "connectionString": "{8}",
+                                "name": "event-hub-lifecycle",
+                                "subscriptionId": "{2}",
+                                "resourceGroup": "{3}"
+                            }}
+                        ],
+                        "storageContainers": []
+                    }},
+                    "routes": [
+                        {{
+                            "name": "telemetry",
+                            "source": "DeviceMessages",
+                            "condition": "true",
+                            "endpointNames": [
+                                "event-hub-telemetry"
+                            ],
+                            "isEnabled": true
+                        }},
+                        {{
+                            "name": "lifecycle",
+                            "source": "DeviceLifecycleEvents",
+                            "condition": "true",
+                            "endpointNames": [
+                                "event-hub-lifecycle"
+                            ],
+                            "isEnabled": true
+                        }},
+                        {{
+                            "name": "twin-change",
+                            "source": "TwinChangeEvents",
+                            "condition": "true",
+                            "endpointNames": [
+                                "event-hub-twin-change"
+                            ],
+                            "isEnabled": true
+                        }},
+                        {{
+                            "name": "events",
+                            "source": "DeviceMessages",
+                            "condition": "true",
+                            "endpointNames": [
+                                "events"
+                            ],
+                            "isEnabled": true
+                        }}
+                    ]
+                }},
+                "storageEndpoints": {{
+                    "$default": {{
+                        "sasTtlAsIso8601": "PT1H",
+                        "connectionString": "{9}",
+                        "containerName": "{4}-iot-file-upload"
+                    }}
+                }}
+            }}
+        }}
+    ]
+}}
