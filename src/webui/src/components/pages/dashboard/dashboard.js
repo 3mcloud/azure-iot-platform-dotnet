@@ -521,6 +521,8 @@ export class Dashboard extends Component {
                         <TimeIntervalDropdown
                             onChange={this.props.updateTimeInterval}
                             value={timeInterval}
+                            limitExceeded={telemetryQueryExceededLimit}
+                            activeDeviceGroup={activeDeviceGroup}
                             t={t}
                         />
                         <RefreshBar
