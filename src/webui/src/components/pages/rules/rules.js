@@ -20,7 +20,7 @@ import {
     SearchInput,
 } from "components/shared";
 import { NewRuleFlyout } from "./flyouts";
-import { svgs } from "utilities";
+import { svgs, getDeviceGroupParam } from "utilities";
 import { toSinglePropertyDiagnosticsModel } from "services/models";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
 
@@ -39,6 +39,7 @@ export class Rules extends Component {
         this.state = {
             ...closedFlyoutState,
             contextBtns: null,
+            selectedDeviceGroupId: undefined,
         };
 
         if (!this.props.lastUpdated && !this.props.error) {
@@ -55,6 +56,13 @@ export class Rules extends Component {
     }
 
     componentWillMount() {
+        if (this.props.location.search) {
+            this.setState({
+                selectedDeviceGroupId: getDeviceGroupParam(
+                    this.props.location.search
+                ),
+            });
+        }
         IdentityGatewayService.VerifyAndRefreshCache();
     }
 
@@ -73,6 +81,16 @@ export class Rules extends Component {
         ) {
             this.logApplicationPermissions(
                 nextProps.applicationPermissionsAssigned
+            );
+        }
+    }
+
+    componentDidMount() {
+        if (this.state.selectedDeviceGroupId) {
+            window.history.replaceState(
+                {},
+                document.title,
+                this.props.location.pathname
             );
         }
     }
@@ -135,7 +153,11 @@ export class Rules extends Component {
                 {alerting.jobState === "Running" && (
                     <ContextMenu>
                         <ContextMenuAlign left={true}>
-                            <DeviceGroupDropdown />
+                            <DeviceGroupDropdown
+                                deviceGroupIdFromUrl={
+                                    this.state.selectedDeviceGroupId
+                                }
+                            />
                             <Protected
                                 permission={permissions.updateDeviceGroups}
                             >

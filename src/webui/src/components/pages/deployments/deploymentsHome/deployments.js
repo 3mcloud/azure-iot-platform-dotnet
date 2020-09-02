@@ -19,7 +19,7 @@ import { ManageDeviceGroupsBtnContainer as ManageDeviceGroupsBtn } from "compone
 import { ResetActiveDeviceQueryBtnContainer as ResetActiveDeviceQueryBtn } from "components/shell/resetActiveDeviceQueryBtn";
 import { DeploymentsGrid } from "./deploymentsGrid";
 import { DeploymentNewContainer, DeploymentStatusContainer } from "./flyouts";
-import { svgs } from "utilities";
+import { svgs, getDeviceGroupParam } from "utilities";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
 import {
     Balloon,
@@ -38,6 +38,7 @@ export class Deployments extends Component {
         this.state = {
             ...closedFlyoutState,
             contextBtns: null,
+            selectedDeviceGroupId: undefined,
         };
 
         this.props.updateCurrentWindow("Deployments");
@@ -48,6 +49,13 @@ export class Deployments extends Component {
     }
 
     componentWillMount() {
+        if (this.props.location.search) {
+            this.setState({
+                selectedDeviceGroupId: getDeviceGroupParam(
+                    this.props.location.search
+                ),
+            });
+        }
         IdentityGatewayService.VerifyAndRefreshCache();
     }
 
@@ -58,6 +66,16 @@ export class Deployments extends Component {
         ) {
             // If the grid data refreshes, hide the flyout
             this.setState(closedFlyoutState);
+        }
+    }
+
+    componentDidMount() {
+        if (this.state.selectedDeviceGroupId) {
+            window.history.replaceState(
+                {},
+                document.title,
+                this.props.location.pathname
+            );
         }
     }
 
@@ -130,7 +148,11 @@ export class Deployments extends Component {
             <ComponentArray>
                 <ContextMenu>
                     <ContextMenuAlign left={true}>
-                        <DeviceGroupDropdown />
+                        <DeviceGroupDropdown
+                            deviceGroupIdFromUrl={
+                                this.state.selectedDeviceGroupId
+                            }
+                        />
                         <Protected permission={permissions.updateDeviceGroups}>
                             <ManageDeviceGroupsBtn />
                         </Protected>

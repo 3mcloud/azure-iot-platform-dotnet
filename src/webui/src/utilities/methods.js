@@ -225,6 +225,18 @@ export const DEFAULT_DATE_FORMAT = "MM.DD.YYYY";
 // Helper to format time in displayable format
 export const formatTime = (value) => {
     if (value) {
+        if (!isNaN(value)) {
+            if (typeof value === "string") {
+                value = Number(value);
+            }
+
+            // UTC method only accepts unix millisec timestamp
+            // Note: This will work till year 2285
+            if (moment.utc(value).year() <= 1970) {
+                value = value * 1000;
+            }
+        }
+
         const time = moment.utc(value).local();
         return time.unix() > 0
             ? time.format(DEFAULT_TIME_FORMAT)
@@ -235,6 +247,18 @@ export const formatTime = (value) => {
 
 export const formatDate = (value) => {
     if (value) {
+        if (!isNaN(value)) {
+            if (typeof value === "string") {
+                value = Number(value);
+            }
+
+            // UTC method only accepts unix millisec timestamp
+            // Note: This will work till year 2285
+            if (moment.utc(value).year() <= 1970) {
+                value = value * 1000;
+            }
+        }
+
         const time = moment.utc(value).local();
         return time.unix() > 0
             ? time.format(DEFAULT_DATE_FORMAT)
@@ -256,6 +280,7 @@ export const dataURLtoFile = (dataurl, filename) => {
 
     return new File([u8arr], filename, { type: mime });
 };
+
 export const base64toHEX = (base64) => {
     let raw = atob(base64),
         HEX = "";
@@ -266,4 +291,9 @@ export const base64toHEX = (base64) => {
         HEX += _hex.length === 2 ? _hex : "0" + _hex;
     }
     return HEX.toUpperCase();
+};
+export const getDeviceGroupParam = (url) => {
+    const urlParams = new URLSearchParams(url);
+    let deviceGroupId = urlParams.get("deviceGroupId");
+    return deviceGroupId;
 };
