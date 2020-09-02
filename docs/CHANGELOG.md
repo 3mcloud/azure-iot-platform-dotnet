@@ -11,7 +11,7 @@ where <previousRelease> is the release name e.g 5.1.0
 -->
 ## [5.2.3] - 2020-08-18
 ### Fixed
-= Asa-maager twin update job properly triggers device group conversion
+- Asa-maager twin update job properly triggers device group conversion
 - Updated methods to throw expcetion when there is no collection
 - Prevent Azure Function calls when alerting is diabled
 - Updated ResourceNotFoundException in Rules Methods
