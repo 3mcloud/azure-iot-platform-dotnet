@@ -5,6 +5,7 @@
 export * from "./ajaxError/ajaxError";
 export * from "./componentArray/componentArray";
 export * from "./confirmationModal/confirmationModal";
+export * from "./copyModal/copyModal";
 export * from "./contextMenu";
 export * from "./deleteModal/deleteModal";
 export * from "./flyout";
