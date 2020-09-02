@@ -292,3 +292,8 @@ export const base64toHEX = (base64) => {
     }
     return HEX.toUpperCase();
 };
+export const getDeviceGroupParam = (url) => {
+    const urlParams = new URLSearchParams(url);
+    let deviceGroupId = urlParams.get("deviceGroupId");
+    return deviceGroupId;
+};

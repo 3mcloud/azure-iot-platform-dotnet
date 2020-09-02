@@ -78,6 +78,7 @@ namespace Mmm.Iot.Config.WebService
             // Using fixed rate sampling
             double fixedSamplingPercentage = config.Global.FixedSamplingPercentage == 0 ? 10 : config.Global.FixedSamplingPercentage;
             builder.UseSampling(fixedSamplingPercentage);
+            builder.Use(next => new HealthProbeTelemetryProcessor(next));
             builder.Build();
         }
     }
