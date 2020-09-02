@@ -580,27 +580,6 @@ export class DeviceJobProperties extends LinkedComponent {
                                                             ></Btn>
                                                         )}
                                                 </div>
-                                                <div>
-                                                    {isJSON.value &&
-                                                        readOnly.value && (
-                                                            <div>Syncing</div>
-                                                        )}
-                                                    {isJSON.value &&
-                                                        !readOnly.value && (
-                                                            <Btn
-                                                                className="linkToButton"
-                                                                svg={
-                                                                    svgs.linkTo
-                                                                }
-                                                                onClick={() =>
-                                                                    openPropertyEditorModal(
-                                                                        "json-editor",
-                                                                        jsonValue
-                                                                    )
-                                                                }
-                                                            ></Btn>
-                                                        )}
-                                                </div>
                                                 &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;
                                                 <div>{type.value}</div>
                                             </Row>
