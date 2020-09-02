@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mmm.Iot.Common.Services.Filters;
 using Mmm.Iot.IdentityGateway.Services;
 using Mmm.Iot.IdentityGateway.Services.Models;
+using Newtonsoft.Json;
 
 namespace Mmm.Iot.IdentityGateway.WebService.Controllers
 {
@@ -17,6 +18,8 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
     [TypeFilter(typeof(ExceptionsFilterAttribute))]
     public class SystemAdminController : Controller
     {
+        private const string MemberType = "Member";
+        private const string AdminRole = "admin";
         private SystemAdminContainer container;
         private UserTenantContainer userTenantcontainer;
 
@@ -36,7 +39,13 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
                 Name = model.Name,
             };
 
-            return await this.container.CreateAsync(systemAdminInput);
+            var result = await this.container.CreateAsync(systemAdminInput);
+            if (result != null)
+            {
+                await this.AddUserForPendingTenants(result);
+            }
+
+            return result;
         }
 
         [HttpGet("getAllNonSystemAdmins")]
@@ -89,6 +98,38 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
                 UserId = userId,
             };
             return await this.container.DeleteAsync(systemAdminInput);
+        }
+
+        private async Task AddUserForPendingTenants(SystemAdminModel result)
+        {
+            if (result != null)
+            {
+                TenantListModel activeTenants = await this.userTenantcontainer.GetAllActiveTenantAsync();
+                if (activeTenants != null && activeTenants.Models != null && activeTenants.Models.Count > 0)
+                {
+                    List<string> activeTenantIds = activeTenants.Models.Select(x => x.TenantId).ToList();
+                    if (activeTenantIds != null && activeTenantIds.Count > 0)
+                    {
+                        UserTenantInput userInput = new UserTenantInput()
+                        {
+                            UserId = result.PartitionKey,
+                            Name = result.Name,
+                            Roles = JsonConvert.SerializeObject(new List<string>() { AdminRole }),
+                            Type = MemberType,
+                        };
+                        UserTenantListModel existingTenants = await this.userTenantcontainer.GetAllAsync(userInput);
+                        for (int i = 0; i < activeTenantIds.Count; i++)
+                        {
+                            userInput.Tenant = activeTenantIds[i];
+                            if (existingTenants != null && existingTenants.Models != null &&
+                                existingTenants.Models.FirstOrDefault(x => x.UserId == userInput.UserId && x.TenantId == userInput.Tenant) == null)
+                            {
+                                var createdUser = await this.userTenantcontainer.CreateAsync(userInput);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

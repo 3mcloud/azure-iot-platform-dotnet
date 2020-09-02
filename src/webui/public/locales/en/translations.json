@@ -78,7 +78,13 @@
         "permissionDenied": "Permission {{permission}} is denied."
     },
     "deviceGroupDropDown": {
-        "ariaLabel": "Device group"
+        "ariaLabel": "Device group",
+        "modals" : {
+            "copyLink": {
+                "contextMenuName": "Copy Link",
+                "title": "Copy Link"
+            }
+        }
     },
     "flyout": {
         "closeTitle": "Close"
@@ -1035,7 +1041,8 @@
     },
     "modal": {
         "delete": "Delete",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "copy": "Copy"
     },
     "walkthrough": {
         "tabs": {

@@ -7,7 +7,12 @@ import moment from "moment";
 import Config from "app.config";
 import { TelemetryService, IdentityGatewayService } from "services";
 import { permissions } from "services/models";
-import { compareByProperty, getIntervalParams, retryHandler } from "utilities";
+import {
+    compareByProperty,
+    getIntervalParams,
+    retryHandler,
+    getDeviceGroupParam,
+} from "utilities";
 import { Grid, Cell } from "./grid";
 import { PanelErrorBoundary } from "./panel";
 import { DeviceGroupDropdownContainer as DeviceGroupDropdown } from "components/shell/deviceGroupDropdown";
@@ -60,6 +65,7 @@ const initialState = {
         devicesInAlert: {},
 
         lastRefreshed: undefined,
+        selectedDeviceGroupId: undefined,
     },
     refreshEvent = (deviceIds = [], timeInterval) => ({
         deviceIds,
@@ -82,10 +88,25 @@ export class Dashboard extends Component {
     }
 
     componentWillMount() {
+        if (this.props.location.search) {
+            this.setState({
+                selectedDeviceGroupId: getDeviceGroupParam(
+                    this.props.location.search
+                ),
+            });
+        }
         IdentityGatewayService.VerifyAndRefreshCache();
     }
 
     componentDidMount() {
+        if (this.state.selectedDeviceGroupId) {
+            window.history.replaceState(
+                {},
+                document.title,
+                this.props.location.pathname
+            );
+        }
+
         // Ensure the rules are loaded
         this.refreshRules();
 
@@ -481,7 +502,11 @@ export class Dashboard extends Component {
             <ComponentArray>
                 <ContextMenu>
                     <ContextMenuAlign left={true}>
-                        <DeviceGroupDropdown />
+                        <DeviceGroupDropdown
+                            deviceGroupIdFromUrl={
+                                this.state.selectedDeviceGroupId
+                            }
+                        />
                         <Protected permission={permissions.updateDeviceGroups}>
                             <ManageDeviceGroupsBtn />
                         </Protected>

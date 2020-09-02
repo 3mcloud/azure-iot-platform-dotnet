@@ -40,6 +40,8 @@ namespace Mmm.Iot.IdentityGateway.WebService.Test.Controllers
         private UserListModel someUserListModel = new UserListModel();
         private UserModel someUser = new UserModel();
         private IDictionary<object, object> contextItems;
+        private TenantListModel someTenantListModel = new TenantListModel();
+        private UserTenantListModel someUserTenantListModel = new UserTenantListModel();
 
         public SystemAdminControllerTest()
         {
@@ -131,6 +133,8 @@ namespace Mmm.Iot.IdentityGateway.WebService.Test.Controllers
             this.mockSystemAdminContainer.Setup(m => m.GetAllAsync()).ReturnsAsync(this.someSystemAdminList);
             this.mockSystemAdminContainer.Setup(m => m.DeleteAsync(It.IsAny<SystemAdminInput>())).ReturnsAsync(this.someSystemAdmin);
             this.mockUserTenantContainer.Setup(m => m.GetAllUsersAsync()).ReturnsAsync(this.someUserListModel);
+            this.mockUserTenantContainer.Setup(m => m.GetAllActiveTenantAsync()).ReturnsAsync(this.someTenantListModel);
+            this.mockUserTenantContainer.Setup(m => m.GetAllAsync(It.IsAny<UserTenantInput>())).ReturnsAsync(this.someUserTenantListModel);
             this.mockHttpRequest.Setup(m => m.HttpContext).Returns(this.mockHttpContext.Object);
             this.mockHttpContext.Setup(m => m.Request).Returns(this.mockHttpRequest.Object);
             this.contextItems = new Dictionary<object, object>

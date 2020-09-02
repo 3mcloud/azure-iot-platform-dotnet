@@ -12,6 +12,7 @@ import CloseAlertIconPath from "assets/icons/closeAlert.svg";
 import ColonIconPath from "assets/icons/colon.svg";
 import ContosoIconPath from "assets/icons/contoso.svg";
 import CopyIconPath from "assets/icons/copy.svg";
+import CopyLinkPath from "assets/icons/copy-link.svg";
 import CriticalIconPath from "assets/icons/critical.svg";
 import DeviceChillerIconPath from "assets/icons/deviceChiller.svg";
 import DeviceElevatorIconPath from "assets/icons/deviceElevator.svg";
@@ -92,6 +93,7 @@ export const svgs = {
     colon: ColonIconPath,
     contoso: ContosoIconPath,
     copy: CopyIconPath,
+    copyLink: CopyLinkPath,
     critical: CriticalIconPath,
     disableToggle: DisableToggleIconPath,
     disabled: DisabledIconPath,
