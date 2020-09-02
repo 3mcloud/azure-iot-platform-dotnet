@@ -1,3 +1,5 @@
+trigger: none
+pr: none
 pool:
   vmImage: ubuntu-latest
 variables:
@@ -7,44 +9,19 @@ stages:
     displayName: Check parameters
     dependsOn: []
     jobs:
-      - job: checkParameters
-        displayName: Check parameters
-        steps:
-        - task: AzurePowerShell@5
-          displayName: 'Azure PowerShell script: InlineScript'
-          inputs:
-            azureSubscription: '3M-CRSLAD16-BBIoTP-Dev'
-            ScriptType: InlineScript
-            Inline: |
-            echo "testPipelineRunId : '$(testPipelineRunId)'"
-            if ($testPipelineRunId -eq $null -or $testPipelineRunId -eq ""){
-                #assigning all the params required for the code snippet
-                $organizationName='3M-Bluebird'
-                $projectID='150135ff-890c-41c0-8f52-1cfcd5f891df'
-                #Getting the PAT from the pipeline variables
-                $azPAT=$azurePAT
-                $definitionID='453'
-                $numberOfRecords='&$top=1'
-            
-                #declaring an empty reponse variable
-                $response = ""
-                #creating the headers object so that the Personal Access Token can be added to the query
-                $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-                $headers.Add("Authorization", "Basic $azPAT")
-                #building the url with the appropriate filters and parameters
-                $url = "https://dev.azure.com/$organizationName/$projectID/_apis/build/builds?api-version=5.1&definitions=$definitionID&queryorder=descending&resultFilter=partiallySucceeded&branchName=refs/heads/master$numberOfRecords"
-                #converting the response into readble object
-                $response = Invoke-RestMethod $url -Method 'GET' -Headers $headers -Body $body | ConvertTo-Json | ConvertFrom-Json
-                #setting the build ID as Global Variable
-                $testPipelineRunId=$response.value.id 
-                #throw an error here of the variable is still empty
-                if($testPipelineRunId -eq $null -or $testPipelineRunId -eq ""){
-                    $ErrorMessage = "testPipelineRunId has no value."
-                    throw $ErrorMessage
-                    exit 1
-                }
-            }
-            azurePowerShellVersion: LatestVersion
+     - job: checkParameters
+       displayName: Check parameters
+       steps:
+         - checkout: none
+
+         - script: |-
+                set -Eeuxo pipefail
+                echo "testPipelineRunId : '$(testPipelineRunId)'"
+                if [ -z "$(testPipelineRunId)" ]
+                then
+                echo "A value for the 'testPipelineRunId' variable must be provided" > /dev/stderr
+                exit 1
+                fi
 
   - stage: crslDev
     displayName: CRSL dev
