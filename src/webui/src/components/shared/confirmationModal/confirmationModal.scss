@@ -1,0 +1,25 @@
+// Copyright (c) Microsoft. All rights reserved.
+
+@import 'src/styles/variables';
+@import 'src/styles/mixins';
+@import 'src/styles/themes';
+
+.confirmation-modal-container {
+  @include rem-fallback(font-size, 14px);
+
+  .confirmation-header-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    @include rem-fallback(padding-bottom, 20px);
+  }
+
+   .confirmation-info {
+    @include rem-fallback(padding-bottom, 20px);
+    @include rem-fallback(height, 50px);
+  }
+
+  @include themify($themes) {
+    .confirmation-close-btn .btn-icon svg { stroke: themed('colorFlyoutText'); }
+  }
+}

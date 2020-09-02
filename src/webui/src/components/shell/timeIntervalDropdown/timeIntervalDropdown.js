@@ -17,12 +17,16 @@ const optionValues = [
 ];
 
 let currentValue = "PT1H";
+let hasValueChanged = false;
+let maxLimitValue = "";
+let currentDeviceGroup = "";
 
 export class TimeIntervalDropdown extends Component {
     onChange = (propOnChange) => (value) => {
         this.props.logEvent(toDiagnosticsModel("TimeFilter_Select", {}));
         if (isFunc(propOnChange)) {
             currentValue = value;
+            hasValueChanged = true;
             propOnChange(value);
         }
     };
@@ -32,7 +36,23 @@ export class TimeIntervalDropdown extends Component {
     }
 
     render() {
-        const options = optionValues.map(({ value }) => ({
+        let filteredOptions = [];
+        let { limitExceeded, activeDeviceGroup } = this.props;
+        if (hasValueChanged && currentDeviceGroup === activeDeviceGroup) {
+            if (limitExceeded) {
+                maxLimitValue = currentValue;
+            }
+            optionValues.some((value) => {
+                filteredOptions.push(value);
+                return value.value === maxLimitValue;
+            });
+        } else {
+            currentDeviceGroup = activeDeviceGroup;
+            filteredOptions = optionValues;
+            hasValueChanged = false;
+            maxLimitValue = "";
+        }
+        const options = filteredOptions.map(({ value }) => ({
                 label: this.props.t(`timeInterval.${value}`),
                 value,
             })),
