@@ -35,7 +35,6 @@ import {
 } from "utilities";
 import { DeploymentDetailsGrid } from "./deploymentDetailsGrid/deploymentDetailsGrid";
 import Config from "app.config";
-import { IoTHubManagerService } from "services";
 
 import "./deploymentDetails.scss";
 
