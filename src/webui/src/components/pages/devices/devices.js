@@ -22,7 +22,7 @@ import {
 import { DeviceNewContainer } from "./flyouts/deviceNew";
 import { SIMManagementContainer } from "./flyouts/SIMManagement";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
-import { svgs } from "utilities";
+import { svgs, getDeviceGroupParam } from "utilities";
 
 import "./devices.scss";
 import { IdentityGatewayService } from "services";
@@ -35,12 +35,20 @@ export class Devices extends Component {
         this.state = {
             ...closedFlyoutState,
             contextBtns: null,
+            selectedDeviceGroupId: undefined,
         };
 
         this.props.updateCurrentWindow("Devices");
     }
 
     componentWillMount() {
+        if (this.props.location.search) {
+            this.setState({
+                selectedDeviceGroupId: getDeviceGroupParam(
+                    this.props.location.search
+                ),
+            });
+        }
         IdentityGatewayService.VerifyAndRefreshCache();
     }
 
@@ -57,6 +65,16 @@ export class Devices extends Component {
                 default:
                     this.setState(closedFlyoutState);
             }
+        }
+    }
+
+    componentDidMount() {
+        if (this.state.selectedDeviceGroupId) {
+            window.history.replaceState(
+                {},
+                document.title,
+                this.props.location.pathname
+            );
         }
     }
 
@@ -116,7 +134,11 @@ export class Devices extends Component {
             <ComponentArray>
                 <ContextMenu>
                     <ContextMenuAlign left={true}>
-                        <DeviceGroupDropdown />
+                        <DeviceGroupDropdown
+                            deviceGroupIdFromUrl={
+                                this.state.selectedDeviceGroupId
+                            }
+                        />
                         <Protected permission={permissions.updateDeviceGroups}>
                             <ManageDeviceGroupsBtn />
                         </Protected>

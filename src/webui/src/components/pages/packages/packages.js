@@ -15,7 +15,7 @@ import {
     PageTitle,
 } from "components/shared";
 import { PackageNewContainer } from "./flyouts";
-import { svgs } from "utilities";
+import { svgs, getDeviceGroupParam } from "utilities";
 
 import "./packages.scss";
 import { DeviceGroupDropdownContainer as DeviceGroupDropdown } from "../../shell/deviceGroupDropdown";
@@ -32,6 +32,7 @@ export class Packages extends Component {
             ...closedFlyoutState,
             contextBtns: null,
             packageJson: "testjson file",
+            selectedDeviceGroupId: undefined,
         };
 
         this.props.updateCurrentWindow("Packages");
@@ -40,6 +41,13 @@ export class Packages extends Component {
     }
 
     componentWillMount() {
+        if (this.props.location.search) {
+            this.setState({
+                selectedDeviceGroupId: getDeviceGroupParam(
+                    this.props.location.search
+                ),
+            });
+        }
         IdentityGatewayService.VerifyAndRefreshCache();
     }
 
@@ -50,6 +58,16 @@ export class Packages extends Component {
         ) {
             // If the grid data refreshes, hide the flyout
             this.setState(closedFlyoutState);
+        }
+    }
+
+    componentDidMount() {
+        if (this.state.selectedDeviceGroupId) {
+            window.history.replaceState(
+                {},
+                document.title,
+                this.props.location.pathname
+            );
         }
     }
 
@@ -109,7 +127,11 @@ export class Packages extends Component {
             <ComponentArray>
                 <ContextMenu>
                     <ContextMenuAlign left={true}>
-                        <DeviceGroupDropdown />
+                        <DeviceGroupDropdown
+                            deviceGroupIdFromUrl={
+                                this.state.selectedDeviceGroupId
+                            }
+                        />
                         <Protected permission={permissions.updateDeviceGroups}>
                             <ManageDeviceGroupsBtn />
                         </Protected>
