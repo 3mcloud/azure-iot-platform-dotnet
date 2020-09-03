@@ -421,6 +421,9 @@ stages:
               testSystemAdminPasskey: $(testSystemAdminPasskey)
               testUserPasskey: $(testUserPasskey)
               testAdminPasskey: $(testAdminPasskey)
+              testUserEmail: $(testUserEmail)
+              testAdminEmail: $(testAdminEmail)
+              testSystemAdminEmail: $(testSystemAdminEmail)
           - task: AzureCLI@2
             displayName: Get pipeline variables
             name: getPipelineVariables
