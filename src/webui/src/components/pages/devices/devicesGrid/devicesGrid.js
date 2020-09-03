@@ -102,6 +102,9 @@ export class DevicesGrid extends Component {
                         key="jobs-device-key"
                         onClose={this.closeFlyout}
                         devices={this.deviceGridApi.getSelectedRows()}
+                        openPropertyEditorModal={
+                            this.props.openPropertyEditorModal
+                        }
                     />
                 );
             case "details":
