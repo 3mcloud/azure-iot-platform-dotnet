@@ -57,6 +57,7 @@ const initialState = {
     jobId: undefined,
     commonProperties: [],
     deletedProperties: [],
+    selecteddeviceID: [],
 };
 
 export class DeviceJobProperties extends LinkedComponent {
@@ -111,9 +112,18 @@ export class DeviceJobProperties extends LinkedComponent {
             Object.keys(device.properties).forEach((propertyName) => {
                 const reported = device.properties[propertyName],
                     desired = device.desiredProperties[propertyName],
-                    inSync = !desired || reported === desired,
+                    isJSON =
+                        typeof device.properties[propertyName] === "object",
+                    inSync =
+                        !desired ||
+                        (isJSON
+                            ? JSON.stringify(desired) ===
+                              JSON.stringify(reported)
+                            : reported === desired),
                     display = inSync
                         ? reported
+                        : isJSON
+                        ? desired
                         : t("devices.flyouts.jobs.properties.syncing", {
                               reportedPropertyValue: reported,
                               desiredPropertyValue: desired,
@@ -123,6 +133,7 @@ export class DeviceJobProperties extends LinkedComponent {
                     desired,
                     display,
                     inSync,
+                    isJSON,
                 };
             });
             return { id: device.id, properties };
@@ -163,7 +174,10 @@ export class DeviceJobProperties extends LinkedComponent {
             .reduce(
                 (newState, [name, values]) => {
                     const valueData = values.reduce(
-                        (valAcc, { reported, desired, display, inSync }) => {
+                        (
+                            valAcc,
+                            { reported, desired, display, inSync, isJSON }
+                        ) => {
                             if (!valAcc.reported) {
                                 valAcc.reported = reported;
                                 valAcc.display = display;
@@ -188,6 +202,7 @@ export class DeviceJobProperties extends LinkedComponent {
                             if (!isNumeric(reported)) {
                                 valAcc.type = propertyJobConstants.stringType;
                             }
+                            valAcc.isJSON = isJSON;
                             return valAcc;
                         },
                         {
@@ -195,6 +210,7 @@ export class DeviceJobProperties extends LinkedComponent {
                             display: undefined,
                             anyOutOfSync: false,
                             type: propertyJobConstants.numberType,
+                            isJSON: false,
                         }
                     );
                     return update(newState, {
@@ -203,11 +219,15 @@ export class DeviceJobProperties extends LinkedComponent {
                                 {
                                     name,
                                     value: valueData.display,
+                                    jsonValue: {
+                                        jsObject: valueData.display,
+                                    },
                                     type: valueData.type,
                                     readOnly:
                                         name ===
                                             propertyJobConstants.firmware ||
                                         valueData.anyOutOfSync,
+                                    isJSON: valueData.isJSON,
                                 },
                             ],
                         },
@@ -229,7 +249,6 @@ export class DeviceJobProperties extends LinkedComponent {
             this.props.logEvent(
                 toDiagnosticsModel("Devices_NewJobApply_Click", {})
             );
-
             const { devices } = this.props,
                 { commonProperties, deletedProperties } = this.state,
                 updatedProperties = commonProperties.filter(
@@ -286,8 +305,63 @@ export class DeviceJobProperties extends LinkedComponent {
         return t("devices.flyouts.jobs.affected");
     }
 
+    onJsonChange = (e) => {
+        var stateCommonProperties = this.state.commonProperties;
+        stateCommonProperties.forEach((property) => {
+            property.value = property.jsonValue.jsObject;
+            var serializedProperty = this.serializeNestedDeviceProperties(
+                property.name,
+                property.value
+            );
+            if (this.checkIfPropertiesExceedLimit(serializedProperty) > 6) {
+                this.setState({
+                    error: { message: "JSON exceeds maximum depth" },
+                });
+                return;
+            }
+        });
+        this.setState({
+            commonProperties: stateCommonProperties,
+        });
+    };
+
+    checkIfPropertiesExceedLimit = (properties) => {
+        let propertyCount = 0;
+        Object.entries(properties).forEach(([key, value]) => {
+            let count = key.split(".").length - 1;
+            propertyCount = propertyCount > count ? propertyCount : count;
+        });
+        return propertyCount;
+    };
+
+    serializeNestedDeviceProperties = (parentName, value) => {
+        if (typeof value !== "object" || value === null) {
+            let prop = {};
+            prop[parentName] = value;
+            return prop;
+        }
+
+        let nestedProperties = {};
+        Object.entries(value).forEach(([key, value]) => {
+            nestedProperties = {
+                ...nestedProperties,
+                ...this.serializeNestedDeviceProperties(
+                    `${parentName}.${key}`,
+                    value
+                ),
+            };
+        });
+        return nestedProperties;
+    };
+
     render() {
-        const { t, onClose, devices } = this.props,
+        const {
+                t,
+                onClose,
+                devices,
+                theme,
+                openPropertyEditorModal,
+            } = this.props,
             {
                 isPending,
                 error,
@@ -318,6 +392,14 @@ export class DeviceJobProperties extends LinkedComponent {
                                     "devices.flyouts.jobs.validation.required"
                                 )
                             ),
+                        jsonValue = propertyLink
+                            .forkTo("jsonValue")
+                            .check(
+                                Validator.notEmpty,
+                                this.props.t(
+                                    "devices.flyouts.jobs.validation.required"
+                                )
+                            ),
                         type = propertyLink
                             .forkTo("type")
                             .map(({ value }) => value)
@@ -328,12 +410,22 @@ export class DeviceJobProperties extends LinkedComponent {
                                 )
                             ),
                         readOnly = propertyLink.forkTo("readOnly"),
+                        isJSON = propertyLink.forkTo("isJSON"),
                         edited = !(!name.value && !value.value && !type.value),
                         error =
                             (edited &&
                                 (name.error || value.error || type.error)) ||
                             "";
-                    return { name, value, type, readOnly, edited, error };
+                    return {
+                        name,
+                        value,
+                        jsonValue,
+                        type,
+                        readOnly,
+                        isJSON,
+                        edited,
+                        error,
+                    };
                 }
             ),
             editedProperties = propertyLinks.filter(({ edited }) => edited),
@@ -369,17 +461,18 @@ export class DeviceJobProperties extends LinkedComponent {
                     <Grid className="data-grid">
                         <GridHeader>
                             <Row>
-                                <Cell className="col-3">
+                                <Cell className="col-4">
                                     {t(
                                         "devices.flyouts.jobs.properties.keyHeader"
                                     )}
                                 </Cell>
-                                <Cell className="col-3">
+                                <Cell className="col-4">
                                     {t(
                                         "devices.flyouts.jobs.properties.valueHeader"
                                     )}
                                 </Cell>
-                                <Cell className="col-3">
+                                <Cell className="col-4"></Cell>
+                                <Cell className="col-4">
                                     {t(
                                         "devices.flyouts.jobs.properties.typeHeader"
                                     )}
@@ -409,9 +502,11 @@ export class DeviceJobProperties extends LinkedComponent {
                                     (
                                         {
                                             name,
+                                            jsonValue,
                                             value,
                                             type,
                                             readOnly,
+                                            isJSON,
                                             edited,
                                             error,
                                         },
@@ -419,29 +514,74 @@ export class DeviceJobProperties extends LinkedComponent {
                                     ) => (
                                         <ComponentArray>
                                             <Row
+                                                id={idx}
                                                 className={
                                                     error
                                                         ? "error-data-row"
                                                         : ""
                                                 }
                                             >
-                                                <Cell className="col-3 text-only">
+                                                <div>
                                                     {name.value}
-                                                </Cell>
-                                                <Cell className="col-3">
-                                                    <FormControl
-                                                        className="small"
-                                                        type="text"
-                                                        link={value}
-                                                        errorState={!!error}
-                                                        readOnly={
-                                                            readOnly.value
-                                                        }
-                                                    />
-                                                </Cell>
-                                                <Cell className="col-3 text-only">
-                                                    {type.value}
-                                                </Cell>
+                                                    &nbsp;&nbsp;&nbsp;
+                                                </div>
+                                                <br />
+                                                <div className="col-3 jsonValueDivMaxHeight">
+                                                    {isJSON.value && (
+                                                        <FormControl
+                                                            className="small"
+                                                            type="jsoninput"
+                                                            link={jsonValue}
+                                                            theme={
+                                                                theme
+                                                                    ? theme
+                                                                    : "light"
+                                                            }
+                                                            errorState={!!error}
+                                                            readOnly={
+                                                                readOnly.value
+                                                            }
+                                                            onChange={
+                                                                this
+                                                                    .onJsonChange
+                                                            }
+                                                        />
+                                                    )}
+                                                    {!isJSON.value && (
+                                                        <FormControl
+                                                            className="large"
+                                                            type="text"
+                                                            link={value}
+                                                            errorState={!!error}
+                                                            readOnly={
+                                                                readOnly.value
+                                                            }
+                                                        />
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    {isJSON.value &&
+                                                        readOnly.value && (
+                                                            <div>Syncing</div>
+                                                        )}
+                                                    {isJSON.value &&
+                                                        !readOnly.value && (
+                                                            <Btn
+                                                                className="linkToButton"
+                                                                svg={
+                                                                    svgs.linkTo
+                                                                }
+                                                                onClick={() =>
+                                                                    openPropertyEditorModal(
+                                                                        "json-editor",
+                                                                        jsonValue
+                                                                    )
+                                                                }
+                                                            ></Btn>
+                                                        )}
+                                                </div>
+                                                &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;
+                                                <div>{type.value}</div>
                                             </Row>
                                             {error ? (
                                                 <Row className="error-msg-row">

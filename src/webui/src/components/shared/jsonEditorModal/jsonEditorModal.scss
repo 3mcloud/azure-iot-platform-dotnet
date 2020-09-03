@@ -1,0 +1,45 @@
+// Copyright (c) Microsoft. All rights reserved.
+
+@import 'src/styles/variables';
+@import 'src/styles/mixins';
+@import 'src/styles/themes';
+
+.json-editor-modal-container {
+  @include rem-fallback(font-size, 14px);
+
+  .modal-content {
+    border-style: solid;
+    width: 600px !important;
+    height: 550px !important;
+    z-index: 1;
+    @include rem-fallback(border-width, 1px);
+    @include rem-fallback(padding, 20px);
+
+    @include themify($themes) {
+      color: themed('colorModalText');
+      background-color: themed('colorModalBackground');
+      border-color: themed('colorModalBorder');
+    }
+  }
+
+  .json-editor-header-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    @include rem-fallback(padding-bottom, 20px);
+  }
+
+   .json-editor-info {
+    @include rem-fallback(padding-bottom, 20px);
+    @include rem-fallback(height, 400px);
+  }
+
+   .json-editor-summary {
+    @include rem-fallback(padding-bottom, 20px);
+    @include rem-fallback(height, 20px);
+   }
+
+  @include themify($themes) {
+    .btn-icon svg { stroke: themed('colorFlyoutText'); }
+  }
+}
