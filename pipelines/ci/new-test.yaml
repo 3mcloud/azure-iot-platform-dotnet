@@ -458,6 +458,7 @@ stages:
               azurePowerShellVersion: LatestVersion
               ScriptType: InlineScript
               Inline: |
+                Install-Module AzTable
                 $table = Get-AzTableTable -resourceGroup $(resourceGroupName) -tableName $(usersTableName) -storageAccountName $(storageAccountName)
                 $saTable = Get-AzTableTable -resourceGroup $(resourceGroupName) -tableName $(sysAdminTableName) -storageAccountName $(storageAccountName)
                 $datetimevariable = Get-Date -Format "yyyy-MM-ddTHH:mm:ss:fffffffZ"
