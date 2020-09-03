@@ -290,6 +290,7 @@
     },
     "dashboard": {
         "noData": "No data available",
+        "alertingTurnedOff": "Alerting is turned off",
         "panels": {
             "alerts": {
                 "header": "Alerts",
