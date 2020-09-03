@@ -409,10 +409,6 @@ stages:
 
   - stage: functionalTest
     displayName: Functional tests
-    dependsOn:
-      - deployIngress
-      - deployServices
-      - addAuthenticationCallbackUrl
     jobs:
       - job: getPipelineVariables
         displayName: Get pipeline variables
