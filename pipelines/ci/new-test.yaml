@@ -462,28 +462,28 @@ stages:
                 $table = Get-AzTableTable -resourceGroup $(resourceGroupName) -tableName $(usersTableName) -storageAccountName $(storageAccountName)
                 $saTable = Get-AzTableTable -resourceGroup $(resourceGroupName) -tableName $(sysAdminTableName) -storageAccountName $(storageAccountName)
                 $datetimevariable = Get-Date -Format "yyyy-MM-ddTHH:mm:ss:fffffffZ"
-                $testUser = Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountUser) -RowKey $(SerenityTenantId)
-                $testAdmin =Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountAdmin) -RowKey $(SerenityTenantId)
-                $testSystemAdmin = Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountSysAdmin) -RowKey $(SerenityTenantId)
+                $testUser = Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountUser) -RowKey $(serenityDevTenantId)
+                $testAdmin =Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountAdmin) -RowKey $(serenityDevTenantId)
+                $testSystemAdmin = Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountSysAdmin) -RowKey $(serenityDevTenantId)
                 $saTestSystemAdmin = Get-AzTableRowByPartitionKey -Table $saTable -PartitionKey $(testAccountSysAdmin)
               
                 if(($testUser -eq $Null) -or ($testUser.Roles -ne '["readonly"]')){
                     Add-AzTableRow `
                     -table $table `
                     -partitionKey $(testAccountUser) `
-                    -rowKey $(SerenityTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["readonly"]';"Name"="TestAccount - User";"Type"="Member"}
+                    -rowKey $(serenityDevTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["readonly"]';"Name"="TestAccount - User";"Type"="Member"}
                 }
                 if(($testAdmin -eq $Null) -or ($testAdmin.Roles -ne '["admin"]')){
                     Add-AzTableRow `
                     -table $table `
                     -partitionKey $(testAccountAdmin) `
-                    -rowKey $(SerenityTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["admin"]';"Name"="TestAccount - Admin";"Type"="Member"}
+                    -rowKey $(serenityDevTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["admin"]';"Name"="TestAccount - Admin";"Type"="Member"}
                 }
                 if(($testSystemAdmin -eq $Null) -or ($testSystemAdmin.Roles -ne '["admin"]')){
                     Add-AzTableRow `
                     -table $table `
                     -partitionKey $(testAccountSysAdmin) `
-                    -rowKey $(SerenityTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["admin"]';"Name"="TestAccount - SystemAdmin";"Type"="Member"}
+                    -rowKey $(serenityDevTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["admin"]';"Name"="TestAccount - SystemAdmin";"Type"="Member"}
                 }
                 if($saTestSystemAdmin -eq $Null){
                     Add-AzTableRow `
