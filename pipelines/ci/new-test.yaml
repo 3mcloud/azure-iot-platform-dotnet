@@ -470,25 +470,25 @@ stages:
                     Add-AzTableRow `
                     -table $table `
                     -partitionKey $(testAccountUser) `
-                    -rowKey $(SerenityTenantId) -property @{"Timestamp"=$(datetimevariable);"Roles"="["readonly"]";"Name"="TestAccount - User";"Type"="Member"}
+                    -rowKey $(SerenityTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["readonly"]';"Name"="TestAccount - User";"Type"="Member"}
                 }
                 if(($testAdmin -eq $Null) -or ($testAdmin.Roles -ne '["admin"]')){
                     Add-AzTableRow `
                     -table $table `
                     -partitionKey $(testAccountAdmin) `
-                    -rowKey $(SerenityTenantId) -property @{"Timestamp"=$(datetimevariable);"Roles"="["admin"]";"Name"="TestAccount - Admin";"Type"="Member"}
+                    -rowKey $(SerenityTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["admin"]';"Name"="TestAccount - Admin";"Type"="Member"}
                 }
                 if(($testSystemAdmin -eq $Null) -or ($testSystemAdmin.Roles -ne '["admin"]')){
                     Add-AzTableRow `
                     -table $table `
                     -partitionKey $(testAccountSysAdmin) `
-                    -rowKey $(SerenityTenantId) -property @{"Timestamp"=$(datetimevariable);"Roles"="["admin"]";"Name"="TestAccount - SystemAdmin";"Type"="Member"}
+                    -rowKey $(SerenityTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["admin"]';"Name"="TestAccount - SystemAdmin";"Type"="Member"}
                 }
                 if($saTestSystemAdmin -eq $Null){
                     Add-AzTableRow `
                     -table $saTable `
                     -partitionKey $(testAccountSysAdmin) `
-                    -rowKey $(testAccountSysAdmin) -property @{"Timestamp"=$(datetimevariable);"Name"="TestAccount - SystemAdmin";"Type"="Member"}
+                    -rowKey $(testAccountSysAdmin) -property @{"Timestamp"=$datetimevariable;"Name"="TestAccount - SystemAdmin";"Type"="Member"}
                 }           
       - job: functionalTest
         displayName: Functional test
