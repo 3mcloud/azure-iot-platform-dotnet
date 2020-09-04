@@ -186,6 +186,7 @@ export class Dashboard extends Component {
                                 TelemetryService.getAlerts(previousParams)
                             );
                         } else {
+                            this.setState({ analyticsIsPending: false });
                             return Observable.forkJoin([], [], [], []);
                         }
                     })
@@ -583,6 +584,7 @@ export class Dashboard extends Component {
                                 error={rulesError || analyticsError}
                                 t={t}
                                 deviceGroups={deviceGroups}
+                                isAlertingActive={alerting.isActive}
                             />
                         </Cell>
                         <Cell className="col-6">
@@ -615,6 +617,7 @@ export class Dashboard extends Component {
                                 theme={theme}
                                 colors={chartColorObjects}
                                 t={t}
+                                isAlertingActive={alerting.isActive}
                             />
                         </Cell>
                         {Config.showWalkthroughExamples && (

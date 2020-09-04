@@ -69,6 +69,7 @@ export class DeviceJobs extends LinkedComponent {
             devices,
             updateTags,
             updateProperties,
+            openPropertyEditorModal,
         } = this.props;
 
         return (
@@ -139,6 +140,9 @@ export class DeviceJobs extends LinkedComponent {
                                         onClose={onClose}
                                         devices={devices}
                                         updateProperties={updateProperties}
+                                        openPropertyEditorModal={
+                                            openPropertyEditorModal
+                                        }
                                     />
                                 ) : null}
                             </ComponentArray>

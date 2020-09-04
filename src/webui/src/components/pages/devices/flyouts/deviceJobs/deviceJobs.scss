@@ -81,3 +81,12 @@
     .summary-icon svg { fill: themed('colorContentText'); }
   }
 }
+
+.linkToButton{
+  min-width: 0px !important;
+  padding: 0px !important;
+  margin:0px !important;
+}
+.jsonValueDivMaxHeight{
+  max-height: 150px !important;
+}

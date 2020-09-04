@@ -2,6 +2,7 @@
 // Copyright (c) 3M. All rights reserved.
 // </copyright>
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Mmm.Iot.Common.Services.Models;
 using Mmm.Iot.IoTHubManager.Services.Models;
@@ -27,5 +28,7 @@ namespace Mmm.Iot.IoTHubManager.Services
         Task ReactivateDeploymentAsyc(string deploymentId, string userId, string tenantId);
 
         Task<DeviceServiceListModel> GetDeviceListAsync(string deploymentId, string query, bool isLatest);
+
+        Task<List<DeviceDeploymentStatusServiceModel>> GetDeploymentStatusReport(string id, bool isLatest = true);
     }
 }
