@@ -14,9 +14,9 @@ variables:
   - name: buildId
     value: build-$(Build.BuildId)
   - name: applicationCode
-    value: ggktech
+    value: crsliot
   - name: applicationShortCode
-    value: ggk
+    value: crsl
   - name: environmentCategory
     value: dev
   - name: subscriptionName
@@ -62,7 +62,7 @@ variables:
   - name: mmmIotPlatformIngressHelmChartReleaseName
     value: ingress-$(buildId)
   - name: serenityDevTenantId
-    value: 6ce336d3-a508-4cb5-bc41-32b0ab05b346
+    value: 233a1ca2-6855-43c5-8b9c-c7f85a1dd520
   - name: testPipelineDomain
     value: iot.cld.3m.com
   - name: testPipelineFqdn
@@ -204,7 +204,7 @@ stages:
               if (!(Test-Path $(commitsSinceLastReleaseArtifactName))) {
                 New-Item $(commitsSinceLastReleaseArtifactName) -Type Directory
               }
-              
+
               $previousReleaseTag = git for-each-ref --sort=-creatordate --format '%(tag)' refs/tags | ? {$_.trim() -ne "" } |
                 Select-Object -First 1
               $logFilePath = (Join-Path $(commitsSinceLastReleaseArtifactName) git-log.txt)
@@ -212,7 +212,7 @@ stages:
               Write-Output "previousReleaseTag: $previousReleaseTag"
               Write-Output 'Build.SourceVersion: $(Build.SourceVersion)'
               git log --oneline --no-decorate --topo-order ^$previousReleaseTag $(Build.SourceVersion) |
-                Tee-Object $logFilePath -Append 
+                Tee-Object $logFilePath -Append
 
             displayName: List commits since last release
 
@@ -520,26 +520,26 @@ stages:
                 set -Eeuxo pipefail
                 az storage entity insert --entity PartitionKey=$(tableStoragePartition) RowKey=$(tableStorageRowKeyPrefix)$(mmmIotPlatformIngressHelmChartWasInstalledRowKey) Content="true" --table-name $(tableStorageName) --account-name $(storageAccountName)
 
-          # - task: AzureCLI@2
-          #   displayName: Configure DNS
-          #   name: configureDns
-          #   inputs:
-          #     azureSubscription: $(subscriptionName)
-          #     scriptType: pscore
-          #     scriptLocation: inlineScript
-          #     inlineScript: |-
-          #       az aks get-credentials --name $(aksName) --resource-group $(resourceGroupName) --overwrite-existing
-          #       $ingressControllerIpAddress = kubectl get services --namespace $(kubernetesNamespace) --selector=app=nginx-ingress,component=controller --output=jsonpath='{.items[*].status.loadBalancer.ingress[*].ip}'
-          #       $tagsHashtable = Get-Content $(tagsFile) | ConvertFrom-Json -Depth 100 -AsHashtable
-          #       $tags = ($tagsHashtable.Keys | ForEach-Object { "$_=`"$($tagsHashtable[$_])`"" }) -join ','
-          #       az network dns zone create --name $(testPipelineDomain) --resource-group $(resourceGroupName) --if-none-match --tags $tags
-          #       az network dns record-set a add-record --record-set-name $(buildId) --resource-group $(resourceGroupName) --zone-name $(testPipelineDomain) --ipv4-address $ingressControllerIpAddress --if-none-match
-          #       $certificateIsReady = kubectl get certificates --namespace $(kubernetesNamespace) --output jsonpath="{.items[0].status.conditions[?(@.type=='Ready')].status}"
-          #       while ([System.String]::IsNullOrEmpty($certificateIsready) -or 'true' -ne  $certificateIsReady.ToLower()) {
-          #         Write-Host Waiting for certificate to be ready...
-          #         Start-Sleep -Seconds 10
-          #         $certificateIsReady = kubectl get certificates --namespace $(kubernetesNamespace) --output jsonpath="{.items[0].status.conditions[?(@.type=='Ready')].status}"
-          #       }
+          - task: AzureCLI@2
+            displayName: Configure DNS
+            name: configureDns
+            inputs:
+              azureSubscription: $(subscriptionName)
+              scriptType: pscore
+              scriptLocation: inlineScript
+              inlineScript: |-
+                az aks get-credentials --name $(aksName) --resource-group $(resourceGroupName) --overwrite-existing
+                $ingressControllerIpAddress = kubectl get services --namespace $(kubernetesNamespace) --selector=app=nginx-ingress,component=controller --output=jsonpath='{.items[*].status.loadBalancer.ingress[*].ip}'
+                $tagsHashtable = Get-Content $(tagsFile) | ConvertFrom-Json -Depth 100 -AsHashtable
+                $tags = ($tagsHashtable.Keys | ForEach-Object { "$_=`"$($tagsHashtable[$_])`"" }) -join ','
+                az network dns zone create --name $(testPipelineDomain) --resource-group $(resourceGroupName) --if-none-match --tags $tags
+                az network dns record-set a add-record --record-set-name $(buildId) --resource-group $(resourceGroupName) --zone-name $(testPipelineDomain) --ipv4-address $ingressControllerIpAddress --if-none-match
+                $certificateIsReady = kubectl get certificates --namespace $(kubernetesNamespace) --output jsonpath="{.items[0].status.conditions[?(@.type=='Ready')].status}"
+                while ([System.String]::IsNullOrEmpty($certificateIsready) -or 'true' -ne  $certificateIsReady.ToLower()) {
+                  Write-Host Waiting for certificate to be ready...
+                  Start-Sleep -Seconds 10
+                  $certificateIsReady = kubectl get certificates --namespace $(kubernetesNamespace) --output jsonpath="{.items[0].status.conditions[?(@.type=='Ready')].status}"
+                }
 
   - stage: deployServices
     displayName: Deploy services
@@ -625,9 +625,72 @@ stages:
       - deployServices
       - addAuthenticationCallbackUrl
     jobs:
+      - job: addFunctionalTestAccount
+        displayName: Add Functional Test Account
+        dependsOn: []
+        steps:
+        - checkout: none
+        - task: AzureCLI@2
+          displayName: Add TestAccount details  to App Configuration
+          inputs:
+              azureSubscription: $(subscriptionName)
+              addSpnToEnvironment: true
+              scriptLocation: inlineScript
+              scriptType: bash
+              inlineScript: |-
+                set -Eeuxo pipefail
+                az appconfig kv set --key TestUserCredentials:Admin:Password --value $(testAdminPasskey) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:Admin:UserEmail --value $(testAdminEmail) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:Readonly:Password --value $(testUserPasskey) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:Readonly:UserEmail --value $(testUserEmail) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:SystemAdmin:Password --value $(testSystemAdminPasskey) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:SystemAdmin:UserEmail --value $(testSystemAdminEmail) --name $(appConfigurationName)  --yes          
+          
+        - task: AzurePowerShell@5
+          displayName: Verify and add Test Account in the User Table
+          inputs:
+            azureSubscription: $(subscriptionName)
+            azurePowerShellVersion: LatestVersion
+            ScriptType: InlineScript
+            Inline: |
+              Install-Module AzTable -force
+              $table = Get-AzTableTable -resourceGroup $(resourceGroupName) -tableName $(usersTableName) -storageAccountName $(storageAccountName)
+              $saTable = Get-AzTableTable -resourceGroup $(resourceGroupName) -tableName $(sysAdminTableName) -storageAccountName $(storageAccountName)
+              $datetimevariable = Get-Date -Format "yyyy-MM-ddTHH:mm:ss:fffffffZ"
+              $testUser = Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountUser) -RowKey $(serenityDevTenantId)
+              $testAdmin =Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountAdmin) -RowKey $(serenityDevTenantId)
+              $testSystemAdmin = Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountSysAdmin) -RowKey $(serenityDevTenantId)
+              $saTestSystemAdmin = Get-AzTableRowByPartitionKey -Table $saTable -PartitionKey $(testAccountSysAdmin)
+            
+              if(($testUser -eq $Null) -or ($testUser.Roles -ne '["readonly"]')){
+                  Add-AzTableRow `
+                  -table $table `
+                  -partitionKey $(testAccountUser) `
+                  -rowKey $(serenityDevTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["readonly"]';"Name"="TestAccount - User";"Type"="Member"}
+              }
+              if(($testAdmin -eq $Null) -or ($testAdmin.Roles -ne '["admin"]')){
+                  Add-AzTableRow `
+                  -table $table `
+                  -partitionKey $(testAccountAdmin) `
+                  -rowKey $(serenityDevTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["admin"]';"Name"="TestAccount - Admin";"Type"="Member"}
+              }
+              if(($testSystemAdmin -eq $Null) -or ($testSystemAdmin.Roles -ne '["admin"]')){
+                  Add-AzTableRow `
+                  -table $table `
+                  -partitionKey $(testAccountSysAdmin) `
+                  -rowKey $(serenityDevTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["admin"]';"Name"="TestAccount - SystemAdmin";"Type"="Member"}
+              }
+              if($saTestSystemAdmin -eq $Null){
+                  Add-AzTableRow `
+                  -table $saTable `
+                  -partitionKey $(testAccountSysAdmin) `
+                  -rowKey $(testAccountSysAdmin) -property @{"Timestamp"=$datetimevariable;"Name"="TestAccount - SystemAdmin";"Type"="Member"}
+              }
+
       - job: getPipelineVariables
         displayName: Get pipeline variables
-        dependsOn: []
+        dependsOn: 
+          - addFunctionalTestAccount
         steps:
           - checkout: none
           - script: |
@@ -823,7 +886,7 @@ stages:
                   Select-Object -ExpandProperty Chart -Unique |
                   Where-Object { $_ -notmatch 'mmm-iot' } |
                   Sort-Object |
-                  Set-Content (Join-Path $(dependenciesReportArtifactName) helm.txt) 
+                  Set-Content (Join-Path $(dependenciesReportArtifactName) helm.txt)
 
           - publish: $(dependenciesReportArtifactName)
             artifact: $(dependenciesReportArtifactName)
