@@ -12,6 +12,7 @@ import CloseAlertIconPath from "assets/icons/closeAlert.svg";
 import ColonIconPath from "assets/icons/colon.svg";
 import ContosoIconPath from "assets/icons/contoso.svg";
 import CopyIconPath from "assets/icons/copy.svg";
+import CopyLinkPath from "assets/icons/copy-link.svg";
 import CriticalIconPath from "assets/icons/critical.svg";
 import DeviceChillerIconPath from "assets/icons/deviceChiller.svg";
 import DeviceElevatorIconPath from "assets/icons/deviceElevator.svg";
@@ -42,6 +43,7 @@ import RadioSelectedIconPath from "assets/icons/radioSelected.svg";
 import RadioUnselectedIconPath from "assets/icons/radioUnselected.svg";
 import ReconfigureIconPath from "assets/icons/reconfigure.svg";
 import RefreshIconPath from "assets/icons/refresh.svg";
+import ReturnIconPath from "assets/icons/return.svg";
 import RuleDisabledIconPath from "assets/icons/ruleDisabled.svg";
 import RuleEnabledIconPath from "assets/icons/ruleEnabled.svg";
 import SIMManagementIconPath from "assets/icons/SIMManagement.svg";
@@ -92,6 +94,7 @@ export const svgs = {
     colon: ColonIconPath,
     contoso: ContosoIconPath,
     copy: CopyIconPath,
+    copyLink: CopyLinkPath,
     critical: CriticalIconPath,
     disableToggle: DisableToggleIconPath,
     disabled: DisabledIconPath,
@@ -116,6 +119,7 @@ export const svgs = {
     radioUnselected: RadioUnselectedIconPath,
     reconfigure: ReconfigureIconPath,
     refresh: RefreshIconPath,
+    return: ReturnIconPath,
     ruleDisabled: RuleDisabledIconPath,
     ruleEnabled: RuleEnabledIconPath,
     search: SearchIconPath,

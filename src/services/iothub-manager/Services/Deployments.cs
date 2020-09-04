@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.AspNetCore.Server.HttpSys;
 using Microsoft.Azure.Devices;
+using Microsoft.Azure.Devices.Shared;
 using Microsoft.Azure.Documents;
 using Microsoft.Extensions.Logging;
 using Mmm.Iot.Common.Services.Config;
@@ -325,6 +326,15 @@ namespace Mmm.Iot.IoTHubManager.Services
                 }
             }
 
+            if (!string.IsNullOrWhiteSpace(deploymentFromStorage.DeviceGroupId) && string.IsNullOrWhiteSpace(deploymentFromStorage.DeviceGroupQuery))
+            {
+                var deviceGroup = await this.GetDeviceGroupAsync(deploymentFromStorage.DeviceGroupId);
+                if (deviceGroup != null)
+                {
+                    deploymentFromStorage.DeviceGroupQuery = JsonConvert.SerializeObject(deviceGroup.Conditions);
+                }
+            }
+
             await this.CreateAsync(deploymentFromStorage, userId, tenantId);
 
             await this.MarkDeploymentAsActive(deploymentId, userId);
@@ -347,6 +357,33 @@ namespace Mmm.Iot.IoTHubManager.Services
             }
 
             return devices;
+        }
+
+        public async Task<List<DeviceDeploymentStatusServiceModel>> GetDeploymentStatusReport(string id, bool isLatest = true)
+        {
+            List<DeviceDeploymentStatusServiceModel> deviceDeploymentStatuses = new List<DeviceDeploymentStatusServiceModel>();
+            var deploymentDetails = await this.GetAsync(id, true, isLatest);
+
+            if (deploymentDetails != null && deploymentDetails.DeploymentMetrics != null && deploymentDetails.DeploymentMetrics.DeviceStatuses != null && deploymentDetails.DeploymentMetrics.DeviceStatuses.Keys.Count > 0)
+            {
+                string deviceQuery = @"deviceId IN [{0}]";
+                var deviceIdsQuery = string.Join(",", deploymentDetails.DeploymentMetrics.DeviceStatuses.Keys.Select(d => $"'{d}'"));
+                var query = string.Format(deviceQuery, deviceIdsQuery);
+
+                DeviceServiceListModel devices = await this.GetDeviceListAsync(id, query, isLatest);
+
+                foreach (var item in deploymentDetails.DeploymentMetrics.DeviceStatuses)
+                {
+                    var reportedProperties = devices.Items.First(x => x.Id == item.Key).Twin.ReportedProperties;
+
+                    var json = JToken.Parse(JsonConvert.SerializeObject(reportedProperties));
+                    var fieldsCollector = new JsonFieldsCollector(json);
+                    var fields = fieldsCollector.GetAllFields();
+                    deviceDeploymentStatuses.Add(new DeviceDeploymentStatusServiceModel(item.Key, item.Value, fields));
+                }
+            }
+
+            return deviceDeploymentStatuses;
         }
 
         private async Task<TwinServiceListModel> GetDeploymentDevicesAsync(string deploymentId)

@@ -15,12 +15,13 @@ import {
     PageTitle,
 } from "components/shared";
 import { PackageNewContainer } from "./flyouts";
-import { svgs } from "utilities";
+import { svgs, getDeviceGroupParam } from "utilities";
 
 import "./packages.scss";
 import { DeviceGroupDropdownContainer as DeviceGroupDropdown } from "../../shell/deviceGroupDropdown";
 import { ManageDeviceGroupsBtnContainer as ManageDeviceGroupsBtn } from "../../shell/manageDeviceGroupsBtn";
 import { PackageJSONContainer } from "./flyouts/packageJSON";
+import { IdentityGatewayService } from "services";
 
 const closedFlyoutState = { openFlyoutName: undefined };
 
@@ -31,11 +32,23 @@ export class Packages extends Component {
             ...closedFlyoutState,
             contextBtns: null,
             packageJson: "testjson file",
+            selectedDeviceGroupId: undefined,
         };
 
         this.props.updateCurrentWindow("Packages");
 
         this.props.fetchPackages();
+    }
+
+    componentWillMount() {
+        if (this.props.location.search) {
+            this.setState({
+                selectedDeviceGroupId: getDeviceGroupParam(
+                    this.props.location.search
+                ),
+            });
+        }
+        IdentityGatewayService.VerifyAndRefreshCache();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -45,6 +58,16 @@ export class Packages extends Component {
         ) {
             // If the grid data refreshes, hide the flyout
             this.setState(closedFlyoutState);
+        }
+    }
+
+    componentDidMount() {
+        if (this.state.selectedDeviceGroupId) {
+            window.history.replaceState(
+                {},
+                document.title,
+                this.props.location.pathname
+            );
         }
     }
 
@@ -104,7 +127,11 @@ export class Packages extends Component {
             <ComponentArray>
                 <ContextMenu>
                     <ContextMenuAlign left={true}>
-                        <DeviceGroupDropdown />
+                        <DeviceGroupDropdown
+                            deviceGroupIdFromUrl={
+                                this.state.selectedDeviceGroupId
+                            }
+                        />
                         <Protected permission={permissions.updateDeviceGroups}>
                             <ManageDeviceGroupsBtn />
                         </Protected>

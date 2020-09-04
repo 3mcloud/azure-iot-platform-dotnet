@@ -12,7 +12,11 @@ import { RuleDetailsContainer } from "./ruleDetails/ruleDetails.container";
 import { JobDetailsContainer } from "./jobDetails/jobDetails.container";
 import { getIntervalParams } from "utilities";
 
-import { TelemetryService, IoTHubManagerService } from "services";
+import {
+    TelemetryService,
+    IoTHubManagerService,
+    IdentityGatewayService,
+} from "services";
 import { toDiagnosticsModel } from "services/models";
 
 import "./maintenance.scss";
@@ -175,6 +179,10 @@ export class Maintenance extends Component {
         );
     };
 
+    componentWillMount() {
+        IdentityGatewayService.VerifyAndRefreshCache();
+    }
+
     componentDidMount() {
         const {
             devicesIsPending,
@@ -315,9 +323,10 @@ export class Maintenance extends Component {
                 <Route
                     exact
                     path={"/maintenance/:path(notifications|jobs)"}
-                    render={() => (
+                    render={(routeProps) => (
                         <SummaryContainer
                             {...generalProps}
+                            {...routeProps}
                             criticalAlertCount={criticalAlertCount}
                             warningAlertCount={warningAlertCount}
                             alertCount={alertCount}

@@ -156,4 +156,12 @@ export class IoTHubManagerService {
             '"' + message + '"'
         );
     }
+
+    static getDeploymentReport(id, isLatest = true) {
+        var response = HttpClient.get(
+            `${ENDPOINT}deployments/report/${id}?isLatest=${isLatest}`,
+            { responseType: "blob", timeout: 120000 }
+        );
+        return response;
+    }
 }

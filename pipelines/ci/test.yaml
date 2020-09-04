@@ -204,15 +204,15 @@ stages:
               if (!(Test-Path $(commitsSinceLastReleaseArtifactName))) {
                 New-Item $(commitsSinceLastReleaseArtifactName) -Type Directory
               }
-
-              $previousReleaseTag = git for-each-ref --sort=-creatordate --format '%(tag)' refs/tags |
+              
+              $previousReleaseTag = git for-each-ref --sort=-creatordate --format '%(tag)' refs/tags | ? {$_.trim() -ne "" } |
                 Select-Object -First 1
               $logFilePath = (Join-Path $(commitsSinceLastReleaseArtifactName) git-log.txt)
               "Commits since ${previousReleaseTag}:" | Set-Content $logFilePath
               Write-Output "previousReleaseTag: $previousReleaseTag"
               Write-Output 'Build.SourceVersion: $(Build.SourceVersion)'
               git log --oneline --no-decorate --topo-order ^$previousReleaseTag $(Build.SourceVersion) |
-                Tee-Object $logFilePath -Append
+                Tee-Object $logFilePath -Append 
 
             displayName: List commits since last release
 
@@ -823,7 +823,7 @@ stages:
                   Select-Object -ExpandProperty Chart -Unique |
                   Where-Object { $_ -notmatch 'mmm-iot' } |
                   Sort-Object |
-                  Set-Content (Join-Path $(dependenciesReportArtifactName) helm.txt)
+                  Set-Content (Join-Path $(dependenciesReportArtifactName) helm.txt) 
 
           - publish: $(dependenciesReportArtifactName)
             artifact: $(dependenciesReportArtifactName)

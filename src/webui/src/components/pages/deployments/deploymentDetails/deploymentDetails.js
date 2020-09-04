@@ -1,12 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 import React, { Component } from "react";
+import { Toggle } from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Toggle";
 
 import {
     permissions,
     toSinglePropertyDiagnosticsModel,
     packagesEnum,
 } from "services/models";
+import { IoTHubManagerService } from "services";
 import {
     AjaxError,
     Btn,
@@ -14,6 +16,7 @@ import {
     ContextMenu,
     ContextMenuAlign,
     DeleteModal,
+    ConfirmationModal,
     Indicator,
     PageContent,
     Protected,
@@ -92,12 +95,48 @@ export class DeploymentDetails extends Component {
                     isPending={deleteIsPending}
                     itemId={this.props.currentDeployment.id}
                     onClose={this.closeModal}
-                    onDelete={this.onDelete}
+                    onDelete={this.closeAndNavigateBack}
                     logEvent={logEvent}
                     title={this.props.t("deployments.modals.delete.title")}
                     deleteInfo={this.props.t("deployments.modals.delete.info", {
                         deploymentName: this.props.currentDeployment.name,
                     })}
+                />
+            );
+        }
+        return null;
+    };
+
+    getConfirmationModal = () => {
+        const { t, logEvent, currentDeployment } = this.props;
+
+        const { id, isActive } = currentDeployment;
+
+        if (
+            this.state.openModalName === "deployment-status-change" &&
+            currentDeployment
+        ) {
+            logEvent(
+                toSinglePropertyDiagnosticsModel(
+                    "DeploymentDetail_StatusClick",
+                    "DeploymentId",
+                    currentDeployment ? id : ""
+                )
+            );
+            return (
+                <ConfirmationModal
+                    t={t}
+                    onCancel={this.closeModal}
+                    onOk={() =>
+                        this.activateOrInactivateDeployment(id, isActive)
+                    }
+                    logEvent={logEvent}
+                    title={t("deployments.modals.statusChange.title")}
+                    confirmationInfo={
+                        isActive
+                            ? t("deployments.modals.statusChange.inactivate")
+                            : t("deployments.modals.statusChange.reactivate")
+                    }
                 />
             );
         }
@@ -111,9 +150,45 @@ export class DeploymentDetails extends Component {
 
     closeModal = () => this.setState(closedModalState);
 
-    onDelete = () => {
+    closeAndNavigateBack = (refreshGrid = false) => {
         this.closeModal();
+        this.navigateToDeployments(refreshGrid);
+    };
+
+    activateOrInactivateDeployment = (deploymentId, isActive) => {
+        if (!isActive) {
+            IoTHubManagerService.reactivateDeployment(
+                deploymentId
+            ).subscribe(() => this.closeAndNavigateBack(true));
+        } else {
+            IoTHubManagerService.deleteDeployment(
+                deploymentId,
+                false
+            ).subscribe(() => this.closeAndNavigateBack(true));
+        }
+    };
+
+    navigateToDeployments = (refreshGrid = false) => {
+        if (refreshGrid) {
+            this.props.fetchDeployments();
+        }
         this.props.history.push("/deployments");
+    };
+
+    downloadFile = () => {
+        IoTHubManagerService.getDeploymentReport(
+            this.props.match.params.id,
+            this.props.match.params.isLatest
+        ).subscribe((response) => {
+            var blob = new Blob([response.response], {
+                type: response.response.type,
+            });
+            let url = window.URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = "DeploymentReport.xlsx";
+            a.click();
+        });
     };
 
     render() {
@@ -145,6 +220,7 @@ export class DeploymentDetails extends Component {
                 packageName,
                 customMetrics,
                 isLatest,
+                isActive,
             } = currentDeployment,
             isADMDeployment = packageType === packagesEnum.deviceConfiguration;
         let customArray = [
@@ -162,9 +238,40 @@ export class DeploymentDetails extends Component {
         return (
             <ComponentArray>
                 {this.getOpenModal()}
+                {this.getConfirmationModal()}
                 <ContextMenu>
+                    <ContextMenuAlign left={true}>
+                        <Btn
+                            svg={svgs.return}
+                            onClick={this.navigateToDeployments}
+                        >
+                            {t("deployments.returnToDeployments")}
+                        </Btn>
+                    </ContextMenuAlign>
                     <ContextMenuAlign>
                         <Protected permission={permissions.createDevices}>
+                            <div className="toggle-button">
+                                <Toggle
+                                    attr={{
+                                        button: {
+                                            "aria-label": t(
+                                                "settingsFlyout.simulationToggle"
+                                            ),
+                                            type: "button",
+                                        },
+                                    }}
+                                    on={isActive}
+                                    onLabel={t(
+                                        "deployments.flyouts.status.active"
+                                    )}
+                                    offLabel={t(
+                                        "deployments.flyouts.status.inActive"
+                                    )}
+                                    onChange={this.openModal(
+                                        "deployment-status-change"
+                                    )}
+                                />
+                            </div>
                             <Btn
                                 svg={svgs.trash}
                                 onClick={this.openModal("delete-deployment")}
@@ -172,6 +279,13 @@ export class DeploymentDetails extends Component {
                                 {t("deployments.modals.delete.contextMenuName")}
                             </Btn>
                         </Protected>
+                        <Btn
+                            svg={svgs.upload}
+                            className="download-deploymentStatus"
+                            onClick={this.downloadFile}
+                        >
+                            {t("deployments.details.downloadReport")}
+                        </Btn>
                         <RefreshBar
                             refresh={() => fetchDeployment(id, isLatest)}
                             time={lastUpdated}
