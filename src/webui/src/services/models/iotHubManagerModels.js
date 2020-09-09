@@ -4,7 +4,6 @@ import update from "immutability-helper";
 import dot from "dot-object";
 import { camelCaseReshape, getItems, float } from "utilities";
 import uuid from "uuid/v4";
-import { map } from "rxjs/operator/map";
 
 // Contains methods for converting service response
 // object to UI friendly objects

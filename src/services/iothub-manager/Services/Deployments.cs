@@ -796,8 +796,7 @@ namespace Mmm.Iot.IoTHubManager.Services
 
         private async Task<List<TwinServiceModel>> GetDeviceProperties(IEnumerable<string> deviceIds)
         {
-            List<TwinServiceModel> twins = null;
-            DeviceServiceListModel devices = null;
+            List<TwinServiceModel> twins = new List<TwinServiceModel>();
             string deviceQuery = @"deviceId IN [{0}]";
 
             if (deviceIds != null && deviceIds.Count() > 0)
@@ -805,16 +804,25 @@ namespace Mmm.Iot.IoTHubManager.Services
                 var deviceIdsQuery = string.Join(",", deviceIds.Select(d => $"'{d}'"));
                 var query = string.Format(deviceQuery, deviceIdsQuery);
 
-                devices = await this.devices.GetListAsync(query, null);
-                if (devices != null && devices.Items.Count() > 0)
-                {
-                    twins = new List<TwinServiceModel>();
-
-                    twins.AddRange(devices.Items.Select(i => i.Twin));
-                }
+                await this.GetDeviceTwins(query, null, twins);
             }
 
             return twins;
+        }
+
+        private async Task GetDeviceTwins(string query, string continuationToken, List<TwinServiceModel> twins)
+        {
+            DeviceServiceListModel devices = null;
+            devices = await this.devices.GetListAsync(query, null);
+
+            if (devices != null && devices.Items.Count() > 0)
+            {
+                twins.AddRange(devices.Items.Select(i => i.Twin));
+                if (!string.IsNullOrWhiteSpace(devices.ContinuationToken))
+                {
+                    await this.GetDeviceTwins(query, continuationToken, twins);
+                }
+            }
         }
 
         private async Task StoreDevicePropertiesInStorage(List<TwinServiceModel> deviceTwins, string deploymentId)
