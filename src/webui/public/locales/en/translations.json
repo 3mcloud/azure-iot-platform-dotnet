@@ -406,6 +406,8 @@
         "searchPlaceholder": "Search devices...",
         "noneFound": "No devices found.",
         "refresh": "Refresh",
+        "showTelemetry": "Show telemetry",
+        "returnToDevices": "Devices",
         "grid": {
             "connected": "Connected",
             "deviceName": "Device name",

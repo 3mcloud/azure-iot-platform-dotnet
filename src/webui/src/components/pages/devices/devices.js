@@ -151,6 +151,7 @@ export class Devices extends Component {
                 isPending,
                 lastUpdated,
                 fetchDevices,
+                routeProps,
             } = this.props,
             gridProps = {
                 onGridReady: this.onGridReady,
@@ -218,6 +219,7 @@ export class Devices extends Component {
                     {!error && (
                         <DevicesGridContainer
                             {...gridProps}
+                            {...routeProps}
                             openPropertyEditorModal={this.openModal}
                         />
                     )}

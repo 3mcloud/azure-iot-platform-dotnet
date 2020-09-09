@@ -63,6 +63,9 @@ export class DevicesGrid extends Component {
                         {props.t("devices.flyouts.c2dMessage.sendMessage")}
                     </Btn>
                 </Protected>
+                <Btn svg={svgs.ackAlert} onClick={this.goToTelemetryScreen}>
+                    {props.t("devices.showTelemetry")}
+                </Btn>
             </ComponentArray>
         );
     }
@@ -128,6 +131,13 @@ export class DevicesGrid extends Component {
     };
 
     closeFlyout = () => this.setState(closedFlyoutState);
+
+    goToTelemetryScreen = () => {
+        const selectedDevices = this.deviceGridApi.getSelectedRows();
+        this.props.history.push("/devices/telemetry", {
+            deviceIds: selectedDevices.map(({ id }) => id),
+        });
+    };
 
     /**
      * Handles soft select props method
