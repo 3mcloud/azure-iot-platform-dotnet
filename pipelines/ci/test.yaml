@@ -64,7 +64,7 @@ variables:
   - name: functionsArtifactName
     value: functionsFiles
   - name: helmInstallTimeoutInSeconds
-    value: 600
+    value: 1000
   - name: mmmIotPlatformServicesHelmChartValuesFile
     value: pipelines/ci/mmm-iot-platform-chart-values.yaml
   - name: mmmIotPlatformServicesHelmChartReleaseName
@@ -286,14 +286,15 @@ stages:
           - task: AntiMalware@3
             displayName: Scan for malware
             inputs:
-              InputType: Basic
-              ScanType: CustomScan
-              FileDirPath: $(Build.SourcesDirectory)
+              InputType: 'Basic'
+              ScanType: 'CustomScan'
+              FileDirPath: '$(Build.SourcesDirectory)'
+              DisableRemediation: false
               EnableServices: true
               SupportLogOnError: false
-              TreatSignatureUpdateFailureAs: Warning
-              SignatureFreshness: UpToDate
-              TreatStaleSignatureAs: Error
+              TreatSignatureUpdateFailureAs: 'Warning'
+              SignatureFreshness: 'UpToDate'
+              TreatStaleSignatureAs: 'Error'
 
           - task: CredScan@2
             displayName: Scan for credentials
@@ -637,7 +638,7 @@ stages:
               azureSubscriptionEndpoint: $(subscriptionName)
               azureResourceGroup: $(resourceGroupName)
               kubernetesCluster: $(aksName)
-              useClusterAdmin: false
+              useClusterAdmin: true
               namespace: $(kubernetesNamespace)
               command: install
               chartName: charts/$(mmmIotPlatformServicesHelmChartName)
@@ -650,6 +651,7 @@ stages:
                 --set secrets.globalsecrets.Global__AzureB2cBaseUri=https://login.microsoftonline.com/crsltestab2c.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_testpolicy&client_id=$(azureAdB2cAppRegistrationClientIdTest)&nonce=defaultNonce&redirect_uri=https%3A%2F%2Flocalhost%3A44367%2Fconnect%2Fcallback&scope=openid&response_type=id_token&prompt=login&response_mode=form_post
                 --timeout $(helmInstallTimeoutInSeconds)
                 --wait
+                --debug
 
           - task: AzureCLI@2
             displayName: Note services Helm chart was installed
