@@ -592,7 +592,7 @@ stages:
               azureSubscriptionEndpoint: $(subscriptionName)
               azureResourceGroup: $(resourceGroupName)
               kubernetesCluster: $(aksName)
-              useClusterAdmin: false
+              useClusterAdmin: true
               namespace: $(kubernetesNamespace)
               command: 'upgrade'
               chartName: charts/$(mmmIotPlatformServicesHelmChartName)
