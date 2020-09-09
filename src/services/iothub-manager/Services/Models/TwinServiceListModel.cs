@@ -8,6 +8,10 @@ namespace Mmm.Iot.IoTHubManager.Services.Models
 {
     public class TwinServiceListModel
     {
+        public TwinServiceListModel()
+        {
+        }
+
         public TwinServiceListModel(IEnumerable<TwinServiceModel> twins, string continuationToken = null)
         {
             this.ContinuationToken = continuationToken;

@@ -47,9 +47,11 @@ namespace Mmm.Iot.IoTHubManager.Services
         private const string SuccessQueryName = "current";
         private const string DeploymentsCollection = "deployments";
         private const string DeploymentDevicePropertiesCollection = "deploymentdevices-{0}";
+        private const string DeploymentHistoryPropertiesCollection = "deploymentHistory-{0}_{1}";
         private const string DeleteTag = "reserved.isDeleted";
         private const string LatestTag = "reserved.latest";
         private const string InActiveTag = "reserved.inactive";
+        private const string ReactivatedTag = "reserved.reactivated";
         private readonly ILogger logger;
         private readonly IDeploymentEventLog deploymentLog;
         private readonly ITenantConnectionHelper tenantHelper;
@@ -183,7 +185,7 @@ namespace Mmm.Iot.IoTHubManager.Services
 
             if (deploymentsFromStorage != null && deploymentsFromStorage.Items?.Count > 0)
             {
-                deploymentsFromStorage.Items = deploymentsFromStorage.Items.Where(x => !x.Tags.Contains(DeleteTag)).ToList();
+                deploymentsFromStorage.Items = deploymentsFromStorage.Items.Where(x => !x.Tags.Contains(DeleteTag) && !x.Tags.Contains(ReactivatedTag)).ToList();
                 var deploymentsFromHub = await this.ListAsync();
 
                 if (deploymentsFromHub != null && deploymentsFromHub.Items?.Count > 0)
@@ -334,6 +336,9 @@ namespace Mmm.Iot.IoTHubManager.Services
                     deploymentFromStorage.DeviceGroupQuery = JsonConvert.SerializeObject(deviceGroup.Conditions);
                 }
             }
+
+            // clearing out all the existing tags as we are creating new deployment with the old model (inactivated) deployment properties
+            deploymentFromStorage.Tags = new List<string>();
 
             await this.CreateAsync(deploymentFromStorage, userId, tenantId);
 
@@ -739,7 +744,7 @@ namespace Mmm.Iot.IoTHubManager.Services
                 return existingDeployment;
             }
 
-            existingDeployment.Tags.Remove(existingTag);
+            existingDeployment.Tags.Add(ReactivatedTag);
 
             AuditHelper.UpdateAuditingData(existingDeployment, userId);
 
@@ -816,19 +821,46 @@ namespace Mmm.Iot.IoTHubManager.Services
         {
             if (deviceTwins != null)
             {
-                foreach (var deviceTwin in deviceTwins)
+                TwinServiceListModel existingDeviceTwins = await this.GetDeploymentDevicesAsync(deploymentId);
+                if (existingDeviceTwins == null || (existingDeviceTwins != null && existingDeviceTwins.Items.Count == 0))
                 {
-                    var value = JsonConvert.SerializeObject(
-                        deviceTwin,
-                        Formatting.Indented,
-                        new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Ignore,
-                        });
+                    foreach (var deviceTwin in deviceTwins)
+                    {
+                        await this.SaveDeviceTwin(deploymentId, deviceTwin, null);
+                    }
+                }
+                else
+                {
+                    foreach (var deviceTwin in deviceTwins)
+                    {
+                        var existingDeviceTwin = existingDeviceTwins.Items.FirstOrDefault(x => x.DeviceId == deviceTwin.DeviceId);
+                        await this.SaveDeviceTwin(deploymentId, deviceTwin, existingDeviceTwin?.ETag);
 
-                    await this.client.CreateAsync(string.Format(DeploymentDevicePropertiesCollection, deploymentId), value);
+                        // archive exisiting Device Twin
+                        var archiveDeviceTwinValue = JsonConvert.SerializeObject(
+                            existingDeviceTwin,
+                            Formatting.Indented,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore,
+                            });
+                        await this.client.UpdateAsync(string.Format(DeploymentHistoryPropertiesCollection, deploymentId, Guid.NewGuid().ToString()), deviceTwin.DeviceId, archiveDeviceTwinValue, null);
+                    }
                 }
             }
+        }
+
+        private async Task SaveDeviceTwin(string deploymentId, TwinServiceModel deviceTwin, string existingDeviceTwinEtag)
+        {
+            var value = JsonConvert.SerializeObject(
+                deviceTwin,
+                Formatting.Indented,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                });
+
+            await this.client.UpdateAsync(string.Format(DeploymentDevicePropertiesCollection, deploymentId), deviceTwin.DeviceId, value, existingDeviceTwinEtag);
         }
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Shared;
 using Mmm.Iot.Common.Services.Exceptions;
 using Mmm.Iot.Common.Services.External.AsaManager;
+using Mmm.Iot.Common.Services.External.CosmosDb;
 using Mmm.Iot.Common.TestHelpers;
 using Mmm.Iot.IoTHubManager.Services.Helpers;
 using Mmm.Iot.IoTHubManager.Services.Models;
@@ -27,6 +28,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
         private readonly Mock<ITenantConnectionHelper> mockTenantHelper;
         private readonly Mock<IAsaManagerClient> mockAsaManager;
         private readonly Mock<IDeviceQueryCache> mockCache;
+        private readonly Mock<IStorageClient> mockStorageClient;
 
         public DevicesTest()
         {
@@ -51,8 +53,9 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
                         It.IsAny<string>(),
                         It.IsAny<string>(),
                         It.IsAny<DeviceQueryCacheResultServiceModel>()));
+            this.mockStorageClient = new Mock<IStorageClient>();
 
-            this.devices = new Devices(this.mockTenantHelper.Object, this.ioTHubHostName, this.mockAsaManager.Object, this.mockCache.Object);
+            this.devices = new Devices(this.mockTenantHelper.Object, this.ioTHubHostName, this.mockAsaManager.Object, this.mockCache.Object, this.mockStorageClient.Object);
         }
 
         [Theory]

@@ -4,6 +4,7 @@ import update from "immutability-helper";
 import dot from "dot-object";
 import { camelCaseReshape, getItems, float } from "utilities";
 import uuid from "uuid/v4";
+import { map } from "rxjs/operator/map";
 
 // Contains methods for converting service response
 // object to UI friendly objects
@@ -288,3 +289,18 @@ export const toEdgeAgentModel = (edgeAgent = {}) =>
 
 export const toEdgeAgentsModel = (response = []) =>
     getItems(response).map(toEdgeAgentModel);
+
+export const toDevicesDeploymentHistoryModel = (response = []) =>
+    getItems(response).map(toDeviceDeploymentHistoryModel);
+
+export const toDeviceDeploymentHistoryModel = (twinServiceModel = {}) => {
+    if (twinServiceModel.Reported && twinServiceModel.Reported.firmware) {
+        var modelData = {
+            firmwareVersion:
+                twinServiceModel.Reported.firmware.currentFwVersion,
+            startTime: twinServiceModel.Reported.firmware.lastFwUpdateStartTime,
+            endTime: twinServiceModel.Reported.firmware.lastFwUpdateEndTime,
+        };
+        return modelData;
+    }
+};

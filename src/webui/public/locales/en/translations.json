@@ -477,6 +477,14 @@
                     "action": "Action",
                     "property": "Property",
                     "value": "Value"
+                },
+                "deviceDeployments": {
+                    "title": "Device Deployments",
+                    "description": "Deployment History of device",
+                    "noneExist": "No history present for this device",
+                    "firmwareVersion" : "Firmware Version",
+                    "startDate": "Start Date Time",
+                    "endDate": "End Date Time"
                 }
             },
             "delete": {

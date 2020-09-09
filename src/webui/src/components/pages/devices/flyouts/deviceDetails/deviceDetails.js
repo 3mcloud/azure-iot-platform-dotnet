@@ -10,7 +10,7 @@ import {
 } from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Balloon/Balloon";
 
 import Config from "app.config";
-import { TelemetryService } from "services";
+import { TelemetryService, IoTHubManagerService } from "services";
 import { DeviceIcon } from "./deviceIcon";
 import { RulesGrid, rulesColumnDefs } from "components/pages/rules/rulesGrid";
 import {
@@ -83,6 +83,7 @@ export class DeviceDetails extends Component {
             showRawMessage: false,
             currentModuleStatus: undefined,
             deviceUploads: undefined,
+            deviceDeployments: undefined,
         };
         this.baseState = this.state;
         this.columnDefs = [
@@ -119,6 +120,7 @@ export class DeviceDetails extends Component {
             deviceId = device.id;
         this.fetchAlerts(deviceId);
         this.fetchDeviceUploads(deviceId);
+        this.fetchDeviceDeployments(deviceId);
 
         const [hours = 0, minutes = 0, seconds = 0] = interval
                 .split(":")
@@ -285,6 +287,22 @@ export class DeviceDetails extends Component {
         });
     };
 
+    fetchDeviceDeployments = (deviceId) => {
+        IoTHubManagerService.getDeploymentHistoryForSelectedDevice(
+            deviceId
+        ).subscribe((deviceDeployments) => {
+            var filteredDeployments = [];
+            deviceDeployments.forEach((deployment) => {
+                if (deployment) {
+                    filteredDeployments.push(deployment);
+                }
+            });
+            this.setState({
+                deviceDeployments: filteredDeployments,
+            });
+        });
+    };
+
     downloadFile = (relativePath, fileName) => {
         TelemetryService.getDeviceUploadsFileContent(relativePath).subscribe(
             (response) => {
@@ -334,6 +352,7 @@ export class DeviceDetails extends Component {
             tags = Object.entries(device.tags || {}),
             properties = Object.entries(device.properties || {}),
             deviceUploads = this.state.deviceUploads || [],
+            deviceDeployments = this.state.deviceDeployments || [],
             moduleQuerySuccessful =
                 currentModuleStatus &&
                 currentModuleStatus !== {} &&
@@ -969,6 +988,72 @@ export class DeviceDetails extends Component {
                                                                             )
                                                                         }
                                                                     ></Btn>
+                                                                </Cell>
+                                                            </Row>
+                                                        )
+                                                    )}
+                                                </GridBody>
+                                            </Grid>
+                                        )}
+                                    </div>
+                                </Section.Content>
+                            </Section.Container>
+                            <Section.Container>
+                                <Section.Header>
+                                    {t(
+                                        "devices.flyouts.details.deviceDeployments.title"
+                                    )}
+                                </Section.Header>
+                                <Section.Content>
+                                    <SectionDesc>
+                                        {t(
+                                            "devices.flyouts.details.deviceDeployments.description"
+                                        )}
+                                    </SectionDesc>
+                                    <div className="device-details-deviceDeployments-contentbox">
+                                        {deviceDeployments.length === 0 &&
+                                            t(
+                                                "devices.flyouts.details.deviceDeployments.noneExist"
+                                            )}
+                                        {deviceDeployments.length > 0 && (
+                                            <Grid className="device-details-deviceDeployments">
+                                                <GridHeader>
+                                                    <Row>
+                                                        <Cell className="col-4">
+                                                            {t(
+                                                                "devices.flyouts.details.deviceDeployments.firmwareVersion"
+                                                            )}
+                                                        </Cell>
+                                                        <Cell className="col-4">
+                                                            {t(
+                                                                "devices.flyouts.details.deviceDeployments.startDate"
+                                                            )}
+                                                        </Cell>
+                                                        <Cell className="col-4">
+                                                            {t(
+                                                                "devices.flyouts.details.deviceDeployments.endDate"
+                                                            )}
+                                                        </Cell>
+                                                    </Row>
+                                                </GridHeader>
+                                                <GridBody>
+                                                    {deviceDeployments.map(
+                                                        (deployment, idx) => (
+                                                            <Row key={idx}>
+                                                                <Cell className="col-4">
+                                                                    {
+                                                                        deployment.firmwareVersion
+                                                                    }
+                                                                </Cell>
+                                                                <Cell className="col-4">
+                                                                    {formatTime(
+                                                                        deployment.startTime
+                                                                    )}
+                                                                </Cell>
+                                                                <Cell className="col-4">
+                                                                    {formatTime(
+                                                                        deployment.endTime
+                                                                    )}
                                                                 </Cell>
                                                             </Row>
                                                         )

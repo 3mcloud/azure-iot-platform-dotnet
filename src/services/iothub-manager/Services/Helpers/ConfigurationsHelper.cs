@@ -43,7 +43,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Helpers
                 throw new InvalidInputException("Deployment type does not match with package contents.");
             }
 
-            var deploymentId = string.IsNullOrWhiteSpace(model.Id) ? Guid.NewGuid().ToString().ToLower() : model.Id;
+            var deploymentId = Guid.NewGuid().ToString().ToLower();
             var configuration = new Configuration(deploymentId);
             configuration.Content = packageConfiguration.Content;
 
