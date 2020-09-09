@@ -62,7 +62,7 @@ variables:
   - name: publishedFilesArtifactName
     value: publishFiles
   - name: helmInstallTimeoutInSeconds
-    value: 600
+    value: 1000
   - name: mmmIotPlatformServicesHelmChartValuesFile
     value: pipelines/ci/mmm-iot-platform-chart-values.yaml
   - name: mmmIotPlatformServicesHelmChartReleaseName
