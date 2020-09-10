@@ -9,16 +9,33 @@ To easily get a list of committed changes between current master and the previou
 git log --oneline --no-decorate --topo-order ^<previousRelease> master
 where <previousRelease> is the release name e.g 5.1.0
 -->
+
+## [5.3.0] - 2020-09-10
+### Add
+- UI Enhancements for enabling / disabling active deployments, those impacting deployment quotas
+- Downloadable deployment reports
+- Nested Device Properties Editable in UI (up to 6 levels)
+- Get URLs that include DeviceGroup filtering
+- Auto-refresh UI cache after deployment
+- Improvements to tenant lifecycle
+
+### Fixed
+- Reported Properties Changes in Deployment Details
+- Fixed UI contineous refresh issues when alerting is off
+- Added changes to handle UNIX timestamp
+- Sys-admins can access to all tenants
+- Prevent users from filtering dashboard duration that does not have telemetry data
+
 ## [5.2.3] - 2020-08-18
+### Added
+- Improved control over tracking and managing the deployments imposed by IoT Hub
+
 ### Fixed
 = Asa-maager twin update job properly triggers device group conversion
 - Updated methods to throw expcetion when there is no collection
 - Prevent Azure Function calls when alerting is diabled
 - Updated ResourceNotFoundException in Rules Methods
 - Removed telemetry entries in health probes to reduce logging costs
-
-### Added
-- Improved control over tracking and managing the deployments imposed by IoT Hub
 
 
 ## [5.2.2] - 2020-07-26
