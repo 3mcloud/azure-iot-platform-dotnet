@@ -765,6 +765,7 @@ stages:
     dependsOn:
       - functionalTest
       - enumerateDependencies
+      - deployServices
     condition: and(succeededOrFailed(), eq(variables['runCleanupStage'], 'true'))
     jobs:
       - job: getPipelineVariables
