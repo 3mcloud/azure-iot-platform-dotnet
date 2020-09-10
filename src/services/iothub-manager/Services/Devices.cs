@@ -153,6 +153,32 @@ namespace Mmm.Iot.IoTHubManager.Services
             return resultModel;
         }
 
+        public async Task<DeviceServiceListModel> GetDeviceListAsync(string query, string continuationToken)
+        {
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                // Try to translate clauses to query
+                query = QueryConditionTranslator.ToQueryString(query);
+            }
+
+            var twins = await this.GetTwinByQueryAsync(
+                QueryPrefix,
+                query,
+                continuationToken,
+                MaximumGetList);
+
+            var connectedEdgeDevices = await this.GetConnectedEdgeDevices(twins.Result);
+
+            var resultModel = new DeviceServiceListModel(
+                twins.Result.Select(azureTwin => new DeviceServiceModel(
+                    azureTwin,
+                    this.tenantConnectionHelper.GetIotHubName(),
+                    connectedEdgeDevices.ContainsKey(azureTwin.DeviceId))),
+                twins.ContinuationToken);
+
+            return resultModel;
+        }
+
         public async Task<DeviceTwinName> GetDeviceTwinNamesAsync()
         {
             var content = await this.GetListAsync(string.Empty, string.Empty);

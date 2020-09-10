@@ -28,9 +28,9 @@ import { packagesEnum } from "services/models";
 
 // ========================= Epics - START
 const handleError = (fromAction) => (error) =>
-        Observable.of(
-            redux.actions.registerError(fromAction.type, { error, fromAction })
-        ),
+    Observable.of(
+        redux.actions.registerError(fromAction.type, { error, fromAction })
+    ),
     getDeployedDeviceIds = (payload) => {
         return Object.keys(dot.pick("deviceStatuses", payload))
             .map((id) => `'${id}'`)
@@ -92,15 +92,20 @@ export const epics = createEpicScenario({
                     .catch(handleError(fromAction));
             }
             return Observable.forkJoin(
-                IoTHubManagerService.getModulesByQuery(
+                IoTHubManagerService.getModulesByQueryForDeployment(
+                    fromAction.payload.id,
                     createEdgeAgentQuery(
                         getDeployedDeviceIds(fromAction.payload)
-                    )
+                    ),
+                    fromAction.payload.isLatest
                 ),
-                IoTHubManagerService.getDevicesByQuery(
-                    createDevicesQuery(getDeployedDeviceIds(fromAction.payload))
-                )
-            )
+                IoTHubManagerService.getDevicesByQueryForDeployment(
+                    fromAction.payload.id,
+                    createDevicesQuery(
+                        getDeployedDeviceIds(fromAction.payload)
+                    ),
+                    fromAction.payload.isLatest
+                ))
                 .map(
                     toActionCreator(
                         redux.actions.updateDeployedDevices,
@@ -212,8 +217,8 @@ const deploymentSchema = new schema.Entity("deployments"),
         { payload: [modules, devices], fromAction }
     ) => {
         const normalizedDevices =
-                normalize(devices, deployedDevicesListSchema).entities
-                    .deployedDevices || {},
+            normalize(devices, deployedDevicesListSchema).entities
+                .deployedDevices || {},
             normalizedModules =
                 normalize(modules, deployedDevicesListSchema).entities
                     .deployedDevices || {},
@@ -237,8 +242,8 @@ const deploymentSchema = new schema.Entity("deployments"),
     },
     updateADMDeployedDevicesReducer = (state, { payload, fromAction }) => {
         const normalizedDevices =
-                normalize(payload, deployedDevicesListSchema).entities
-                    .deployedDevices || {},
+            normalize(payload, deployedDevicesListSchema).entities
+                .deployedDevices || {},
             deployedDevices = Object.keys(normalizedDevices).reduce(
                 (acc, deviceId) => ({
                     ...acc,

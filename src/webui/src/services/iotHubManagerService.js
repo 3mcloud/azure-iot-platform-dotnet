@@ -16,7 +16,6 @@ import {
     toDeploymentsModel,
     toDeploymentRequestModel,
     toEdgeAgentsModel,
-    toDevicesDeploymentHistoryModel,
 } from "./models";
 
 const ENDPOINT = Config.serviceUrls.iotHubManager;
@@ -120,11 +119,11 @@ export class IoTHubManagerService {
         ).map(toDevicesModel);
     }
 
-    static getDeploymentHistoryForSelectedDevice(deviceId) {
-        debugger;
-        return HttpClient.get(
-            `${ENDPOINT}devices/deploymentHistory/${deviceId}`
-        ).map(toDevicesDeploymentHistoryModel);
+    static getModulesByQueryForDeployment(id, query, isLatest) {
+        return HttpClient.post(
+            `${ENDPOINT}deployments/modules/${id}?isLatest=${isLatest}`,
+            query
+        ).map(toEdgeAgentsModel);
     }
 
     /** Create a deployment */
