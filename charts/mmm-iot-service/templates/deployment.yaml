@@ -56,6 +56,25 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             failureThreshold: 3
+          {{- else }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 10080
+            initialDelaySeconds: 220
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 10080
+            initialDelaySeconds: 200
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
           {{- end }}
           env:
             {{- $root := . }}
