@@ -115,14 +115,16 @@ export class IoTHubManagerService {
     static getDevicesByQueryForDeployment(id, query, isLatest) {
         return HttpClient.post(
             `${ENDPOINT}deployments/devices/${id}?isLatest=${isLatest}`,
-            query
+            query,
+            { timeout: 120000 }
         ).map(toDevicesModel);
     }
 
     static getModulesByQueryForDeployment(id, query, isLatest) {
         return HttpClient.post(
             `${ENDPOINT}deployments/modules/${id}?isLatest=${isLatest}`,
-            query
+            query,
+            { timeout: 120000 }
         ).map(toEdgeAgentsModel);
     }
 
@@ -130,14 +132,17 @@ export class IoTHubManagerService {
     static createDeployment(deploymentModel) {
         return HttpClient.post(
             `${ENDPOINT}deployments`,
-            toDeploymentRequestModel(deploymentModel)
+            toDeploymentRequestModel(deploymentModel),
+            { timeout: 120000 }
         ).map(toDeploymentModel);
     }
 
     /** Delete a deployment */
     static deleteDeployment(id, isDelete = true) {
         return HttpClient.delete(
-            `${ENDPOINT}deployments/${id}?isDelete=${isDelete}`
+            `${ENDPOINT}deployments/${id}?isDelete=${isDelete}`,
+            {},
+            { timeout: 120000 }
         ).map(() => id);
     }
 

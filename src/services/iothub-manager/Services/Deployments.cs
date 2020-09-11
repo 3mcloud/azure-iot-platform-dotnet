@@ -46,6 +46,7 @@ namespace Mmm.Iot.IoTHubManager.Services
         private const string DeploymentDevicePropertiesCollection = "deploymentdevices-{0}";
         private const string DeploymentEdgeModulePropertiesCollection = "deploymentedgemodules-{0}";
         private const string DeploymentHistoryPropertiesCollection = "deploymentHistory-{0}_{1}";
+        private const string DeploymentModuleHistoryPropertiesCollection = "deploymentModulesHistory-{0}_{1}";
         private const string DeleteTag = "reserved.isDeleted";
         private const string LatestTag = "reserved.latest";
         private const string InActiveTag = "reserved.inactive";
@@ -982,7 +983,7 @@ namespace Mmm.Iot.IoTHubManager.Services
                             {
                                 NullValueHandling = NullValueHandling.Ignore,
                             });
-                        await this.client.UpdateAsync(string.Format(DeploymentHistoryPropertiesCollection, deploymentId, Guid.NewGuid().ToString()), $"{moduleTwin.DeviceId}-{this.RemoveSpecialCharacters(moduleTwin.ModuleId)}", archiveModuleTwinValue, null);
+                        await this.client.UpdateAsync(string.Format(DeploymentModuleHistoryPropertiesCollection, deploymentId, Guid.NewGuid().ToString()), $"{moduleTwin.DeviceId}-{this.RemoveSpecialCharacters(moduleTwin.ModuleId)}", archiveModuleTwinValue, null);
                     }
                 }
             }
