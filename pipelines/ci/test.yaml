@@ -244,12 +244,11 @@ stages:
               InputType: 'Basic'
               ScanType: 'CustomScan'
               FileDirPath: '$(Build.SourcesDirectory)'
-              DisableRemediation: false
               EnableServices: true
-              SupportLogOnError: false
+              SupportLogOnError: true
               TreatSignatureUpdateFailureAs: 'Warning'
               SignatureFreshness: 'UpToDate'
-              TreatStaleSignatureAs: 'Error'
+              TreatStaleSignatureAs: 'Warning'
 
           - task: CredScan@2
             displayName: Scan for credentials
@@ -595,7 +594,7 @@ stages:
               kubernetesCluster: $(aksName)
               useClusterAdmin: true
               namespace: $(kubernetesNamespace)
-              command: install
+              command: 'install'
               chartName: charts/$(mmmIotPlatformServicesHelmChartName)
               releaseName: $(mmmIotPlatformServicesHelmChartReleaseName)
               updatedependency: true
@@ -606,8 +605,6 @@ stages:
                 --set secrets.globalsecrets.Global__AzureB2cBaseUri=https://login.microsoftonline.com/crsltestab2c.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_testpolicy&client_id=$(azureAdB2cAppRegistrationClientIdTest)&nonce=defaultNonce&redirect_uri=https%3A%2F%2Flocalhost%3A44367%2Fconnect%2Fcallback&scope=openid&response_type=id_token&prompt=login&response_mode=form_post
                 --timeout $(helmInstallTimeoutInSeconds)
                 --wait
-                --debug
-
           - task: AzureCLI@2
             displayName: Note services Helm chart was installed
             inputs:
@@ -767,6 +764,7 @@ stages:
     dependsOn:
       - functionalTest
       - enumerateDependencies
+      - deployServices
     condition: and(succeededOrFailed(), eq(variables['runCleanupStage'], 'true'))
     jobs:
       - job: getPipelineVariables

@@ -1053,6 +1053,7 @@
   "modal": {
     "delete": "Delete",
     "cancel": "Cancel",
+    "close": "Close",
     "copy": "Copy",
     "ok": "Ok"
   },
