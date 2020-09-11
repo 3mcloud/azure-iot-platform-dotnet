@@ -63,7 +63,7 @@ export class DevicesGrid extends Component {
                         {props.t("devices.flyouts.c2dMessage.sendMessage")}
                     </Btn>
                 </Protected>
-                <Btn svg={svgs.ackAlert} onClick={this.goToTelemetryScreen}>
+                <Btn icon="areaChart" onClick={this.goToTelemetryScreen}>
                     {props.t("devices.showTelemetry")}
                 </Btn>
             </ComponentArray>
