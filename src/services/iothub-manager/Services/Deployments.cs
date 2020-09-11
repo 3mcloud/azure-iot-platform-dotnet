@@ -7,11 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.AspNetCore.Server.HttpSys;
 using Microsoft.Azure.Devices;
-using Microsoft.Azure.Devices.Shared;
-using Microsoft.Azure.Documents;
 using Microsoft.Extensions.Logging;
 using Mmm.Iot.Common.Services.Config;
 using Mmm.Iot.Common.Services.Exceptions;
@@ -284,10 +280,13 @@ namespace Mmm.Iot.IoTHubManager.Services
                         existingDeployment.DeploymentMetrics = currentDeployment.DeploymentMetrics;
                     }
 
-                    deviceTwins = await this.GetDeviceProperties(currentDeployment.DeploymentMetrics.DeviceStatuses.Keys);
-                    if (currentDeployment.PackageType == PackageType.EdgeManifest)
+                    if (currentDeployment != null && currentDeployment.DeploymentMetrics != null && currentDeployment.DeploymentMetrics.DeviceStatuses != null && currentDeployment.DeploymentMetrics.DeviceStatuses.Keys.Count > 0)
                     {
-                        moduleTwins = await this.GetDeviceProperties(currentDeployment.DeploymentMetrics.DeviceStatuses.Keys, PackageType.EdgeManifest);
+                        deviceTwins = await this.GetDeviceProperties(currentDeployment.DeploymentMetrics.DeviceStatuses.Keys);
+                        if (currentDeployment.PackageType == PackageType.EdgeManifest)
+                        {
+                            moduleTwins = await this.GetDeviceProperties(currentDeployment.DeploymentMetrics.DeviceStatuses.Keys, PackageType.EdgeManifest);
+                        }
                     }
                 }
 
