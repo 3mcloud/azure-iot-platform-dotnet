@@ -16,6 +16,7 @@ import {
     toDeploymentsModel,
     toDeploymentRequestModel,
     toEdgeAgentsModel,
+    toDevicesDeploymentHistoryModel,
 } from "./models";
 
 const ENDPOINT = Config.serviceUrls.iotHubManager;
@@ -175,5 +176,11 @@ export class IoTHubManagerService {
             { responseType: "blob", timeout: 120000 }
         );
         return response;
+    }
+
+    static getDeploymentHistoryForSelectedDevice(deviceId) {
+        return HttpClient.get(
+            `${ENDPOINT}devices/deploymentHistory/${deviceId}`
+        ).map(toDevicesDeploymentHistoryModel);
     }
 }
