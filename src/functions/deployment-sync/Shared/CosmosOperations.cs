@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
 {
     public class CosmosOperations
     {
+        private const string InvalidCharacterRegex = @"[^A-Za-z0-9:;.,_\-@]";
         private static CosmosOperations instance = null;
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
         private readonly DocumentClient client = null;
@@ -38,6 +40,25 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
             {
                 semaphoreSlim.Release();
             }
+        }
+
+        public static SqlQuerySpec GetDocumentsByCollectionId(
+            string key,
+            string value)
+        {
+            var sqlParameterCollection = new SqlParameterCollection();
+            ValidateInput(ref key);
+            ValidateInput(ref value);
+
+            var queryBuilder = new StringBuilder("SELECT * FROM c");
+
+            if (!string.IsNullOrEmpty(key))
+            {
+                queryBuilder.Append($" WHERE c[@keyProperty] = \"{value}\"");
+                sqlParameterCollection.Add(new SqlParameter { Name = "@keyProperty", Value = key });
+            }
+
+            return new SqlQuerySpec(queryBuilder.ToString(), sqlParameterCollection);
         }
 
         public async Task<bool> CreateDatabaseIfNotExistsAsync(string cosmosDatabase, int docDBRUs)
@@ -191,6 +212,58 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
             }
         }
 
+        public async Task<List<Document>> QueryAllDocumentsAsync(
+            string databaseName,
+            string colId,
+            FeedOptions queryOptions,
+            SqlQuerySpec querySpec)
+        {
+            if (queryOptions == null)
+            {
+                queryOptions = new FeedOptions
+                {
+                    EnableCrossPartitionQuery = true,
+                    EnableScanInQuery = true,
+                };
+            }
+
+            string collectionLink = string.Format(
+                "/dbs/{0}/colls/{1}",
+                databaseName,
+                colId);
+
+            try
+            {
+                var result = await Task.FromResult(this.client.CreateDocumentQuery<Document>(
+                        collectionLink,
+                        querySpec,
+                        queryOptions));
+
+                var queryResults = result == null ?
+                    new List<Document>() :
+                    result
+                        .AsEnumerable()
+                        .ToList();
+
+                return queryResults;
+            }
+            catch (AggregateException ae)
+            {
+                if (ae.InnerException is DocumentClientException)
+                {
+                    throw this.ConvertDocumentClientException(ae.InnerException as DocumentClientException);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (DocumentClientException dce)
+            {
+                throw this.ConvertDocumentClientException(dce);
+            }
+        }
+
         private static RequestOptions IfMatch(string condition)
         {
             if (condition == "*")
@@ -242,6 +315,16 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
             catch (Exception ex)
             {
                 throw new ApplicationException("DocumentClient creation failed in the helper class", ex);
+            }
+        }
+
+        private static void ValidateInput(ref string input)
+        {
+            input = input.Trim();
+
+            if (Regex.IsMatch(input, InvalidCharacterRegex))
+            {
+                throw new InvalidInputException($"Input '{input}' contains invalid characters.");
             }
         }
 
