@@ -84,8 +84,8 @@ jobs:
           echo "serviceProbesEnabled: $(serviceProbesEnabled)"
         displayName: Print job variables
 
-      - template: steps-deploy-blue-green-service.yaml
-        condition: eq(variables.blueGreen,'true')
+      - condition: eq(variables.blueGreen,'true')
+        template: steps-deploy-blue-green-service.yaml
         parameters:
           aksName: $(aksName)
           resourceGroupName: $(resourceGroupName)
