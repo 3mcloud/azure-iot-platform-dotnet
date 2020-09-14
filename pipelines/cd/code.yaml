@@ -61,6 +61,7 @@ stages:
           applicationShortCode: crsl
           environmentCategory: dev
           imageTag: $(_imageTag)
+          blueGreen: 'true'
           subscriptionId: c36fb2f8-f98d-40d0-90a9-d65e93acb428
 
   - stage: ggkDev
@@ -76,6 +77,7 @@ stages:
           applicationShortCode: ggk
           environmentCategory: dev
           imageTag: $(_imageTag)
+          blueGreen: true
           subscriptionId: c36fb2f8-f98d-40d0-90a9-d65e93acb428
 
   - stage: crslQa

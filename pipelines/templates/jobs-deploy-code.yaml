@@ -84,7 +84,7 @@ jobs:
           echo "serviceProbesEnabled: $(serviceProbesEnabled)"
         displayName: Print job variables
 
-      - ${{ if eq(parameters.blueGreen,'true') }}:
+      - ${{ if eq(parameters.blueGreen,true) }}:
         - template: steps-deploy-blue-green-service.yaml
           parameters:
             aksName: $(aksName)
@@ -99,7 +99,7 @@ jobs:
             imageTag: ${{parameters.imageTag}}
             type: blue
 
-      - ${{ if eq(parameters.blueGreen,'false') }}:
+      - ${{ if eq(parameters.blueGreen,false) }}:
         - template: steps-deploy-individual-service.yaml
 #        condition: ne(variables.blueGreen,'true')
           parameters:
