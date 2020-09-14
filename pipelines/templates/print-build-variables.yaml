@@ -28,3 +28,4 @@ steps:
       echo Build.SourceTfvcShelveset: $(Build.SourceTfvcShelveset)
     displayName: Print Build variables
     continueOnError: true
+    
