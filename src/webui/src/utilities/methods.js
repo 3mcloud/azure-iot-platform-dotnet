@@ -4,6 +4,18 @@ import Config from "app.config";
 import dot from "dot-object";
 import toCamelcase from "./camelcase";
 import moment from "moment";
+import { EMPTY_FIELD_VAL } from "components/shared/pcsGrid/pcsGridConfig";
+import {
+    TimeRenderer,
+    IsSimulatedRenderer,
+    ConnectionStatusRenderer,
+    SoftSelectLinkRenderer,
+    IsActivePackageRenderer,
+    IsActiveDeploymentRenderer,
+    SeverityRenderer,
+    RuleStatusRenderer,
+    LastTriggerRenderer,
+} from "components/shared/cellRenderers";
 
 /** Tests if a value is a function */
 export const isFunc = (value) => typeof value === "function";
@@ -87,14 +99,61 @@ export const camelCaseReshape = (response, model) => {
  */
 export const translateColumnDefs = (t, columnDefs) => {
     return columnDefs.map((columnDef) => {
+        if (columnDef.valueFormatter) {
+            columnDef.tooltip = columnDef.valueFormatter;
+        } else if (columnDef.cellRendererFramework) {
+            columnDef.tooltip = tooltipRenderer;
+        } else {
+            columnDef.tooltipField = columnDef.field;
+        }
+
         const headerName = columnDef.headerName
                 ? t(columnDef.headerName)
                 : undefined,
             headerTooltip = columnDef.headerTooltip
                 ? t(columnDef.headerTooltip)
                 : headerName;
-        return { ...columnDef, headerName, headerTooltip };
+        return {
+            ...columnDef,
+            headerName,
+            headerTooltip,
+        };
     });
+};
+
+export const tooltipRenderer = ({ value, context: { t }, colDef }) => {
+    switch (colDef.cellRendererFramework.name) {
+        case TimeRenderer.name:
+            const formattedTime = formatTime(value);
+            return formattedTime ? formattedTime : EMPTY_FIELD_VAL;
+        case IsSimulatedRenderer.name:
+            return value ? t("devices.grid.yes") : t("devices.grid.no");
+        case ConnectionStatusRenderer.name:
+            return value
+                ? t("devices.grid.connected")
+                : t("devices.grid.offline");
+        case IsActiveDeploymentRenderer.name:
+        case IsActivePackageRenderer.name:
+            return value
+                ? t("deployments.flyouts.status.active")
+                : t("deployments.flyouts.status.inActive");
+        case SoftSelectLinkRenderer.name:
+            return value;
+        case SeverityRenderer.name:
+            return t(`rules.severity.${value}`);
+        case RuleStatusRenderer.name:
+            return value;
+        case LastTriggerRenderer.name:
+            return value
+                ? value.error
+                    ? EMPTY_FIELD_VAL
+                    : formatTime(value.response)
+                    ? formatTime(value.response)
+                    : EMPTY_FIELD_VAL
+                : EMPTY_FIELD_VAL;
+        default:
+            return undefined;
+    }
 };
 
 /** A helper method for creating comparator methods for sorting arrays of objects */
