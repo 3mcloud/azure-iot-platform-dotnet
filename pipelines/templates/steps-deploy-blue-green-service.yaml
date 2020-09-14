@@ -1,0 +1,172 @@
+parameters:
+  aksName:
+  resourceGroupName:
+  subscriptionName:
+  serviceName:
+  blueServiceName: 
+  greenServiceName: 
+  servicePort:
+  serviceProbesEnabled:
+  helmVersion:
+  imageTag:
+  type:
+
+
+steps:
+  - script: |-
+      echo "aksName: ${{parameters.aksName}}"
+      echo "resourceGroupName: ${{parameters.resourceGroupName}}"
+      echo "subscriptionName: ${{parameters.subscriptionName}}"
+      echo "serviceName: ${{parameters.serviceName}}"
+      echo "servicePort: ${{parameters.servicePort}}"
+      echo "serviceProbesEnabled: ${{parameters.serviceProbesEnabled}}"
+      echo "helmVersion: ${{parameters.helmVersion}}"
+      echo "blueServiceName: ${{parameters.blueServiceName}}"
+    displayName: Print step variables
+
+  - checkout: self
+    displayName: Checkout repository
+         
+  - task: AzureCLI@2
+    displayName: Connect to AKS Cluster
+    name: getPipelineVariables
+    inputs:
+      azureSubscription: ${{parameters.subscriptionName}}
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |-
+        set -Eeuxo pipefail
+        az aks get-credentials --name ${{parameters.aksName}} --resource-group ${{parameters.resourceGroupName}} --overwrite-existing
+        kubectl get svc
+        type=$(kubectl get svc ${{parameters.serviceName}} -o=jsonpath='{.spec.selector.type}')
+        echo "$type is the type"
+        if [ $type == 'green' ]
+        then
+          set +x
+          echo "##vso[task.setvariable variable=type]blue"
+          set -x
+        else
+          set +x
+          echo "##vso[task.setvariable variable=type]green"
+          set -x
+        fi 
+        echo "_ $type _ Here is the type value"
+
+
+  - task: HelmInstaller@1
+    displayName: Install Helm
+    inputs:
+      helmVersionToInstall: ${{parameters.helmVersion}}
+
+  - task: HelmDeploy@0
+    displayName: Initialize Helm
+    inputs:
+      connectionType: Azure Resource Manager
+      azureSubscription: ${{parameters.subscriptionName}}
+      azureResourceGroup: ${{parameters.resourceGroupName}}
+      kubernetesCluster: ${{parameters.aksName}}
+      namespace: default
+      command: init
+      arguments: --force-upgrade
+
+
+  - task: HelmDeploy@0
+    displayName: Upgrading the service for first time
+    inputs:
+      connectionType: Azure Resource Manager
+      azureSubscription: ${{parameters.subscriptionName}}
+      azureResourceGroup: ${{parameters.resourceGroupName}}
+      kubernetesCluster: ${{parameters.aksName}}
+      namespace: default
+      command: upgrade
+      chartType: FilePath
+      chartPath: charts/mmm-iot-service
+      releaseName: ${{parameters.serviceName}}
+      force: true
+      install: true
+      overrideValues: nameOverride=${{parameters.serviceName}},service.port=${{parameters.servicePort}},type=${{parameters.type}},deployment.enabled=false,service.enabled=true
+
+  - task: HelmDeploy@0
+    displayName: Creation Blue application deployment
+    condition: eq(variables.type,'blue')
+    inputs:
+      connectionType: Azure Resource Manager
+      azureSubscription: ${{parameters.subscriptionName}}
+      azureResourceGroup: ${{parameters.resourceGroupName}}
+      kubernetesCluster: ${{parameters.aksName}}
+      namespace: default
+      command: upgrade
+      chartType: FilePath
+      chartPath: charts/mmm-iot-service
+      releaseName: ${{parameters.blueServiceName}}
+      overrideValues: nameOverride=${{parameters.serviceName}},deployment.port.http=${{parameters.servicePort}},deployment.probes.enabled=${{parameters.serviceProbesEnabled}},deployment.image.tag=${{parameters.imageTag}},type=blue,deployment.enabled=true,service.enabled=false,deployment.name=${{parameters.blueServiceName}}
+      force: true
+      install: true
+
+
+  - task: HelmDeploy@0
+    displayName: Creation of Green Deployment
+    condition: eq(variables.type,'green')
+    #condition: eq($variables[type], 'green')
+    inputs:
+      connectionType: Azure Resource Manager
+      azureSubscription: ${{parameters.subscriptionName}}
+      azureResourceGroup: ${{parameters.resourceGroupName}}
+      kubernetesCluster: ${{parameters.aksName}}
+      namespace: default
+      command: upgrade
+      chartType: FilePath
+      chartPath: charts/mmm-iot-service
+      releaseName: ${{parameters.greenServiceName}}
+      overrideValues: nameOverride=${{parameters.serviceName}},deployment.port.http=${{parameters.servicePort}},deployment.probes.enabled=${{parameters.serviceProbesEnabled}},deployment.image.tag=${{parameters.imageTag}},type=green,deployment.enabled=true,service.enabled=false,deployment.name=${{parameters.greenServiceName}}
+      force: true
+      install: true
+
+  # - task: HelmDeploy@0
+  #   inputs:
+  #     connectionType: Azure Resource Manager
+  #     azureSubscription: ${{parameters.subscriptionName}}
+  #     azureResourceGroup: ${{parameters.resourceGroupName}}
+  #     kubernetesCluster: ${{parameters.aksName}}
+  #     useClusterAdmin: false
+  #     namespace: default
+  #     command: upgrade
+  #     type: $(type)
+  #     chartType: FilePath
+  #     chartPath: charts/mmm-iot-service
+  #     releaseName: ${{parameters.serviceName}}
+  #     overrideValues: nameOverride=${{parameters.serviceName}},service.port=${{parameters.servicePort}},type="$(type)",deployment.enabled=false,service.enabled=true
+  #     force: true
+  #     arguments: --cleanup-on-fail --set-string gitSha=$(Build.SourceVersion)
+  #     waitForExecution: true
+  #     install: true
+  - task: AzureCLI@2
+    displayName: Patch the AKS Service
+    name: patchAKSService
+    inputs:
+      azureSubscription: ${{parameters.subscriptionName}}
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |-
+        set -Eeuxo pipefail
+        az aks get-credentials --name ${{parameters.aksName}} --resource-group ${{parameters.resourceGroupName}} --overwrite-existing
+        kubectl get pods 
+        if [ $(type) == 'green' ]
+        then
+          var='blue'
+        else
+          var='green'
+        fi 
+        echo "_ $(type) _ Here is the type value"
+
+        kubectl patch svc ${{parameters.serviceName}} -p '{"spec": {"selector": {"app.kubernetes.io/name":"${{parameters.serviceName}}", "type": "$(type)"},"unschedulable":true}}'
+        # kubectl get service ${{parameters.serviceName}} -o=yaml | sed -e "s/$var/$(type)/g" | kubectl apply -f -
+        # status=$(kubectl get pods -l iot.cld.3mcloud.com/type="$(type)" -l app.kubernetes.io/instance=${{parameters.serviceName}}-"$(type)" -o json | jq -r .items[0].status.phase | grep "Running" | wc -l)
+        # echo "$status This is the status value"
+        # while [ $status -lt 1 ]
+        # do 
+        #   sleep 10
+        #   echo "In loop"
+        #   status=$(kubectl get pods -l iot.cld.3mcloud.com/type="$(type)" -l app.kubernetes.io/instance=${{parameters.serviceName}}-"$(type)" -o json | jq -r .items[0].status.phase | grep "Running" | wc -l)
+        # done
+

@@ -5,6 +5,7 @@ parameters:
   applicationCode:
   applicationShortCode:
   imageTag:
+  blueGreen:
 
 jobs:
   - template: get-approval.yaml
@@ -83,7 +84,8 @@ jobs:
           echo "serviceProbesEnabled: $(serviceProbesEnabled)"
         displayName: Print job variables
 
-      - template: steps-deploy-individual-service.yaml
+      - template: steps-deploy-blue-green-service.yaml
+        condition: eq(variables.blueGreen,'true')
         parameters:
           aksName: $(aksName)
           resourceGroupName: $(resourceGroupName)
@@ -96,6 +98,18 @@ jobs:
           helmVersion: $(helmVersion)
           imageTag: ${{parameters.imageTag}}
           type: blue
+
+      - template: steps-deploy-individual-service.yaml
+        condition: ne(variables.blueGreen,'true')
+        parameters:
+          aksName: $(aksName)
+          resourceGroupName: $(resourceGroupName)
+          subscriptionName: ${{parameters.subscriptionName}}
+          serviceName: $(serviceName)
+          servicePort: $(servicePort)
+          serviceProbesEnabled: $(serviceProbesEnabled)
+          helmVersion: $(helmVersion)
+          imageTag: ${{parameters.imageTag}}
 
 
   - job: addKey
