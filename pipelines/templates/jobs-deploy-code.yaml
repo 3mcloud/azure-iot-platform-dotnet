@@ -84,23 +84,23 @@ jobs:
           echo "serviceProbesEnabled: $(serviceProbesEnabled)"
         displayName: Print job variables
 
-      - condition: eq(variables.blueGreen,'true')
-        template: steps-deploy-blue-green-service.yaml
-        parameters:
-          aksName: $(aksName)
-          resourceGroupName: $(resourceGroupName)
-          subscriptionName: ${{parameters.subscriptionName}}
-          serviceName: $(serviceName)
-          blueServiceName: $(serviceName)-blue
-          greenServiceName: $(serviceName)-green
-          servicePort: $(servicePort)
-          serviceProbesEnabled: $(serviceProbesEnabled)
-          helmVersion: $(helmVersion)
-          imageTag: ${{parameters.imageTag}}
-          type: blue
+      - ${{ if eq(parameters.blueGreen,'true') }}:
+        - template: steps-deploy-blue-green-service.yaml
+          parameters:
+            aksName: $(aksName)
+            resourceGroupName: $(resourceGroupName)
+            subscriptionName: ${{parameters.subscriptionName}}
+            serviceName: $(serviceName)
+            blueServiceName: $(serviceName)-blue
+            greenServiceName: $(serviceName)-green
+            servicePort: $(servicePort)
+            serviceProbesEnabled: $(serviceProbesEnabled)
+            helmVersion: $(helmVersion)
+            imageTag: ${{parameters.imageTag}}
+            type: blue
 
       - template: steps-deploy-individual-service.yaml
-        condition: ne(variables.blueGreen,'true')
+#        condition: ne(variables.blueGreen,'true')
         parameters:
           aksName: $(aksName)
           resourceGroupName: $(resourceGroupName)
