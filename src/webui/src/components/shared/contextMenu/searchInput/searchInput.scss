@@ -9,6 +9,7 @@ $containerMargin: 10px;
   display: flex;
   flex-basis: 20%;
   overflow: hidden;
+  @include rem-fallback(max-width, 300px);
   @include rem-fallback(margin, $containerMargin, 0px, $containerMargin, $containerMargin);
   @include rem-fallback(padding-right, $inputPadding);
 

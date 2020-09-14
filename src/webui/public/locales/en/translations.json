@@ -406,6 +406,8 @@
         "searchPlaceholder": "Search devices...",
         "noneFound": "No devices found.",
         "refresh": "Refresh",
+        "showTelemetry": "Show telemetry",
+        "returnToDevices": "Devices",
         "grid": {
             "connected": "Connected",
             "deviceName": "Device name",
@@ -1059,6 +1061,7 @@
   "modal": {
     "delete": "Delete",
     "cancel": "Cancel",
+    "close": "Close",
     "copy": "Copy",
     "ok": "Ok"
   },

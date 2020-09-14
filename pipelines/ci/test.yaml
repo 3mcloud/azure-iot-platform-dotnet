@@ -97,6 +97,16 @@ variables:
     value: commitsSinceLastRelease
   - name: testResultFileExists
     value: false
+  - name: testAccountAdmin
+    value: a05e1a04-31bf-4219-9c1b-b7fa7bfedbfc
+  - name: testAccountUser
+    value: 9745b86e-c1b1-481a-8628-7db8dfaeedf6
+  - name: testAccountSysAdmin
+    value: b013febd-466d-4694-8f0d-c151ad32023b
+  - name: usersTableName
+    value: user
+  - name: sysAdminTableName
+    value: SystemAdmin    
 resources:
   repositories:
     - repository: azure-iot-functional-tests
@@ -202,7 +212,7 @@ stages:
               if (!(Test-Path $(commitsSinceLastReleaseArtifactName))) {
                 New-Item $(commitsSinceLastReleaseArtifactName) -Type Directory
               }
-              
+
               $previousReleaseTag = git for-each-ref --sort=-creatordate --format '%(tag)' refs/tags | ? {$_.trim() -ne "" } |
                 Select-Object -First 1
               $logFilePath = (Join-Path $(commitsSinceLastReleaseArtifactName) git-log.txt)
@@ -210,7 +220,7 @@ stages:
               Write-Output "previousReleaseTag: $previousReleaseTag"
               Write-Output 'Build.SourceVersion: $(Build.SourceVersion)'
               git log --oneline --no-decorate --topo-order ^$previousReleaseTag $(Build.SourceVersion) |
-                Tee-Object $logFilePath -Append 
+                Tee-Object $logFilePath -Append
 
             displayName: List commits since last release
 
@@ -244,12 +254,11 @@ stages:
               InputType: 'Basic'
               ScanType: 'CustomScan'
               FileDirPath: '$(Build.SourcesDirectory)'
-              DisableRemediation: false
               EnableServices: true
-              SupportLogOnError: false
+              SupportLogOnError: true
               TreatSignatureUpdateFailureAs: 'Warning'
               SignatureFreshness: 'UpToDate'
-              TreatStaleSignatureAs: 'Error'
+              TreatStaleSignatureAs: 'Warning'
 
           - task: CredScan@2
             displayName: Scan for credentials
@@ -595,7 +604,7 @@ stages:
               kubernetesCluster: $(aksName)
               useClusterAdmin: true
               namespace: $(kubernetesNamespace)
-              command: install
+              command: 'install'
               chartName: charts/$(mmmIotPlatformServicesHelmChartName)
               releaseName: $(mmmIotPlatformServicesHelmChartReleaseName)
               updatedependency: true
@@ -606,8 +615,6 @@ stages:
                 --set secrets.globalsecrets.Global__AzureB2cBaseUri=https://login.microsoftonline.com/crsltestab2c.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_testpolicy&client_id=$(azureAdB2cAppRegistrationClientIdTest)&nonce=defaultNonce&redirect_uri=https%3A%2F%2Flocalhost%3A44367%2Fconnect%2Fcallback&scope=openid&response_type=id_token&prompt=login&response_mode=form_post
                 --timeout $(helmInstallTimeoutInSeconds)
                 --wait
-                --debug
-
           - task: AzureCLI@2
             displayName: Note services Helm chart was installed
             inputs:
@@ -625,12 +632,74 @@ stages:
       - deployServices
       - addAuthenticationCallbackUrl
     jobs:
-      - job: getPipelineVariables
-        displayName: Get pipeline variables
+      - job: addFunctionalTestAccount
+        displayName: Add Functional Test Account
         dependsOn: []
         steps:
-          - checkout: none
+        - checkout: none
+        - task: AzureCLI@2
+          displayName: Add TestAccount details  to App Configuration
+          inputs:
+              azureSubscription: $(subscriptionName)
+              addSpnToEnvironment: true
+              scriptLocation: inlineScript
+              scriptType: bash
+              inlineScript: |-
+                set -Eeuxo pipefail
+                az appconfig kv set --key TestUserCredentials:Admin:Password --value $(testAdminPasskey) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:Admin:UserEmail --value $(testAdminEmail) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:Readonly:Password --value $(testUserPasskey) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:Readonly:UserEmail --value $(testUserEmail) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:SystemAdmin:Password --value $(testSystemAdminPasskey) --name $(appConfigurationName)  --yes
+                az appconfig kv set --key TestUserCredentials:SystemAdmin:UserEmail --value $(testSystemAdminEmail) --name $(appConfigurationName)  --yes          
+          
+        - task: AzurePowerShell@5
+          displayName: Verify and add Test Account in the User Table
+          inputs:
+            azureSubscription: $(subscriptionName)
+            azurePowerShellVersion: LatestVersion
+            ScriptType: InlineScript
+            Inline: |
+              Install-Module AzTable -force
+              $table = Get-AzTableTable -resourceGroup $(resourceGroupName) -tableName $(usersTableName) -storageAccountName $(storageAccountName)
+              $saTable = Get-AzTableTable -resourceGroup $(resourceGroupName) -tableName $(sysAdminTableName) -storageAccountName $(storageAccountName)
+              $datetimevariable = Get-Date -Format "yyyy-MM-ddTHH:mm:ss:fffffffZ"
+              $testUser = Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountUser) -RowKey $(serenityDevTenantId)
+              $testAdmin =Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountAdmin) -RowKey $(serenityDevTenantId)
+              $testSystemAdmin = Get-AzTableRowByPartitionKeyRowKey -Table $table -PartitionKey $(testAccountSysAdmin) -RowKey $(serenityDevTenantId)
+              $saTestSystemAdmin = Get-AzTableRowByPartitionKey -Table $saTable -PartitionKey $(testAccountSysAdmin)
+            
+              if(($testUser -eq $Null) -or ($testUser.Roles -ne '["readonly"]')){
+                  Add-AzTableRow `
+                  -table $table `
+                  -partitionKey $(testAccountUser) `
+                  -rowKey $(serenityDevTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["readonly"]';"Name"="TestAccount - User";"Type"="Member"}
+              }
+              if(($testAdmin -eq $Null) -or ($testAdmin.Roles -ne '["admin"]')){
+                  Add-AzTableRow `
+                  -table $table `
+                  -partitionKey $(testAccountAdmin) `
+                  -rowKey $(serenityDevTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["admin"]';"Name"="TestAccount - Admin";"Type"="Member"}
+              }
+              if(($testSystemAdmin -eq $Null) -or ($testSystemAdmin.Roles -ne '["admin"]')){
+                  Add-AzTableRow `
+                  -table $table `
+                  -partitionKey $(testAccountSysAdmin) `
+                  -rowKey $(serenityDevTenantId) -property @{"Timestamp"=$datetimevariable;"Roles"='["admin"]';"Name"="TestAccount - SystemAdmin";"Type"="Member"}
+              }
+              if($saTestSystemAdmin -eq $Null){
+                  Add-AzTableRow `
+                  -table $saTable `
+                  -partitionKey $(testAccountSysAdmin) `
+                  -rowKey $(testAccountSysAdmin) -property @{"Timestamp"=$datetimevariable;"Name"="TestAccount - SystemAdmin";"Type"="Member"}
+              }
 
+      - job: getPipelineVariables
+        displayName: Get pipeline variables
+        dependsOn: 
+          - addFunctionalTestAccount
+        steps:
+          - checkout: none
           - task: AzureCLI@2
             displayName: Get pipeline variables
             name: getPipelineVariables
@@ -756,7 +825,7 @@ stages:
                   Select-Object -ExpandProperty Chart -Unique |
                   Where-Object { $_ -notmatch 'mmm-iot' } |
                   Sort-Object |
-                  Set-Content (Join-Path $(dependenciesReportArtifactName) helm.txt) 
+                  Set-Content (Join-Path $(dependenciesReportArtifactName) helm.txt)
 
           - publish: $(dependenciesReportArtifactName)
             artifact: $(dependenciesReportArtifactName)
@@ -767,6 +836,7 @@ stages:
     dependsOn:
       - functionalTest
       - enumerateDependencies
+      - deployServices
     condition: and(succeededOrFailed(), eq(variables['runCleanupStage'], 'true'))
     jobs:
       - job: getPipelineVariables
