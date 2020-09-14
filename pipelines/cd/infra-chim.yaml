@@ -3,7 +3,7 @@ pr: none
 pool:
   vmImage: ubuntu-latest
 variables:
-  locationName: eastus2
+  locationName: centralus
 stages:
   - stage: checkParameters
     displayName: Check parameters

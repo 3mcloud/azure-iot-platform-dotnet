@@ -126,12 +126,6 @@ export class Users extends Component {
             <ComponentArray>
                 <ContextMenu>
                     <ContextMenuAlign>
-                        <SearchInput
-                            onChange={this.searchOnChange}
-                            onClick={this.onSearchClick}
-                            aria-label={t("users.ariaLabel")}
-                            placeholder={t("users.searchPlaceholder")}
-                        />
                         {this.state.contextBtns}
                         <Protected permission={permissions.inviteUsers}>
                             <Btn
@@ -176,6 +170,12 @@ export class Users extends Component {
                 <PageContent className="users-container">
                     <PageTitle titleValue={t("users.title")} />
                     {!!error && <AjaxError t={t} error={error} />}
+                    <SearchInput
+                        onChange={this.searchOnChange}
+                        onClick={this.onSearchClick}
+                        aria-label={t("users.ariaLabel")}
+                        placeholder={t("users.searchPlaceholder")}
+                    />
                     {!error && <UsersGridContainer {...gridProps} />}
                     {newUserFlyoutOpen && (
                         <UserNewContainer onClose={this.closeFlyout} />
