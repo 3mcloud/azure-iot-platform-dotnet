@@ -99,17 +99,18 @@ jobs:
             imageTag: ${{parameters.imageTag}}
             type: blue
 
-      - template: steps-deploy-individual-service.yaml
+      - ${{ if eq(parameters.blueGreen,'false') }}:
+        - template: steps-deploy-individual-service.yaml
 #        condition: ne(variables.blueGreen,'true')
-        parameters:
-          aksName: $(aksName)
-          resourceGroupName: $(resourceGroupName)
-          subscriptionName: ${{parameters.subscriptionName}}
-          serviceName: $(serviceName)
-          servicePort: $(servicePort)
-          serviceProbesEnabled: $(serviceProbesEnabled)
-          helmVersion: $(helmVersion)
-          imageTag: ${{parameters.imageTag}}
+          parameters:
+            aksName: $(aksName)
+            resourceGroupName: $(resourceGroupName)
+            subscriptionName: ${{parameters.subscriptionName}}
+            serviceName: $(serviceName)
+            servicePort: $(servicePort)
+            serviceProbesEnabled: $(serviceProbesEnabled)
+            helmVersion: $(helmVersion)
+            imageTag: ${{parameters.imageTag}}
 
 
   - job: addKey
