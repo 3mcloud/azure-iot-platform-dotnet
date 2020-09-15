@@ -8,13 +8,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Shared;
+using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
 using Mmm.Iot.Common.Services.Config;
 using Mmm.Iot.Common.Services.Exceptions;
 using Mmm.Iot.Common.Services.External.AsaManager;
+using Mmm.Iot.Common.Services.External.CosmosDb;
+using Mmm.Iot.Common.Services.Helpers;
 using Mmm.Iot.Common.Services.Models;
 using Mmm.Iot.IoTHubManager.Services.Extensions;
 using Mmm.Iot.IoTHubManager.Services.Helpers;
 using Mmm.Iot.IoTHubManager.Services.Models;
+using Mmm.Iot.StorageAdapter.Services.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using AuthenticationType = Mmm.Iot.IoTHubManager.Services.Models.AuthenticationType;
@@ -32,12 +37,14 @@ namespace Mmm.Iot.IoTHubManager.Services
         private readonly ITenantConnectionHelper tenantConnectionHelper;
         private readonly IAsaManagerClient asaManager;
         private readonly IDeviceQueryCache deviceQueryCache;
+        private readonly IStorageClient storageClient;
 
         public Devices(
             AppConfig config,
             ITenantConnectionHelper tenantConnectionHelper,
             IAsaManagerClient asaManagerClient,
-            IDeviceQueryCache deviceQueryCache)
+            IDeviceQueryCache deviceQueryCache,
+            IStorageClient storageClient)
         {
             if (config == null)
             {
@@ -47,17 +54,44 @@ namespace Mmm.Iot.IoTHubManager.Services
             this.tenantConnectionHelper = tenantConnectionHelper;
             this.asaManager = asaManagerClient;
             this.deviceQueryCache = deviceQueryCache;
+            this.storageClient = storageClient;
         }
 
         public Devices(
             ITenantConnectionHelper tenantConnectionHelper,
             string ioTHubHostName,
             IAsaManagerClient asaManagerClient,
-            IDeviceQueryCache deviceQueryCache)
+            IDeviceQueryCache deviceQueryCache,
+            IStorageClient storageClient)
         {
             this.tenantConnectionHelper = tenantConnectionHelper ?? throw new ArgumentNullException("tenantConnectionHelper " + ioTHubHostName);
             this.asaManager = asaManagerClient;
             this.deviceQueryCache = deviceQueryCache;
+            this.storageClient = storageClient;
+        }
+
+        public virtual string DocumentDataType
+        {
+            get
+            {
+                return "pcs";
+            }
+        }
+
+        public virtual string DocumentDatabaseSuffix
+        {
+            get
+            {
+                return "storage";
+            }
+        }
+
+        public virtual string DocumentDbDatabaseId
+        {
+            get
+            {
+                return $"{this.DocumentDataType}-{this.DocumentDatabaseSuffix}";
+            }
         }
 
         // Ping the registry to see if the connection is healthy
@@ -115,6 +149,32 @@ namespace Mmm.Iot.IoTHubManager.Services
                     Result = resultModel,
                     ResultTimestamp = DateTimeOffset.Now,
                 });
+
+            return resultModel;
+        }
+
+        public async Task<DeviceServiceListModel> GetDeviceListAsync(string query, string continuationToken)
+        {
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                // Try to translate clauses to query
+                query = QueryConditionTranslator.ToQueryString(query);
+            }
+
+            var twins = await this.GetTwinByQueryAsync(
+                QueryPrefix,
+                query,
+                continuationToken,
+                MaximumGetList);
+
+            var connectedEdgeDevices = await this.GetConnectedEdgeDevices(twins.Result);
+
+            var resultModel = new DeviceServiceListModel(
+                twins.Result.Select(azureTwin => new DeviceServiceModel(
+                    azureTwin,
+                    this.tenantConnectionHelper.GetIotHubName(),
+                    connectedEdgeDevices.ContainsKey(azureTwin.DeviceId))),
+                twins.ContinuationToken);
 
             return resultModel;
         }
@@ -245,6 +305,31 @@ namespace Mmm.Iot.IoTHubManager.Services
             var result = twins.Result.Select(twin => new TwinServiceModel(twin)).ToList();
 
             return new TwinServiceListModel(result, twins.ContinuationToken);
+        }
+
+        public async Task<TwinServiceListModel> GetDeploymentHistoryAsync(string deviceId, string tenantId)
+        {
+            var sql = QueryBuilder.GetDeviceDocumentsSqlByKey("Key", deviceId);
+
+            FeedOptions queryOptions = new FeedOptions
+            {
+                EnableCrossPartitionQuery = true,
+                EnableScanInQuery = true,
+            };
+            List<Document> docs = await this.storageClient.QueryDocumentsAsync(
+                this.DocumentDbDatabaseId,
+                $"{this.DocumentDataType}-{tenantId}",
+                queryOptions,
+                sql,
+                0,
+                1000);
+
+            var result = docs == null ?
+                new List<TwinServiceModel>() :
+                docs
+                    .Select(doc => new ValueServiceModel(doc)).Select(x => JsonConvert.DeserializeObject<TwinServiceModel>(x.Data))
+                    .ToList();
+            return new TwinServiceListModel(result, null);
         }
 
         private async Task<ResultWithContinuationToken<List<Twin>>> GetTwinByQueryAsync(

@@ -5,12 +5,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.AspNetCore.Server.HttpSys;
 using Microsoft.Azure.Devices;
-using Microsoft.Azure.Devices.Shared;
-using Microsoft.Azure.Documents;
 using Microsoft.Extensions.Logging;
 using Mmm.Iot.Common.Services.Config;
 using Mmm.Iot.Common.Services.Exceptions;
@@ -47,9 +44,13 @@ namespace Mmm.Iot.IoTHubManager.Services
         private const string SuccessQueryName = "current";
         private const string DeploymentsCollection = "deployments";
         private const string DeploymentDevicePropertiesCollection = "deploymentdevices-{0}";
+        private const string DeploymentEdgeModulePropertiesCollection = "deploymentedgemodules-{0}";
+        private const string DeploymentHistoryPropertiesCollection = "deploymentHistory-{0}_{1}";
+        private const string DeploymentModuleHistoryPropertiesCollection = "deploymentModulesHistory-{0}_{1}";
         private const string DeleteTag = "reserved.isDeleted";
         private const string LatestTag = "reserved.latest";
         private const string InActiveTag = "reserved.inactive";
+        private const string ReactivatedTag = "reserved.reactivated";
         private readonly ILogger logger;
         private readonly IDeploymentEventLog deploymentLog;
         private readonly ITenantConnectionHelper tenantHelper;
@@ -183,7 +184,7 @@ namespace Mmm.Iot.IoTHubManager.Services
 
             if (deploymentsFromStorage != null && deploymentsFromStorage.Items?.Count > 0)
             {
-                deploymentsFromStorage.Items = deploymentsFromStorage.Items.Where(x => !x.Tags.Contains(DeleteTag)).ToList();
+                deploymentsFromStorage.Items = deploymentsFromStorage.Items.Where(x => !x.Tags.Contains(DeleteTag) && !x.Tags.Contains(ReactivatedTag)).ToList();
                 var deploymentsFromHub = await this.ListAsync();
 
                 if (deploymentsFromHub != null && deploymentsFromHub.Items?.Count > 0)
@@ -270,6 +271,7 @@ namespace Mmm.Iot.IoTHubManager.Services
             if (!existingDeployment.Tags.Contains(InActiveTag))
             {
                 List<TwinServiceModel> deviceTwins = null;
+                List<TwinServiceModel> moduleTwins = null;
                 if (existingDeployment != null && existingDeployment.Tags.Contains(LatestTag))
                 {
                     var currentDeployment = await this.GetAsync(deploymentId, true, true);
@@ -279,13 +281,20 @@ namespace Mmm.Iot.IoTHubManager.Services
                         existingDeployment.DeploymentMetrics = currentDeployment.DeploymentMetrics;
                     }
 
-                    deviceTwins = await this.GetDeviceProperties(currentDeployment.DeploymentMetrics.DeviceStatuses.Keys);
+                    if (currentDeployment != null && currentDeployment.DeploymentMetrics != null && currentDeployment.DeploymentMetrics.DeviceStatuses != null && currentDeployment.DeploymentMetrics.DeviceStatuses.Keys.Count > 0)
+                    {
+                        deviceTwins = await this.GetDeviceProperties(currentDeployment.DeploymentMetrics.DeviceStatuses.Keys);
+                        if (currentDeployment.PackageType == PackageType.EdgeManifest)
+                        {
+                            moduleTwins = await this.GetDeviceProperties(currentDeployment.DeploymentMetrics.DeviceStatuses.Keys, PackageType.EdgeManifest);
+                        }
+                    }
                 }
 
                 await this.tenantHelper.GetRegistry().RemoveConfigurationAsync(deploymentId);
 
                 // Mark the Deployment as Inactive in CosmosDb collection
-                await this.MarkDeploymentAsInactive(existingDeployment, userId, deviceTwins, isDelete);
+                await this.MarkDeploymentAsInactive(existingDeployment, userId, deviceTwins, moduleTwins, isDelete);
             }
             else
             {
@@ -335,6 +344,9 @@ namespace Mmm.Iot.IoTHubManager.Services
                 }
             }
 
+            // clearing out all the existing tags as we are creating new deployment with the old model (inactivated) deployment properties
+            deploymentFromStorage.Tags = new List<string>();
+
             await this.CreateAsync(deploymentFromStorage, userId, tenantId);
 
             await this.MarkDeploymentAsActive(deploymentId, userId);
@@ -357,6 +369,22 @@ namespace Mmm.Iot.IoTHubManager.Services
             }
 
             return devices;
+        }
+
+        public async Task<TwinServiceListModel> GetModulesListAsync(string deploymentId, string query, bool isLatest)
+        {
+            TwinServiceListModel moduletwins = null;
+
+            if (!isLatest)
+            {
+                moduletwins = await this.GetDeploymentImapactedModulesAsync(deploymentId);
+            }
+            else
+            {
+                moduletwins = await this.devices.GetModuleTwinsByQueryAsync(query, null);
+            }
+
+            return moduletwins;
         }
 
         public async Task<List<DeviceDeploymentStatusServiceModel>> GetDeploymentStatusReport(string id, bool isLatest = true)
@@ -397,6 +425,19 @@ namespace Mmm.Iot.IoTHubManager.Services
             }
 
             return new TwinServiceListModel(deploymentImpactedDevices);
+        }
+
+        private async Task<TwinServiceListModel> GetDeploymentImapactedModulesAsync(string deploymentId)
+        {
+            List<TwinServiceModel> deploymentImpactedModules = new List<TwinServiceModel>();
+            var response = await this.client.GetAllAsync(string.Format(DeploymentEdgeModulePropertiesCollection, deploymentId));
+
+            if (response != null && response.Items.Count > 0)
+            {
+                deploymentImpactedModules.AddRange(response.Items.Select(this.CreateTwinServiceModel));
+            }
+
+            return new TwinServiceListModel(deploymentImpactedModules);
         }
 
         private bool CheckIfDeploymentWasMadeByRM(Configuration conf)
@@ -576,6 +617,12 @@ namespace Mmm.Iot.IoTHubManager.Services
 
                     await this.StoreDevicePropertiesInStorage(deviceTwins, currentDeployment.Id);
 
+                    if (ConfigurationsHelper.IsEdgeDeployment(deploymentDetails))
+                    {
+                        var moduleTwins = await this.GetDeviceProperties(currentDeployment.DeploymentMetrics.DeviceStatuses.Keys, PackageType.EdgeManifest);
+                        await this.StoreModuleTwinsInStorage(moduleTwins, currentDeployment.Id);
+                    }
+
                     // Since the deployment that will be created have highest priority, mark it as the latest
                     return true;
                 }
@@ -637,7 +684,7 @@ namespace Mmm.Iot.IoTHubManager.Services
             return output;
         }
 
-        private async Task<DeploymentServiceModel> MarkDeploymentAsInactive(DeploymentServiceModel existingDeployment, string userId, List<TwinServiceModel> deviceTwins, bool isDelete)
+        private async Task<DeploymentServiceModel> MarkDeploymentAsInactive(DeploymentServiceModel existingDeployment, string userId, List<TwinServiceModel> deviceTwins, List<TwinServiceModel> moduleTwins, bool isDelete)
         {
             if (existingDeployment != null)
             {
@@ -678,6 +725,11 @@ namespace Mmm.Iot.IoTHubManager.Services
                 if (deviceTwins != null && deviceTwins.Count > 0)
                 {
                     await this.StoreDevicePropertiesInStorage(deviceTwins, existingDeployment.Id);
+                }
+
+                if (moduleTwins != null && moduleTwins.Count > 0)
+                {
+                    await this.StoreModuleTwinsInStorage(moduleTwins, existingDeployment.Id);
                 }
 
                 if (isLatestDeployment)
@@ -739,7 +791,7 @@ namespace Mmm.Iot.IoTHubManager.Services
                 return existingDeployment;
             }
 
-            existingDeployment.Tags.Remove(existingTag);
+            existingDeployment.Tags.Add(ReactivatedTag);
 
             AuditHelper.UpdateAuditingData(existingDeployment, userId);
 
@@ -789,46 +841,167 @@ namespace Mmm.Iot.IoTHubManager.Services
             return new DeploymentServiceListModel(deployments?.OrderByDescending(x => x.CreatedDateTimeUtc).ToList());
         }
 
-        private async Task<List<TwinServiceModel>> GetDeviceProperties(IEnumerable<string> deviceIds)
+        private async Task<List<TwinServiceModel>> GetDeviceProperties(IEnumerable<string> deviceIds, PackageType packageType = PackageType.DeviceConfiguration)
         {
-            List<TwinServiceModel> twins = null;
-            DeviceServiceListModel devices = null;
+            List<TwinServiceModel> twins = new List<TwinServiceModel>();
             string deviceQuery = @"deviceId IN [{0}]";
+            string moduleQuery = @"deviceId IN [{0}] AND moduleId = '$edgeAgent'";
 
             if (deviceIds != null && deviceIds.Count() > 0)
             {
                 var deviceIdsQuery = string.Join(",", deviceIds.Select(d => $"'{d}'"));
-                var query = string.Format(deviceQuery, deviceIdsQuery);
-
-                devices = await this.devices.GetListAsync(query, null);
-                if (devices != null && devices.Items.Count() > 0)
+                if (packageType == PackageType.EdgeManifest)
                 {
-                    twins = new List<TwinServiceModel>();
+                    var query = string.Format(moduleQuery, deviceIdsQuery);
 
-                    twins.AddRange(devices.Items.Select(i => i.Twin));
+                    await this.GetModuleTwins(query, null, twins);
+                }
+                else
+                {
+                    var query = string.Format(deviceQuery, deviceIdsQuery);
+
+                    await this.GetDeviceTwins(query, null, twins);
                 }
             }
 
             return twins;
         }
 
+        private async Task GetDeviceTwins(string query, string continuationToken, List<TwinServiceModel> twins)
+        {
+            DeviceServiceListModel devices = null;
+            devices = await this.devices.GetListAsync(query, null);
+
+            if (devices != null && devices.Items.Count() > 0)
+            {
+                twins.AddRange(devices.Items.Select(i => i.Twin));
+                if (!string.IsNullOrWhiteSpace(devices.ContinuationToken))
+                {
+                    await this.GetDeviceTwins(query, continuationToken, twins);
+                }
+            }
+        }
+
+        private async Task GetModuleTwins(string query, string continuationToken, List<TwinServiceModel> twins)
+        {
+            TwinServiceListModel moduleTwins = null;
+            moduleTwins = await this.devices.GetModuleTwinsByQueryAsync(query, null);
+
+            if (moduleTwins != null && moduleTwins.Items.Count() > 0)
+            {
+                twins.AddRange(moduleTwins.Items);
+                if (!string.IsNullOrWhiteSpace(moduleTwins.ContinuationToken))
+                {
+                    await this.GetModuleTwins(query, continuationToken, twins);
+                }
+            }
+        }
+
         private async Task StoreDevicePropertiesInStorage(List<TwinServiceModel> deviceTwins, string deploymentId)
         {
             if (deviceTwins != null)
             {
-                foreach (var deviceTwin in deviceTwins)
+                TwinServiceListModel existingDeviceTwins = await this.GetDeploymentDevicesAsync(deploymentId);
+                if (existingDeviceTwins == null || (existingDeviceTwins != null && existingDeviceTwins.Items.Count == 0))
                 {
-                    var value = JsonConvert.SerializeObject(
-                        deviceTwin,
-                        Formatting.Indented,
-                        new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Ignore,
-                        });
+                    foreach (var deviceTwin in deviceTwins)
+                    {
+                        await this.SaveDeviceTwin(deploymentId, deviceTwin, null);
+                    }
+                }
+                else
+                {
+                    foreach (var deviceTwin in deviceTwins)
+                    {
+                        var existingDeviceTwin = existingDeviceTwins.Items.FirstOrDefault(x => x.DeviceId == deviceTwin.DeviceId);
+                        await this.SaveDeviceTwin(deploymentId, deviceTwin, existingDeviceTwin?.ETag);
 
-                    await this.client.CreateAsync(string.Format(DeploymentDevicePropertiesCollection, deploymentId), value);
+                        // archive exisiting Device Twin
+                        var archiveDeviceTwinValue = JsonConvert.SerializeObject(
+                            existingDeviceTwin,
+                            Formatting.Indented,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore,
+                            });
+                        await this.client.UpdateAsync(string.Format(DeploymentHistoryPropertiesCollection, deploymentId, Guid.NewGuid().ToString()), deviceTwin.DeviceId, archiveDeviceTwinValue, null);
+                    }
                 }
             }
+        }
+
+        private async Task SaveDeviceTwin(string deploymentId, TwinServiceModel deviceTwin, string existingDeviceTwinEtag)
+        {
+            var value = JsonConvert.SerializeObject(
+                deviceTwin,
+                Formatting.Indented,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                });
+
+            await this.client.UpdateAsync(string.Format(DeploymentDevicePropertiesCollection, deploymentId), deviceTwin.DeviceId, value, existingDeviceTwinEtag);
+        }
+
+        private async Task SaveModuleTwin(string deploymentId, TwinServiceModel moduleTwin, string existingModuleTwinEtag)
+        {
+            var value = JsonConvert.SerializeObject(
+                moduleTwin,
+                Formatting.Indented,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                });
+
+            await this.client.UpdateAsync(string.Format(DeploymentEdgeModulePropertiesCollection, deploymentId), $"{moduleTwin.DeviceId}-{this.RemoveSpecialCharacters(moduleTwin.ModuleId)}", value, existingModuleTwinEtag);
+        }
+
+        private async Task StoreModuleTwinsInStorage(List<TwinServiceModel> moduleTwins, string deploymentId)
+        {
+            if (moduleTwins != null && moduleTwins.Count > 0)
+            {
+                TwinServiceListModel existingModuleTwins = await this.GetDeploymentImapactedModulesAsync(deploymentId);
+                if (existingModuleTwins == null || (existingModuleTwins != null && existingModuleTwins.Items.Count == 0))
+                {
+                    foreach (var moduleTwin in moduleTwins)
+                    {
+                        await this.SaveModuleTwin(deploymentId, moduleTwin, null);
+                    }
+                }
+                else
+                {
+                    foreach (var moduleTwin in moduleTwins)
+                    {
+                        var existingModuleTwin = existingModuleTwins.Items.FirstOrDefault(x => x.ModuleId == moduleTwin.ModuleId && x.DeviceId == moduleTwin.DeviceId);
+                        await this.SaveModuleTwin(deploymentId, moduleTwin, existingModuleTwin?.ETag);
+
+                        // archive exisiting Device Twin
+                        var archiveModuleTwinValue = JsonConvert.SerializeObject(
+                            existingModuleTwin,
+                            Formatting.Indented,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore,
+                            });
+                        await this.client.UpdateAsync(string.Format(DeploymentModuleHistoryPropertiesCollection, deploymentId, Guid.NewGuid().ToString()), $"{moduleTwin.DeviceId}-{this.RemoveSpecialCharacters(moduleTwin.ModuleId)}", archiveModuleTwinValue, null);
+                    }
+                }
+            }
+        }
+
+        private string RemoveSpecialCharacters(string str)
+        {
+            StringBuilder sb = new StringBuilder();
+            var validCharacters = "_-";
+            foreach (char c in str)
+            {
+                if (char.IsLetterOrDigit(c) || validCharacters.Contains(c))
+                {
+                    sb.Append(c);
+                }
+            }
+
+            return sb.ToString();
         }
     }
 }
