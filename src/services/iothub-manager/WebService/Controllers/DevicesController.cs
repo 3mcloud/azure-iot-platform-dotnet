@@ -55,6 +55,13 @@ namespace Mmm.Iot.IoTHubManager.WebService.Controllers
             return new DeviceListApiModel(await this.devices.GetListAsync(query, continuationToken));
         }
 
+        [HttpGet("deploymentHistory/{id}")]
+        [Authorize("ReadAll")]
+        public async Task<TwinPropertiesListApiModel> GetDeviceDeploymentAsync(string id)
+        {
+            return new TwinPropertiesListApiModel(await this.devices.GetDeploymentHistoryAsync(id, this.GetTenantId()));
+        }
+
         [HttpGet("{id}")]
         [Authorize("ReadAll")]
         public async Task<DeviceRegistryApiModel> GetDeviceAsync(string id)
