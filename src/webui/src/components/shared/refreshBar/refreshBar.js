@@ -5,6 +5,11 @@ import moment from "moment";
 import { Btn } from "components/shared";
 import { toDiagnosticsModel } from "services/models";
 import { svgs, DEFAULT_TIME_FORMAT } from "utilities";
+import {
+    Balloon,
+    BalloonPosition,
+    BalloonAlignment,
+} from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Balloon/Balloon";
 
 import "./refreshBar.scss";
 
@@ -14,28 +19,64 @@ export class RefreshBar extends Component {
         return !this.props.isPending && this.props.refresh();
     };
 
-    render() {
-        const { t, isPending, time } = this.props;
-        return (
-            <div className="last-updated-container">
-                {isPending || time ? (
-                    <span className="time">
-                        <span className="refresh-text">
-                            {t("refreshBar.lastRefreshed")} |{" "}
-                        </span>
-                        {!isPending ? (
-                            moment(time).format(DEFAULT_TIME_FORMAT)
+    getLastRefreshDetails = () => {
+        const { t, isPending, time, isShowIconOnly } = this.props;
+        if (isPending || time) {
+            return (
+                <span className="time">
+                    <span className="refresh-text">
+                        {t("refreshBar.lastRefreshed")}
+                        {isShowIconOnly ? (
+                            <>
+                                : <br />
+                            </>
                         ) : (
-                            <span className="empty-text"></span>
+                            <>| </>
                         )}
                     </span>
-                ) : null}
-                <Btn
-                    svg={svgs.refresh}
-                    aria-label={t("refreshBar.ariaLabel")}
-                    className={`refresh-btn ${isPending ? "refreshing" : ""}`}
-                    onClick={this.refresh}
-                />
+                    {!isPending ? (
+                        moment(time).format(DEFAULT_TIME_FORMAT)
+                    ) : (
+                        <span className="empty-text"></span>
+                    )}
+                </span>
+            );
+        }
+        return null;
+    };
+
+    render() {
+        const { t, isPending, isShowIconOnly } = this.props;
+        return (
+            <div className="last-updated-container">
+                {isShowIconOnly ? (
+                    <Balloon
+                        position={BalloonPosition.Bottom}
+                        align={BalloonAlignment.End}
+                        tooltip={this.getLastRefreshDetails()}
+                    >
+                        <Btn
+                            svg={svgs.refresh}
+                            aria-label={t("refreshBar.ariaLabel")}
+                            className={`refresh-btn ${
+                                isPending ? "refreshing" : ""
+                            }`}
+                            onClick={this.refresh}
+                        />
+                    </Balloon>
+                ) : (
+                    <>
+                        {this.getLastRefreshDetails()}
+                        <Btn
+                            svg={svgs.refresh}
+                            aria-label={t("refreshBar.ariaLabel")}
+                            className={`refresh-btn ${
+                                isPending ? "refreshing" : ""
+                            }`}
+                            onClick={this.refresh}
+                        />
+                    </>
+                )}
             </div>
         );
     }
