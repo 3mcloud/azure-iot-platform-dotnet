@@ -61,6 +61,8 @@ variables:
     value: mmm-iot-platform-ingress
   - name: publishedFilesArtifactName
     value: publishFiles
+  - name: functionsArtifactName
+    value: functionsFiles
   - name: helmInstallTimeoutInSeconds
     value: 1000
   - name: mmmIotPlatformServicesHelmChartValuesFile
@@ -143,7 +145,7 @@ stages:
                 az storage entity insert --entity PartitionKey=$(tableStoragePartition) RowKey=$(tableStorageRowKeyPrefix)$(tableStorageAppConfigurationConnectionStringRowKey) Content="$appConfigurationConnectionString" --table-name $(tableStorageName) --account-name $(storageAccountName)
 
       - job: build
-        displayName: Build
+        displayName: Build Services
         dependsOn:
           - preBuild
         variables:
@@ -173,7 +175,7 @@ stages:
             displayName: Build assemblies
 
           - task: CopyFiles@2
-            displayName: Prepare file artifacts
+            displayName: Prepare services artifacts
             inputs:
               contents: |
                 *.sln
@@ -183,12 +185,55 @@ stages:
                 .nuget/**/*
                 src/services/**/*
                 test/services/**/*
+                src/functions/**/*
               targetFolder: $(publishedFilesArtifactName)
               cleanTargetFolder: true
 
           - publish: $(publishedFilesArtifactName)
             artifact: $(publishedFilesArtifactName)
-            displayName: Publish file artifacts
+            displayName: Publish services artifacts
+
+      - job: functionBuild
+        displayName: Build Functions
+        pool:
+          vmImage: 'vs2017-win2016'
+        dependsOn:
+          - preBuild
+        variables:
+          AppConfigurationConnectionString: $[dependencies.preBuild.outputs['getAppConfigurationConnectionString.appConfigurationConnectionString']]
+        steps:
+          - checkout: self
+            displayName: Checkout repository
+
+          - script: >-
+              dotnet restore
+              --force
+              --no-cache
+              --no-dependencies
+              --packages .nuget
+              /p:TargetLatestRuntimePatch=true
+            displayName: Restore dependencies
+
+          - script: >-
+              dotnet publish
+              --self-contained false
+              --no-restore
+              --no-dependencies
+              --configuration $(dotnetBuildConfiguration)
+              /p:TargetLatestRuntimePatch=true
+            displayName: Build assemblies
+
+          - task: CopyFiles@2
+            displayName: Prepare Azure Functions artifacts
+            inputs:
+              contents: |
+                src/functions/**/*
+              targetFolder: $(functionsArtifactName)
+              cleanTargetFolder: true
+
+          - publish: $(functionsArtifactName)
+            artifact: $(functionsArtifactName)
+            displayName: Publish Azure Functions artifacts
 
   - stage: listCommitsSinceLastRelease
     displayName: List commits since last release
