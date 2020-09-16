@@ -84,7 +84,7 @@ stages:
           applicationCode: crsliot
           applicationShortCode: crsl
           environmentCategory: qa
-          kubernetesVersion: 1.18.1
+          kubernetesVersion: 1.16.10
           aksAgentVmSize: Standard_DS1_v2
           sendgridEmail: aschmidt4@mmm.com
           azureDevOpsProjectId: AzurePlatform
@@ -108,7 +108,7 @@ stages:
           applicationCode: crsliot
           applicationShortCode: crsl
           environmentCategory: wkbnch
-          kubernetesVersion: 1.18.1
+          kubernetesVersion: 1.16.10
           aksAgentVmSize: Standard_DS1_v2
           sendgridEmail: aschmidt4@mmm.com
           azureDevOpsProjectId: AzurePlatform
