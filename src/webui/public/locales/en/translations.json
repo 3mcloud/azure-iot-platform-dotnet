@@ -406,6 +406,8 @@
         "searchPlaceholder": "Search devices...",
         "noneFound": "No devices found.",
         "refresh": "Refresh",
+        "showTelemetry": "Show telemetry",
+        "returnToDevices": "Devices",
         "grid": {
             "connected": "Connected",
             "deviceName": "Device name",
@@ -477,6 +479,14 @@
                     "action": "Action",
                     "property": "Property",
                     "value": "Value"
+                },
+                "deviceDeployments": {
+                    "title": "Device Deployments",
+                    "description": "Deployment History of device",
+                    "noneExist": "No history present for this device",
+                    "firmwareVersion" : "Firmware Version",
+                    "startDate": "Start Date Time",
+                    "endDate": "End Date Time"
                 }
             },
             "delete": {
@@ -1051,6 +1061,7 @@
   "modal": {
     "delete": "Delete",
     "cancel": "Cancel",
+    "close": "Close",
     "copy": "Copy",
     "ok": "Ok"
   },

@@ -74,7 +74,6 @@ export const packagesColumnDefs = {
     lastModified: {
         headerName: "packages.grid.lastModified",
         field: "lastModified",
-        valueFormatter: ({ value }) => checkForEmpty(value),
         cellRendererFramework: TimeRenderer,
     },
     lastModifiedBy: {
