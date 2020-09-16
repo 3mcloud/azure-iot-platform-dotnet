@@ -149,3 +149,20 @@ $doublePadding: $baseContentPadding * 2;
     }
   }
 }
+
+.expand-col-container {
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 10;
+  margin-top: 0;
+
+  .btn.expand-columns {
+    @include rem-fallback(width, 15px);
+  }
+
+  @include themify($themes) {
+    .btn:hover {
+      background-color: themed('color-bg-content');
+    }
+  }
+}

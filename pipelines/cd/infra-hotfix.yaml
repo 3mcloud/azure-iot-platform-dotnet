@@ -90,6 +90,13 @@ stages:
                 echo "A value for the 'aksAgentVmSize' variable must be provided" > /dev/stderr
                 exit 1
               fi
+
+              echo "TestPipelineRunId: '$(testPipelineRunId)'"
+              if [ -z "$(testPipelineRunId)" ]
+              then
+                echo "A value for the 'testPipelineRunId' variable must be provided" > /dev/stderr
+                exit 1
+              fi
             displayName: Check parameters
 
   - stage: deployInfrastructure
@@ -111,3 +118,7 @@ stages:
           sendgridEmail: $(sendGridEmail)
           sysAdmins: $(sysAdmins)
           aksAgentVmSize: $(aksAgentVmSize)
+          azureDevOpsProjectId: AzurePlatform
+          testPipelineId: 453
+          runVersion: specific
+          testPipelineRunId: $(testPipelineRunId)

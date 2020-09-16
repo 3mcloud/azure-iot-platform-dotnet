@@ -9,5 +9,6 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\common\Services\Services.csproj" />
+        <ProjectReference Include="..\..\storage-adapter\Services\Services.csproj" />
     </ItemGroup>
 </Project>

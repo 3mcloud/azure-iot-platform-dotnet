@@ -92,13 +92,19 @@ export const epics = createEpicScenario({
                     .catch(handleError(fromAction));
             }
             return Observable.forkJoin(
-                IoTHubManagerService.getModulesByQuery(
+                IoTHubManagerService.getModulesByQueryForDeployment(
+                    fromAction.payload.id,
                     createEdgeAgentQuery(
                         getDeployedDeviceIds(fromAction.payload)
-                    )
+                    ),
+                    fromAction.payload.isLatest
                 ),
-                IoTHubManagerService.getDevicesByQuery(
-                    createDevicesQuery(getDeployedDeviceIds(fromAction.payload))
+                IoTHubManagerService.getDevicesByQueryForDeployment(
+                    fromAction.payload.id,
+                    createDevicesQuery(
+                        getDeployedDeviceIds(fromAction.payload)
+                    ),
+                    fromAction.payload.isLatest
                 )
             )
                 .map(

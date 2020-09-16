@@ -9,9 +9,25 @@ To easily get a list of committed changes between current master and the previou
 git log --oneline --no-decorate --topo-order ^<previousRelease> master
 where <previousRelease> is the release name e.g 5.1.0
 -->
+## [5.3.0] - 2020-09-10
+### Add
+- UI Enhancements for enabling / disabling active deployments, those impacting deployment quotas
+- Downloadable deployment reports
+- Nested Device Properties Editable in UI (up to 6 levels)
+- Get URLs that include DeviceGroup filtering
+- Auto-refresh UI cache after deployment
+- Improvements to tenant lifecycle
+
+### Fixed
+- Reported Properties Changes in Deployment Details
+- Fixed UI contineous refresh issues when alerting is off
+- Added changes to handle UNIX timestamp
+- Sys-admins can access to all tenants
+- Prevent users from filtering dashboard duration that does not have telemetry data
+
 ## [5.2.3] - 2020-08-18
 ### Fixed
-= Asa-maager twin update job properly triggers device group conversion
+- Asa-maager twin update job properly triggers device group conversion
 - Updated methods to throw expcetion when there is no collection
 - Prevent Azure Function calls when alerting is diabled
 - Updated ResourceNotFoundException in Rules Methods
@@ -86,6 +102,7 @@ where <previousRelease> is the release name e.g 5.1.0
 - Application configuration uses Azure App Configuration service in addition to Azure Key Vault
 - Code base rearchitected to use common library and reduce duplication
 
+[5.3.0]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.3.0
 [5.2.3]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.2.3
 [5.2.2]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.2.2
 [5.2.1]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.2.1

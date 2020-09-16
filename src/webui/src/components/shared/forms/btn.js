@@ -5,12 +5,13 @@ import PropTypes from "prop-types";
 
 import { Svg } from "components/shared/svg/svg";
 import { joinClasses } from "utilities";
+import { Icon } from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Icon";
 
 import "@microsoft/azure-iot-ux-fluent-controls/lib/components/Button";
 import "./styles/btn.scss";
 
 export const Btn = (props) => {
-    const { svg, children, className, primary, ...btnProps } = props;
+    const { svg, icon, children, className, primary, ...btnProps } = props;
     return (
         <button
             type="button"
@@ -22,6 +23,7 @@ export const Btn = (props) => {
             )}
         >
             {props.svg && <Svg path={props.svg} className="btn-icon" />}
+            {props.icon && <Icon icon={props.icon} className="btn-icon" />}
             {props.children && <div className="btn-text">{props.children}</div>}
         </button>
     );
