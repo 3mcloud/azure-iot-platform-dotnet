@@ -145,6 +145,7 @@ export class DeviceTelemetry extends Component {
                             refresh={this.refreshTelemetry}
                             time={lastRefreshed}
                             t={t}
+                            isShowIconOnly={true}
                         />
                     </ContextMenuAlign>
                 </ContextMenu>

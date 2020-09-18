@@ -95,6 +95,7 @@ export class Summary extends Component {
                                 this.props.jobProps.isPending
                             }
                             t={this.props.t}
+                            isShowIconOnly={true}
                         />
                     </ContextMenuAlign>
                 </ContextMenu>

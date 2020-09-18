@@ -205,6 +205,7 @@ export class Devices extends Component {
                             time={lastUpdated}
                             isPending={isPending}
                             t={t}
+                            isShowIconOnly={true}
                         />
                     </ContextMenuAlign>
                 </ContextMenu>

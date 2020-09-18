@@ -531,6 +531,7 @@ export class Dashboard extends Component {
                             time={lastRefreshed}
                             isPending={analyticsIsPending || devicesIsPending}
                             t={t}
+                            isShowIconOnly={true}
                         />
                     </ContextMenuAlign>
                 </ContextMenu>
