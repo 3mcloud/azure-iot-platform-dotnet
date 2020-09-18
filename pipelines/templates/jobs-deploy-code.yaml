@@ -102,7 +102,6 @@ jobs:
 
       - ${{ if eq(parameters.blueGreen,false) }}:
         - template: steps-deploy-individual-service.yaml
-#        condition: ne(variables.blueGreen,'true')
           parameters:
             aksName: $(aksName)
             resourceGroupName: $(resourceGroupName)
