@@ -66,7 +66,9 @@ export class DeploymentNew extends LinkedComponent {
             changesApplied: false,
             packageOptions: [],
             packages: [],
+            expandedValue: "no",
         };
+        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -285,6 +287,18 @@ export class DeploymentNew extends LinkedComponent {
         this.formControlChange();
     };
 
+    handleDoubleClickItem() {
+        if (this.state.expandedValue === "no") {
+            this.setState({
+                expandedValue: "yes",
+            });
+        } else {
+            this.setState({
+                expandedValue: "no",
+            });
+        }
+    }
+
     render() {
         const {
                 t,
@@ -367,318 +381,331 @@ export class DeploymentNew extends LinkedComponent {
                 this.packageTypeLink.value === packagesEnum.deviceConfiguration;
 
         return (
-            <Flyout
-                header={t("deployments.flyouts.new.title")}
-                t={t}
-                onClose={() =>
-                    this.genericCloseClick("NewDeployment_CloseClick")
-                }
-            >
-                <div className="new-deployment-content">
-                    <form className="new-deployment-form" onSubmit={this.apply}>
-                        <FormGroup className="new-deployment-formGroup">
-                            <FormLabel isRequired="true">
-                                {t("deployments.flyouts.new.name")}
-                            </FormLabel>
-                            {!completedSuccessfully && (
-                                <FormControl
-                                    type="text"
-                                    className="long"
-                                    link={this.nameLink}
-                                    onBlur={(event) =>
-                                        this.genericOnChange(
-                                            "NewDeployment_NameText",
-                                            "Name",
-                                            event.target.value
-                                        )
-                                    }
-                                    placeholder={t(
-                                        "deployments.flyouts.new.namePlaceHolder"
-                                    )}
-                                />
-                            )}
-                            {completedSuccessfully && (
-                                <FormLabel className="new-deployment-success-labels">
-                                    {name}
-                                </FormLabel>
-                            )}
-                        </FormGroup>
-                        <FormGroup className="new-deployment-formGroup">
-                            <FormLabel isRequired="true">
-                                {t("deployments.flyouts.new.packageType")}
-                            </FormLabel>
-                            {!completedSuccessfully && (
-                                <FormControl
-                                    type="select"
-                                    ariaLabel={t(
-                                        "deployments.flyouts.new.packageType"
-                                    )}
-                                    className="long"
-                                    link={this.packageTypeLink}
-                                    onChange={this.onPackageTypeSelected}
-                                    options={packageTypeSelectOptions}
-                                    placeholder={t(
-                                        "deployments.flyouts.new.packageTypePlaceHolder"
-                                    )}
-                                    clearable={false}
-                                    searchable={false}
-                                />
-                            )}
-                            {completedSuccessfully && (
-                                <FormLabel className="new-deployment-success-labels">
-                                    {packageType}
-                                </FormLabel>
-                            )}
-                        </FormGroup>
-                        {configTypeEnabled && (
+            <div onDoubleClick={this.handleDoubleClickItem}>
+                <Flyout
+                    header={t("deployments.flyouts.new.title")}
+                    t={t}
+                    onClose={() =>
+                        this.genericCloseClick("NewDeployment_CloseClick")
+                    }
+                    expanded={this.state.expandedValue}
+                >
+                    <div className="new-deployment-content">
+                        <form
+                            className="new-deployment-form"
+                            onSubmit={this.apply}
+                        >
                             <FormGroup className="new-deployment-formGroup">
                                 <FormLabel isRequired="true">
-                                    {t("deployments.flyouts.new.configType")}
+                                    {t("deployments.flyouts.new.name")}
+                                </FormLabel>
+                                {!completedSuccessfully && (
+                                    <FormControl
+                                        type="text"
+                                        className="long"
+                                        link={this.nameLink}
+                                        onBlur={(event) =>
+                                            this.genericOnChange(
+                                                "NewDeployment_NameText",
+                                                "Name",
+                                                event.target.value
+                                            )
+                                        }
+                                        placeholder={t(
+                                            "deployments.flyouts.new.namePlaceHolder"
+                                        )}
+                                    />
+                                )}
+                                {completedSuccessfully && (
+                                    <FormLabel className="new-deployment-success-labels">
+                                        {name}
+                                    </FormLabel>
+                                )}
+                            </FormGroup>
+                            <FormGroup className="new-deployment-formGroup">
+                                <FormLabel isRequired="true">
+                                    {t("deployments.flyouts.new.packageType")}
                                 </FormLabel>
                                 {!completedSuccessfully && (
                                     <FormControl
                                         type="select"
                                         ariaLabel={t(
-                                            "deployments.flyouts.new.configType"
+                                            "deployments.flyouts.new.packageType"
                                         )}
-                                        className="config-type-select"
-                                        onChange={this.configTypeChange}
-                                        link={this.configTypeLink}
-                                        options={configTypeSelectOptions}
+                                        className="long"
+                                        link={this.packageTypeLink}
+                                        onChange={this.onPackageTypeSelected}
+                                        options={packageTypeSelectOptions}
                                         placeholder={t(
-                                            "deployments.flyouts.new.configTypePlaceHolder"
+                                            "deployments.flyouts.new.packageTypePlaceHolder"
                                         )}
                                         clearable={false}
                                         searchable={false}
                                     />
                                 )}
-                                {configTypesIsPending && <Indicator />}
-                                {/** Displays an error message if one occurs while fetching configTypes. */
-                                configTypesError && (
+                                {completedSuccessfully && (
+                                    <FormLabel className="new-deployment-success-labels">
+                                        {packageType}
+                                    </FormLabel>
+                                )}
+                            </FormGroup>
+                            {configTypeEnabled && (
+                                <FormGroup className="new-deployment-formGroup">
+                                    <FormLabel isRequired="true">
+                                        {t(
+                                            "deployments.flyouts.new.configType"
+                                        )}
+                                    </FormLabel>
+                                    {!completedSuccessfully && (
+                                        <FormControl
+                                            type="select"
+                                            ariaLabel={t(
+                                                "deployments.flyouts.new.configType"
+                                            )}
+                                            className="config-type-select"
+                                            onChange={this.configTypeChange}
+                                            link={this.configTypeLink}
+                                            options={configTypeSelectOptions}
+                                            placeholder={t(
+                                                "deployments.flyouts.new.configTypePlaceHolder"
+                                            )}
+                                            clearable={false}
+                                            searchable={false}
+                                        />
+                                    )}
+                                    {configTypesIsPending && <Indicator />}
+                                    {/** Displays an error message if one occurs while fetching configTypes. */
+                                    configTypesError && (
+                                        <AjaxError
+                                            className="new-deployment-flyout-error"
+                                            t={t}
+                                            error={configTypesError}
+                                        />
+                                    )}
+                                    {completedSuccessfully && (
+                                        <FormLabel className="new-deployment-success-labels">
+                                            {configType}
+                                        </FormLabel>
+                                    )}
+                                </FormGroup>
+                            )}
+                            <FormGroup className="new-deployment-formGroup">
+                                <FormLabel isRequired="true">
+                                    {t("deployments.flyouts.new.package")}
+                                </FormLabel>
+                                {!packagesPending && !completedSuccessfully && (
+                                    <FormControl
+                                        type="select"
+                                        ariaLabel={t(
+                                            "deployments.flyouts.new.package"
+                                        )}
+                                        className="long"
+                                        disabled={!isPackageTypeSelected}
+                                        link={this.packageIdLink}
+                                        options={this.packageOptionsLink.value}
+                                        onChange={(event) =>
+                                            this.genericOnChange(
+                                                "NewDeployment_PackageSelect",
+                                                "Package",
+                                                event.target.value.value
+                                            )
+                                        }
+                                        placeholder={
+                                            isPackageTypeSelected
+                                                ? t(
+                                                      "deployments.flyouts.new.packagePlaceHolder"
+                                                  )
+                                                : ""
+                                        }
+                                        clearable={false}
+                                        searchable={false}
+                                    />
+                                )}
+                                {packagesPending && <Indicator />}
+                                {/** Displays an error message if one occurs while fetching packages. */
+                                packagesError && (
                                     <AjaxError
                                         className="new-deployment-flyout-error"
                                         t={t}
-                                        error={configTypesError}
+                                        error={packagesError}
                                     />
                                 )}
                                 {completedSuccessfully && (
                                     <FormLabel className="new-deployment-success-labels">
-                                        {configType}
+                                        {packageName}
                                     </FormLabel>
                                 )}
                             </FormGroup>
-                        )}
-                        <FormGroup className="new-deployment-formGroup">
-                            <FormLabel isRequired="true">
-                                {t("deployments.flyouts.new.package")}
-                            </FormLabel>
-                            {!packagesPending && !completedSuccessfully && (
-                                <FormControl
-                                    type="select"
-                                    ariaLabel={t(
-                                        "deployments.flyouts.new.package"
-                                    )}
-                                    className="long"
-                                    disabled={!isPackageTypeSelected}
-                                    link={this.packageIdLink}
-                                    options={this.packageOptionsLink.value}
-                                    onChange={(event) =>
-                                        this.genericOnChange(
-                                            "NewDeployment_PackageSelect",
-                                            "Package",
-                                            event.target.value.value
-                                        )
-                                    }
-                                    placeholder={
-                                        isPackageTypeSelected
-                                            ? t(
-                                                  "deployments.flyouts.new.packagePlaceHolder"
-                                              )
-                                            : ""
-                                    }
-                                    clearable={false}
-                                    searchable={false}
-                                />
-                            )}
-                            {packagesPending && <Indicator />}
-                            {/** Displays an error message if one occurs while fetching packages. */
-                            packagesError && (
-                                <AjaxError
-                                    className="new-deployment-flyout-error"
-                                    t={t}
-                                    error={packagesError}
-                                />
-                            )}
-                            {completedSuccessfully && (
-                                <FormLabel className="new-deployment-success-labels">
-                                    {packageName}
+                            <FormGroup className="new-deployment-formGroup">
+                                <FormLabel isRequired="true">
+                                    {t("deployments.flyouts.new.priority")}
+                                    <Balloon
+                                        position={BalloonPosition.Top}
+                                        align={BalloonAlignment.End}
+                                        tooltip={
+                                            <Trans
+                                                i18nKey={
+                                                    "deployments.flyouts.new.priorityToolTip"
+                                                }
+                                            >
+                                                Manual setup is required.
+                                                <Hyperlink
+                                                    href={
+                                                        Config.contextHelpUrls
+                                                            .deploymentPriority
+                                                    }
+                                                    target="_blank"
+                                                >
+                                                    {t(
+                                                        "deployments.flyouts.new.priorityLearnMore"
+                                                    )}
+                                                </Hyperlink>
+                                            </Trans>
+                                        }
+                                    >
+                                        <ThemedSvgContainer
+                                            paths={themedPaths.questionBubble}
+                                        />
+                                    </Balloon>
                                 </FormLabel>
-                            )}
-                        </FormGroup>
-                        <FormGroup className="new-deployment-formGroup">
-                            <FormLabel isRequired="true">
-                                {t("deployments.flyouts.new.priority")}
-                                <Balloon
-                                    position={BalloonPosition.Top}
-                                    align={BalloonAlignment.End}
-                                    tooltip={
+                                {!completedSuccessfully && (
+                                    <FormControl
+                                        type="text"
+                                        className="long"
+                                        link={this.priorityLink}
+                                        onBlur={(event) =>
+                                            this.genericOnChange(
+                                                "NewDeployment_PriorityNumber",
+                                                "Priority",
+                                                event.target.value
+                                            )
+                                        }
+                                        placeholder={t(
+                                            "deployments.flyouts.new.priorityPlaceHolder"
+                                        )}
+                                    />
+                                )}
+                                {completedSuccessfully && (
+                                    <FormLabel className="new-deployment-success-labels">
+                                        {priority}
+                                    </FormLabel>
+                                )}
+                            </FormGroup>
+                            <SummarySection className="new-deployment-summary">
+                                <SummaryBody>
+                                    {
+                                        /** Displays targeted devices count once device goup is selected. */
+                                        <ComponentArray>
+                                            <SummaryCount>
+                                                {" "}
+                                                {targetedDeviceCount}
+                                            </SummaryCount>
+                                            <SectionDesc>
+                                                {t(
+                                                    "deployments.flyouts.new.targetText"
+                                                )}
+                                            </SectionDesc>
+                                            {completedSuccessfully && (
+                                                <Svg
+                                                    className="summary-icon"
+                                                    path={svgs.apply}
+                                                />
+                                            )}
+                                        </ComponentArray>
+                                    }
+                                    {createIsPending && (
+                                        <ComponentArray>
+                                            <Indicator />
+                                            {t(
+                                                "deployments.flyouts.new.creating"
+                                            )}
+                                        </ComponentArray>
+                                    )}
+                                </SummaryBody>
+                                {/** Displays a info message if package type selected is edge Manifest */
+                                !changesApplied && (
+                                    <div className="new-deployment-info-text">
+                                        <strong className="new-deployment-info-star">
+                                            *{" "}
+                                        </strong>
+                                        {t("deployments.flyouts.new.infoText")}
+                                    </div>
+                                )}
+                                {/** Displays a success message if deployment is created successfully */
+                                completedSuccessfully && (
+                                    <div className="new-deployment-info-text">
                                         <Trans
                                             i18nKey={
-                                                "deployments.flyouts.new.priorityToolTip"
+                                                "deployments.flyouts.new.successText"
                                             }
                                         >
-                                            Manual setup is required.
-                                            <Hyperlink
-                                                href={
-                                                    Config.contextHelpUrls
-                                                        .deploymentPriority
-                                                }
-                                                target="_blank"
+                                            View your deployment status detail
+                                            for
+                                            <Link
+                                                className="link"
+                                                to={`/deployments/${createdDeploymentId}`}
                                             >
-                                                {t(
-                                                    "deployments.flyouts.new.priorityLearnMore"
-                                                )}
-                                            </Hyperlink>
+                                                {{ deploymentName: name }}
+                                            </Link>
+                                            .
                                         </Trans>
-                                    }
-                                >
-                                    <ThemedSvgContainer
-                                        paths={themedPaths.questionBubble}
-                                    />
-                                </Balloon>
-                            </FormLabel>
-                            {!completedSuccessfully && (
-                                <FormControl
-                                    type="text"
-                                    className="long"
-                                    link={this.priorityLink}
-                                    onBlur={(event) =>
-                                        this.genericOnChange(
-                                            "NewDeployment_PriorityNumber",
-                                            "Priority",
-                                            event.target.value
-                                        )
-                                    }
-                                    placeholder={t(
-                                        "deployments.flyouts.new.priorityPlaceHolder"
-                                    )}
-                                />
-                            )}
-                            {completedSuccessfully && (
-                                <FormLabel className="new-deployment-success-labels">
-                                    {priority}
-                                </FormLabel>
-                            )}
-                        </FormGroup>
-                        <SummarySection className="new-deployment-summary">
-                            <SummaryBody>
-                                {
-                                    /** Displays targeted devices count once device goup is selected. */
-                                    <ComponentArray>
-                                        <SummaryCount>
-                                            {" "}
-                                            {targetedDeviceCount}
-                                        </SummaryCount>
-                                        <SectionDesc>
-                                            {t(
-                                                "deployments.flyouts.new.targetText"
-                                            )}
-                                        </SectionDesc>
-                                        {completedSuccessfully && (
-                                            <Svg
-                                                className="summary-icon"
-                                                path={svgs.apply}
-                                            />
-                                        )}
-                                    </ComponentArray>
-                                }
-                                {createIsPending && (
-                                    <ComponentArray>
-                                        <Indicator />
-                                        {t("deployments.flyouts.new.creating")}
-                                    </ComponentArray>
+                                    </div>
                                 )}
-                            </SummaryBody>
-                            {/** Displays a info message if package type selected is edge Manifest */
-                            !changesApplied && (
-                                <div className="new-deployment-info-text">
-                                    <strong className="new-deployment-info-star">
-                                        *{" "}
-                                    </strong>
-                                    {t("deployments.flyouts.new.infoText")}
-                                </div>
-                            )}
-                            {/** Displays a success message if deployment is created successfully */
-                            completedSuccessfully && (
-                                <div className="new-deployment-info-text">
-                                    <Trans
-                                        i18nKey={
-                                            "deployments.flyouts.new.successText"
-                                        }
-                                    >
-                                        View your deployment status detail for
-                                        <Link
-                                            className="link"
-                                            to={`/deployments/${createdDeploymentId}`}
+                                {/** Displays an error message if one occurs while creating deployment. */
+                                changesApplied && createError && (
+                                    <AjaxError
+                                        className="new-deployment-flyout-error"
+                                        t={t}
+                                        error={createError}
+                                    />
+                                )}
+                                {/** If form is complete, show the buttons for creating a deployment and closing the flyout. */
+                                !completedSuccessfully && (
+                                    <BtnToolbar>
+                                        <Btn
+                                            primary={true}
+                                            disabled={
+                                                createIsPending ||
+                                                !this.formIsValid()
+                                            }
+                                            type="submit"
                                         >
-                                            {{ deploymentName: name }}
-                                        </Link>
-                                        .
-                                    </Trans>
-                                </div>
-                            )}
-                            {/** Displays an error message if one occurs while creating deployment. */
-                            changesApplied && createError && (
-                                <AjaxError
-                                    className="new-deployment-flyout-error"
-                                    t={t}
-                                    error={createError}
-                                />
-                            )}
-                            {/** If form is complete, show the buttons for creating a deployment and closing the flyout. */
-                            !completedSuccessfully && (
-                                <BtnToolbar>
-                                    <Btn
-                                        primary={true}
-                                        disabled={
-                                            createIsPending ||
-                                            !this.formIsValid()
-                                        }
-                                        type="submit"
-                                    >
-                                        {t("deployments.flyouts.new.apply")}
-                                    </Btn>
-                                    <Btn
-                                        svg={svgs.cancelX}
-                                        onClick={() =>
-                                            this.genericCloseClick(
-                                                "NewDeployment_CancelClick"
-                                            )
-                                        }
-                                    >
-                                        {t("deployments.flyouts.new.cancel")}
-                                    </Btn>
-                                </BtnToolbar>
-                            )}
-                            {/** After successful deployment creation, show only close button. */
-                            completedSuccessfully && (
-                                <BtnToolbar>
-                                    <Btn
-                                        svg={svgs.cancelX}
-                                        onClick={() =>
-                                            this.genericCloseClick(
-                                                "NewDeployment_CancelClick"
-                                            )
-                                        }
-                                    >
-                                        {t("deployments.flyouts.new.close")}
-                                    </Btn>
-                                </BtnToolbar>
-                            )}
-                        </SummarySection>
-                    </form>
-                </div>
-            </Flyout>
+                                            {t("deployments.flyouts.new.apply")}
+                                        </Btn>
+                                        <Btn
+                                            svg={svgs.cancelX}
+                                            onClick={() =>
+                                                this.genericCloseClick(
+                                                    "NewDeployment_CancelClick"
+                                                )
+                                            }
+                                        >
+                                            {t(
+                                                "deployments.flyouts.new.cancel"
+                                            )}
+                                        </Btn>
+                                    </BtnToolbar>
+                                )}
+                                {/** After successful deployment creation, show only close button. */
+                                completedSuccessfully && (
+                                    <BtnToolbar>
+                                        <Btn
+                                            svg={svgs.cancelX}
+                                            onClick={() =>
+                                                this.genericCloseClick(
+                                                    "NewDeployment_CancelClick"
+                                                )
+                                            }
+                                        >
+                                            {t("deployments.flyouts.new.close")}
+                                        </Btn>
+                                    </BtnToolbar>
+                                )}
+                            </SummarySection>
+                        </form>
+                    </div>
+                </Flyout>
+            </div>
         );
     }
 }

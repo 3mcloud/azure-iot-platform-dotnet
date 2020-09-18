@@ -84,6 +84,7 @@ export class DeviceDetails extends Component {
             currentModuleStatus: undefined,
             deviceUploads: undefined,
             deviceDeployments: undefined,
+            expandedValue: "no",
         };
         this.baseState = this.state;
         this.columnDefs = [
@@ -106,6 +107,7 @@ export class DeviceDetails extends Component {
         } else {
             this.props.fetchModules(this.props.device.id);
         }
+        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
     }
 
     componentDidMount() {
@@ -323,6 +325,18 @@ export class DeviceDetails extends Component {
         this.resetTelemetry$.next(this.props.device.id);
     };
 
+    handleDoubleClickItem() {
+        if (this.state.expandedValue === "no") {
+            this.setState({
+                expandedValue: "yes",
+            });
+        } else {
+            this.setState({
+                expandedValue: "no",
+            });
+        }
+    }
+
     render() {
         const {
                 t,
@@ -370,709 +384,727 @@ export class DeviceDetails extends Component {
                 : undefined;
 
         return (
-            <Flyout.Container
-                header={t("devices.flyouts.details.title")}
-                t={t}
-                onClose={onClose}
-            >
-                <div className="device-details-container">
-                    {!device && (
-                        <div className="device-details-container">
-                            <ErrorMsg>
-                                {t("devices.flyouts.details.noDevice")}
-                            </ErrorMsg>
-                        </div>
-                    )}
-                    {!!device && (
-                        <div className="device-details-container">
-                            <Grid className="device-details-header">
-                                <Row>
-                                    <Cell className="col-3">
-                                        <DeviceIcon type={device.type} />
-                                    </Cell>
-                                    <Cell className="col-7">
-                                        <div className="device-name">
-                                            {device.id}
-                                        </div>
-                                        <div className="device-simulated">
-                                            {device.isSimulated
-                                                ? t(
-                                                      "devices.flyouts.details.simulated"
-                                                  )
-                                                : t(
-                                                      "devices.flyouts.details.notSimulated"
-                                                  )}
-                                        </div>
-                                        <div className="device-connected">
-                                            {device.connected
-                                                ? t(
-                                                      "devices.flyouts.details.connected"
-                                                  )
-                                                : t(
-                                                      "devices.flyouts.details.notConnected"
-                                                  )}
-                                        </div>
-                                    </Cell>
-                                </Row>
-                            </Grid>
+            <div onDoubleClick={this.handleDoubleClickItem}>
+                <Flyout.Container
+                    header={t("devices.flyouts.details.title")}
+                    t={t}
+                    onClose={onClose}
+                    expanded={this.state.expandedValue}
+                >
+                    <div className="device-details-container">
+                        {!device && (
+                            <div className="device-details-container">
+                                <ErrorMsg>
+                                    {t("devices.flyouts.details.noDevice")}
+                                </ErrorMsg>
+                            </div>
+                        )}
+                        {!!device && (
+                            <div className="device-details-container">
+                                <Grid className="device-details-header">
+                                    <Row>
+                                        <Cell className="col-3">
+                                            <DeviceIcon type={device.type} />
+                                        </Cell>
+                                        <Cell className="col-7">
+                                            <div className="device-name">
+                                                {device.id}
+                                            </div>
+                                            <div className="device-simulated">
+                                                {device.isSimulated
+                                                    ? t(
+                                                          "devices.flyouts.details.simulated"
+                                                      )
+                                                    : t(
+                                                          "devices.flyouts.details.notSimulated"
+                                                      )}
+                                            </div>
+                                            <div className="device-connected">
+                                                {device.connected
+                                                    ? t(
+                                                          "devices.flyouts.details.connected"
+                                                      )
+                                                    : t(
+                                                          "devices.flyouts.details.notConnected"
+                                                      )}
+                                            </div>
+                                        </Cell>
+                                    </Row>
+                                </Grid>
 
-                            {!this.state.isAlertsPending &&
-                                this.state.alerts &&
-                                this.state.alerts.length > 0 && (
-                                    <RulesGrid {...rulesGridProps} />
-                                )}
-
-                            <Section.Container>
-                                <Section.Header>
-                                    {t(
-                                        "devices.flyouts.details.telemetry.title"
+                                {!this.state.isAlertsPending &&
+                                    this.state.alerts &&
+                                    this.state.alerts.length > 0 && (
+                                        <RulesGrid {...rulesGridProps} />
                                     )}
-                                </Section.Header>
-                                <Section.Content>
-                                    <TimeIntervalDropdown
-                                        onChange={this.updateTimeInterval}
-                                        value={this.props.timeInterval}
-                                        t={t}
-                                        className="device-details-time-interval-dropdown"
-                                    />
-                                    {timeSeriesExplorerUrl && (
-                                        <TimeSeriesInsightsLinkContainer
-                                            href={timeSeriesParamUrl}
+
+                                <Section.Container>
+                                    <Section.Header>
+                                        {t(
+                                            "devices.flyouts.details.telemetry.title"
+                                        )}
+                                    </Section.Header>
+                                    <Section.Content>
+                                        <TimeIntervalDropdown
+                                            onChange={this.updateTimeInterval}
+                                            value={this.props.timeInterval}
+                                            t={t}
+                                            className="device-details-time-interval-dropdown"
                                         />
-                                    )}
-                                    <TelemetryChart
-                                        className="telemetry-chart"
-                                        t={t}
-                                        limitExceeded={
-                                            this.state
-                                                .telemetryQueryExceededLimit
-                                        }
-                                        telemetry={telemetry}
-                                        theme={theme}
-                                        colors={chartColorObjects}
-                                    />
-                                </Section.Content>
-                            </Section.Container>
-
-                            <Section.Container>
-                                <Section.Header>
-                                    {t("devices.flyouts.details.tags.title")}
-                                </Section.Header>
-                                <Section.Content>
-                                    <SectionDesc>
-                                        <Trans
-                                            i18nKey={
-                                                "devices.flyouts.details.tags.description"
-                                            }
-                                        >
-                                            To edit, close this panel, click on
-                                            <strong>
-                                                {{
-                                                    jobs: t(
-                                                        "devices.flyouts.jobs.title"
-                                                    ),
-                                                }}
-                                            </strong>
-                                            then select
-                                            <strong>
-                                                {{
-                                                    tags: t(
-                                                        "devices.flyouts.jobs.tags.radioLabel"
-                                                    ),
-                                                }}
-                                            </strong>
-                                            .
-                                        </Trans>
-                                    </SectionDesc>
-                                    {tags.length === 0 &&
-                                        t(
-                                            "devices.flyouts.details.tags.noneExist"
+                                        {timeSeriesExplorerUrl && (
+                                            <TimeSeriesInsightsLinkContainer
+                                                href={timeSeriesParamUrl}
+                                            />
                                         )}
-                                    {tags.length > 0 && (
-                                        <Grid>
-                                            <GridHeader>
-                                                <Row>
-                                                    <Cell className="col-3">
-                                                        {t(
-                                                            "devices.flyouts.details.tags.keyHeader"
-                                                        )}
-                                                    </Cell>
-                                                    <Cell className="col-7">
-                                                        {t(
-                                                            "devices.flyouts.details.tags.valueHeader"
-                                                        )}
-                                                    </Cell>
-                                                </Row>
-                                            </GridHeader>
-                                            <GridBody>
-                                                {tags.map(
-                                                    (
-                                                        [tagName, tagValue],
-                                                        idx
-                                                    ) => (
-                                                        <Row key={idx}>
-                                                            <Cell className="col-3">
-                                                                {tagName}
-                                                            </Cell>
-                                                            <Cell className="col-7">
-                                                                {tagValue.toString()}
-                                                            </Cell>
-                                                        </Row>
-                                                    )
-                                                )}
-                                            </GridBody>
-                                        </Grid>
-                                    )}
-                                </Section.Content>
-                            </Section.Container>
-
-                            <Section.Container>
-                                <Section.Header>
-                                    {t("devices.flyouts.details.methods.title")}
-                                </Section.Header>
-                                <Section.Content>
-                                    <SectionDesc>
-                                        <Trans
-                                            i18nKey={
-                                                "devices.flyouts.details.methods.description"
+                                        <TelemetryChart
+                                            className="telemetry-chart"
+                                            t={t}
+                                            limitExceeded={
+                                                this.state
+                                                    .telemetryQueryExceededLimit
                                             }
-                                        >
-                                            To edit, close this panel, click on
-                                            <strong>
-                                                {{
-                                                    jobs: t(
-                                                        "devices.flyouts.jobs.title"
-                                                    ),
-                                                }}
-                                            </strong>
-                                            then select
-                                            <strong>
-                                                {{
-                                                    methods: t(
-                                                        "devices.flyouts.jobs.methods.radioLabel"
-                                                    ),
-                                                }}
-                                            </strong>
-                                            .
-                                        </Trans>
-                                    </SectionDesc>
-                                    {device.methods.length === 0 ? (
-                                        t(
-                                            "devices.flyouts.details.methods.noneExist"
-                                        )
-                                    ) : (
-                                        <Grid>
-                                            {device.methods.map(
-                                                (methodName, idx) => (
-                                                    <Row key={idx}>
-                                                        <Cell>
-                                                            {methodName}
-                                                        </Cell>
-                                                    </Row>
-                                                )
+                                            telemetry={telemetry}
+                                            theme={theme}
+                                            colors={chartColorObjects}
+                                        />
+                                    </Section.Content>
+                                </Section.Container>
+
+                                <Section.Container>
+                                    <Section.Header>
+                                        {t(
+                                            "devices.flyouts.details.tags.title"
+                                        )}
+                                    </Section.Header>
+                                    <Section.Content>
+                                        <SectionDesc>
+                                            <Trans
+                                                i18nKey={
+                                                    "devices.flyouts.details.tags.description"
+                                                }
+                                            >
+                                                To edit, close this panel, click
+                                                on
+                                                <strong>
+                                                    {{
+                                                        jobs: t(
+                                                            "devices.flyouts.jobs.title"
+                                                        ),
+                                                    }}
+                                                </strong>
+                                                then select
+                                                <strong>
+                                                    {{
+                                                        tags: t(
+                                                            "devices.flyouts.jobs.tags.radioLabel"
+                                                        ),
+                                                    }}
+                                                </strong>
+                                                .
+                                            </Trans>
+                                        </SectionDesc>
+                                        {tags.length === 0 &&
+                                            t(
+                                                "devices.flyouts.details.tags.noneExist"
                                             )}
-                                        </Grid>
-                                    )}
-                                </Section.Content>
-                            </Section.Container>
-
-                            <Section.Container>
-                                <Section.Header>
-                                    {t(
-                                        "devices.flyouts.details.properties.title"
-                                    )}
-                                </Section.Header>
-                                <Section.Content>
-                                    <SectionDesc>
-                                        <Trans
-                                            i18nKey={
-                                                "devices.flyouts.details.properties.description"
-                                            }
-                                        >
-                                            To edit, close this panel, click on
-                                            <strong>
-                                                {{
-                                                    jobs: t(
-                                                        "devices.flyouts.jobs.title"
-                                                    ),
-                                                }}
-                                            </strong>
-                                            then select
-                                            <strong>
-                                                {{
-                                                    properties: t(
-                                                        "devices.flyouts.jobs.properties.radioLabel"
-                                                    ),
-                                                }}
-                                            </strong>
-                                            .
-                                        </Trans>
-                                    </SectionDesc>
-                                    {properties.length === 0 &&
-                                        t(
-                                            "devices.flyouts.details.properties.noneExist"
-                                        )}
-                                    {properties.length > 0 && (
-                                        <ComponentArray>
+                                        {tags.length > 0 && (
                                             <Grid>
                                                 <GridHeader>
                                                     <Row>
                                                         <Cell className="col-3">
                                                             {t(
-                                                                "devices.flyouts.details.properties.keyHeader"
+                                                                "devices.flyouts.details.tags.keyHeader"
                                                             )}
                                                         </Cell>
-                                                        <Cell className="col-15">
+                                                        <Cell className="col-7">
                                                             {t(
-                                                                "devices.flyouts.details.properties.valueHeader"
+                                                                "devices.flyouts.details.tags.valueHeader"
                                                             )}
                                                         </Cell>
                                                     </Row>
                                                 </GridHeader>
                                                 <GridBody>
-                                                    {properties.map(
+                                                    {tags.map(
                                                         (
-                                                            [
-                                                                propertyName,
-                                                                propertyValue,
-                                                            ],
+                                                            [tagName, tagValue],
                                                             idx
-                                                        ) => {
-                                                            const desiredPropertyValue =
-                                                                    device
-                                                                        .desiredProperties[
-                                                                        propertyName
-                                                                    ],
-                                                                serializedProperties = serializeNestedDeviceProperties(
-                                                                    propertyName,
-                                                                    propertyValue
-                                                                ),
-                                                                rows = [];
-                                                            Object.entries(
-                                                                serializedProperties
-                                                            ).forEach(
-                                                                ([
-                                                                    propertyDisplayName,
-                                                                    value,
-                                                                ]) => {
-                                                                    const displayValue =
-                                                                            !desiredPropertyValue ||
-                                                                            value ===
-                                                                                desiredPropertyValue
-                                                                                ? value.toString()
-                                                                                : t(
-                                                                                      "devices.flyouts.details.properties.syncing",
-                                                                                      {
-                                                                                          reportedPropertyValue: value.toString(),
-                                                                                          desiredPropertyValue: desiredPropertyValue.toString(),
-                                                                                      }
-                                                                                  ),
-                                                                        truncatedDisplayName =
-                                                                            propertyDisplayName.length <=
-                                                                            20
-                                                                                ? propertyDisplayName
-                                                                                : `...${propertyDisplayName.substring(
-                                                                                      propertyDisplayName.length -
-                                                                                          17
-                                                                                  )}`;
-                                                                    rows.push(
-                                                                        <Row
-                                                                            key={
-                                                                                idx
-                                                                            }
-                                                                        >
-                                                                            <Cell className="col-3">
-                                                                                <Balloon
-                                                                                    position={
-                                                                                        BalloonPosition.Left
-                                                                                    }
-                                                                                    tooltip={
-                                                                                        <Trans>
-                                                                                            {
-                                                                                                propertyDisplayName
-                                                                                            }
-                                                                                        </Trans>
-                                                                                    }
-                                                                                >
-                                                                                    {
-                                                                                        truncatedDisplayName
-                                                                                    }
-                                                                                </Balloon>
-                                                                            </Cell>
-                                                                            <Cell className="col-15">
-                                                                                {
-                                                                                    displayValue
-                                                                                }
-                                                                            </Cell>
-                                                                        </Row>
-                                                                    );
-                                                                }
-                                                            );
-                                                            return rows;
-                                                        }
+                                                        ) => (
+                                                            <Row key={idx}>
+                                                                <Cell className="col-3">
+                                                                    {tagName}
+                                                                </Cell>
+                                                                <Cell className="col-7">
+                                                                    {tagValue.toString()}
+                                                                </Cell>
+                                                            </Row>
+                                                        )
                                                     )}
                                                 </GridBody>
                                             </Grid>
-                                            <Grid className="device-properties-actions">
-                                                <Row>
-                                                    <Cell className="col-8">
-                                                        {t(
-                                                            "devices.flyouts.details.properties.copyAllProperties"
-                                                        )}
-                                                    </Cell>
-                                                    <Cell className="col-2">
-                                                        <Btn
-                                                            svg={svgs.copy}
-                                                            onClick={
-                                                                this
-                                                                    .copyDevicePropertiesToClipboard
-                                                            }
-                                                        >
-                                                            {t(
-                                                                "devices.flyouts.details.properties.copy"
-                                                            )}
-                                                        </Btn>
-                                                    </Cell>
-                                                </Row>
-                                            </Grid>
-                                        </ComponentArray>
-                                    )}
-                                </Section.Content>
-                            </Section.Container>
-
-                            <Section.Container>
-                                <Section.Header>
-                                    {t(
-                                        "devices.flyouts.details.diagnostics.title"
-                                    )}
-                                </Section.Header>
-                                <Section.Content>
-                                    <SectionDesc>
-                                        {t(
-                                            "devices.flyouts.details.diagnostics.description"
                                         )}
-                                    </SectionDesc>
+                                    </Section.Content>
+                                </Section.Container>
 
-                                    <Grid className="device-details-diagnostics">
-                                        <GridHeader>
-                                            <Row>
-                                                <Cell className="col-3">
-                                                    {t(
-                                                        "devices.flyouts.details.diagnostics.keyHeader"
-                                                    )}
-                                                </Cell>
-                                                <Cell className="col-15">
-                                                    {t(
-                                                        "devices.flyouts.details.diagnostics.valueHeader"
-                                                    )}
-                                                </Cell>
-                                            </Row>
-                                        </GridHeader>
-                                        <GridBody>
-                                            <Row>
-                                                <Cell className="col-3">
-                                                    {t(
-                                                        "devices.flyouts.details.diagnostics.status"
-                                                    )}
-                                                </Cell>
-                                                <Cell className="col-15">
-                                                    {device.connected
-                                                        ? t(
-                                                              "devices.flyouts.details.connected"
-                                                          )
-                                                        : t(
-                                                              "devices.flyouts.details.notConnected"
-                                                          )}
-                                                </Cell>
-                                            </Row>
-                                            {device.connected && (
-                                                <ComponentArray>
+                                <Section.Container>
+                                    <Section.Header>
+                                        {t(
+                                            "devices.flyouts.details.methods.title"
+                                        )}
+                                    </Section.Header>
+                                    <Section.Content>
+                                        <SectionDesc>
+                                            <Trans
+                                                i18nKey={
+                                                    "devices.flyouts.details.methods.description"
+                                                }
+                                            >
+                                                To edit, close this panel, click
+                                                on
+                                                <strong>
+                                                    {{
+                                                        jobs: t(
+                                                            "devices.flyouts.jobs.title"
+                                                        ),
+                                                    }}
+                                                </strong>
+                                                then select
+                                                <strong>
+                                                    {{
+                                                        methods: t(
+                                                            "devices.flyouts.jobs.methods.radioLabel"
+                                                        ),
+                                                    }}
+                                                </strong>
+                                                .
+                                            </Trans>
+                                        </SectionDesc>
+                                        {device.methods.length === 0 ? (
+                                            t(
+                                                "devices.flyouts.details.methods.noneExist"
+                                            )
+                                        ) : (
+                                            <Grid>
+                                                {device.methods.map(
+                                                    (methodName, idx) => (
+                                                        <Row key={idx}>
+                                                            <Cell>
+                                                                {methodName}
+                                                            </Cell>
+                                                        </Row>
+                                                    )
+                                                )}
+                                            </Grid>
+                                        )}
+                                    </Section.Content>
+                                </Section.Container>
+
+                                <Section.Container>
+                                    <Section.Header>
+                                        {t(
+                                            "devices.flyouts.details.properties.title"
+                                        )}
+                                    </Section.Header>
+                                    <Section.Content>
+                                        <SectionDesc>
+                                            <Trans
+                                                i18nKey={
+                                                    "devices.flyouts.details.properties.description"
+                                                }
+                                            >
+                                                To edit, close this panel, click
+                                                on
+                                                <strong>
+                                                    {{
+                                                        jobs: t(
+                                                            "devices.flyouts.jobs.title"
+                                                        ),
+                                                    }}
+                                                </strong>
+                                                then select
+                                                <strong>
+                                                    {{
+                                                        properties: t(
+                                                            "devices.flyouts.jobs.properties.radioLabel"
+                                                        ),
+                                                    }}
+                                                </strong>
+                                                .
+                                            </Trans>
+                                        </SectionDesc>
+                                        {properties.length === 0 &&
+                                            t(
+                                                "devices.flyouts.details.properties.noneExist"
+                                            )}
+                                        {properties.length > 0 && (
+                                            <ComponentArray>
+                                                <Grid>
+                                                    <GridHeader>
+                                                        <Row>
+                                                            <Cell className="col-3">
+                                                                {t(
+                                                                    "devices.flyouts.details.properties.keyHeader"
+                                                                )}
+                                                            </Cell>
+                                                            <Cell className="col-15">
+                                                                {t(
+                                                                    "devices.flyouts.details.properties.valueHeader"
+                                                                )}
+                                                            </Cell>
+                                                        </Row>
+                                                    </GridHeader>
+                                                    <GridBody>
+                                                        {properties.map(
+                                                            (
+                                                                [
+                                                                    propertyName,
+                                                                    propertyValue,
+                                                                ],
+                                                                idx
+                                                            ) => {
+                                                                const desiredPropertyValue =
+                                                                        device
+                                                                            .desiredProperties[
+                                                                            propertyName
+                                                                        ],
+                                                                    serializedProperties = serializeNestedDeviceProperties(
+                                                                        propertyName,
+                                                                        propertyValue
+                                                                    ),
+                                                                    rows = [];
+                                                                Object.entries(
+                                                                    serializedProperties
+                                                                ).forEach(
+                                                                    ([
+                                                                        propertyDisplayName,
+                                                                        value,
+                                                                    ]) => {
+                                                                        const displayValue =
+                                                                                !desiredPropertyValue ||
+                                                                                value ===
+                                                                                    desiredPropertyValue
+                                                                                    ? value.toString()
+                                                                                    : t(
+                                                                                          "devices.flyouts.details.properties.syncing",
+                                                                                          {
+                                                                                              reportedPropertyValue: value.toString(),
+                                                                                              desiredPropertyValue: desiredPropertyValue.toString(),
+                                                                                          }
+                                                                                      ),
+                                                                            truncatedDisplayName =
+                                                                                propertyDisplayName.length <=
+                                                                                20
+                                                                                    ? propertyDisplayName
+                                                                                    : `...${propertyDisplayName.substring(
+                                                                                          propertyDisplayName.length -
+                                                                                              17
+                                                                                      )}`;
+                                                                        rows.push(
+                                                                            <Row
+                                                                                key={
+                                                                                    idx
+                                                                                }
+                                                                            >
+                                                                                <Cell className="col-3">
+                                                                                    <Balloon
+                                                                                        position={
+                                                                                            BalloonPosition.Left
+                                                                                        }
+                                                                                        tooltip={
+                                                                                            <Trans>
+                                                                                                {
+                                                                                                    propertyDisplayName
+                                                                                                }
+                                                                                            </Trans>
+                                                                                        }
+                                                                                    >
+                                                                                        {
+                                                                                            truncatedDisplayName
+                                                                                        }
+                                                                                    </Balloon>
+                                                                                </Cell>
+                                                                                <Cell className="col-15">
+                                                                                    {
+                                                                                        displayValue
+                                                                                    }
+                                                                                </Cell>
+                                                                            </Row>
+                                                                        );
+                                                                    }
+                                                                );
+                                                                return rows;
+                                                            }
+                                                        )}
+                                                    </GridBody>
+                                                </Grid>
+                                                <Grid className="device-properties-actions">
                                                     <Row>
-                                                        <Cell className="col-3">
+                                                        <Cell className="col-8">
                                                             {t(
-                                                                "devices.flyouts.details.diagnostics.lastMessage"
+                                                                "devices.flyouts.details.properties.copyAllProperties"
                                                             )}
                                                         </Cell>
-                                                        <Cell className="col-15">
-                                                            {lastMessageTime
-                                                                ? moment(
-                                                                      lastMessageTime
-                                                                  ).format(
-                                                                      DEFAULT_TIME_FORMAT
-                                                                  )
-                                                                : "---"}
-                                                        </Cell>
-                                                    </Row>
-                                                    <Row>
-                                                        <Cell className="col-3">
-                                                            {t(
-                                                                "devices.flyouts.details.diagnostics.message"
-                                                            )}
-                                                        </Cell>
-                                                        <Cell className="col-15">
+                                                        <Cell className="col-2">
                                                             <Btn
-                                                                className="raw-message-button"
+                                                                svg={svgs.copy}
                                                                 onClick={
                                                                     this
-                                                                        .toggleRawDiagnosticsMessage
+                                                                        .copyDevicePropertiesToClipboard
                                                                 }
                                                             >
                                                                 {t(
-                                                                    "devices.flyouts.details.diagnostics.showMessage"
+                                                                    "devices.flyouts.details.properties.copy"
                                                                 )}
                                                             </Btn>
                                                         </Cell>
                                                     </Row>
-                                                </ComponentArray>
-                                            )}
-                                            {this.state.showRawMessage && (
-                                                <Row>
-                                                    <pre>
-                                                        {JSON.stringify(
-                                                            lastMessage,
-                                                            null,
-                                                            2
-                                                        )}
-                                                    </pre>
-                                                </Row>
-                                            )}
-                                        </GridBody>
-                                    </Grid>
-                                </Section.Content>
-                            </Section.Container>
-
-                            <Section.Container>
-                                <Section.Header>
-                                    {t("devices.flyouts.details.modules.title")}
-                                </Section.Header>
-                                <Section.Content>
-                                    <SectionDesc>
-                                        {t(
-                                            "devices.flyouts.details.modules.description"
-                                        )}
-                                    </SectionDesc>
-                                    <div className="device-details-deployment-contentbox">
-                                        {!moduleQuerySuccessful &&
-                                            t(
-                                                "devices.flyouts.details.modules.noneExist"
-                                            )}
-                                        {moduleQuerySuccessful && (
-                                            <ComponentArray>
-                                                <div>
-                                                    {currentModuleStatus.code}:{" "}
-                                                    {getEdgeAgentStatusCode(
-                                                        currentModuleStatus.code,
-                                                        t
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    {
-                                                        currentModuleStatus.description
-                                                    }
-                                                </div>
+                                                </Grid>
                                             </ComponentArray>
                                         )}
-                                    </div>
-                                </Section.Content>
-                            </Section.Container>
-                            <Section.Container>
-                                <Section.Header>
-                                    {t(
-                                        "devices.flyouts.details.deviceUploads.title"
-                                    )}
-                                </Section.Header>
-                                <Section.Content>
-                                    <SectionDesc>
+                                    </Section.Content>
+                                </Section.Container>
+
+                                <Section.Container>
+                                    <Section.Header>
                                         {t(
-                                            "devices.flyouts.details.deviceUploads.description"
+                                            "devices.flyouts.details.diagnostics.title"
                                         )}
-                                    </SectionDesc>
-                                    <div className="device-details-deviceuploads-contentbox">
-                                        {deviceUploads.length === 0 &&
-                                            t(
-                                                "devices.flyouts.details.deviceUploads.noneExist"
+                                    </Section.Header>
+                                    <Section.Content>
+                                        <SectionDesc>
+                                            {t(
+                                                "devices.flyouts.details.diagnostics.description"
                                             )}
-                                        {deviceUploads.length > 0 && (
-                                            <Grid className="device-details-deviceuploads">
-                                                <GridHeader>
-                                                    <Row>
-                                                        <Cell className="col-7">
-                                                            {t(
-                                                                "devices.flyouts.details.deviceUploads.fileName"
-                                                            )}
-                                                        </Cell>
-                                                        <Cell className="col-3">
-                                                            {t(
-                                                                "devices.flyouts.details.deviceUploads.action"
-                                                            )}
-                                                        </Cell>
-                                                    </Row>
-                                                </GridHeader>
-                                                <GridBody>
-                                                    {deviceUploads.map(
-                                                        (upload, idx) => (
-                                                            <Row key={idx}>
-                                                                <Cell className="col-3">
-                                                                    <Balloon
-                                                                        position={
-                                                                            BalloonPosition.Left
-                                                                        }
-                                                                        tooltip={
-                                                                            <div>
-                                                                                <Grid className="device-details-deviceuploads-popup">
-                                                                                    <GridHeader>
-                                                                                        <Row>
-                                                                                            <Cell className="col-3">
-                                                                                                {t(
-                                                                                                    "devices.flyouts.details.deviceUploads.property"
-                                                                                                )}
-                                                                                            </Cell>
-                                                                                            <Cell className="col-6">
-                                                                                                {t(
-                                                                                                    "devices.flyouts.details.deviceUploads.value"
-                                                                                                )}
-                                                                                            </Cell>
-                                                                                        </Row>
-                                                                                    </GridHeader>
-                                                                                    <GridBody>
-                                                                                        <Row>
-                                                                                            <Cell className="col-3">
-                                                                                                Size
-                                                                                            </Cell>
-                                                                                            <Cell className="col-6">
-                                                                                                {upload.Size.toString()}
-                                                                                            </Cell>
-                                                                                        </Row>
-                                                                                        <Row>
-                                                                                            <Cell className="col-3">
-                                                                                                Uploaded
-                                                                                                On
-                                                                                            </Cell>
-                                                                                            <Cell className="col-6">
-                                                                                                {formatTime(
-                                                                                                    upload.UploadedOn
-                                                                                                )}
-                                                                                            </Cell>
-                                                                                        </Row>
-                                                                                        <Row>
-                                                                                            <Cell className="col-3">
-                                                                                                Uploaded
-                                                                                                By
-                                                                                            </Cell>
-                                                                                            <Cell className="col-6">
-                                                                                                {
-                                                                                                    upload.UploadedBy
-                                                                                                }
-                                                                                            </Cell>
-                                                                                        </Row>
-                                                                                    </GridBody>
-                                                                                </Grid>
-                                                                            </div>
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            upload.Name
-                                                                        }
-                                                                    </Balloon>
-                                                                </Cell>
-                                                                <Cell className="col-3">
-                                                                    <Btn
-                                                                        svg={
-                                                                            svgs.upload
-                                                                        }
-                                                                        className="download-deviceupload"
-                                                                        onClick={() =>
-                                                                            this.downloadFile(
-                                                                                upload.BlobName,
-                                                                                upload.Name
-                                                                            )
-                                                                        }
-                                                                    ></Btn>
-                                                                </Cell>
-                                                            </Row>
-                                                        )
-                                                    )}
-                                                </GridBody>
-                                            </Grid>
-                                        )}
-                                    </div>
-                                </Section.Content>
-                            </Section.Container>
-                            <Section.Container>
-                                <Section.Header>
-                                    {t(
-                                        "devices.flyouts.details.deviceDeployments.title"
-                                    )}
-                                </Section.Header>
-                                <Section.Content>
-                                    <SectionDesc>
-                                        {t(
-                                            "devices.flyouts.details.deviceDeployments.description"
-                                        )}
-                                    </SectionDesc>
-                                    <div className="device-details-deviceDeployments-contentbox">
-                                        {deviceDeployments.length === 0 &&
-                                            t(
-                                                "devices.flyouts.details.deviceDeployments.noneExist"
-                                            )}
-                                        {deviceDeployments.length > 0 && (
-                                            <Grid className="device-details-deviceDeployments">
-                                                <GridHeader>
-                                                    <Row>
-                                                        <Cell className="col-4">
-                                                            {t(
-                                                                "devices.flyouts.details.deviceDeployments.firmwareVersion"
-                                                            )}
-                                                        </Cell>
-                                                        <Cell className="col-4">
-                                                            {t(
-                                                                "devices.flyouts.details.deviceDeployments.startDate"
-                                                            )}
-                                                        </Cell>
-                                                        <Cell className="col-4">
-                                                            {t(
-                                                                "devices.flyouts.details.deviceDeployments.endDate"
-                                                            )}
-                                                        </Cell>
-                                                    </Row>
-                                                </GridHeader>
-                                                <GridBody>
-                                                    {deviceDeployments.map(
-                                                        (deployment, idx) => (
-                                                            <Row key={idx}>
-                                                                <Cell className="col-4">
-                                                                    {
-                                                                        deployment.firmwareVersion
+                                        </SectionDesc>
+
+                                        <Grid className="device-details-diagnostics">
+                                            <GridHeader>
+                                                <Row>
+                                                    <Cell className="col-3">
+                                                        {t(
+                                                            "devices.flyouts.details.diagnostics.keyHeader"
+                                                        )}
+                                                    </Cell>
+                                                    <Cell className="col-15">
+                                                        {t(
+                                                            "devices.flyouts.details.diagnostics.valueHeader"
+                                                        )}
+                                                    </Cell>
+                                                </Row>
+                                            </GridHeader>
+                                            <GridBody>
+                                                <Row>
+                                                    <Cell className="col-3">
+                                                        {t(
+                                                            "devices.flyouts.details.diagnostics.status"
+                                                        )}
+                                                    </Cell>
+                                                    <Cell className="col-15">
+                                                        {device.connected
+                                                            ? t(
+                                                                  "devices.flyouts.details.connected"
+                                                              )
+                                                            : t(
+                                                                  "devices.flyouts.details.notConnected"
+                                                              )}
+                                                    </Cell>
+                                                </Row>
+                                                {device.connected && (
+                                                    <ComponentArray>
+                                                        <Row>
+                                                            <Cell className="col-3">
+                                                                {t(
+                                                                    "devices.flyouts.details.diagnostics.lastMessage"
+                                                                )}
+                                                            </Cell>
+                                                            <Cell className="col-15">
+                                                                {lastMessageTime
+                                                                    ? moment(
+                                                                          lastMessageTime
+                                                                      ).format(
+                                                                          DEFAULT_TIME_FORMAT
+                                                                      )
+                                                                    : "---"}
+                                                            </Cell>
+                                                        </Row>
+                                                        <Row>
+                                                            <Cell className="col-3">
+                                                                {t(
+                                                                    "devices.flyouts.details.diagnostics.message"
+                                                                )}
+                                                            </Cell>
+                                                            <Cell className="col-15">
+                                                                <Btn
+                                                                    className="raw-message-button"
+                                                                    onClick={
+                                                                        this
+                                                                            .toggleRawDiagnosticsMessage
                                                                     }
-                                                                </Cell>
-                                                                <Cell className="col-4">
-                                                                    {formatTime(
-                                                                        deployment.startTime
+                                                                >
+                                                                    {t(
+                                                                        "devices.flyouts.details.diagnostics.showMessage"
                                                                     )}
-                                                                </Cell>
-                                                                <Cell className="col-4">
-                                                                    {formatTime(
-                                                                        deployment.endTime
-                                                                    )}
-                                                                </Cell>
-                                                            </Row>
-                                                        )
-                                                    )}
-                                                </GridBody>
-                                            </Grid>
+                                                                </Btn>
+                                                            </Cell>
+                                                        </Row>
+                                                    </ComponentArray>
+                                                )}
+                                                {this.state.showRawMessage && (
+                                                    <Row>
+                                                        <pre>
+                                                            {JSON.stringify(
+                                                                lastMessage,
+                                                                null,
+                                                                2
+                                                            )}
+                                                        </pre>
+                                                    </Row>
+                                                )}
+                                            </GridBody>
+                                        </Grid>
+                                    </Section.Content>
+                                </Section.Container>
+
+                                <Section.Container>
+                                    <Section.Header>
+                                        {t(
+                                            "devices.flyouts.details.modules.title"
                                         )}
-                                    </div>
-                                </Section.Content>
-                            </Section.Container>
-                        </div>
-                    )}
-                    <BtnToolbar>
-                        <Btn svg={svgs.cancelX} onClick={onClose}>
-                            {t("devices.flyouts.details.close")}
-                        </Btn>
-                    </BtnToolbar>
-                </div>
-            </Flyout.Container>
+                                    </Section.Header>
+                                    <Section.Content>
+                                        <SectionDesc>
+                                            {t(
+                                                "devices.flyouts.details.modules.description"
+                                            )}
+                                        </SectionDesc>
+                                        <div className="device-details-deployment-contentbox">
+                                            {!moduleQuerySuccessful &&
+                                                t(
+                                                    "devices.flyouts.details.modules.noneExist"
+                                                )}
+                                            {moduleQuerySuccessful && (
+                                                <ComponentArray>
+                                                    <div>
+                                                        {
+                                                            currentModuleStatus.code
+                                                        }
+                                                        :{" "}
+                                                        {getEdgeAgentStatusCode(
+                                                            currentModuleStatus.code,
+                                                            t
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        {
+                                                            currentModuleStatus.description
+                                                        }
+                                                    </div>
+                                                </ComponentArray>
+                                            )}
+                                        </div>
+                                    </Section.Content>
+                                </Section.Container>
+                                <Section.Container>
+                                    <Section.Header>
+                                        {t(
+                                            "devices.flyouts.details.deviceUploads.title"
+                                        )}
+                                    </Section.Header>
+                                    <Section.Content>
+                                        <SectionDesc>
+                                            {t(
+                                                "devices.flyouts.details.deviceUploads.description"
+                                            )}
+                                        </SectionDesc>
+                                        <div className="device-details-deviceuploads-contentbox">
+                                            {deviceUploads.length === 0 &&
+                                                t(
+                                                    "devices.flyouts.details.deviceUploads.noneExist"
+                                                )}
+                                            {deviceUploads.length > 0 && (
+                                                <Grid className="device-details-deviceuploads">
+                                                    <GridHeader>
+                                                        <Row>
+                                                            <Cell className="col-7">
+                                                                {t(
+                                                                    "devices.flyouts.details.deviceUploads.fileName"
+                                                                )}
+                                                            </Cell>
+                                                            <Cell className="col-3">
+                                                                {t(
+                                                                    "devices.flyouts.details.deviceUploads.action"
+                                                                )}
+                                                            </Cell>
+                                                        </Row>
+                                                    </GridHeader>
+                                                    <GridBody>
+                                                        {deviceUploads.map(
+                                                            (upload, idx) => (
+                                                                <Row key={idx}>
+                                                                    <Cell className="col-3">
+                                                                        <Balloon
+                                                                            position={
+                                                                                BalloonPosition.Left
+                                                                            }
+                                                                            tooltip={
+                                                                                <div>
+                                                                                    <Grid className="device-details-deviceuploads-popup">
+                                                                                        <GridHeader>
+                                                                                            <Row>
+                                                                                                <Cell className="col-3">
+                                                                                                    {t(
+                                                                                                        "devices.flyouts.details.deviceUploads.property"
+                                                                                                    )}
+                                                                                                </Cell>
+                                                                                                <Cell className="col-6">
+                                                                                                    {t(
+                                                                                                        "devices.flyouts.details.deviceUploads.value"
+                                                                                                    )}
+                                                                                                </Cell>
+                                                                                            </Row>
+                                                                                        </GridHeader>
+                                                                                        <GridBody>
+                                                                                            <Row>
+                                                                                                <Cell className="col-3">
+                                                                                                    Size
+                                                                                                </Cell>
+                                                                                                <Cell className="col-6">
+                                                                                                    {upload.Size.toString()}
+                                                                                                </Cell>
+                                                                                            </Row>
+                                                                                            <Row>
+                                                                                                <Cell className="col-3">
+                                                                                                    Uploaded
+                                                                                                    On
+                                                                                                </Cell>
+                                                                                                <Cell className="col-6">
+                                                                                                    {formatTime(
+                                                                                                        upload.UploadedOn
+                                                                                                    )}
+                                                                                                </Cell>
+                                                                                            </Row>
+                                                                                            <Row>
+                                                                                                <Cell className="col-3">
+                                                                                                    Uploaded
+                                                                                                    By
+                                                                                                </Cell>
+                                                                                                <Cell className="col-6">
+                                                                                                    {
+                                                                                                        upload.UploadedBy
+                                                                                                    }
+                                                                                                </Cell>
+                                                                                            </Row>
+                                                                                        </GridBody>
+                                                                                    </Grid>
+                                                                                </div>
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                upload.Name
+                                                                            }
+                                                                        </Balloon>
+                                                                    </Cell>
+                                                                    <Cell className="col-3">
+                                                                        <Btn
+                                                                            svg={
+                                                                                svgs.upload
+                                                                            }
+                                                                            className="download-deviceupload"
+                                                                            onClick={() =>
+                                                                                this.downloadFile(
+                                                                                    upload.BlobName,
+                                                                                    upload.Name
+                                                                                )
+                                                                            }
+                                                                        ></Btn>
+                                                                    </Cell>
+                                                                </Row>
+                                                            )
+                                                        )}
+                                                    </GridBody>
+                                                </Grid>
+                                            )}
+                                        </div>
+                                    </Section.Content>
+                                </Section.Container>
+                                <Section.Container>
+                                    <Section.Header>
+                                        {t(
+                                            "devices.flyouts.details.deviceDeployments.title"
+                                        )}
+                                    </Section.Header>
+                                    <Section.Content>
+                                        <SectionDesc>
+                                            {t(
+                                                "devices.flyouts.details.deviceDeployments.description"
+                                            )}
+                                        </SectionDesc>
+                                        <div className="device-details-deviceDeployments-contentbox">
+                                            {deviceDeployments.length === 0 &&
+                                                t(
+                                                    "devices.flyouts.details.deviceDeployments.noneExist"
+                                                )}
+                                            {deviceDeployments.length > 0 && (
+                                                <Grid className="device-details-deviceDeployments">
+                                                    <GridHeader>
+                                                        <Row>
+                                                            <Cell className="col-4">
+                                                                {t(
+                                                                    "devices.flyouts.details.deviceDeployments.firmwareVersion"
+                                                                )}
+                                                            </Cell>
+                                                            <Cell className="col-4">
+                                                                {t(
+                                                                    "devices.flyouts.details.deviceDeployments.startDate"
+                                                                )}
+                                                            </Cell>
+                                                            <Cell className="col-4">
+                                                                {t(
+                                                                    "devices.flyouts.details.deviceDeployments.endDate"
+                                                                )}
+                                                            </Cell>
+                                                        </Row>
+                                                    </GridHeader>
+                                                    <GridBody>
+                                                        {deviceDeployments.map(
+                                                            (
+                                                                deployment,
+                                                                idx
+                                                            ) => (
+                                                                <Row key={idx}>
+                                                                    <Cell className="col-4">
+                                                                        {
+                                                                            deployment.firmwareVersion
+                                                                        }
+                                                                    </Cell>
+                                                                    <Cell className="col-4">
+                                                                        {formatTime(
+                                                                            deployment.startTime
+                                                                        )}
+                                                                    </Cell>
+                                                                    <Cell className="col-4">
+                                                                        {formatTime(
+                                                                            deployment.endTime
+                                                                        )}
+                                                                    </Cell>
+                                                                </Row>
+                                                            )
+                                                        )}
+                                                    </GridBody>
+                                                </Grid>
+                                            )}
+                                        </div>
+                                    </Section.Content>
+                                </Section.Container>
+                            </div>
+                        )}
+                        <BtnToolbar>
+                            <Btn svg={svgs.cancelX} onClick={onClose}>
+                                {t("devices.flyouts.details.close")}
+                            </Btn>
+                        </BtnToolbar>
+                    </div>
+                </Flyout.Container>
+            </div>
         );
     }
 }

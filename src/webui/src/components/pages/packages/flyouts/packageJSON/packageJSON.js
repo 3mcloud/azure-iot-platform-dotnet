@@ -14,7 +14,9 @@ export class PackageJSON extends LinkedComponent {
             packageJson: {
                 jsObject: { jsonData },
             },
+            expandedValue: "no",
         };
+        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
     }
     onFlyoutClose = (eventName) => {
         this.props.onClose();
@@ -31,27 +33,42 @@ export class PackageJSON extends LinkedComponent {
         }
     }
 
+    handleDoubleClickItem() {
+        if (this.state.expandedValue === "no") {
+            this.setState({
+                expandedValue: "yes",
+            });
+        } else {
+            this.setState({
+                expandedValue: "no",
+            });
+        }
+    }
+
     render() {
         const { t, theme } = this.props;
         this.packageJsonLink = this.linkTo("packageJson");
 
         return (
-            <Flyout
-                header={t("packages.flyouts.packageJson.title")}
-                t={t}
-                onClose={() => this.onFlyoutClose("PackageJSON_CloseClick")}
-            >
-                <div className="new-package-content">
-                    <form className="new-package-form">
-                        <FormControl
-                            link={this.packageJsonLink}
-                            type="jsoninput"
-                            height="100%"
-                            theme={theme}
-                        />
-                    </form>
-                </div>
-            </Flyout>
+            <div onDoubleClick={this.handleDoubleClickItem}>
+                <Flyout
+                    header={t("packages.flyouts.packageJson.title")}
+                    t={t}
+                    onClose={() => this.onFlyoutClose("PackageJSON_CloseClick")}
+                    expanded={this.state.expandedValue}
+                >
+                    <div className="new-package-content">
+                        <form className="new-package-form">
+                            <FormControl
+                                link={this.packageJsonLink}
+                                type="jsoninput"
+                                height="100%"
+                                theme={theme}
+                            />
+                        </form>
+                    </div>
+                </Flyout>
+            </div>
         );
     }
 }

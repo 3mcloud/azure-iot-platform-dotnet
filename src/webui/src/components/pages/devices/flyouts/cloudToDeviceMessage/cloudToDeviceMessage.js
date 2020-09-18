@@ -42,11 +42,13 @@ export class CloudToDeviceMessage extends LinkedComponent {
                     message: "Message to send to device",
                 },
             },
+            expandedValue: "no",
         };
         this.jsonPayloadLink = this.linkTo("jsonPayload").check(
             (jsonPayloadObject) => !jsonPayloadObject.error,
             () => this.props.t("devices.flyouts.c2dMessage.validation.invalid")
         );
+        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
     }
 
     componentDidMount() {
@@ -136,6 +138,18 @@ export class CloudToDeviceMessage extends LinkedComponent {
         return t("devices.flyouts.c2dMessage.affected");
     }
 
+    handleDoubleClickItem() {
+        if (this.state.expandedValue === "no") {
+            this.setState({
+                expandedValue: "yes",
+            });
+        } else {
+            this.setState({
+                expandedValue: "no",
+            });
+        }
+    }
+
     render() {
         const { t, onClose, theme } = this.props,
             {
@@ -153,100 +167,105 @@ export class CloudToDeviceMessage extends LinkedComponent {
             summaryMessage = this.getSummaryMessage();
 
         return (
-            <Flyout
-                header={t("devices.flyouts.c2dMessage.title")}
-                t={t}
-                onClose={onClose}
-            >
-                <Protected permission={permissions.deleteDevices}>
-                    <form
-                        className="device-c2dMessage-container"
-                        onSubmit={this.sendCloudToDeviceMessage}
-                    >
-                        <div className="device-c2dMessage-header">
-                            {t("devices.flyouts.c2dMessage.header")}
-                        </div>
-                        <div className="device-c2dMessage-descr">
-                            {t("devices.flyouts.c2dMessage.description")}
-                        </div>
-                        <FormGroup>
-                            <br />
-                            <div className="help-message">
-                                {t(
-                                    "devices.flyouts.c2dMessage.jsonPayloadMessage"
-                                )}
+            <div onDoubleClick={this.handleDoubleClickItem}>
+                <Flyout
+                    header={t("devices.flyouts.c2dMessage.title")}
+                    t={t}
+                    onClose={onClose}
+                    expanded={this.state.expandedValue}
+                >
+                    <Protected permission={permissions.deleteDevices}>
+                        <form
+                            className="device-c2dMessage-container"
+                            onSubmit={this.sendCloudToDeviceMessage}
+                        >
+                            <div className="device-c2dMessage-header">
+                                {t("devices.flyouts.c2dMessage.header")}
                             </div>
-                            <FormControl
-                                link={this.jsonPayloadLink}
-                                type="jsoninput"
-                                height="200px"
-                                theme={theme}
-                            />
-                        </FormGroup>
-                        {containsSimulatedDevices && (
-                            <div className="simulated-device-selected">
-                                <Svg
-                                    path={svgs.infoBubble}
-                                    className="info-icon"
+                            <div className="device-c2dMessage-descr">
+                                {t("devices.flyouts.c2dMessage.description")}
+                            </div>
+                            <FormGroup>
+                                <br />
+                                <div className="help-message">
+                                    {t(
+                                        "devices.flyouts.c2dMessage.jsonPayloadMessage"
+                                    )}
+                                </div>
+                                <FormControl
+                                    link={this.jsonPayloadLink}
+                                    type="jsoninput"
+                                    height="200px"
+                                    theme={theme}
                                 />
-                                {t(
-                                    "devices.flyouts.c2dMessage.simulatedNotSupported"
-                                )}
-                            </div>
-                        )}
-
-                        <SummarySection>
-                            <SectionHeader>
-                                {t("devices.flyouts.c2dMessage.summaryHeader")}
-                            </SectionHeader>
-                            <SummaryBody>
-                                <SummaryCount>{summaryCount}</SummaryCount>
-                                <SectionDesc>{summaryMessage}</SectionDesc>
-                                {this.state.isPending && <Indicator />}
-                                {completedSuccessfully && (
+                            </FormGroup>
+                            {containsSimulatedDevices && (
+                                <div className="simulated-device-selected">
                                     <Svg
-                                        className="summary-icon"
-                                        path={svgs.apply}
+                                        path={svgs.infoBubble}
+                                        className="info-icon"
                                     />
-                                )}
-                            </SummaryBody>
-                        </SummarySection>
+                                    {t(
+                                        "devices.flyouts.c2dMessage.simulatedNotSupported"
+                                    )}
+                                </div>
+                            )}
 
-                        {error && (
-                            <AjaxError
-                                className="device-c2dMessage-error"
-                                t={t}
-                                error={error}
-                            />
-                        )}
-                        {!changesApplied && (
-                            <BtnToolbar>
-                                <Btn
-                                    svg={svgs.trash}
-                                    primary={true}
-                                    disabled={
-                                        isPending ||
-                                        physicalDevices.length === 0
-                                    }
-                                    type="submit"
-                                >
-                                    {t("devices.flyouts.c2dMessage.apply")}
-                                </Btn>
-                                <Btn svg={svgs.cancelX} onClick={onClose}>
-                                    {t("devices.flyouts.c2dMessage.cancel")}
-                                </Btn>
-                            </BtnToolbar>
-                        )}
-                        {!!changesApplied && (
-                            <BtnToolbar>
-                                <Btn svg={svgs.cancelX} onClick={onClose}>
-                                    {t("devices.flyouts.c2dMessage.close")}
-                                </Btn>
-                            </BtnToolbar>
-                        )}
-                    </form>
-                </Protected>
-            </Flyout>
+                            <SummarySection>
+                                <SectionHeader>
+                                    {t(
+                                        "devices.flyouts.c2dMessage.summaryHeader"
+                                    )}
+                                </SectionHeader>
+                                <SummaryBody>
+                                    <SummaryCount>{summaryCount}</SummaryCount>
+                                    <SectionDesc>{summaryMessage}</SectionDesc>
+                                    {this.state.isPending && <Indicator />}
+                                    {completedSuccessfully && (
+                                        <Svg
+                                            className="summary-icon"
+                                            path={svgs.apply}
+                                        />
+                                    )}
+                                </SummaryBody>
+                            </SummarySection>
+
+                            {error && (
+                                <AjaxError
+                                    className="device-c2dMessage-error"
+                                    t={t}
+                                    error={error}
+                                />
+                            )}
+                            {!changesApplied && (
+                                <BtnToolbar>
+                                    <Btn
+                                        svg={svgs.trash}
+                                        primary={true}
+                                        disabled={
+                                            isPending ||
+                                            physicalDevices.length === 0
+                                        }
+                                        type="submit"
+                                    >
+                                        {t("devices.flyouts.c2dMessage.apply")}
+                                    </Btn>
+                                    <Btn svg={svgs.cancelX} onClick={onClose}>
+                                        {t("devices.flyouts.c2dMessage.cancel")}
+                                    </Btn>
+                                </BtnToolbar>
+                            )}
+                            {!!changesApplied && (
+                                <BtnToolbar>
+                                    <Btn svg={svgs.cancelX} onClick={onClose}>
+                                        {t("devices.flyouts.c2dMessage.close")}
+                                    </Btn>
+                                </BtnToolbar>
+                            )}
+                        </form>
+                    </Protected>
+                </Flyout>
+            </div>
         );
     }
 }

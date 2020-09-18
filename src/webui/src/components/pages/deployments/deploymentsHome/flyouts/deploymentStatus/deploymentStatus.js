@@ -25,10 +25,12 @@ export class DeploymentStatus extends LinkedComponent {
             isActive: false,
             haschanged: false,
             changesApplied: false,
+            expandedValue: "no",
         };
         this.activateOrInactivateDeployment = this.activateOrInactivateDeployment.bind(
             this
         );
+        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
     }
 
     genericCloseClick = (eventName) => {
@@ -91,113 +93,137 @@ export class DeploymentStatus extends LinkedComponent {
         this.props.fetchDeployments();
     }
 
+    handleDoubleClickItem() {
+        if (this.state.expandedValue === "no") {
+            this.setState({
+                expandedValue: "yes",
+            });
+        } else {
+            this.setState({
+                expandedValue: "no",
+            });
+        }
+    }
+
     render() {
         const { t } = this.props;
         const { changesApplied } = this.state;
         return (
-            <Flyout
-                header={t("deployments.flyouts.status.title")}
-                t={t}
-                onClose={() =>
-                    this.genericCloseClick("DeploymentStatus_CloseClick")
-                }
-            >
-                <div className="new-deployment-content">
-                    <form className="new-deployment-form" onSubmit={this.apply}>
-                        <div>
-                            {t(
-                                "deployments.flyouts.status.deploymentLimitText"
-                            )}
-                        </div>
-                        <br />
-                        <h3>{this.props.selectedDeployment.name}</h3>
-                        <br />
-                        <Toggle
-                            className="simulation-toggle-button"
-                            name={t("this.props.selectedDeployment.name")}
-                            attr={{
-                                button: {
-                                    "aria-label": t(
-                                        "settingsFlyout.simulationToggle"
-                                    ),
-                                    type: "button",
-                                },
-                            }}
-                            on={this.state.isActive}
-                            onLabel={t("deployments.flyouts.status.active")}
-                            offLabel={t("deployments.flyouts.status.inActive")}
-                            onChange={this.onDeploymentStatusChange}
-                        />
-                        <br />
-                        <br />
-                        <div>
-                            <h3>
+            <div onDoubleClick={this.handleDoubleClickItem}>
+                <Flyout
+                    header={t("deployments.flyouts.status.title")}
+                    t={t}
+                    onClose={() =>
+                        this.genericCloseClick("DeploymentStatus_CloseClick")
+                    }
+                    expanded={this.state.expandedValue}
+                >
+                    <div className="new-deployment-content">
+                        <form
+                            className="new-deployment-form"
+                            onSubmit={this.apply}
+                        >
+                            <div>
                                 {t(
-                                    "deployments.flyouts.status.relatedDeployment.title"
+                                    "deployments.flyouts.status.deploymentLimitText"
                                 )}
-                            </h3>
-                        </div>
-                        <div>
-                            {this.props.relatedDeployments.length === 0 && (
-                                <div>
+                            </div>
+                            <br />
+                            <h3>{this.props.selectedDeployment.name}</h3>
+                            <br />
+                            <Toggle
+                                className="simulation-toggle-button"
+                                name={t("this.props.selectedDeployment.name")}
+                                attr={{
+                                    button: {
+                                        "aria-label": t(
+                                            "settingsFlyout.simulationToggle"
+                                        ),
+                                        type: "button",
+                                    },
+                                }}
+                                on={this.state.isActive}
+                                onLabel={t("deployments.flyouts.status.active")}
+                                offLabel={t(
+                                    "deployments.flyouts.status.inActive"
+                                )}
+                                onChange={this.onDeploymentStatusChange}
+                            />
+                            <br />
+                            <br />
+                            <div>
+                                <h3>
                                     {t(
-                                        "deployments.flyouts.status.relatedDeployment.noRelatedDeploymentText"
+                                        "deployments.flyouts.status.relatedDeployment.title"
                                     )}
-                                </div>
-                            )}
-                            <ul>
-                                {this.props.relatedDeployments.map(
-                                    (deployment) => {
-                                        return (
-                                            <li key={deployment.id}>
-                                                {deployment.name}
-                                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                                {formatDate(
-                                                    deployment.createdDateTimeUtc
-                                                )}{" "}
-                                                &nbsp;-&nbsp;
-                                                {formatDate(
-                                                    deployment.modifiedDate
-                                                )}
-                                                <br />
-                                            </li>
-                                        );
-                                    }
+                                </h3>
+                            </div>
+                            <div>
+                                {this.props.relatedDeployments.length === 0 && (
+                                    <div>
+                                        {t(
+                                            "deployments.flyouts.status.relatedDeployment.noRelatedDeploymentText"
+                                        )}
+                                    </div>
                                 )}
-                            </ul>
-                        </div>
-                        {!!changesApplied && (
-                            <ComponentArray>
-                                <Indicator />
-                                {t("deployments.flyouts.status.updating")}
-                            </ComponentArray>
-                        )}
-                        <div>
-                            <BtnToolbar>
-                                <Btn
-                                    primary={true}
-                                    type="submit"
-                                    disabled={!this.state.haschanged}
-                                >
-                                    {t("deployments.flyouts.status.apply")}
-                                </Btn>
-                                <Btn
-                                    svg={svgs.cancelX}
-                                    onClick={() =>
-                                        this.genericCloseClick(
-                                            "DeploymentStatus_CloseClick"
-                                        )
-                                    }
-                                >
-                                    {this.state.hasChanged
-                                        ? t("deployments.flyouts.status.cancel")
-                                        : t("deployments.flyouts.status.close")}
-                                </Btn>
-                            </BtnToolbar>
-                        </div>
-                    </form>
-                </div>
-            </Flyout>
+                                <ul>
+                                    {this.props.relatedDeployments.map(
+                                        (deployment) => {
+                                            return (
+                                                <li key={deployment.id}>
+                                                    {deployment.name}
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    {formatDate(
+                                                        deployment.createdDateTimeUtc
+                                                    )}{" "}
+                                                    &nbsp;-&nbsp;
+                                                    {formatDate(
+                                                        deployment.modifiedDate
+                                                    )}
+                                                    <br />
+                                                </li>
+                                            );
+                                        }
+                                    )}
+                                </ul>
+                            </div>
+                            {!!changesApplied && (
+                                <ComponentArray>
+                                    <Indicator />
+                                    {t("deployments.flyouts.status.updating")}
+                                </ComponentArray>
+                            )}
+                            <div>
+                                <BtnToolbar>
+                                    <Btn
+                                        primary={true}
+                                        type="submit"
+                                        disabled={!this.state.haschanged}
+                                    >
+                                        {t("deployments.flyouts.status.apply")}
+                                    </Btn>
+                                    <Btn
+                                        svg={svgs.cancelX}
+                                        onClick={() =>
+                                            this.genericCloseClick(
+                                                "DeploymentStatus_CloseClick"
+                                            )
+                                        }
+                                    >
+                                        {this.state.hasChanged
+                                            ? t(
+                                                  "deployments.flyouts.status.cancel"
+                                              )
+                                            : t(
+                                                  "deployments.flyouts.status.close"
+                                              )}
+                                    </Btn>
+                                </BtnToolbar>
+                            </div>
+                        </form>
+                    </div>
+                </Flyout>
+            </div>
         );
     }
 }

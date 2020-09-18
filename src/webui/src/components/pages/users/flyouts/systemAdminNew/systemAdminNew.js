@@ -34,6 +34,7 @@ export class SystemAdminNew extends LinkedComponent {
                 userId: "",
                 name: "",
             },
+            expandedValue: "no",
         };
 
         // Linked components
@@ -47,6 +48,7 @@ export class SystemAdminNew extends LinkedComponent {
             );
         this.onSystemAdminSelected = this.onSystemAdminSelected.bind(this);
         this.addSystemAdmin = this.addSystemAdmin.bind(this);
+        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
     }
 
     componentWillUnmount() {
@@ -131,6 +133,18 @@ export class SystemAdminNew extends LinkedComponent {
         return t("users.flyouts.new.affected");
     }
 
+    handleDoubleClickItem() {
+        if (this.state.expandedValue === "no") {
+            this.setState({
+                expandedValue: "yes",
+            });
+        } else {
+            this.setState({
+                expandedValue: "no",
+            });
+        }
+    }
+
     render() {
         const { t, allNonSystemAdmins } = this.props,
             { error, changesApplied } = this.state,
@@ -143,98 +157,107 @@ export class SystemAdminNew extends LinkedComponent {
               }))
             : [];
         return (
-            <Flyout
-                header={t("users.flyouts.new.systemAdmin.title")}
-                t={t}
-                onClose={() => this.onFlyoutClose("Users_TopXCloseClick")}
-            >
-                <form
-                    className="users-new-container"
-                    onSubmit={this.addSystemAdmin}
+            <div onDoubleClick={this.handleDoubleClickItem}>
+                <Flyout
+                    header={t("users.flyouts.new.systemAdmin.title")}
+                    t={t}
+                    onClose={() => this.onFlyoutClose("Users_TopXCloseClick")}
+                    expanded={this.state.expandedValue}
                 >
-                    {!changesApplied && (
-                        <div className="users-new-content">
-                            <FormGroup>
-                                <FormLabel>
-                                    {t("users.flyouts.new.systemAdmin.label")}
-                                </FormLabel>
+                    <form
+                        className="users-new-container"
+                        onSubmit={this.addSystemAdmin}
+                    >
+                        {!changesApplied && (
+                            <div className="users-new-content">
+                                <FormGroup>
+                                    <FormLabel>
+                                        {t(
+                                            "users.flyouts.new.systemAdmin.label"
+                                        )}
+                                    </FormLabel>
 
-                                <FormControl
-                                    name="userId"
-                                    link={this.systemAdminLink}
-                                    ariaLabel={t(
-                                        "users.flyouts.new.systemAdmin.label"
-                                    )}
-                                    type="select"
-                                    options={systemAdminOptions}
-                                    placeholder={t(
-                                        "users.flyouts.new.systemAdmin.hint"
-                                    )}
-                                    onChange={(e) =>
-                                        this.onSystemAdminSelected(e)
-                                    }
-                                />
-                            </FormGroup>
-                        </div>
-                    )}
+                                    <FormControl
+                                        name="userId"
+                                        link={this.systemAdminLink}
+                                        ariaLabel={t(
+                                            "users.flyouts.new.systemAdmin.label"
+                                        )}
+                                        type="select"
+                                        options={systemAdminOptions}
+                                        placeholder={t(
+                                            "users.flyouts.new.systemAdmin.hint"
+                                        )}
+                                        onChange={(e) =>
+                                            this.onSystemAdminSelected(e)
+                                        }
+                                    />
+                                </FormGroup>
+                            </div>
+                        )}
 
-                    {error && (
-                        <AjaxError
-                            className="users-new-error"
-                            t={t}
-                            error={error}
-                        />
-                    )}
-                    {!changesApplied && (
-                        <BtnToolbar>
-                            <Btn
-                                primary={true}
-                                disabled={!this.formIsValid()}
-                                type="submit"
-                            >
-                                {t("users.flyouts.new.systemAdmin.add")}
-                            </Btn>
-                            <Btn
-                                svg={svgs.cancelX}
-                                onClick={() =>
-                                    this.onFlyoutClose("Users_CancelClick")
-                                }
-                            >
-                                {t("users.flyouts.new.cancel")}
-                            </Btn>
-                        </BtnToolbar>
-                    )}
-                    {!!changesApplied && (
-                        <>
-                            <SummarySection>
-                                <SectionHeader>
-                                    {t("users.flyouts.new.summaryHeader")}
-                                </SectionHeader>
-                                <SummaryBody>
-                                    <SectionDesc>{summaryMessage}</SectionDesc>
-                                    {this.state.isPending && <Indicator />}
-                                    {completedSuccessfully && (
-                                        <Svg
-                                            className="summary-icon"
-                                            path={svgs.apply}
-                                        />
-                                    )}
-                                </SummaryBody>
-                            </SummarySection>
+                        {error && (
+                            <AjaxError
+                                className="users-new-error"
+                                t={t}
+                                error={error}
+                            />
+                        )}
+                        {!changesApplied && (
                             <BtnToolbar>
+                                <Btn
+                                    primary={true}
+                                    disabled={!this.formIsValid()}
+                                    type="submit"
+                                >
+                                    {t("users.flyouts.new.systemAdmin.add")}
+                                </Btn>
                                 <Btn
                                     svg={svgs.cancelX}
                                     onClick={() =>
-                                        this.onFlyoutClose("Users_CloseClick")
+                                        this.onFlyoutClose("Users_CancelClick")
                                     }
                                 >
-                                    {t("users.flyouts.new.close")}
+                                    {t("users.flyouts.new.cancel")}
                                 </Btn>
                             </BtnToolbar>
-                        </>
-                    )}
-                </form>
-            </Flyout>
+                        )}
+                        {!!changesApplied && (
+                            <>
+                                <SummarySection>
+                                    <SectionHeader>
+                                        {t("users.flyouts.new.summaryHeader")}
+                                    </SectionHeader>
+                                    <SummaryBody>
+                                        <SectionDesc>
+                                            {summaryMessage}
+                                        </SectionDesc>
+                                        {this.state.isPending && <Indicator />}
+                                        {completedSuccessfully && (
+                                            <Svg
+                                                className="summary-icon"
+                                                path={svgs.apply}
+                                            />
+                                        )}
+                                    </SummaryBody>
+                                </SummarySection>
+                                <BtnToolbar>
+                                    <Btn
+                                        svg={svgs.cancelX}
+                                        onClick={() =>
+                                            this.onFlyoutClose(
+                                                "Users_CloseClick"
+                                            )
+                                        }
+                                    >
+                                        {t("users.flyouts.new.close")}
+                                    </Btn>
+                                </BtnToolbar>
+                            </>
+                        )}
+                    </form>
+                </Flyout>
+            </div>
         );
     }
 }

@@ -22,7 +22,9 @@ export class RuleDetailsFlyout extends Component {
         // Set the initial state
         this.state = {
             isEditable: false,
+            expandedValue: "no",
         };
+        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -44,59 +46,74 @@ export class RuleDetailsFlyout extends Component {
         this.setState({ isEditable: true });
     };
 
+    handleDoubleClickItem() {
+        if (this.state.expandedValue === "no") {
+            this.setState({
+                expandedValue: "yes",
+            });
+        } else {
+            this.setState({
+                expandedValue: "no",
+            });
+        }
+    }
+
     render() {
         const { t, onClose, ruleId } = this.props,
             { isEditable } = this.state;
 
         return (
-            <Flyout.Container
-                header={
-                    isEditable
-                        ? t("rules.flyouts.editRule")
-                        : t("rules.flyouts.viewRule")
-                }
-                t={t}
-                onClose={this.onTopXClose}
-            >
-                <div className="rule-details">
-                    {!isEditable ? (
-                        <ComponentArray>
-                            <RuleViewerContainer
-                                onClose={onClose}
-                                ruleId={ruleId}
-                            />
-                            <Protected permission={permissions.updateRules}>
-                                <Btn
-                                    className="edit-mode-btn"
-                                    svg={svgs.edit}
-                                    onClick={this.goToEditMode}
-                                >
-                                    {t("rules.flyouts.edit")}
-                                </Btn>
+            <div onDoubleClick={this.handleDoubleClickItem}>
+                <Flyout.Container
+                    header={
+                        isEditable
+                            ? t("rules.flyouts.editRule")
+                            : t("rules.flyouts.viewRule")
+                    }
+                    t={t}
+                    onClose={this.onTopXClose}
+                    expanded={this.state.expandedValue}
+                >
+                    <div className="rule-details">
+                        {!isEditable ? (
+                            <ComponentArray>
+                                <RuleViewerContainer
+                                    onClose={onClose}
+                                    ruleId={ruleId}
+                                />
+                                <Protected permission={permissions.updateRules}>
+                                    <Btn
+                                        className="edit-mode-btn"
+                                        svg={svgs.edit}
+                                        onClick={this.goToEditMode}
+                                    >
+                                        {t("rules.flyouts.edit")}
+                                    </Btn>
+                                </Protected>
+                            </ComponentArray>
+                        ) : (
+                            <Protected
+                                id="rule-details-edit"
+                                permission={permissions.updateRules}
+                            >
+                                {(hasPermission, permission) =>
+                                    hasPermission ? (
+                                        <RuleEditorContainer
+                                            onClose={onClose}
+                                            ruleId={ruleId}
+                                        />
+                                    ) : (
+                                        <ProtectedError
+                                            t={t}
+                                            permission={permission}
+                                        />
+                                    )
+                                }
                             </Protected>
-                        </ComponentArray>
-                    ) : (
-                        <Protected
-                            id="rule-details-edit"
-                            permission={permissions.updateRules}
-                        >
-                            {(hasPermission, permission) =>
-                                hasPermission ? (
-                                    <RuleEditorContainer
-                                        onClose={onClose}
-                                        ruleId={ruleId}
-                                    />
-                                ) : (
-                                    <ProtectedError
-                                        t={t}
-                                        permission={permission}
-                                    />
-                                )
-                            }
-                        </Protected>
-                    )}
-                </div>
-            </Flyout.Container>
+                        )}
+                    </div>
+                </Flyout.Container>
+            </div>
         );
     }
 }

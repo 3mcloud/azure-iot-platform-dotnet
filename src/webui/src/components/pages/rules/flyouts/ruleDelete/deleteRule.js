@@ -23,7 +23,9 @@ export class DeleteRule extends Component {
             changesApplied: undefined,
             confirmed: false,
             ruleDeleted: undefined,
+            expandedValue: "no",
         };
+        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
     }
 
     componentDidMount() {
@@ -107,46 +109,63 @@ export class DeleteRule extends Component {
         });
     };
 
+    handleDoubleClickItem() {
+        if (this.state.expandedValue === "no") {
+            this.setState({
+                expandedValue: "yes",
+            });
+        } else {
+            this.setState({
+                expandedValue: "no",
+            });
+        }
+    }
+
     render() {
         const { onClose, t } = this.props,
             { isPending, error, changesApplied, rule } = this.state,
             completedSuccessfully = changesApplied && !error;
 
         return (
-            <Flyout.Container
-                header={t("rules.flyouts.deleteRule.title")}
-                t={t}
-                onClose={onClose}
-            >
-                <Protected permission={permissions.deleteRules}>
-                    <form
-                        onSubmit={this.deleteRule}
-                        className="delete-rule-flyout-container"
-                    >
-                        {rule && (
-                            <RuleSummary
-                                rule={rule}
-                                isPending={isPending}
-                                completedSuccessfully={completedSuccessfully}
-                                t={t}
-                                includeSummaryStatus={true}
-                                className="rule-details"
-                            />
-                        )}
-                        {error && (
-                            <AjaxError
-                                className="rule-delete-error"
-                                t={t}
-                                error={error}
-                            />
-                        )}
-                        {!error &&
-                            (changesApplied
-                                ? this.renderConfirmation()
-                                : this.renderButtons())}
-                    </form>
-                </Protected>
-            </Flyout.Container>
+            <div onDoubleClick={this.handleDoubleClickItem}>
+                <Flyout.Container
+                    header={t("rules.flyouts.deleteRule.title")}
+                    t={t}
+                    onClose={onClose}
+                    expanded={this.state.expandedValue}
+                >
+                    <Protected permission={permissions.deleteRules}>
+                        <form
+                            onSubmit={this.deleteRule}
+                            className="delete-rule-flyout-container"
+                        >
+                            {rule && (
+                                <RuleSummary
+                                    rule={rule}
+                                    isPending={isPending}
+                                    completedSuccessfully={
+                                        completedSuccessfully
+                                    }
+                                    t={t}
+                                    includeSummaryStatus={true}
+                                    className="rule-details"
+                                />
+                            )}
+                            {error && (
+                                <AjaxError
+                                    className="rule-delete-error"
+                                    t={t}
+                                    error={error}
+                                />
+                            )}
+                            {!error &&
+                                (changesApplied
+                                    ? this.renderConfirmation()
+                                    : this.renderButtons())}
+                        </form>
+                    </Protected>
+                </Flyout.Container>
+            </div>
         );
     }
 
