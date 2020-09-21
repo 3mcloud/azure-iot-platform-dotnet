@@ -22,7 +22,7 @@ export class RuleDetailsFlyout extends Component {
         // Set the initial state
         this.state = {
             isEditable: false,
-            expandedValue: "no",
+            expandedValue: false,
         };
         this.expandFlyout = this.expandFlyout.bind(this);
     }
@@ -47,13 +47,13 @@ export class RuleDetailsFlyout extends Component {
     };
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -72,18 +72,10 @@ export class RuleDetailsFlyout extends Component {
                 t={t}
                 onClose={this.onTopXClose}
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <div className="rule-details">
                     {!isEditable ? (
                         <ComponentArray>

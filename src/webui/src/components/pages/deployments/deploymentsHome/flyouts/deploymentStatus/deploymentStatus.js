@@ -25,7 +25,7 @@ export class DeploymentStatus extends LinkedComponent {
             isActive: false,
             haschanged: false,
             changesApplied: false,
-            expandedValue: "no",
+            expandedValue: false,
         };
         this.activateOrInactivateDeployment = this.activateOrInactivateDeployment.bind(
             this
@@ -94,13 +94,13 @@ export class DeploymentStatus extends LinkedComponent {
     }
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -116,18 +116,10 @@ export class DeploymentStatus extends LinkedComponent {
                     this.genericCloseClick("DeploymentStatus_CloseClick")
                 }
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <div className="new-deployment-content">
                     <form className="new-deployment-form" onSubmit={this.apply}>
                         <div>

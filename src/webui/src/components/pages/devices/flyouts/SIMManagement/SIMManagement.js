@@ -30,7 +30,7 @@ export class SIMManagement extends LinkedComponent {
         this.state = {
             provider: "",
             isPending: false,
-            expandedValue: "no",
+            expandedValue: false,
         };
 
         this.providerLink = this.linkTo("provider").map(({ value }) => value);
@@ -40,13 +40,13 @@ export class SIMManagement extends LinkedComponent {
     showProvider = () => this.setState({ isPending: true });
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -65,18 +65,10 @@ export class SIMManagement extends LinkedComponent {
                 t={t}
                 onClose={onClose}
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <div className="sim-management-container">
                     <Protected permission={permissions.updateSIMManagement}>
                         <div className="sim-management-selector">

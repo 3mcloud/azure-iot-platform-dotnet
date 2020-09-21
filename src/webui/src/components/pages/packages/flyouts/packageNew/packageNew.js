@@ -71,7 +71,7 @@ export class PackageNew extends LinkedComponent {
                 jsObject: {},
             },
             firmwareTemplateVersionField: "",
-            expandedValue: "no",
+            expandedValue: false,
         };
         this.expandFlyout = this.expandFlyout.bind(this);
     }
@@ -417,13 +417,13 @@ export class PackageNew extends LinkedComponent {
     };
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -540,18 +540,10 @@ export class PackageNew extends LinkedComponent {
                 t={t}
                 onClose={() => this.genericCloseClick("NewPackage_CloseClick")}
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <div className="new-package-content">
                     <form className="new-package-form" onSubmit={this.apply}>
                         <div className="new-package-header">

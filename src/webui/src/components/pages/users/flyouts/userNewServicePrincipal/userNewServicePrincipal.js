@@ -59,7 +59,7 @@ export class UserNewServicePrincipal extends LinkedComponent {
                 role: "",
             },
             provisionedUser: {},
-            expandedValue: "no",
+            expandedValue: false,
         };
 
         // Linked components
@@ -168,13 +168,13 @@ export class UserNewServicePrincipal extends LinkedComponent {
     }
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -191,18 +191,10 @@ export class UserNewServicePrincipal extends LinkedComponent {
                 t={t}
                 onClose={() => this.onFlyoutClose("Users_TopXCloseClick")}
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <Protected permission={permissions.inviteUsers}>
                     <form
                         className="users-new-container"

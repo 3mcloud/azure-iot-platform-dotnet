@@ -23,7 +23,7 @@ export class DeleteRule extends Component {
             changesApplied: undefined,
             confirmed: false,
             ruleDeleted: undefined,
-            expandedValue: "no",
+            expandedValue: false,
         };
         this.expandFlyout = this.expandFlyout.bind(this);
     }
@@ -110,13 +110,13 @@ export class DeleteRule extends Component {
     };
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -132,18 +132,10 @@ export class DeleteRule extends Component {
                 t={t}
                 onClose={onClose}
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <Protected permission={permissions.deleteRules}>
                     <form
                         onSubmit={this.deleteRule}

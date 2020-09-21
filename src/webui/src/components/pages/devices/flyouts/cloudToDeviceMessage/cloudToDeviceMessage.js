@@ -42,7 +42,7 @@ export class CloudToDeviceMessage extends LinkedComponent {
                     message: "Message to send to device",
                 },
             },
-            expandedValue: "no",
+            expandedValue: false,
         };
         this.jsonPayloadLink = this.linkTo("jsonPayload").check(
             (jsonPayloadObject) => !jsonPayloadObject.error,
@@ -139,13 +139,13 @@ export class CloudToDeviceMessage extends LinkedComponent {
     }
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -172,18 +172,10 @@ export class CloudToDeviceMessage extends LinkedComponent {
                 t={t}
                 onClose={onClose}
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <Protected permission={permissions.deleteDevices}>
                     <form
                         className="device-c2dMessage-container"

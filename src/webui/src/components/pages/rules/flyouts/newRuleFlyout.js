@@ -2,17 +2,16 @@
 
 import React, { Component } from "react";
 import { permissions, toDiagnosticsModel } from "services/models";
-import { Protected, Btn } from "components/shared";
+import { Protected } from "components/shared";
 import { RuleEditorContainer } from "./ruleEditor";
 import Flyout from "components/shared/flyout";
-import { svgs } from "utilities";
 
 export class NewRuleFlyout extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            expandedValue: "no",
+            expandedValue: false,
         };
         this.expandFlyout = this.expandFlyout.bind(this);
     }
@@ -24,13 +23,13 @@ export class NewRuleFlyout extends Component {
     };
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -43,18 +42,10 @@ export class NewRuleFlyout extends Component {
                 t={t}
                 onClose={this.onTopXClose}
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <Protected permission={permissions.createRules}>
                     <RuleEditorContainer onClose={onClose} />
                 </Protected>

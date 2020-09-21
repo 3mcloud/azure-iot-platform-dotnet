@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 import React from "react";
-import { LinkedComponent, svgs } from "utilities";
-import { Flyout, FormControl, Btn } from "components/shared";
+import { LinkedComponent } from "utilities";
+import { Flyout, FormControl } from "components/shared";
 
 import "../packageNew/packageNew.scss";
 
@@ -14,7 +14,7 @@ export class PackageJSON extends LinkedComponent {
             packageJson: {
                 jsObject: { jsonData },
             },
-            expandedValue: "no",
+            expandedValue: false,
         };
         this.expandFlyout = this.expandFlyout.bind(this);
     }
@@ -34,13 +34,13 @@ export class PackageJSON extends LinkedComponent {
     }
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -55,18 +55,10 @@ export class PackageJSON extends LinkedComponent {
                 t={t}
                 onClose={() => this.onFlyoutClose("PackageJSON_CloseClick")}
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <div className="new-package-content">
                     <form className="new-package-form">
                         <FormControl

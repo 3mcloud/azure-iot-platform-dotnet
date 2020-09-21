@@ -69,7 +69,7 @@ export class Settings extends LinkedComponent {
             firmwareJson: emptyFirmwareJson,
             firmwareSettingPending: false,
             firmwareSettingError: "",
-            expandedValue: "no",
+            expandedValue: false,
         };
 
         const { t } = this.props;
@@ -431,13 +431,13 @@ export class Settings extends LinkedComponent {
     };
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -504,18 +504,10 @@ export class Settings extends LinkedComponent {
                     "Settings_TopXClose_Click"
                 )}
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <form onSubmit={this.apply}>
                     <div className="settings-workflow-container">
                         <Section.Container collapsable={false}>

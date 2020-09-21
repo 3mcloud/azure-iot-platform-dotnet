@@ -34,7 +34,7 @@ export class SystemAdminNew extends LinkedComponent {
                 userId: "",
                 name: "",
             },
-            expandedValue: "no",
+            expandedValue: false,
         };
 
         // Linked components
@@ -134,13 +134,13 @@ export class SystemAdminNew extends LinkedComponent {
     }
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -162,18 +162,10 @@ export class SystemAdminNew extends LinkedComponent {
                 t={t}
                 onClose={() => this.onFlyoutClose("Users_TopXCloseClick")}
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <form
                     className="users-new-container"
                     onSubmit={this.addSystemAdmin}

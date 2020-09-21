@@ -26,7 +26,7 @@ export class ManageDeviceGroups extends LinkedComponent {
             selectedDeviceGroup: undefined,
             filterOptions: [],
             filtersError: undefined,
-            expandedValue: "no",
+            expandedValue: false,
         };
         this.expandFlyout = this.expandFlyout.bind(this);
     }
@@ -71,13 +71,13 @@ export class ManageDeviceGroups extends LinkedComponent {
     };
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -94,18 +94,10 @@ export class ManageDeviceGroups extends LinkedComponent {
                 t={t}
                 onClose={this.onCloseFlyout}
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <div className="manage-filters-flyout-container">
                     {this.state.addNewDeviceGroup ||
                     !!this.state.selectedDeviceGroup ? (

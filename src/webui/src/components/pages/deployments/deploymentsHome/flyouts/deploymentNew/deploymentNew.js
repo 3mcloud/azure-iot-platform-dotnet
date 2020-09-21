@@ -66,7 +66,7 @@ export class DeploymentNew extends LinkedComponent {
             changesApplied: false,
             packageOptions: [],
             packages: [],
-            expandedValue: "no",
+            expandedValue: false,
         };
         this.expandFlyout = this.expandFlyout.bind(this);
     }
@@ -288,13 +288,13 @@ export class DeploymentNew extends LinkedComponent {
     };
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -388,18 +388,10 @@ export class DeploymentNew extends LinkedComponent {
                     this.genericCloseClick("NewDeployment_CloseClick")
                 }
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <div className="new-deployment-content">
                     <form className="new-deployment-form" onSubmit={this.apply}>
                         <FormGroup className="new-deployment-formGroup">

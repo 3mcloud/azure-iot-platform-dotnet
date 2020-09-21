@@ -206,7 +206,7 @@ export class DeviceNew extends LinkedComponent {
                 secondaryKey: undefined,
             },
             provisionedDevice: {},
-            expandedValue: "no",
+            expandedValue: false,
         };
 
         if (props.deviceModelOptions === undefined) {
@@ -518,13 +518,13 @@ export class DeviceNew extends LinkedComponent {
     }
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -565,18 +565,10 @@ export class DeviceNew extends LinkedComponent {
                 t={t}
                 onClose={() => this.onFlyoutClose("Devices_TopXCloseClick")}
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <Protected permission={permissions.createDevices}>
                     <form
                         className="devices-new-container"

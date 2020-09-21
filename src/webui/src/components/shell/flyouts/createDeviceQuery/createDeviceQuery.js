@@ -4,9 +4,8 @@ import React from "react";
 
 import { IoTHubManagerService } from "services";
 import { toDiagnosticsModel } from "services/models";
-import { LinkedComponent, svgs } from "utilities";
+import { LinkedComponent } from "utilities";
 import Flyout from "components/shared/flyout";
-import { Btn } from "components/shared";
 import CreateDeviceQueryForm from "./views/createDeviceQueryForm";
 
 import "./createDeviceQuery.scss";
@@ -23,7 +22,7 @@ export class CreateDeviceQuery extends LinkedComponent {
         this.state = {
             filterOptions: [],
             filtersError: undefined,
-            expandedValue: "no",
+            expandedValue: false,
         };
         this.expandFlyout = this.expandFlyout.bind(this);
     }
@@ -57,13 +56,13 @@ export class CreateDeviceQuery extends LinkedComponent {
     };
 
     expandFlyout() {
-        if (this.state.expandedValue === "no") {
+        if (this.state.expandedValue) {
             this.setState({
-                expandedValue: "yes",
+                expandedValue: false,
             });
         } else {
             this.setState({
-                expandedValue: "no",
+                expandedValue: true,
             });
         }
     }
@@ -77,18 +76,10 @@ export class CreateDeviceQuery extends LinkedComponent {
                 t={t}
                 onClose={this.onCloseFlyout}
                 expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
-                <div>
-                    <Btn
-                        className={
-                            this.state.expandedValue === "no"
-                                ? "svg-reverse-icon"
-                                : "svg-icon"
-                        }
-                        svg={svgs.ChevronRightDouble}
-                        onClick={this.expandFlyout}
-                    ></Btn>
-                </div>
                 <div className="manage-filters-flyout-container">
                     <CreateDeviceQueryForm {...this.props} {...this.state} />
                 </div>
