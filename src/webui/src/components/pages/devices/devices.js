@@ -11,8 +11,7 @@ import {
     AjaxError,
     Btn,
     ComponentArray,
-    ContextMenu,
-    ContextMenuAlign,
+    ContextMenuAgile,
     PageContent,
     PageTitle,
     Protected,
@@ -142,6 +141,41 @@ export class Devices extends Component {
         return null;
     };
 
+    priorityChildren = () => {
+        const { t } = this.props;
+
+        let children = [
+            <DeviceGroupDropdown
+                deviceGroupIdFromUrl={this.state.selectedDeviceGroupId}
+            />,
+            <Protected permission={permissions.updateDeviceGroups}>
+                <ManageDeviceGroupsBtn />
+            </Protected>,
+            <CreateDeviceQueryBtn />,
+        ];
+
+        if (this.props.activeDeviceQueryConditions.length !== 0) {
+            children.push(<ResetActiveDeviceQueryBtn />);
+        }
+
+        if (
+            this.state.contextBtns &&
+            this.state.contextBtns.props.children.length > 0
+        ) {
+            children = children.concat(this.state.contextBtns.props.children);
+        }
+
+        children.push(
+            <Protected permission={permissions.updateSIMManagement}>
+                <Btn svg={svgs.simmanagement} onClick={this.openSIMManagement}>
+                    {t("devices.flyouts.SIMManagement.title")}
+                </Btn>
+            </Protected>
+        );
+
+        return children;
+    };
+
     render() {
         const {
                 t,
@@ -166,32 +200,8 @@ export class Devices extends Component {
 
         return (
             <ComponentArray>
-                <ContextMenu>
-                    <ContextMenuAlign left={true}>
-                        <DeviceGroupDropdown
-                            deviceGroupIdFromUrl={
-                                this.state.selectedDeviceGroupId
-                            }
-                        />
-                        <Protected permission={permissions.updateDeviceGroups}>
-                            <ManageDeviceGroupsBtn />
-                        </Protected>
-                        {this.props.activeDeviceQueryConditions.length !== 0 ? (
-                            <ResetActiveDeviceQueryBtn />
-                        ) : null}
-                    </ContextMenuAlign>
-                    <ContextMenuAlign>
-                        <CreateDeviceQueryBtn />
-
-                        {this.state.contextBtns}
-                        <Protected permission={permissions.updateSIMManagement}>
-                            <Btn
-                                svg={svgs.simmanagement}
-                                onClick={this.openSIMManagement}
-                            >
-                                {t("devices.flyouts.SIMManagement.title")}
-                            </Btn>
-                        </Protected>
+                <ContextMenuAgile
+                    farChildren={[
                         <Protected permission={permissions.createDevices}>
                             <Btn
                                 svg={svgs.plus}
@@ -199,16 +209,17 @@ export class Devices extends Component {
                             >
                                 {t("devices.flyouts.new.contextMenuName")}
                             </Btn>
-                        </Protected>
+                        </Protected>,
                         <RefreshBar
                             refresh={fetchDevices}
                             time={lastUpdated}
                             isPending={isPending}
                             t={t}
                             isShowIconOnly={true}
-                        />
-                    </ContextMenuAlign>
-                </ContextMenu>
+                        />,
+                    ]}
+                    priorityChildren={this.priorityChildren()}
+                />
                 <PageContent className="devices-container">
                     <PageTitle titleValue={t("devices.title")} />
                     {!!error && <AjaxError t={t} error={error} />}
