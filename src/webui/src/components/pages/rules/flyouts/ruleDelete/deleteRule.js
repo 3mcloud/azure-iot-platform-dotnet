@@ -25,7 +25,7 @@ export class DeleteRule extends Component {
             ruleDeleted: undefined,
             expandedValue: "no",
         };
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentDidMount() {
@@ -109,7 +109,7 @@ export class DeleteRule extends Component {
         });
     };
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -127,45 +127,52 @@ export class DeleteRule extends Component {
             completedSuccessfully = changesApplied && !error;
 
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout.Container
-                    header={t("rules.flyouts.deleteRule.title")}
-                    t={t}
-                    onClose={onClose}
-                    expanded={this.state.expandedValue}
-                >
-                    <Protected permission={permissions.deleteRules}>
-                        <form
-                            onSubmit={this.deleteRule}
-                            className="delete-rule-flyout-container"
-                        >
-                            {rule && (
-                                <RuleSummary
-                                    rule={rule}
-                                    isPending={isPending}
-                                    completedSuccessfully={
-                                        completedSuccessfully
-                                    }
-                                    t={t}
-                                    includeSummaryStatus={true}
-                                    className="rule-details"
-                                />
-                            )}
-                            {error && (
-                                <AjaxError
-                                    className="rule-delete-error"
-                                    t={t}
-                                    error={error}
-                                />
-                            )}
-                            {!error &&
-                                (changesApplied
-                                    ? this.renderConfirmation()
-                                    : this.renderButtons())}
-                        </form>
-                    </Protected>
-                </Flyout.Container>
-            </div>
+            <Flyout.Container
+                header={t("rules.flyouts.deleteRule.title")}
+                t={t}
+                onClose={onClose}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <Protected permission={permissions.deleteRules}>
+                    <form
+                        onSubmit={this.deleteRule}
+                        className="delete-rule-flyout-container"
+                    >
+                        {rule && (
+                            <RuleSummary
+                                rule={rule}
+                                isPending={isPending}
+                                completedSuccessfully={completedSuccessfully}
+                                t={t}
+                                includeSummaryStatus={true}
+                                className="rule-details"
+                            />
+                        )}
+                        {error && (
+                            <AjaxError
+                                className="rule-delete-error"
+                                t={t}
+                                error={error}
+                            />
+                        )}
+                        {!error &&
+                            (changesApplied
+                                ? this.renderConfirmation()
+                                : this.renderButtons())}
+                    </form>
+                </Protected>
+            </Flyout.Container>
         );
     }
 

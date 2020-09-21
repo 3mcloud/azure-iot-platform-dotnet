@@ -461,23 +461,21 @@ export class DeviceJobProperties extends LinkedComponent {
                     <Grid className="data-grid">
                         <GridHeader>
                             <Row>
-                                <Cell className="col-4">
+                                <Cell className="col-2">
                                     {t(
                                         "devices.flyouts.jobs.properties.keyHeader"
                                     )}
                                 </Cell>
-                                <Cell className="col-4">
+                                <Cell className="col-6">
                                     {t(
                                         "devices.flyouts.jobs.properties.valueHeader"
                                     )}
                                 </Cell>
-                                <Cell className="col-4"></Cell>
-                                <Cell className="col-4">
+                                <Cell className="col-2">
                                     {t(
                                         "devices.flyouts.jobs.properties.typeHeader"
                                     )}
                                 </Cell>
-                                <Cell className="col-1"></Cell>
                             </Row>
                         </GridHeader>
                         {Object.keys(commonProperties).length === 0 &&
@@ -521,67 +519,78 @@ export class DeviceJobProperties extends LinkedComponent {
                                                         : ""
                                                 }
                                             >
-                                                <div>
+                                                <Cell className="col-2">
                                                     {name.value}
                                                     &nbsp;&nbsp;&nbsp;
-                                                </div>
-                                                <br />
-                                                <div className="col-3 jsonValueDivMaxHeight">
-                                                    {isJSON.value && (
-                                                        <FormControl
-                                                            className="small"
-                                                            type="jsoninput"
-                                                            link={jsonValue}
-                                                            theme={
-                                                                theme
-                                                                    ? theme
-                                                                    : "light"
-                                                            }
-                                                            errorState={!!error}
-                                                            readOnly={
-                                                                readOnly.value
-                                                            }
-                                                            onChange={
-                                                                this
-                                                                    .onJsonChange
-                                                            }
-                                                        />
-                                                    )}
-                                                    {!isJSON.value && (
-                                                        <FormControl
-                                                            className="large"
-                                                            type="text"
-                                                            link={value}
-                                                            errorState={!!error}
-                                                            readOnly={
-                                                                readOnly.value
-                                                            }
-                                                        />
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    {isJSON.value &&
-                                                        readOnly.value && (
-                                                            <div>Syncing</div>
-                                                        )}
-                                                    {isJSON.value &&
-                                                        !readOnly.value && (
-                                                            <Btn
-                                                                className="linkToButton"
-                                                                svg={
-                                                                    svgs.linkTo
+                                                </Cell>
+                                                <Cell className="col-6">
+                                                    <div className="jsonValueDivMaxHeight">
+                                                        {isJSON.value && (
+                                                            <FormControl
+                                                                className="small"
+                                                                type="jsoninput"
+                                                                link={jsonValue}
+                                                                theme={
+                                                                    theme
+                                                                        ? theme
+                                                                        : "light"
                                                                 }
-                                                                onClick={() =>
-                                                                    openPropertyEditorModal(
-                                                                        "json-editor",
-                                                                        jsonValue
-                                                                    )
+                                                                errorState={
+                                                                    !!error
                                                                 }
-                                                            ></Btn>
+                                                                readOnly={
+                                                                    readOnly.value
+                                                                }
+                                                                onChange={
+                                                                    this
+                                                                        .onJsonChange
+                                                                }
+                                                            />
                                                         )}
-                                                </div>
-                                                &nbsp;&nbsp; &nbsp; &nbsp;&nbsp;
-                                                <div>{type.value}</div>
+                                                        {!isJSON.value && (
+                                                            <FormControl
+                                                                className="large"
+                                                                type="text"
+                                                                link={value}
+                                                                errorState={
+                                                                    !!error
+                                                                }
+                                                                readOnly={
+                                                                    readOnly.value
+                                                                }
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </Cell>
+                                                <Cell className="col-2">
+                                                    {" "}
+                                                    <div>
+                                                        {isJSON.value &&
+                                                            readOnly.value && (
+                                                                <div>
+                                                                    Syncing
+                                                                </div>
+                                                            )}
+                                                        {isJSON.value &&
+                                                            !readOnly.value && (
+                                                                <Btn
+                                                                    className="linkToButton"
+                                                                    svg={
+                                                                        svgs.linkTo
+                                                                    }
+                                                                    onClick={() =>
+                                                                        openPropertyEditorModal(
+                                                                            "json-editor",
+                                                                            jsonValue
+                                                                        )
+                                                                    }
+                                                                ></Btn>
+                                                            )}
+                                                    </div>
+                                                </Cell>
+                                                <Cell className="col-2">
+                                                    {type.value}
+                                                </Cell>
                                             </Row>
                                             {error ? (
                                                 <Row className="error-msg-row">

@@ -2,9 +2,10 @@
 
 import React, { Component } from "react";
 import { permissions, toDiagnosticsModel } from "services/models";
-import { Protected, ProtectedError } from "components/shared";
+import { Protected, ProtectedError, Btn } from "components/shared";
 import { RuleEditorContainer } from "./ruleEditor";
 import Flyout from "components/shared/flyout";
+import { svgs } from "utilities";
 
 export class EditRuleFlyout extends Component {
     constructor(props) {
@@ -13,7 +14,7 @@ export class EditRuleFlyout extends Component {
         this.state = {
             expandedValue: "no",
         };
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     onTopXClose = () => {
@@ -22,7 +23,7 @@ export class EditRuleFlyout extends Component {
         onClose();
     };
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -37,36 +38,42 @@ export class EditRuleFlyout extends Component {
     render() {
         const { onClose, t, ruleId } = this.props;
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout.Container
-                    header={t("rules.flyouts.editRule")}
-                    t={t}
-                    onClose={this.onTopXClose}
-                    expanded={this.state.expandedValue}
-                >
-                    <Protected permission={permissions.updateRules}>
-                        {(hasPermission, permission) =>
-                            hasPermission ? (
-                                <RuleEditorContainer
-                                    onClose={onClose}
-                                    ruleId={ruleId}
-                                />
-                            ) : (
-                                <div>
-                                    <ProtectedError
-                                        t={t}
-                                        permission={permission}
-                                    />
-                                    <p>
-                                        A read-only view will be added soon as
-                                        part of another PBI.
-                                    </p>
-                                </div>
-                            )
+            <Flyout.Container
+                header={t("rules.flyouts.editRule")}
+                t={t}
+                onClose={this.onTopXClose}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
                         }
-                    </Protected>
-                </Flyout.Container>
-            </div>
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <Protected permission={permissions.updateRules}>
+                    {(hasPermission, permission) =>
+                        hasPermission ? (
+                            <RuleEditorContainer
+                                onClose={onClose}
+                                ruleId={ruleId}
+                            />
+                        ) : (
+                            <div>
+                                <ProtectedError t={t} permission={permission} />
+                                <p>
+                                    A read-only view will be added soon as part
+                                    of another PBI.
+                                </p>
+                            </div>
+                        )
+                    }
+                </Protected>
+            </Flyout.Container>
         );
     }
 }

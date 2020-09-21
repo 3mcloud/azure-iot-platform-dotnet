@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { LinkedComponent } from "utilities";
+import { LinkedComponent, svgs } from "utilities";
 import {
     permissions,
     toDiagnosticsModel,
@@ -16,6 +16,7 @@ import {
     FormLabel,
     Protected,
     Radio,
+    Btn,
 } from "components/shared";
 import {
     DeviceJobTagsContainer,
@@ -43,7 +44,7 @@ export class DeviceJobs extends LinkedComponent {
         this.formDataLink = this.linkTo("formData");
 
         this.jobTypeLink = this.formDataLink.forkTo("jobType");
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentDidMount() {
@@ -64,7 +65,7 @@ export class DeviceJobs extends LinkedComponent {
         return [this.jobTypeLink].every((link) => !link.error);
     }
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -87,88 +88,95 @@ export class DeviceJobs extends LinkedComponent {
         } = this.props;
 
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout
-                    header={t("devices.flyouts.jobs.title")}
-                    t={t}
-                    onClose={onClose}
-                    expanded={this.state.expandedValue}
-                >
-                    <Protected permission={permissions.createJobs}>
-                        <div className="device-jobs-container">
-                            {devices.length === 0 && (
-                                <ErrorMsg className="device-jobs-error">
-                                    {t("devices.flyouts.jobs.noDevices")}
-                                </ErrorMsg>
-                            )}
-                            {devices.length > 0 && (
-                                <ComponentArray>
-                                    <FormGroup>
-                                        <FormLabel>
-                                            {t(
-                                                "devices.flyouts.jobs.selectJob"
-                                            )}
-                                        </FormLabel>
-                                        <Radio
-                                            link={this.jobTypeLink}
-                                            value="tags"
-                                            onClick={this.onJobTypeChange}
-                                        >
-                                            {t(
-                                                "devices.flyouts.jobs.tags.radioLabel"
-                                            )}
-                                        </Radio>
-                                        <Radio
-                                            link={this.jobTypeLink}
-                                            value="methods"
-                                            onClick={this.onJobTypeChange}
-                                        >
-                                            {t(
-                                                "devices.flyouts.jobs.methods.radioLabel"
-                                            )}
-                                        </Radio>
-                                        <Radio
-                                            link={this.jobTypeLink}
-                                            value="properties"
-                                            onClick={this.onJobTypeChange}
-                                        >
-                                            {t(
-                                                "devices.flyouts.jobs.properties.radioLabel"
-                                            )}
-                                        </Radio>
-                                    </FormGroup>
-                                    {this.jobTypeLink.value === "tags" ? (
-                                        <DeviceJobTagsContainer
-                                            t={t}
-                                            onClose={onClose}
-                                            devices={devices}
-                                            updateTags={updateTags}
-                                        />
-                                    ) : null}
-                                    {this.jobTypeLink.value === "methods" ? (
-                                        <DeviceJobMethodsContainer
-                                            t={t}
-                                            onClose={onClose}
-                                            devices={devices}
-                                        />
-                                    ) : null}
-                                    {this.jobTypeLink.value === "properties" ? (
-                                        <DeviceJobPropertiesContainer
-                                            t={t}
-                                            onClose={onClose}
-                                            devices={devices}
-                                            updateProperties={updateProperties}
-                                            openPropertyEditorModal={
-                                                openPropertyEditorModal
-                                            }
-                                        />
-                                    ) : null}
-                                </ComponentArray>
-                            )}
-                        </div>
-                    </Protected>
-                </Flyout>
-            </div>
+            <Flyout
+                header={t("devices.flyouts.jobs.title")}
+                t={t}
+                onClose={onClose}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <Protected permission={permissions.createJobs}>
+                    <div className="device-jobs-container">
+                        {devices.length === 0 && (
+                            <ErrorMsg className="device-jobs-error">
+                                {t("devices.flyouts.jobs.noDevices")}
+                            </ErrorMsg>
+                        )}
+                        {devices.length > 0 && (
+                            <ComponentArray>
+                                <FormGroup>
+                                    <FormLabel>
+                                        {t("devices.flyouts.jobs.selectJob")}
+                                    </FormLabel>
+                                    <Radio
+                                        link={this.jobTypeLink}
+                                        value="tags"
+                                        onClick={this.onJobTypeChange}
+                                    >
+                                        {t(
+                                            "devices.flyouts.jobs.tags.radioLabel"
+                                        )}
+                                    </Radio>
+                                    <Radio
+                                        link={this.jobTypeLink}
+                                        value="methods"
+                                        onClick={this.onJobTypeChange}
+                                    >
+                                        {t(
+                                            "devices.flyouts.jobs.methods.radioLabel"
+                                        )}
+                                    </Radio>
+                                    <Radio
+                                        link={this.jobTypeLink}
+                                        value="properties"
+                                        onClick={this.onJobTypeChange}
+                                    >
+                                        {t(
+                                            "devices.flyouts.jobs.properties.radioLabel"
+                                        )}
+                                    </Radio>
+                                </FormGroup>
+                                {this.jobTypeLink.value === "tags" ? (
+                                    <DeviceJobTagsContainer
+                                        t={t}
+                                        onClose={onClose}
+                                        devices={devices}
+                                        updateTags={updateTags}
+                                    />
+                                ) : null}
+                                {this.jobTypeLink.value === "methods" ? (
+                                    <DeviceJobMethodsContainer
+                                        t={t}
+                                        onClose={onClose}
+                                        devices={devices}
+                                    />
+                                ) : null}
+                                {this.jobTypeLink.value === "properties" ? (
+                                    <DeviceJobPropertiesContainer
+                                        t={t}
+                                        onClose={onClose}
+                                        devices={devices}
+                                        updateProperties={updateProperties}
+                                        openPropertyEditorModal={
+                                            openPropertyEditorModal
+                                        }
+                                    />
+                                ) : null}
+                            </ComponentArray>
+                        )}
+                    </div>
+                </Protected>
+            </Flyout>
         );
     }
 }

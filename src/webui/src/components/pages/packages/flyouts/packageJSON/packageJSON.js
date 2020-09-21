@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 import React from "react";
-import { LinkedComponent } from "utilities";
-import { Flyout, FormControl } from "components/shared";
+import { LinkedComponent, svgs } from "utilities";
+import { Flyout, FormControl, Btn } from "components/shared";
 
 import "../packageNew/packageNew.scss";
 
@@ -16,7 +16,7 @@ export class PackageJSON extends LinkedComponent {
             },
             expandedValue: "no",
         };
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
     onFlyoutClose = (eventName) => {
         this.props.onClose();
@@ -33,7 +33,7 @@ export class PackageJSON extends LinkedComponent {
         }
     }
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -50,25 +50,34 @@ export class PackageJSON extends LinkedComponent {
         this.packageJsonLink = this.linkTo("packageJson");
 
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout
-                    header={t("packages.flyouts.packageJson.title")}
-                    t={t}
-                    onClose={() => this.onFlyoutClose("PackageJSON_CloseClick")}
-                    expanded={this.state.expandedValue}
-                >
-                    <div className="new-package-content">
-                        <form className="new-package-form">
-                            <FormControl
-                                link={this.packageJsonLink}
-                                type="jsoninput"
-                                height="100%"
-                                theme={theme}
-                            />
-                        </form>
-                    </div>
-                </Flyout>
-            </div>
+            <Flyout
+                header={t("packages.flyouts.packageJson.title")}
+                t={t}
+                onClose={() => this.onFlyoutClose("PackageJSON_CloseClick")}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <div className="new-package-content">
+                    <form className="new-package-form">
+                        <FormControl
+                            link={this.packageJsonLink}
+                            type="jsoninput"
+                            height="100%"
+                            theme={theme}
+                        />
+                    </form>
+                </div>
+            </Flyout>
         );
     }
 }

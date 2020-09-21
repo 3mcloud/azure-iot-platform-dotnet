@@ -32,3 +32,26 @@ html {
   }
 
 }
+
+.svg-icon {
+    margin: 0px;
+    padding: 0px;
+    position: absolute;
+    top: 0px;
+    left: 10px;
+    min-width: 0px !important;
+}
+
+.svg-reverse-icon {
+    transform: rotate(180deg);
+    margin: 0px;
+    padding: 0px;
+    position: absolute;
+    top: 0px;
+    left: 10px;
+    min-width: 0px !important;
+}
+
+#context-panel-title {
+    margin-top: 20px !important;
+}

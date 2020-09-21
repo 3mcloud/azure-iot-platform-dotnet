@@ -73,7 +73,7 @@ export class PackageNew extends LinkedComponent {
             firmwareTemplateVersionField: "",
             expandedValue: "no",
         };
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentWillUnmount() {
@@ -416,7 +416,7 @@ export class PackageNew extends LinkedComponent {
         return json;
     };
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -535,116 +535,150 @@ export class PackageNew extends LinkedComponent {
                 this.configTypeLink.value === configsEnum.custom;
 
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout
-                    header={t("packages.flyouts.new.title")}
-                    t={t}
-                    onClose={() =>
-                        this.genericCloseClick("NewPackage_CloseClick")
-                    }
-                    expanded={this.state.expandedValue}
-                >
-                    <div className="new-package-content">
-                        <form
-                            className="new-package-form"
-                            onSubmit={this.apply}
-                        >
-                            <div className="new-package-header">
-                                {t("packages.flyouts.new.header")}
-                            </div>
-                            <div className="new-package-descr">
-                                {t("packages.flyouts.new.description")}
-                            </div>
+            <Flyout
+                header={t("packages.flyouts.new.title")}
+                t={t}
+                onClose={() => this.genericCloseClick("NewPackage_CloseClick")}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <div className="new-package-content">
+                    <form className="new-package-form" onSubmit={this.apply}>
+                        <div className="new-package-header">
+                            {t("packages.flyouts.new.header")}
+                        </div>
+                        <div className="new-package-descr">
+                            {t("packages.flyouts.new.description")}
+                        </div>
 
+                        <FormGroup>
+                            <FormLabel isRequired="true">
+                                {t("packages.flyouts.new.packageType")}
+                            </FormLabel>
+                            {!completedSuccessfully && (
+                                <FormControl
+                                    type="select"
+                                    ariaLabel={t(
+                                        "packages.flyouts.new.packageType"
+                                    )}
+                                    className="long"
+                                    onChange={this.packageTypeChange}
+                                    link={this.packageTypeLink}
+                                    options={packageOptions}
+                                    placeholder={t(
+                                        "packages.flyouts.new.packageTypePlaceholder"
+                                    )}
+                                    clearable={false}
+                                    disabled={uploadedFirmwareSuccessfully}
+                                    searchable={false}
+                                />
+                            )}
+                            {completedSuccessfully && (
+                                <FormLabel className="new-package-success-labels">
+                                    {packageType}
+                                </FormLabel>
+                            )}
+                        </FormGroup>
+                        {configTypeEnabled && (
                             <FormGroup>
                                 <FormLabel isRequired="true">
-                                    {t("packages.flyouts.new.packageType")}
+                                    {t("packages.flyouts.new.configType")}
                                 </FormLabel>
                                 {!completedSuccessfully && (
                                     <FormControl
                                         type="select"
                                         ariaLabel={t(
-                                            "packages.flyouts.new.packageType"
+                                            "packages.flyouts.new.configType"
                                         )}
                                         className="long"
-                                        onChange={this.packageTypeChange}
-                                        link={this.packageTypeLink}
-                                        options={packageOptions}
+                                        onChange={this.configTypeChange}
+                                        link={this.configTypeLink}
+                                        options={configOptions}
                                         placeholder={t(
-                                            "packages.flyouts.new.packageTypePlaceholder"
+                                            "packages.flyouts.new.configTypePlaceholder"
                                         )}
                                         clearable={false}
                                         disabled={uploadedFirmwareSuccessfully}
                                         searchable={false}
                                     />
                                 )}
+                                {configTypesIsPending && <Indicator />}
+                                {/** Displays an error message if one occurs while fetching configTypes. */
+                                configTypesError && (
+                                    <AjaxError
+                                        className="new-package-flyout-error"
+                                        t={t}
+                                        error={configTypesError}
+                                    />
+                                )}
                                 {completedSuccessfully && (
                                     <FormLabel className="new-package-success-labels">
-                                        {packageType}
+                                        {configType}
                                     </FormLabel>
                                 )}
                             </FormGroup>
-                            {configTypeEnabled && (
-                                <FormGroup>
-                                    <FormLabel isRequired="true">
-                                        {t("packages.flyouts.new.configType")}
-                                    </FormLabel>
-                                    {!completedSuccessfully && (
-                                        <FormControl
-                                            type="select"
-                                            ariaLabel={t(
-                                                "packages.flyouts.new.configType"
-                                            )}
-                                            className="long"
-                                            onChange={this.configTypeChange}
-                                            link={this.configTypeLink}
-                                            options={configOptions}
-                                            placeholder={t(
-                                                "packages.flyouts.new.configTypePlaceholder"
-                                            )}
-                                            clearable={false}
-                                            disabled={
-                                                uploadedFirmwareSuccessfully
-                                            }
-                                            searchable={false}
-                                        />
+                        )}
+                        {!completedSuccessfully && customTextVisible && (
+                            <FormGroup>
+                                <FormLabel isRequired="true">
+                                    {t("packages.flyouts.new.customType")}
+                                </FormLabel>
+                                <FormControl
+                                    type="text"
+                                    className="long"
+                                    onBlur={this.customConfigNameChange}
+                                    link={this.customConfigNameLink}
+                                    disabled={uploadedFirmwareSuccessfully}
+                                    placeholder={t(
+                                        "packages.flyouts.new.customTextPlaceholder"
                                     )}
-                                    {configTypesIsPending && <Indicator />}
-                                    {/** Displays an error message if one occurs while fetching configTypes. */
-                                    configTypesError && (
-                                        <AjaxError
-                                            className="new-package-flyout-error"
-                                            t={t}
-                                            error={configTypesError}
-                                        />
-                                    )}
-                                    {completedSuccessfully && (
-                                        <FormLabel className="new-package-success-labels">
-                                            {configType}
-                                        </FormLabel>
-                                    )}
-                                </FormGroup>
-                            )}
-                            {!completedSuccessfully && customTextVisible && (
-                                <FormGroup>
-                                    <FormLabel isRequired="true">
-                                        {t("packages.flyouts.new.customType")}
-                                    </FormLabel>
-                                    <FormControl
-                                        type="text"
-                                        className="long"
-                                        onBlur={this.customConfigNameChange}
-                                        link={this.customConfigNameLink}
+                                />
+                            </FormGroup>
+                        )}
+                        {!completedSuccessfully &&
+                            ((configType && configType !== "Firmware") ||
+                                packageType === "EdgeManifest") && (
+                                <div className="new-package-upload-container">
+                                    <label
+                                        htmlFor="hidden-input-id"
+                                        className="new-package-browse-click"
+                                    >
+                                        <span
+                                            role="button"
+                                            aria-controls="hidden-input-id"
+                                            tabIndex="0"
+                                            onKeyUp={this.onKeyEvent}
+                                        >
+                                            {t("packages.flyouts.new.browse")}
+                                        </span>
+                                    </label>
+                                    <input
+                                        type="file"
+                                        id="hidden-input-id"
+                                        accept={fileInputAccept}
+                                        ref={(input) =>
+                                            (this.inputElement = input)
+                                        }
+                                        className="new-package-hidden-input"
+                                        onChange={this.onFileSelected}
                                         disabled={uploadedFirmwareSuccessfully}
-                                        placeholder={t(
-                                            "packages.flyouts.new.customTextPlaceholder"
-                                        )}
                                     />
-                                </FormGroup>
+                                    {t("packages.flyouts.new.browseText")}
+                                </div>
                             )}
-                            {!completedSuccessfully &&
-                                ((configType && configType !== "Firmware") ||
-                                    packageType === "EdgeManifest") && (
+                        {!completedSuccessfully && configType === "Firmware" && (
+                            <div>
+                                {!uploadedFirmwareSuccessfully && (
                                     <div className="new-package-upload-container">
                                         <label
                                             htmlFor="hidden-input-id"
@@ -664,283 +698,237 @@ export class PackageNew extends LinkedComponent {
                                         <input
                                             type="file"
                                             id="hidden-input-id"
-                                            accept={fileInputAccept}
+                                            accept={firmwareFileInputAccept}
                                             ref={(input) =>
                                                 (this.inputElement = input)
                                             }
                                             className="new-package-hidden-input"
-                                            onChange={this.onFileSelected}
+                                            onChange={
+                                                this.onFirmwareFileSelected
+                                            }
                                             disabled={
                                                 uploadedFirmwareSuccessfully
                                             }
                                         />
-                                        {t("packages.flyouts.new.browseText")}
-                                    </div>
-                                )}
-                            {!completedSuccessfully &&
-                                configType === "Firmware" && (
-                                    <div>
-                                        {!uploadedFirmwareSuccessfully && (
-                                            <div className="new-package-upload-container">
-                                                <label
-                                                    htmlFor="hidden-input-id"
-                                                    className="new-package-browse-click"
-                                                >
-                                                    <span
-                                                        role="button"
-                                                        aria-controls="hidden-input-id"
-                                                        tabIndex="0"
-                                                        onKeyUp={
-                                                            this.onKeyEvent
-                                                        }
-                                                    >
-                                                        {t(
-                                                            "packages.flyouts.new.browse"
-                                                        )}
-                                                    </span>
-                                                </label>
-                                                <input
-                                                    type="file"
-                                                    id="hidden-input-id"
-                                                    accept={
-                                                        firmwareFileInputAccept
-                                                    }
-                                                    ref={(input) =>
-                                                        (this.inputElement = input)
-                                                    }
-                                                    className="new-package-hidden-input"
-                                                    onChange={
-                                                        this
-                                                            .onFirmwareFileSelected
-                                                    }
-                                                    disabled={
-                                                        uploadedFirmwareSuccessfully
-                                                    }
-                                                />
-                                                {t(
-                                                    "packages.flyouts.new.browseFirmwareText"
-                                                )}
-                                            </div>
+                                        {t(
+                                            "packages.flyouts.new.browseFirmwareText"
                                         )}
-                                        {uploadedFirmwareSuccessfully && <br />}
                                     </div>
                                 )}
-                            {packageFile && (
+                                {uploadedFirmwareSuccessfully && <br />}
+                            </div>
+                        )}
+                        {packageFile && (
+                            <FormGroup>
+                                <FormLabel isRequired="true">
+                                    {t("packages.flyouts.new.packageName")}
+                                </FormLabel>
+                                {!completedSuccessfully && (
+                                    <FormControl
+                                        type="text"
+                                        className="long"
+                                        onBlur={this.packageNameChange}
+                                        link={this.packageNameLink}
+                                        disabled={uploadedFirmwareSuccessfully}
+                                        placeholder={t(
+                                            "packages.flyouts.new.packageNamePlaceholder"
+                                        )}
+                                    />
+                                )}
+                                {completedSuccessfully && (
+                                    <FormLabel className="new-package-success-labels">
+                                        {packageName}
+                                    </FormLabel>
+                                )}
+                            </FormGroup>
+                        )}
+                        {packageFile &&
+                            configType &&
+                            configType === "Firmware" && (
                                 <FormGroup>
                                     <FormLabel isRequired="true">
-                                        {t("packages.flyouts.new.packageName")}
+                                        {t("packages.flyouts.new.version")}
                                     </FormLabel>
                                     {!completedSuccessfully && (
                                         <FormControl
                                             type="text"
                                             className="long"
-                                            onBlur={this.packageNameChange}
-                                            link={this.packageNameLink}
+                                            onBlur={this.packageVersionChange}
+                                            link={this.packageVersionLink}
                                             disabled={
                                                 uploadedFirmwareSuccessfully
                                             }
                                             placeholder={t(
-                                                "packages.flyouts.new.packageNamePlaceholder"
+                                                "packages.flyouts.new.packageVersionPlaceholder"
                                             )}
                                         />
                                     )}
                                     {completedSuccessfully && (
                                         <FormLabel className="new-package-success-labels">
-                                            {packageName}
+                                            {packageVersion}
                                         </FormLabel>
                                     )}
                                 </FormGroup>
                             )}
-                            {packageFile &&
-                                configType &&
-                                configType === "Firmware" && (
-                                    <FormGroup>
-                                        <FormLabel isRequired="true">
-                                            {t("packages.flyouts.new.version")}
-                                        </FormLabel>
-                                        {!completedSuccessfully && (
-                                            <FormControl
-                                                type="text"
-                                                className="long"
-                                                onBlur={
-                                                    this.packageVersionChange
-                                                }
-                                                link={this.packageVersionLink}
-                                                disabled={
-                                                    uploadedFirmwareSuccessfully
-                                                }
-                                                placeholder={t(
-                                                    "packages.flyouts.new.packageVersionPlaceholder"
-                                                )}
-                                            />
-                                        )}
-                                        {completedSuccessfully && (
-                                            <FormLabel className="new-package-success-labels">
-                                                {packageVersion}
-                                            </FormLabel>
-                                        )}
-                                    </FormGroup>
-                                )}
-                            {!completedSuccessfully &&
-                                configType === "Firmware" &&
-                                uploadedFirmwareSuccessfully && (
-                                    <FormGroup>
-                                        <FormLabel svg={svgs.info}>
-                                            <Balloon
-                                                position={BalloonPosition.Left}
-                                                tooltip={t(
-                                                    "packages.flyouts.new.firmwareTemplateTip"
-                                                )}
-                                            >
-                                                {t(
-                                                    "packages.flyouts.new.firmwareJson"
-                                                )}
-                                            </Balloon>
-                                        </FormLabel>
-                                        <FormControl
-                                            link={this.packageJsonLink}
-                                            type="jsoninput"
-                                            height="550px"
-                                            theme={theme}
-                                            onChange={this.onJsonChange}
-                                        />
-                                    </FormGroup>
-                                )}
-                            <FormGroup>
-                                <FormLabel>Tags</FormLabel>
-                                <PillGroup
-                                    pills={this.tagsLink.value}
-                                    altSvgText={"delete"}
-                                    onSvgClick={this.deleteTag(this.tagsLink)}
-                                    svg={svgs.trash}
-                                ></PillGroup>
-                            </FormGroup>
+                        {!completedSuccessfully &&
+                            configType === "Firmware" &&
+                            uploadedFirmwareSuccessfully && (
+                                <FormGroup>
+                                    <FormLabel svg={svgs.info}>
+                                        <Balloon
+                                            position={BalloonPosition.Left}
+                                            tooltip={t(
+                                                "packages.flyouts.new.firmwareTemplateTip"
+                                            )}
+                                        >
+                                            {t(
+                                                "packages.flyouts.new.firmwareJson"
+                                            )}
+                                        </Balloon>
+                                    </FormLabel>
+                                    <FormControl
+                                        link={this.packageJsonLink}
+                                        type="jsoninput"
+                                        height="550px"
+                                        theme={theme}
+                                        onChange={this.onJsonChange}
+                                    />
+                                </FormGroup>
+                            )}
+                        <FormGroup>
+                            <FormLabel>Tags</FormLabel>
+                            <PillGroup
+                                pills={this.tagsLink.value}
+                                altSvgText={"delete"}
+                                onSvgClick={this.deleteTag(this.tagsLink)}
+                                svg={svgs.trash}
+                            ></PillGroup>
+                        </FormGroup>
 
-                            <SummarySection className="new-package-summary">
-                                <SummaryBody>
-                                    {packageFile &&
-                                        (configType !== "Firmware" ||
-                                            uploadedFirmwareSuccessfully) && (
-                                            <SummaryCount>
-                                                {summaryCount}
-                                            </SummaryCount>
-                                        )}
-                                    {packageFile && (
-                                        <SectionDesc>
-                                            {t("packages.flyouts.new.package")}
-                                        </SectionDesc>
+                        <SummarySection className="new-package-summary">
+                            <SummaryBody>
+                                {packageFile &&
+                                    (configType !== "Firmware" ||
+                                        uploadedFirmwareSuccessfully) && (
+                                        <SummaryCount>
+                                            {summaryCount}
+                                        </SummaryCount>
                                     )}
-                                    {isPending && <Indicator />}
-                                    {completedSuccessfully && (
-                                        <Svg
-                                            className="summary-icon"
-                                            path={svgs.apply}
-                                        />
-                                    )}
-                                </SummaryBody>
                                 {packageFile && (
-                                    <div className="new-package-file-name">
-                                        {packageFile.name}
-                                    </div>
+                                    <SectionDesc>
+                                        {t("packages.flyouts.new.package")}
+                                    </SectionDesc>
                                 )}
+                                {isPending && <Indicator />}
                                 {completedSuccessfully && (
-                                    <div className="new-package-deployment-text">
-                                        <Trans
-                                            i18nKey={
-                                                "packages.flyouts.new.deploymentText"
-                                            }
-                                        >
-                                            To deploy packages, go to the
-                                            <Link to={"/deployments"}>
-                                                {t(
-                                                    "packages.flyouts.new.deploymentsPage"
-                                                )}
-                                            </Link>
-                                            , and then click
-                                            <strong>
-                                                {t(
-                                                    "packages.flyouts.new.newDeployment"
-                                                )}
-                                            </strong>
-                                            .
-                                        </Trans>
-                                    </div>
-                                )}
-                                {/** Displays an error message if one occurs while applying changes. */
-                                error && (
-                                    <AjaxError
-                                        className="new-package-flyout-error"
-                                        t={t}
-                                        error={error}
+                                    <Svg
+                                        className="summary-icon"
+                                        path={svgs.apply}
                                     />
                                 )}
-                                {fileError && (
-                                    <AjaxError
-                                        className="new-firmware-flyout-error"
-                                        t={t}
-                                        error={fileError}
-                                    />
-                                )}
-                                {/** If package is selected, show the buttons for uploading and closing the flyout. */
-                                packageFile && !completedSuccessfully && (
-                                    <BtnToolbar>
-                                        <Btn
-                                            svg={svgs.upload}
-                                            primary={true}
-                                            disabled={
-                                                isPending || !this.formIsValid()
-                                            }
-                                            type="submit"
-                                        >
-                                            {t("packages.flyouts.new.upload")}
-                                        </Btn>
-                                        <Btn
-                                            svg={svgs.cancelX}
-                                            onClick={() =>
-                                                this.genericCloseClick(
-                                                    "NewPackage_CancelClick"
-                                                )
-                                            }
-                                        >
-                                            {t("packages.flyouts.new.cancel")}
-                                        </Btn>
-                                    </BtnToolbar>
-                                )}
-                                {/** If package is not selected, show only the cancel button. */
-                                !packageFile && (
-                                    <BtnToolbar>
-                                        <Btn
-                                            svg={svgs.cancelX}
-                                            onClick={() =>
-                                                this.genericCloseClick(
-                                                    "NewPackage_CancelClick"
-                                                )
-                                            }
-                                        >
-                                            {t("packages.flyouts.new.cancel")}
-                                        </Btn>
-                                    </BtnToolbar>
-                                )}
-                                {/** After successful upload, show close button. */
-                                completedSuccessfully && (
-                                    <BtnToolbar>
-                                        <Btn
-                                            svg={svgs.cancelX}
-                                            onClick={() =>
-                                                this.genericCloseClick(
-                                                    "NewPackage_CancelClick"
-                                                )
-                                            }
-                                        >
-                                            {t("packages.flyouts.new.close")}
-                                        </Btn>
-                                    </BtnToolbar>
-                                )}
-                            </SummarySection>
-                        </form>
-                    </div>
-                </Flyout>
-            </div>
+                            </SummaryBody>
+                            {packageFile && (
+                                <div className="new-package-file-name">
+                                    {packageFile.name}
+                                </div>
+                            )}
+                            {completedSuccessfully && (
+                                <div className="new-package-deployment-text">
+                                    <Trans
+                                        i18nKey={
+                                            "packages.flyouts.new.deploymentText"
+                                        }
+                                    >
+                                        To deploy packages, go to the
+                                        <Link to={"/deployments"}>
+                                            {t(
+                                                "packages.flyouts.new.deploymentsPage"
+                                            )}
+                                        </Link>
+                                        , and then click
+                                        <strong>
+                                            {t(
+                                                "packages.flyouts.new.newDeployment"
+                                            )}
+                                        </strong>
+                                        .
+                                    </Trans>
+                                </div>
+                            )}
+                            {/** Displays an error message if one occurs while applying changes. */
+                            error && (
+                                <AjaxError
+                                    className="new-package-flyout-error"
+                                    t={t}
+                                    error={error}
+                                />
+                            )}
+                            {fileError && (
+                                <AjaxError
+                                    className="new-firmware-flyout-error"
+                                    t={t}
+                                    error={fileError}
+                                />
+                            )}
+                            {/** If package is selected, show the buttons for uploading and closing the flyout. */
+                            packageFile && !completedSuccessfully && (
+                                <BtnToolbar>
+                                    <Btn
+                                        svg={svgs.upload}
+                                        primary={true}
+                                        disabled={
+                                            isPending || !this.formIsValid()
+                                        }
+                                        type="submit"
+                                    >
+                                        {t("packages.flyouts.new.upload")}
+                                    </Btn>
+                                    <Btn
+                                        svg={svgs.cancelX}
+                                        onClick={() =>
+                                            this.genericCloseClick(
+                                                "NewPackage_CancelClick"
+                                            )
+                                        }
+                                    >
+                                        {t("packages.flyouts.new.cancel")}
+                                    </Btn>
+                                </BtnToolbar>
+                            )}
+                            {/** If package is not selected, show only the cancel button. */
+                            !packageFile && (
+                                <BtnToolbar>
+                                    <Btn
+                                        svg={svgs.cancelX}
+                                        onClick={() =>
+                                            this.genericCloseClick(
+                                                "NewPackage_CancelClick"
+                                            )
+                                        }
+                                    >
+                                        {t("packages.flyouts.new.cancel")}
+                                    </Btn>
+                                </BtnToolbar>
+                            )}
+                            {/** After successful upload, show close button. */
+                            completedSuccessfully && (
+                                <BtnToolbar>
+                                    <Btn
+                                        svg={svgs.cancelX}
+                                        onClick={() =>
+                                            this.genericCloseClick(
+                                                "NewPackage_CancelClick"
+                                            )
+                                        }
+                                    >
+                                        {t("packages.flyouts.new.close")}
+                                    </Btn>
+                                </BtnToolbar>
+                            )}
+                        </SummarySection>
+                    </form>
+                </div>
+            </Flyout>
         );
     }
 }

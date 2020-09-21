@@ -2,9 +2,10 @@
 
 import React, { Component } from "react";
 import { permissions, toDiagnosticsModel } from "services/models";
-import { Protected } from "components/shared";
+import { Protected, Btn } from "components/shared";
 import { RuleEditorContainer } from "./ruleEditor";
 import Flyout from "components/shared/flyout";
+import { svgs } from "utilities";
 
 export class NewRuleFlyout extends Component {
     constructor(props) {
@@ -13,7 +14,7 @@ export class NewRuleFlyout extends Component {
         this.state = {
             expandedValue: "no",
         };
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     onTopXClose = () => {
@@ -22,7 +23,7 @@ export class NewRuleFlyout extends Component {
         onClose();
     };
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -37,18 +38,27 @@ export class NewRuleFlyout extends Component {
     render() {
         const { onClose, t } = this.props;
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout.Container
-                    header={t("rules.flyouts.newRule")}
-                    t={t}
-                    onClose={this.onTopXClose}
-                    expanded={this.state.expandedValue}
-                >
-                    <Protected permission={permissions.createRules}>
-                        <RuleEditorContainer onClose={onClose} />
-                    </Protected>
-                </Flyout.Container>
-            </div>
+            <Flyout.Container
+                header={t("rules.flyouts.newRule")}
+                t={t}
+                onClose={this.onTopXClose}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <Protected permission={permissions.createRules}>
+                    <RuleEditorContainer onClose={onClose} />
+                </Protected>
+            </Flyout.Container>
         );
     }
 }

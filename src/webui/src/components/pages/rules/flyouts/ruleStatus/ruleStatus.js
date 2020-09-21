@@ -22,7 +22,7 @@ export class RuleStatus extends Component {
             changesApplied: undefined,
             expandedValue: "no",
         };
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentDidMount() {
@@ -84,7 +84,7 @@ export class RuleStatus extends Component {
             );
     };
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -102,72 +102,79 @@ export class RuleStatus extends Component {
             completedSuccessfully = changesApplied && !error;
 
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout.Container
-                    header={t("rules.flyouts.statusTitle")}
-                    t={t}
-                    onClose={onClose}
-                    expanded={this.state.expandedValue}
-                >
-                    <Protected permission={permissions.updateRules}>
-                        <form
-                            onSubmit={this.changeRuleStatus}
-                            className="disable-rule-flyout-container"
-                        >
-                            <div className="padded-top-bottom">
-                                <Toggle
-                                    name="rules-flyouts-status-enable"
-                                    attr={{
-                                        button: {
-                                            "aria-label": t(
-                                                "rules.flyouts.statusToggle"
-                                            ),
-                                        },
-                                    }}
-                                    on={status}
-                                    onChange={this.onToggle}
-                                    onLabel={t("rules.flyouts.enable")}
-                                    offLabel={t("rules.flyouts.disable")}
-                                />
-                            </div>
-                            {rules.map((rule, idx) => (
-                                <RuleSummary
-                                    key={idx}
-                                    rule={rule}
-                                    isPending={isPending}
-                                    completedSuccessfully={
-                                        completedSuccessfully
-                                    }
-                                    includeSummaryStatus={true}
-                                    t={t}
-                                />
-                            ))}
+            <Flyout.Container
+                header={t("rules.flyouts.statusTitle")}
+                t={t}
+                onClose={onClose}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <Protected permission={permissions.updateRules}>
+                    <form
+                        onSubmit={this.changeRuleStatus}
+                        className="disable-rule-flyout-container"
+                    >
+                        <div className="padded-top-bottom">
+                            <Toggle
+                                name="rules-flyouts-status-enable"
+                                attr={{
+                                    button: {
+                                        "aria-label": t(
+                                            "rules.flyouts.statusToggle"
+                                        ),
+                                    },
+                                }}
+                                on={status}
+                                onChange={this.onToggle}
+                                onLabel={t("rules.flyouts.enable")}
+                                offLabel={t("rules.flyouts.disable")}
+                            />
+                        </div>
+                        {rules.map((rule, idx) => (
+                            <RuleSummary
+                                key={idx}
+                                rule={rule}
+                                isPending={isPending}
+                                completedSuccessfully={completedSuccessfully}
+                                includeSummaryStatus={true}
+                                t={t}
+                            />
+                        ))}
 
-                            {error && (
-                                <AjaxError
-                                    className="rule-status-error"
-                                    t={t}
-                                    error={error}
-                                />
-                            )}
-                            {
-                                <BtnToolbar>
-                                    <Btn
-                                        primary={true}
-                                        disabled={!!changesApplied || isPending}
-                                        type="submit"
-                                    >
-                                        {t("rules.flyouts.ruleEditor.apply")}
-                                    </Btn>
-                                    <Btn svg={svgs.cancelX} onClick={onClose}>
-                                        {t("rules.flyouts.ruleEditor.cancel")}
-                                    </Btn>
-                                </BtnToolbar>
-                            }
-                        </form>
-                    </Protected>
-                </Flyout.Container>
-            </div>
+                        {error && (
+                            <AjaxError
+                                className="rule-status-error"
+                                t={t}
+                                error={error}
+                            />
+                        )}
+                        {
+                            <BtnToolbar>
+                                <Btn
+                                    primary={true}
+                                    disabled={!!changesApplied || isPending}
+                                    type="submit"
+                                >
+                                    {t("rules.flyouts.ruleEditor.apply")}
+                                </Btn>
+                                <Btn svg={svgs.cancelX} onClick={onClose}>
+                                    {t("rules.flyouts.ruleEditor.cancel")}
+                                </Btn>
+                            </BtnToolbar>
+                        }
+                    </form>
+                </Protected>
+            </Flyout.Container>
         );
     }
 }

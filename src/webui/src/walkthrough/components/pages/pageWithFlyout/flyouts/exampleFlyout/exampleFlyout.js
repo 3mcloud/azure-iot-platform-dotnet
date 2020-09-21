@@ -32,7 +32,7 @@ export class ExampleFlyout extends Component {
             changesApplied: false,
             expandedValue: "no",
         };
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentWillUnmount() {
@@ -81,7 +81,7 @@ export class ExampleFlyout extends Component {
         return t("walkthrough.pageWithFlyout.flyouts.example.affected");
     }
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -107,105 +107,110 @@ export class ExampleFlyout extends Component {
             summaryMessage = this.getSummaryMessage();
 
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout
-                    header={t(
-                        "walkthrough.pageWithFlyout.flyouts.example.header"
-                    )}
-                    t={t}
-                    onClose={onClose}
-                    expanded={this.state.expandedValue}
+            <Flyout
+                header={t("walkthrough.pageWithFlyout.flyouts.example.header")}
+                t={t}
+                onClose={onClose}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                {/**
+                 * Really, anything you need could go inside a flyout.
+                 * The following is a simple empty form with buttons to do an action or close the flyout.
+                 * */}
+                <form
+                    className="example-flyout-container"
+                    onSubmit={this.apply}
                 >
-                    {/**
-                     * Really, anything you need could go inside a flyout.
-                     * The following is a simple empty form with buttons to do an action or close the flyout.
-                     * */}
-                    <form
-                        className="example-flyout-container"
-                        onSubmit={this.apply}
-                    >
-                        <div className="example-flyout-header">
-                            {t(
-                                "walkthrough.pageWithFlyout.flyouts.example.header"
-                            )}
-                        </div>
-                        <div className="example-flyout-descr">
-                            {t(
-                                "walkthrough.pageWithFlyout.flyouts.example.description"
-                            )}
-                        </div>
+                    <div className="example-flyout-header">
+                        {t("walkthrough.pageWithFlyout.flyouts.example.header")}
+                    </div>
+                    <div className="example-flyout-descr">
+                        {t(
+                            "walkthrough.pageWithFlyout.flyouts.example.description"
+                        )}
+                    </div>
 
-                        <div className="form-placeholder">
-                            {t(
-                                "walkthrough.pageWithFlyout.flyouts.example.insertFormHere"
-                            )}
-                        </div>
+                    <div className="form-placeholder">
+                        {t(
+                            "walkthrough.pageWithFlyout.flyouts.example.insertFormHere"
+                        )}
+                    </div>
 
-                        {/** Sumarizes the action being taken; including count of items affected & status/pending indicator */}
-                        <SummarySection>
-                            <SectionHeader>
+                    {/** Sumarizes the action being taken; including count of items affected & status/pending indicator */}
+                    <SummarySection>
+                        <SectionHeader>
+                            {t(
+                                "walkthrough.pageWithFlyout.flyouts.example.summaryHeader"
+                            )}
+                        </SectionHeader>
+                        <SummaryBody>
+                            <SummaryCount>{summaryCount}</SummaryCount>
+                            <SectionDesc>{summaryMessage}</SectionDesc>
+                            {this.state.isPending && <Indicator />}
+                            {completedSuccessfully && (
+                                <Svg
+                                    className="summary-icon"
+                                    path={svgs.apply}
+                                />
+                            )}
+                        </SummaryBody>
+                    </SummarySection>
+
+                    {/** Displays an error message if one occurs while applying changes. */}
+                    {error && (
+                        <AjaxError
+                            className="example-flyout-error"
+                            t={t}
+                            error={error}
+                        />
+                    )}
+                    {/** If changes are not yet applied, show the buttons for applying changes and closing the flyout. */
+                    !changesApplied && (
+                        <BtnToolbar>
+                            <Btn
+                                svg={svgs.reconfigure}
+                                primary={true}
+                                disabled={isPending || itemCount === 0}
+                                type="submit"
+                            >
                                 {t(
-                                    "walkthrough.pageWithFlyout.flyouts.example.summaryHeader"
+                                    "walkthrough.pageWithFlyout.flyouts.example.apply"
                                 )}
-                            </SectionHeader>
-                            <SummaryBody>
-                                <SummaryCount>{summaryCount}</SummaryCount>
-                                <SectionDesc>{summaryMessage}</SectionDesc>
-                                {this.state.isPending && <Indicator />}
-                                {completedSuccessfully && (
-                                    <Svg
-                                        className="summary-icon"
-                                        path={svgs.apply}
-                                    />
+                            </Btn>
+                            <Btn svg={svgs.cancelX} onClick={onClose}>
+                                {t(
+                                    "walkthrough.pageWithFlyout.flyouts.example.cancel"
                                 )}
-                            </SummaryBody>
-                        </SummarySection>
-
-                        {/** Displays an error message if one occurs while applying changes. */}
-                        {error && (
-                            <AjaxError
-                                className="example-flyout-error"
-                                t={t}
-                                error={error}
-                            />
-                        )}
-                        {/** If changes are not yet applied, show the buttons for applying changes and closing the flyout. */
-                        !changesApplied && (
-                            <BtnToolbar>
-                                <Btn
-                                    svg={svgs.reconfigure}
-                                    primary={true}
-                                    disabled={isPending || itemCount === 0}
-                                    type="submit"
-                                >
-                                    {t(
-                                        "walkthrough.pageWithFlyout.flyouts.example.apply"
-                                    )}
-                                </Btn>
-                                <Btn svg={svgs.cancelX} onClick={onClose}>
-                                    {t(
-                                        "walkthrough.pageWithFlyout.flyouts.example.cancel"
-                                    )}
-                                </Btn>
-                            </BtnToolbar>
-                        )}
-                        {/**
-                         * If changes are applied, show only the close button.
-                         * Other text or component might be included here as well.
-                         * For example, you might provide a link to the detail page for a newly submitted job.
-                         * */
-                        !!changesApplied && (
-                            <BtnToolbar>
-                                <Btn svg={svgs.cancelX} onClick={onClose}>
-                                    {t(
-                                        "walkthrough.pageWithFlyout.flyouts.example.close"
-                                    )}
-                                </Btn>
-                            </BtnToolbar>
-                        )}
-                    </form>
-                </Flyout>
-            </div>
+                            </Btn>
+                        </BtnToolbar>
+                    )}
+                    {/**
+                     * If changes are applied, show only the close button.
+                     * Other text or component might be included here as well.
+                     * For example, you might provide a link to the detail page for a newly submitted job.
+                     * */
+                    !!changesApplied && (
+                        <BtnToolbar>
+                            <Btn svg={svgs.cancelX} onClick={onClose}>
+                                {t(
+                                    "walkthrough.pageWithFlyout.flyouts.example.close"
+                                )}
+                            </Btn>
+                        </BtnToolbar>
+                    )}
+                </form>
+            </Flyout>
         );
     }
 }

@@ -28,7 +28,7 @@ export class ManageDeviceGroups extends LinkedComponent {
             filtersError: undefined,
             expandedValue: "no",
         };
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentDidMount() {
@@ -70,7 +70,7 @@ export class ManageDeviceGroups extends LinkedComponent {
         this.props.closeFlyout();
     };
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -89,48 +89,55 @@ export class ManageDeviceGroups extends LinkedComponent {
             paddingLeft: "10px",
         };
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout.Container
-                    header={t("deviceGroupsFlyout.title")}
-                    t={t}
-                    onClose={this.onCloseFlyout}
-                    expanded={this.state.expandedValue}
-                >
-                    <div className="manage-filters-flyout-container">
-                        {this.state.addNewDeviceGroup ||
-                        !!this.state.selectedDeviceGroup ? (
-                            <DeviceGroupForm
-                                {...this.props}
-                                {...this.state}
-                                cancel={this.closeForm}
-                            />
-                        ) : (
-                            <div>
-                                <Protected
-                                    permission={permissions.createDeviceGroups}
+            <Flyout.Container
+                header={t("deviceGroupsFlyout.title")}
+                t={t}
+                onClose={this.onCloseFlyout}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <div className="manage-filters-flyout-container">
+                    {this.state.addNewDeviceGroup ||
+                    !!this.state.selectedDeviceGroup ? (
+                        <DeviceGroupForm
+                            {...this.props}
+                            {...this.state}
+                            cancel={this.closeForm}
+                        />
+                    ) : (
+                        <div>
+                            <Protected
+                                permission={permissions.createDeviceGroups}
+                            >
+                                <Btn
+                                    className="add-btn"
+                                    style={btnStyle}
+                                    svg={svgs.plus}
+                                    onClick={this.toggleNewFilter}
                                 >
-                                    <Btn
-                                        className="add-btn"
-                                        style={btnStyle}
-                                        svg={svgs.plus}
-                                        onClick={this.toggleNewFilter}
-                                    >
-                                        {t("deviceGroupsFlyout.create")}
-                                    </Btn>
-                                </Protected>
-                                {deviceGroups.length > 0 && (
-                                    <DeviceGroups
-                                        {...this.props}
-                                        onEditDeviceGroup={
-                                            this.onEditDeviceGroup
-                                        }
-                                    />
-                                )}
-                            </div>
-                        )}
-                    </div>
-                </Flyout.Container>
-            </div>
+                                    {t("deviceGroupsFlyout.create")}
+                                </Btn>
+                            </Protected>
+                            {deviceGroups.length > 0 && (
+                                <DeviceGroups
+                                    {...this.props}
+                                    onEditDeviceGroup={this.onEditDeviceGroup}
+                                />
+                            )}
+                        </div>
+                    )}
+                </div>
+            </Flyout.Container>
         );
     }
 }

@@ -48,7 +48,7 @@ export class SystemAdminDelete extends LinkedComponent {
                 this.props.t("users.flyouts.new.validation.required")
             );
         this.deleteUsers = this.deleteUsers.bind(this);
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentDidMount() {
@@ -108,7 +108,7 @@ export class SystemAdminDelete extends LinkedComponent {
         return t("users.flyouts.delete.affected");
     }
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -135,89 +135,92 @@ export class SystemAdminDelete extends LinkedComponent {
                 : [];
 
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout
-                    header={t("users.flyouts.delete.systemAdmin.title")}
-                    t={t}
-                    onClose={onClose}
-                    expanded={this.state.expandedValue}
+            <Flyout
+                header={t("users.flyouts.delete.systemAdmin.title")}
+                t={t}
+                onClose={onClose}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <form
+                    className="device-delete-container"
+                    onSubmit={this.deleteUsers}
                 >
-                    <form
-                        className="device-delete-container"
-                        onSubmit={this.deleteUsers}
-                    >
-                        {!changesApplied && (
-                            <FormGroup>
-                                <FormControl
-                                    name="userId"
-                                    link={this.systemAdminLink}
-                                    ariaLabel={t(
-                                        "users.flyouts.new.systemAdmin.label"
-                                    )}
-                                    type="select"
-                                    options={systemAdminOptions}
-                                    placeholder={t(
-                                        "users.flyouts.new.systemAdmin.hint"
-                                    )}
-                                    onChange={(e) =>
-                                        this.onSystemAdminSelected(e)
-                                    }
-                                />
-                            </FormGroup>
-                        )}
-                        {!!changesApplied && (
-                            <>
-                                <SummarySection>
-                                    <SectionHeader>
-                                        {t(
-                                            "users.flyouts.delete.summaryHeader"
-                                        )}
-                                    </SectionHeader>
-                                    <SummaryBody>
-                                        <SectionDesc>
-                                            {summaryMessage}
-                                        </SectionDesc>
-                                        {this.state.isPending && <Indicator />}
-                                        {completedSuccessfully && (
-                                            <Svg
-                                                className="summary-icon"
-                                                path={svgs.apply}
-                                            />
-                                        )}
-                                    </SummaryBody>
-                                </SummarySection>
-                                <BtnToolbar>
-                                    <Btn svg={svgs.cancelX} onClick={onClose}>
-                                        {t("users.flyouts.delete.close")}
-                                    </Btn>
-                                </BtnToolbar>
-                            </>
-                        )}
-                        {error && (
-                            <AjaxError
-                                className="device-delete-error"
-                                t={t}
-                                error={error}
+                    {!changesApplied && (
+                        <FormGroup>
+                            <FormControl
+                                name="userId"
+                                link={this.systemAdminLink}
+                                ariaLabel={t(
+                                    "users.flyouts.new.systemAdmin.label"
+                                )}
+                                type="select"
+                                options={systemAdminOptions}
+                                placeholder={t(
+                                    "users.flyouts.new.systemAdmin.hint"
+                                )}
+                                onChange={(e) => this.onSystemAdminSelected(e)}
                             />
-                        )}
-                        {!changesApplied && (
+                        </FormGroup>
+                    )}
+                    {!!changesApplied && (
+                        <>
+                            <SummarySection>
+                                <SectionHeader>
+                                    {t("users.flyouts.delete.summaryHeader")}
+                                </SectionHeader>
+                                <SummaryBody>
+                                    <SectionDesc>{summaryMessage}</SectionDesc>
+                                    {this.state.isPending && <Indicator />}
+                                    {completedSuccessfully && (
+                                        <Svg
+                                            className="summary-icon"
+                                            path={svgs.apply}
+                                        />
+                                    )}
+                                </SummaryBody>
+                            </SummarySection>
                             <BtnToolbar>
-                                <Btn
-                                    svg={svgs.trash}
-                                    disabled={!this.formIsValid()}
-                                    primary={true}
-                                    type="submit"
-                                >
-                                    {t("devices.flyouts.delete.apply")}
-                                </Btn>
                                 <Btn svg={svgs.cancelX} onClick={onClose}>
-                                    {t("users.flyouts.delete.cancel")}
+                                    {t("users.flyouts.delete.close")}
                                 </Btn>
                             </BtnToolbar>
-                        )}
-                    </form>
-                </Flyout>
-            </div>
+                        </>
+                    )}
+                    {error && (
+                        <AjaxError
+                            className="device-delete-error"
+                            t={t}
+                            error={error}
+                        />
+                    )}
+                    {!changesApplied && (
+                        <BtnToolbar>
+                            <Btn
+                                svg={svgs.trash}
+                                disabled={!this.formIsValid()}
+                                primary={true}
+                                type="submit"
+                            >
+                                {t("devices.flyouts.delete.apply")}
+                            </Btn>
+                            <Btn svg={svgs.cancelX} onClick={onClose}>
+                                {t("users.flyouts.delete.cancel")}
+                            </Btn>
+                        </BtnToolbar>
+                    )}
+                </form>
+            </Flyout>
         );
     }
 }

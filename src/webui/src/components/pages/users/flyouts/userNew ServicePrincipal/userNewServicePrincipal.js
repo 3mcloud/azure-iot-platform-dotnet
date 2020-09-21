@@ -83,7 +83,7 @@ export class UserNewServicePrincipal extends LinkedComponent {
             .check(Validator.notEmpty, () =>
                 this.props.t("users.flyouts.new.validation.required")
             );
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentWillUnmount() {
@@ -170,7 +170,7 @@ export class UserNewServicePrincipal extends LinkedComponent {
         return t("users.flyouts.new.affected");
     }
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -189,123 +189,124 @@ export class UserNewServicePrincipal extends LinkedComponent {
             summaryMessage = this.getSummaryMessage();
         console.log(permissions.inviteUsers);
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout
-                    header={t("users.flyouts.new.title")}
-                    t={t}
-                    onClose={() => this.onFlyoutClose("Users_TopXCloseClick")}
-                    expanded={this.state.expandedValue}
-                >
-                    <Protected permission={permissions.inviteUsers}>
-                        <form
-                            className="users-new-container"
-                            onSubmit={this.invite}
-                        >
-                            <div className="users-new-content">
-                                <FormGroup>
-                                    <FormLabel>
-                                        {t(userOptions.labelName)}
-                                    </FormLabel>
-                                    <FormControl
-                                        link={this.appLink}
-                                        type="text"
-                                        onChange={this.formControlChange}
-                                    />
-                                </FormGroup>
-
-                                <FormGroup>
-                                    <FormLabel>
-                                        {t("users.flyouts.new.roles.label")}
-                                    </FormLabel>
-                                    <FormControl
-                                        name="roleSelect"
-                                        link={this.roleLink}
-                                        ariaLabel={t(
-                                            "users.flyouts.new.roles.label"
-                                        )}
-                                        type="select"
-                                        options={userRolesOptions}
-                                        placeholder={t(
-                                            "users.flyouts.new.roles.hint"
-                                        )}
-                                        onChange={this.roleChange}
-                                    />
-                                </FormGroup>
-                            </div>
-
-                            {error && (
-                                <AjaxError
-                                    className="users-new-error"
-                                    t={t}
-                                    error={error}
+            <Flyout
+                header={t("users.flyouts.new.title")}
+                t={t}
+                onClose={() => this.onFlyoutClose("Users_TopXCloseClick")}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <Protected permission={permissions.inviteUsers}>
+                    <form
+                        className="users-new-container"
+                        onSubmit={this.invite}
+                    >
+                        <div className="users-new-content">
+                            <FormGroup>
+                                <FormLabel>
+                                    {t(userOptions.labelName)}
+                                </FormLabel>
+                                <FormControl
+                                    link={this.appLink}
+                                    type="text"
+                                    onChange={this.formControlChange}
                                 />
-                            )}
-                            {!changesApplied && (
-                                <BtnToolbar>
-                                    <Btn
-                                        primary={true}
-                                        disabled={
-                                            isPending || !this.formIsValid()
-                                        }
-                                        type="submit"
-                                    >
-                                        {t(
-                                            "users.flyouts.new.servicePrincipal.apply"
+                            </FormGroup>
+
+                            <FormGroup>
+                                <FormLabel>
+                                    {t("users.flyouts.new.roles.label")}
+                                </FormLabel>
+                                <FormControl
+                                    name="roleSelect"
+                                    link={this.roleLink}
+                                    ariaLabel={t(
+                                        "users.flyouts.new.roles.label"
+                                    )}
+                                    type="select"
+                                    options={userRolesOptions}
+                                    placeholder={t(
+                                        "users.flyouts.new.roles.hint"
+                                    )}
+                                    onChange={this.roleChange}
+                                />
+                            </FormGroup>
+                        </div>
+
+                        {error && (
+                            <AjaxError
+                                className="users-new-error"
+                                t={t}
+                                error={error}
+                            />
+                        )}
+                        {!changesApplied && (
+                            <BtnToolbar>
+                                <Btn
+                                    primary={true}
+                                    disabled={isPending || !this.formIsValid()}
+                                    type="submit"
+                                >
+                                    {t(
+                                        "users.flyouts.new.servicePrincipal.apply"
+                                    )}
+                                </Btn>
+                                <Btn
+                                    svg={svgs.cancelX}
+                                    onClick={() =>
+                                        this.onFlyoutClose("Users_CancelClick")
+                                    }
+                                >
+                                    {t("users.flyouts.new.cancel")}
+                                </Btn>
+                            </BtnToolbar>
+                        )}
+                        {!!changesApplied && (
+                            <>
+                                <SummarySection>
+                                    <SectionHeader>
+                                        {t("users.flyouts.new.summaryHeader")}
+                                    </SectionHeader>
+                                    <SummaryBody>
+                                        <SectionDesc>
+                                            {summaryMessage}
+                                        </SectionDesc>
+                                        {this.state.isPending && <Indicator />}
+                                        {completedSuccessfully && (
+                                            <Svg
+                                                className="summary-icon"
+                                                path={svgs.apply}
+                                            />
                                         )}
-                                    </Btn>
+                                    </SummaryBody>
+                                </SummarySection>
+                                <BtnToolbar>
                                     <Btn
                                         svg={svgs.cancelX}
                                         onClick={() =>
                                             this.onFlyoutClose(
-                                                "Users_CancelClick"
+                                                "Users_CloseClick"
                                             )
                                         }
                                     >
-                                        {t("users.flyouts.new.cancel")}
+                                        {t("users.flyouts.new.close")}
                                     </Btn>
                                 </BtnToolbar>
-                            )}
-                            {!!changesApplied && (
-                                <>
-                                    <SummarySection>
-                                        <SectionHeader>
-                                            {t(
-                                                "users.flyouts.new.summaryHeader"
-                                            )}
-                                        </SectionHeader>
-                                        <SummaryBody>
-                                            <SectionDesc>
-                                                {summaryMessage}
-                                            </SectionDesc>
-                                            {this.state.isPending && (
-                                                <Indicator />
-                                            )}
-                                            {completedSuccessfully && (
-                                                <Svg
-                                                    className="summary-icon"
-                                                    path={svgs.apply}
-                                                />
-                                            )}
-                                        </SummaryBody>
-                                    </SummarySection>
-                                    <BtnToolbar>
-                                        <Btn
-                                            svg={svgs.cancelX}
-                                            onClick={() =>
-                                                this.onFlyoutClose(
-                                                    "Users_CloseClick"
-                                                )
-                                            }
-                                        >
-                                            {t("users.flyouts.new.close")}
-                                        </Btn>
-                                    </BtnToolbar>
-                                </>
-                            )}
-                        </form>
-                    </Protected>
-                </Flyout>
-            </div>
+                            </>
+                        )}
+                    </form>
+                </Protected>
+            </Flyout>
         );
     }
 }

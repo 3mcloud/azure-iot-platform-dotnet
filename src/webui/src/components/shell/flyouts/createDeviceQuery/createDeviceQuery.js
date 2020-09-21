@@ -4,8 +4,9 @@ import React from "react";
 
 import { IoTHubManagerService } from "services";
 import { toDiagnosticsModel } from "services/models";
-import { LinkedComponent } from "utilities";
+import { LinkedComponent, svgs } from "utilities";
 import Flyout from "components/shared/flyout";
+import { Btn } from "components/shared";
 import CreateDeviceQueryForm from "./views/createDeviceQueryForm";
 
 import "./createDeviceQuery.scss";
@@ -24,7 +25,7 @@ export class CreateDeviceQuery extends LinkedComponent {
             filtersError: undefined,
             expandedValue: "no",
         };
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentDidMount() {
@@ -55,7 +56,7 @@ export class CreateDeviceQuery extends LinkedComponent {
         this.props.closeFlyout();
     };
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -71,21 +72,27 @@ export class CreateDeviceQuery extends LinkedComponent {
         const { t } = this.props;
 
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout.Container
-                    header={t("createDeviceQuery.title")}
-                    t={t}
-                    onClose={this.onCloseFlyout}
-                    expanded={this.state.expandedValue}
-                >
-                    <div className="manage-filters-flyout-container">
-                        <CreateDeviceQueryForm
-                            {...this.props}
-                            {...this.state}
-                        />
-                    </div>
-                </Flyout.Container>
-            </div>
+            <Flyout.Container
+                header={t("createDeviceQuery.title")}
+                t={t}
+                onClose={this.onCloseFlyout}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <div className="manage-filters-flyout-container">
+                    <CreateDeviceQueryForm {...this.props} {...this.state} />
+                </div>
+            </Flyout.Container>
         );
     }
 }

@@ -93,7 +93,7 @@ export class Settings extends LinkedComponent {
         if (this.state.alertingPending) {
             this.watchAlertingStatusAndUpdate(10);
         }
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentWillReceiveProps({
@@ -430,7 +430,7 @@ export class Settings extends LinkedComponent {
         }
     };
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -496,357 +496,347 @@ export class Settings extends LinkedComponent {
         }
 
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout.Container
-                    header={t("settingsFlyout.title")}
-                    t={t}
-                    onClose={this.onFlyoutClose.bind(
-                        this,
-                        "Settings_TopXClose_Click"
-                    )}
-                    expanded={this.state.expandedValue}
-                >
-                    <form onSubmit={this.apply}>
-                        <div className="settings-workflow-container">
-                            <Section.Container collapsable={false}>
-                                <Section.Content className="diagnostics-content">
-                                    {getDiagnosticsError ? (
-                                        <div className="toggle">
-                                            {t(
-                                                "settingsFlyout.diagnosticsLoadError"
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <div className="toggle">
-                                            <Toggle
-                                                name="settings-diagnostics-opt-in"
-                                                attr={{
-                                                    button: {
-                                                        "aria-label": t(
-                                                            "settingsFlyout.optInButton"
-                                                        ),
-                                                        type: "button",
-                                                    },
-                                                }}
-                                                on={this.state.diagnosticsOptIn}
-                                                disabled={getDiagnosticsPending}
-                                                onChange={
-                                                    this.toggleDiagnostics
-                                                }
-                                                onLabel={t(
-                                                    getDiagnosticsPending
-                                                        ? "settingsFlyout.loading"
-                                                        : "settingsFlyout.sendDiagnosticsCheckbox"
-                                                )}
-                                                offLabel={t(
-                                                    getDiagnosticsPending
-                                                        ? "settingsFlyout.loading"
-                                                        : "settingsFlyout.dontSendDiagnosticsCheckbox"
-                                                )}
-                                            />
-                                        </div>
-                                    )}
-                                </Section.Content>
-                            </Section.Container>
-                            <Section.Container
-                                collapsable={false}
-                                className="app-version"
-                            >
-                                <Section.Header>
-                                    {t("settingsFlyout.version", { version })}
-                                </Section.Header>
-                                <Section.Content className="release-and-privacy-notes">
-                                    <a
-                                        href={releaseNotesUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {t("settingsFlyout.viewRelNotes")}
-                                    </a>
-                                    <a
-                                        href={Config.serviceUrls.privacy}
-                                        className="privacy-link"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {this.props.t(
-                                            "settingsFlyout.sendDiagnosticsMicrosoftPrivacyUrl"
-                                        )}
-                                    </a>
-                                </Section.Content>
-                            </Section.Container>
-                            <Protected permission={permissions.enableAlerting}>
-                                <Section.Container
-                                    collapsable={false}
-                                    className="app-alerting"
-                                >
-                                    <Section.Header>
-                                        {t("settingsFlyout.alerting")}:{" "}
-                                        {alertingState}
-                                    </Section.Header>
-                                    <Section.Content className="release-notes">
+            <Flyout.Container
+                header={t("settingsFlyout.title")}
+                t={t}
+                onClose={this.onFlyoutClose.bind(
+                    this,
+                    "Settings_TopXClose_Click"
+                )}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <form onSubmit={this.apply}>
+                    <div className="settings-workflow-container">
+                        <Section.Container collapsable={false}>
+                            <Section.Content className="diagnostics-content">
+                                {getDiagnosticsError ? (
+                                    <div className="toggle">
                                         {t(
-                                            "settingsFlyout.alertingDescription"
+                                            "settingsFlyout.diagnosticsLoadError"
                                         )}
-                                        <br></br>
-                                        <br></br>
+                                    </div>
+                                ) : (
+                                    <div className="toggle">
                                         <Toggle
-                                            className="alerting-toggle-button"
-                                            name={t(
-                                                "settingsFlyout.alertingToggle"
-                                            )}
+                                            name="settings-diagnostics-opt-in"
                                             attr={{
                                                 button: {
                                                     "aria-label": t(
-                                                        "settingsFlyout.alertingToggle"
+                                                        "settingsFlyout.optInButton"
                                                     ),
                                                     type: "button",
                                                 },
                                             }}
-                                            on={alertingIsActive}
-                                            disabled={alertingPending}
-                                            onChange={
-                                                this.onAlertingStatusChange
-                                            }
-                                            onLabel={
-                                                alertingPending
-                                                    ? t(
-                                                          "settingsFlyout.loading"
-                                                      )
-                                                    : t("settingsFlyout.stop")
-                                            }
-                                            offLabel={
-                                                alertingPending
-                                                    ? t(
-                                                          "settingsFlyout.loading"
-                                                      )
-                                                    : t("settingsFlyout.start")
-                                            }
+                                            on={this.state.diagnosticsOptIn}
+                                            disabled={getDiagnosticsPending}
+                                            onChange={this.toggleDiagnostics}
+                                            onLabel={t(
+                                                getDiagnosticsPending
+                                                    ? "settingsFlyout.loading"
+                                                    : "settingsFlyout.sendDiagnosticsCheckbox"
+                                            )}
+                                            offLabel={t(
+                                                getDiagnosticsPending
+                                                    ? "settingsFlyout.loading"
+                                                    : "settingsFlyout.dontSendDiagnosticsCheckbox"
+                                            )}
                                         />
-                                    </Section.Content>
-                                </Section.Container>
-                            </Protected>
-                            <Protected permission={permissions.createPackages}>
-                                <Section.Container className="firmware-edit-container">
-                                    <Section.Header>
-                                        {t("settingsFlyout.firmware.name")}
-                                    </Section.Header>
-                                    <Section.Content>
-                                        {t(
-                                            "settingsFlyout.firmware.description"
+                                    </div>
+                                )}
+                            </Section.Content>
+                        </Section.Container>
+                        <Section.Container
+                            collapsable={false}
+                            className="app-version"
+                        >
+                            <Section.Header>
+                                {t("settingsFlyout.version", { version })}
+                            </Section.Header>
+                            <Section.Content className="release-and-privacy-notes">
+                                <a
+                                    href={releaseNotesUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {t("settingsFlyout.viewRelNotes")}
+                                </a>
+                                <a
+                                    href={Config.serviceUrls.privacy}
+                                    className="privacy-link"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {this.props.t(
+                                        "settingsFlyout.sendDiagnosticsMicrosoftPrivacyUrl"
+                                    )}
+                                </a>
+                            </Section.Content>
+                        </Section.Container>
+                        <Protected permission={permissions.enableAlerting}>
+                            <Section.Container
+                                collapsable={false}
+                                className="app-alerting"
+                            >
+                                <Section.Header>
+                                    {t("settingsFlyout.alerting")}:{" "}
+                                    {alertingState}
+                                </Section.Header>
+                                <Section.Content className="release-notes">
+                                    {t("settingsFlyout.alertingDescription")}
+                                    <br></br>
+                                    <br></br>
+                                    <Toggle
+                                        className="alerting-toggle-button"
+                                        name={t(
+                                            "settingsFlyout.alertingToggle"
                                         )}
-                                        {!firmwareEdit ? (
+                                        attr={{
+                                            button: {
+                                                "aria-label": t(
+                                                    "settingsFlyout.alertingToggle"
+                                                ),
+                                                type: "button",
+                                            },
+                                        }}
+                                        on={alertingIsActive}
+                                        disabled={alertingPending}
+                                        onChange={this.onAlertingStatusChange}
+                                        onLabel={
+                                            alertingPending
+                                                ? t("settingsFlyout.loading")
+                                                : t("settingsFlyout.stop")
+                                        }
+                                        offLabel={
+                                            alertingPending
+                                                ? t("settingsFlyout.loading")
+                                                : t("settingsFlyout.start")
+                                        }
+                                    />
+                                </Section.Content>
+                            </Section.Container>
+                        </Protected>
+                        <Protected permission={permissions.createPackages}>
+                            <Section.Container className="firmware-edit-container">
+                                <Section.Header>
+                                    {t("settingsFlyout.firmware.name")}
+                                </Section.Header>
+                                <Section.Content>
+                                    {t("settingsFlyout.firmware.description")}
+                                    {!firmwareEdit ? (
+                                        <BtnToolbar>
+                                            <Btn
+                                                primary
+                                                type="button"
+                                                svg={svgs.edit}
+                                                onClick={
+                                                    this.enableFirmwareEdit
+                                                }
+                                                className="firmware-edit-button"
+                                            >
+                                                {t(
+                                                    "settingsFlyout.firmware.edit"
+                                                )}
+                                            </Btn>
+                                        </BtnToolbar>
+                                    ) : (
+                                        <div className="firmware-edit-container">
+                                            <Section.Container closed={true}>
+                                                <Section.Header>
+                                                    {t(
+                                                        "settingsFlyout.firmware.variables.name"
+                                                    )}
+                                                </Section.Header>
+                                                <Section.Content>
+                                                    {t(
+                                                        "settingsFlyout.firmware.variables.summary"
+                                                    )}
+                                                    <FirmwareVariableGrid
+                                                        t={t}
+                                                    />
+                                                </Section.Content>
+                                            </Section.Container>
+                                            <FormControl
+                                                link={this.firmwareJsonLink}
+                                                type="jsoninput"
+                                                height="100%"
+                                                theme={theme}
+                                                onChange={this.onFirmwareEdit}
+                                            />
                                             <BtnToolbar>
                                                 <Btn
                                                     primary
                                                     type="button"
-                                                    svg={svgs.edit}
+                                                    svg={svgs.checkmark}
                                                     onClick={
-                                                        this.enableFirmwareEdit
+                                                        this
+                                                            .setFirmwareDefaultSetting
                                                     }
-                                                    className="firmware-edit-button"
+                                                    className="firmware-save-button"
+                                                    disabled={
+                                                        firmwareSettingPending ||
+                                                        firmwareSettingError
+                                                    }
                                                 >
                                                     {t(
-                                                        "settingsFlyout.firmware.edit"
+                                                        "settingsFlyout.firmware.save"
+                                                    )}
+                                                </Btn>
+                                                {firmwareSettingPending && (
+                                                    <Indicator />
+                                                )}
+                                                <Btn
+                                                    type="button"
+                                                    svg={svgs.cancelX}
+                                                    onClick={
+                                                        this.disableFirmwareEdit
+                                                    }
+                                                    className="firmware-cancel-button"
+                                                >
+                                                    {t(
+                                                        "settingsFlyout.firmware.cancel"
                                                     )}
                                                 </Btn>
                                             </BtnToolbar>
-                                        ) : (
-                                            <div className="firmware-edit-container">
-                                                <Section.Container
-                                                    closed={true}
-                                                >
-                                                    <Section.Header>
-                                                        {t(
-                                                            "settingsFlyout.firmware.variables.name"
-                                                        )}
-                                                    </Section.Header>
-                                                    <Section.Content>
-                                                        {t(
-                                                            "settingsFlyout.firmware.variables.summary"
-                                                        )}
-                                                        <FirmwareVariableGrid
-                                                            t={t}
-                                                        />
-                                                    </Section.Content>
-                                                </Section.Container>
-                                                <FormControl
-                                                    link={this.firmwareJsonLink}
-                                                    type="jsoninput"
-                                                    height="100%"
-                                                    theme={theme}
-                                                    onChange={
-                                                        this.onFirmwareEdit
-                                                    }
-                                                />
-                                                <BtnToolbar>
-                                                    <Btn
-                                                        primary
-                                                        type="button"
-                                                        svg={svgs.checkmark}
-                                                        onClick={
-                                                            this
-                                                                .setFirmwareDefaultSetting
-                                                        }
-                                                        className="firmware-save-button"
-                                                        disabled={
-                                                            firmwareSettingPending ||
-                                                            firmwareSettingError
-                                                        }
-                                                    >
-                                                        {t(
-                                                            "settingsFlyout.firmware.save"
-                                                        )}
-                                                    </Btn>
-                                                    {firmwareSettingPending && (
-                                                        <Indicator />
-                                                    )}
-                                                    <Btn
-                                                        type="button"
-                                                        svg={svgs.cancelX}
-                                                        onClick={
-                                                            this
-                                                                .disableFirmwareEdit
-                                                        }
-                                                        className="firmware-cancel-button"
-                                                    >
-                                                        {t(
-                                                            "settingsFlyout.firmware.cancel"
-                                                        )}
-                                                    </Btn>
-                                                </BtnToolbar>
-                                            </div>
+                                        </div>
+                                    )}
+                                </Section.Content>
+                            </Section.Container>
+                        </Protected>
+                        <Section.Container className="simulation-toggle-container">
+                            <Section.Header>
+                                {t("settingsFlyout.simulationData")}{" "}
+                            </Section.Header>
+                            <Section.Content className="simulation-description">
+                                {t("settingsFlyout.simulationDescription")}
+                                {getSimulationError ? (
+                                    <div className="simulation-toggle">
+                                        {t(
+                                            "settingsFlyout.simulationLoadError"
                                         )}
-                                    </Section.Content>
-                                </Section.Container>
-                            </Protected>
-                            <Section.Container className="simulation-toggle-container">
-                                <Section.Header>
-                                    {t("settingsFlyout.simulationData")}{" "}
-                                </Section.Header>
-                                <Section.Content className="simulation-description">
-                                    {t("settingsFlyout.simulationDescription")}
-                                    {getSimulationError ? (
-                                        <div className="simulation-toggle">
-                                            {t(
-                                                "settingsFlyout.simulationLoadError"
+                                    </div>
+                                ) : (
+                                    <div className="simulation-toggle">
+                                        <Toggle
+                                            className="simulation-toggle-button"
+                                            name={t(
+                                                "settingsFlyout.simulationToggle"
                                             )}
-                                        </div>
-                                    ) : (
-                                        <div className="simulation-toggle">
-                                            <Toggle
-                                                className="simulation-toggle-button"
-                                                name={t(
-                                                    "settingsFlyout.simulationToggle"
-                                                )}
-                                                attr={{
-                                                    button: {
-                                                        "aria-label": t(
-                                                            "settingsFlyout.simulationToggle"
-                                                        ),
-                                                        type: "button",
-                                                    },
-                                                }}
-                                                on={desiredSimulationState}
-                                                disabled={getSimulationPending}
-                                                onChange={
-                                                    this.onSimulationChange
-                                                }
-                                                onLabel={
-                                                    getSimulationPending
-                                                        ? t(
-                                                              "settingsFlyout.loading"
-                                                          )
-                                                        : simulationLabel
-                                                }
-                                                offLabel={
-                                                    getSimulationPending
-                                                        ? t(
-                                                              "settingsFlyout.loading"
-                                                          )
-                                                        : simulationLabel
-                                                }
-                                            />
-                                        </div>
-                                    )}
-                                </Section.Content>
-                            </Section.Container>
-                            <Section.Container>
-                                <Section.Header>
-                                    {t("settingsFlyout.theme")}
-                                </Section.Header>
-                                <Section.Content>
-                                    {t("settingsFlyout.changeTheme")}
-                                    <button
-                                        type="button"
-                                        onClick={this.onThemeChange.bind(
-                                            this,
-                                            nextTheme1
-                                        )}
-                                        className="toggle-theme-btn"
-                                    >
-                                        {t("settingsFlyout.switchTheme1", {
-                                            nextTheme1,
-                                        })}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={this.onThemeChange.bind(
-                                            this,
-                                            nextTheme2
-                                        )}
-                                        className="toggle-theme-btn"
-                                    >
-                                        {t("settingsFlyout.switchTheme2", {
-                                            nextTheme2,
-                                        })}
-                                    </button>
-                                </Section.Content>
-                            </Section.Container>
-                            <ApplicationSettingsContainer
-                                onUpload={this.onUpload}
-                                applicationNameLink={this.applicationNameLink}
-                                {...this.props}
-                            />
-                            {toggledSimulation && simulationToggleError && (
-                                <div className="toggle-error">
-                                    {t("settingsFlyout.toggleError")}
-                                </div>
-                            )}
-                            {madeLogoUpdate && setLogoError && (
-                                <div className="set-logo-error">
-                                    {t("settingsFlyout.setLogoError")}
-                                </div>
-                            )}
-                            <div className="btn-container">
-                                {!loading && hasChanged && (
-                                    <Btn
-                                        type="submit"
-                                        primary={true}
-                                        className="apply-button"
-                                    >
-                                        {t("settingsFlyout.apply")}
-                                    </Btn>
+                                            attr={{
+                                                button: {
+                                                    "aria-label": t(
+                                                        "settingsFlyout.simulationToggle"
+                                                    ),
+                                                    type: "button",
+                                                },
+                                            }}
+                                            on={desiredSimulationState}
+                                            disabled={getSimulationPending}
+                                            onChange={this.onSimulationChange}
+                                            onLabel={
+                                                getSimulationPending
+                                                    ? t(
+                                                          "settingsFlyout.loading"
+                                                      )
+                                                    : simulationLabel
+                                            }
+                                            offLabel={
+                                                getSimulationPending
+                                                    ? t(
+                                                          "settingsFlyout.loading"
+                                                      )
+                                                    : simulationLabel
+                                            }
+                                        />
+                                    </div>
                                 )}
-                                <Btn
+                            </Section.Content>
+                        </Section.Container>
+                        <Section.Container>
+                            <Section.Header>
+                                {t("settingsFlyout.theme")}
+                            </Section.Header>
+                            <Section.Content>
+                                {t("settingsFlyout.changeTheme")}
+                                <button
                                     type="button"
-                                    svg={svgs.x}
-                                    onClick={this.onFlyoutClose.bind(
+                                    onClick={this.onThemeChange.bind(
                                         this,
-                                        "Settings_Close_Click"
+                                        nextTheme1
                                     )}
-                                    className="close-button"
+                                    className="toggle-theme-btn"
                                 >
-                                    {hasChanged
-                                        ? t("settingsFlyout.cancel")
-                                        : t("settingsFlyout.close")}
-                                </Btn>
-                                {loading && <Indicator size="small" />}
+                                    {t("settingsFlyout.switchTheme1", {
+                                        nextTheme1,
+                                    })}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={this.onThemeChange.bind(
+                                        this,
+                                        nextTheme2
+                                    )}
+                                    className="toggle-theme-btn"
+                                >
+                                    {t("settingsFlyout.switchTheme2", {
+                                        nextTheme2,
+                                    })}
+                                </button>
+                            </Section.Content>
+                        </Section.Container>
+                        <ApplicationSettingsContainer
+                            onUpload={this.onUpload}
+                            applicationNameLink={this.applicationNameLink}
+                            {...this.props}
+                        />
+                        {toggledSimulation && simulationToggleError && (
+                            <div className="toggle-error">
+                                {t("settingsFlyout.toggleError")}
                             </div>
+                        )}
+                        {madeLogoUpdate && setLogoError && (
+                            <div className="set-logo-error">
+                                {t("settingsFlyout.setLogoError")}
+                            </div>
+                        )}
+                        <div className="btn-container">
+                            {!loading && hasChanged && (
+                                <Btn
+                                    type="submit"
+                                    primary={true}
+                                    className="apply-button"
+                                >
+                                    {t("settingsFlyout.apply")}
+                                </Btn>
+                            )}
+                            <Btn
+                                type="button"
+                                svg={svgs.x}
+                                onClick={this.onFlyoutClose.bind(
+                                    this,
+                                    "Settings_Close_Click"
+                                )}
+                                className="close-button"
+                            >
+                                {hasChanged
+                                    ? t("settingsFlyout.cancel")
+                                    : t("settingsFlyout.close")}
+                            </Btn>
+                            {loading && <Indicator size="small" />}
                         </div>
-                    </form>
-                </Flyout.Container>
-            </div>
+                    </div>
+                </form>
+            </Flyout.Container>
         );
     }
 }

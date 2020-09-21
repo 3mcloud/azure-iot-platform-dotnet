@@ -37,7 +37,7 @@ export class DeviceDelete extends Component {
             changesApplied: false,
             expandedValue: "no",
         };
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentDidMount() {
@@ -125,7 +125,7 @@ export class DeviceDelete extends Component {
         return t("devices.flyouts.delete.affected");
     }
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -155,104 +155,113 @@ export class DeviceDelete extends Component {
             summaryMessage = this.getSummaryMessage();
 
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout
-                    header={t("devices.flyouts.delete.title")}
-                    t={t}
-                    onClose={onClose}
-                    expanded={this.state.expandedValue}
-                >
-                    <Protected permission={permissions.deleteDevices}>
-                        <form
-                            className="device-delete-container"
-                            onSubmit={this.deleteDevices}
-                        >
-                            <div className="device-delete-header">
-                                {t("devices.flyouts.delete.header")}
-                            </div>
-                            <div className="device-delete-descr">
-                                {t("devices.flyouts.delete.description")}
-                            </div>
-                            <Toggle
-                                name="device-flyouts-delete"
-                                attr={{
-                                    button: {
-                                        "aria-label": t(
-                                            "devices.flyouts.delete.header"
-                                        ),
-                                    },
-                                }}
-                                on={confirmStatus}
-                                onChange={this.toggleConfirm}
-                                onLabel={t("devices.flyouts.delete.confirmYes")}
-                                offLabel={t("devices.flyouts.delete.confirmNo")}
-                            />
-                            {containsSimulatedDevices && (
-                                <div className="simulated-device-selected">
-                                    <Svg
-                                        path={svgs.infoBubble}
-                                        className="info-icon"
-                                    />
-                                    {t(
-                                        "devices.flyouts.delete.simulatedNotSupported"
-                                    )}
-                                </div>
-                            )}
-
-                            <SummarySection>
-                                <SectionHeader>
-                                    {t("devices.flyouts.delete.summaryHeader")}
-                                </SectionHeader>
-                                <SummaryBody>
-                                    <SummaryCount>{summaryCount}</SummaryCount>
-                                    <SectionDesc>{summaryMessage}</SectionDesc>
-                                    {this.state.isPending && <Indicator />}
-                                    {completedSuccessfully && (
-                                        <Svg
-                                            className="summary-icon"
-                                            path={svgs.apply}
-                                        />
-                                    )}
-                                </SummaryBody>
-                            </SummarySection>
-
-                            {error && (
-                                <AjaxError
-                                    className="device-delete-error"
-                                    t={t}
-                                    error={error}
+            <Flyout
+                header={t("devices.flyouts.delete.title")}
+                t={t}
+                onClose={onClose}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <Protected permission={permissions.deleteDevices}>
+                    <form
+                        className="device-delete-container"
+                        onSubmit={this.deleteDevices}
+                    >
+                        <div className="device-delete-header">
+                            {t("devices.flyouts.delete.header")}
+                        </div>
+                        <div className="device-delete-descr">
+                            {t("devices.flyouts.delete.description")}
+                        </div>
+                        <Toggle
+                            name="device-flyouts-delete"
+                            attr={{
+                                button: {
+                                    "aria-label": t(
+                                        "devices.flyouts.delete.header"
+                                    ),
+                                },
+                            }}
+                            on={confirmStatus}
+                            onChange={this.toggleConfirm}
+                            onLabel={t("devices.flyouts.delete.confirmYes")}
+                            offLabel={t("devices.flyouts.delete.confirmNo")}
+                        />
+                        {containsSimulatedDevices && (
+                            <div className="simulated-device-selected">
+                                <Svg
+                                    path={svgs.infoBubble}
+                                    className="info-icon"
                                 />
-                            )}
-                            {!changesApplied && (
-                                <BtnToolbar>
-                                    <Btn
-                                        svg={svgs.trash}
-                                        primary={true}
-                                        disabled={
-                                            isPending ||
-                                            physicalDevices.length === 0 ||
-                                            !confirmStatus
-                                        }
-                                        type="submit"
-                                    >
-                                        {t("devices.flyouts.delete.apply")}
-                                    </Btn>
-                                    <Btn svg={svgs.cancelX} onClick={onClose}>
-                                        {t("devices.flyouts.delete.cancel")}
-                                    </Btn>
-                                </BtnToolbar>
-                            )}
-                            {!!changesApplied && (
-                                <BtnToolbar>
-                                    <Btn svg={svgs.cancelX} onClick={onClose}>
-                                        {t("devices.flyouts.delete.close")}
-                                    </Btn>
-                                </BtnToolbar>
-                            )}
-                        </form>
-                    </Protected>
-                </Flyout>
-            </div>
+                                {t(
+                                    "devices.flyouts.delete.simulatedNotSupported"
+                                )}
+                            </div>
+                        )}
+
+                        <SummarySection>
+                            <SectionHeader>
+                                {t("devices.flyouts.delete.summaryHeader")}
+                            </SectionHeader>
+                            <SummaryBody>
+                                <SummaryCount>{summaryCount}</SummaryCount>
+                                <SectionDesc>{summaryMessage}</SectionDesc>
+                                {this.state.isPending && <Indicator />}
+                                {completedSuccessfully && (
+                                    <Svg
+                                        className="summary-icon"
+                                        path={svgs.apply}
+                                    />
+                                )}
+                            </SummaryBody>
+                        </SummarySection>
+
+                        {error && (
+                            <AjaxError
+                                className="device-delete-error"
+                                t={t}
+                                error={error}
+                            />
+                        )}
+                        {!changesApplied && (
+                            <BtnToolbar>
+                                <Btn
+                                    svg={svgs.trash}
+                                    primary={true}
+                                    disabled={
+                                        isPending ||
+                                        physicalDevices.length === 0 ||
+                                        !confirmStatus
+                                    }
+                                    type="submit"
+                                >
+                                    {t("devices.flyouts.delete.apply")}
+                                </Btn>
+                                <Btn svg={svgs.cancelX} onClick={onClose}>
+                                    {t("devices.flyouts.delete.cancel")}
+                                </Btn>
+                            </BtnToolbar>
+                        )}
+                        {!!changesApplied && (
+                            <BtnToolbar>
+                                <Btn svg={svgs.cancelX} onClick={onClose}>
+                                    {t("devices.flyouts.delete.close")}
+                                </Btn>
+                            </BtnToolbar>
+                        )}
+                    </form>
+                </Protected>
+            </Flyout>
         );
     }
 }

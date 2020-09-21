@@ -8,6 +8,7 @@ import ChangeStatusPath from "assets/icons/changeStatus.svg";
 import CheckmarkIconPath from "assets/icons/checkmark.svg";
 import ChevronIconPath from "assets/icons/chevron.svg";
 import ChevronRightIconPath from "assets/icons/chevronRight.svg";
+import ChevronRightDoubleIconPath from "assets/icons/chevronRightDouble.svg";
 import CloseAlertIconPath from "assets/icons/closeAlert.svg";
 import ColonIconPath from "assets/icons/colon.svg";
 import ContosoIconPath from "assets/icons/contoso.svg";
@@ -90,6 +91,7 @@ export const svgs = {
     checkmark: CheckmarkIconPath,
     chevron: ChevronIconPath,
     chevronRight: ChevronRightIconPath,
+    ChevronRightDouble: ChevronRightDoubleIconPath,
     closeAlert: CloseAlertIconPath,
     colon: ColonIconPath,
     contoso: ContosoIconPath,

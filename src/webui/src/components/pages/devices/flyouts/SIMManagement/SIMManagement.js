@@ -34,12 +34,12 @@ export class SIMManagement extends LinkedComponent {
         };
 
         this.providerLink = this.linkTo("provider").map(({ value }) => value);
-        this.handleDoubleClickItem = this.handleDoubleClickItem.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     showProvider = () => this.setState({ isPending: true });
 
-    handleDoubleClickItem() {
+    expandFlyout() {
         if (this.state.expandedValue === "no") {
             this.setState({
                 expandedValue: "yes",
@@ -60,94 +60,101 @@ export class SIMManagement extends LinkedComponent {
             }));
 
         return (
-            <div onDoubleClick={this.handleDoubleClickItem}>
-                <Flyout.Container
-                    header={t("devices.flyouts.SIMManagement.title")}
-                    t={t}
-                    onClose={onClose}
-                    expanded={this.state.expandedValue}
-                >
-                    <div className="sim-management-container">
-                        <Protected permission={permissions.updateSIMManagement}>
-                            <div className="sim-management-selector">
-                                <div className="sim-management-label-selector">
-                                    {t(
+            <Flyout.Container
+                header={t("devices.flyouts.SIMManagement.title")}
+                t={t}
+                onClose={onClose}
+                expanded={this.state.expandedValue}
+            >
+                <div>
+                    <Btn
+                        className={
+                            this.state.expandedValue === "no"
+                                ? "svg-reverse-icon"
+                                : "svg-icon"
+                        }
+                        svg={svgs.ChevronRightDouble}
+                        onClick={this.expandFlyout}
+                    ></Btn>
+                </div>
+                <div className="sim-management-container">
+                    <Protected permission={permissions.updateSIMManagement}>
+                        <div className="sim-management-selector">
+                            <div className="sim-management-label-selector">
+                                {t("devices.flyouts.SIMManagement.provider")}
+                            </div>
+                            <div className="sim-management-dropdown">
+                                <FormControl
+                                    type="select"
+                                    ariaLabel={t(
                                         "devices.flyouts.SIMManagement.provider"
                                     )}
-                                </div>
-                                <div className="sim-management-dropdown">
-                                    <FormControl
-                                        type="select"
-                                        ariaLabel={t(
-                                            "devices.flyouts.SIMManagement.provider"
-                                        )}
-                                        className="sim-management-dropdown"
-                                        options={options}
-                                        searchable={false}
-                                        clearable={false}
-                                        placeholder={t(
-                                            "devices.flyouts.SIMManagement.select"
-                                        )}
-                                        link={this.providerLink}
-                                    />
-                                </div>
+                                    className="sim-management-dropdown"
+                                    options={options}
+                                    searchable={false}
+                                    clearable={false}
+                                    placeholder={t(
+                                        "devices.flyouts.SIMManagement.select"
+                                    )}
+                                    link={this.providerLink}
+                                />
                             </div>
-                            {!!provider && (
-                                <Section.Container
-                                    className="hide-border"
-                                    collapsable={false}
-                                >
-                                    <Section.Header>
+                        </div>
+                        {!!provider && (
+                            <Section.Container
+                                className="hide-border"
+                                collapsable={false}
+                            >
+                                <Section.Header>
+                                    {t(
+                                        "devices.flyouts.SIMManagement.summaryHeader"
+                                    )}
+                                </Section.Header>
+                                <Section.Content>
+                                    <div>
                                         {t(
-                                            "devices.flyouts.SIMManagement.summaryHeader"
+                                            `devices.flyouts.SIMManagement.header.${provider}`
                                         )}
-                                    </Section.Header>
-                                    <Section.Content>
-                                        <div>
-                                            {t(
-                                                `devices.flyouts.SIMManagement.header.${provider}`
-                                            )}
-                                        </div>
-                                        <div className="sim-management-label-desctiption">
-                                            <Trans
-                                                i18nKey={`devices.flyouts.SIMManagement.description.${provider}`}
+                                    </div>
+                                    <div className="sim-management-label-desctiption">
+                                        <Trans
+                                            i18nKey={`devices.flyouts.SIMManagement.description.${provider}`}
+                                        >
+                                            Feature is...{" "}
+                                            <Hyperlink
+                                                href={simManagementUrl}
+                                                target="_blank"
                                             >
-                                                Feature is...{" "}
-                                                <Hyperlink
-                                                    href={simManagementUrl}
-                                                    target="_blank"
-                                                >
-                                                    {t(
-                                                        "devices.flyouts.SIMManagement.here"
-                                                    )}
-                                                </Hyperlink>{" "}
-                                                ...your account.
-                                            </Trans>
-                                        </div>
-                                    </Section.Content>
-                                </Section.Container>
-                            )}
-                            <BtnToolbar>
-                                {!isPending && (
-                                    <Btn
-                                        primary={true}
-                                        disabled={!provider}
-                                        onClick={this.showProvider}
-                                        type="submit"
-                                    >
-                                        {t("devices.flyouts.new.apply")}
-                                    </Btn>
-                                )}
-                                <Btn svg={svgs.cancelX} onClick={onClose}>
-                                    {isPending
-                                        ? t("devices.flyouts.new.close")
-                                        : t("devices.flyouts.new.cancel")}
+                                                {t(
+                                                    "devices.flyouts.SIMManagement.here"
+                                                )}
+                                            </Hyperlink>{" "}
+                                            ...your account.
+                                        </Trans>
+                                    </div>
+                                </Section.Content>
+                            </Section.Container>
+                        )}
+                        <BtnToolbar>
+                            {!isPending && (
+                                <Btn
+                                    primary={true}
+                                    disabled={!provider}
+                                    onClick={this.showProvider}
+                                    type="submit"
+                                >
+                                    {t("devices.flyouts.new.apply")}
                                 </Btn>
-                            </BtnToolbar>
-                        </Protected>
-                    </div>
-                </Flyout.Container>
-            </div>
+                            )}
+                            <Btn svg={svgs.cancelX} onClick={onClose}>
+                                {isPending
+                                    ? t("devices.flyouts.new.close")
+                                    : t("devices.flyouts.new.cancel")}
+                            </Btn>
+                        </BtnToolbar>
+                    </Protected>
+                </div>
+            </Flyout.Container>
         );
     }
 }
