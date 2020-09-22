@@ -5,12 +5,16 @@ parameters:
   subscriptionId:
   applicationCode:
   applicationShortCode:
-  appInsightsLocation:
+  appInsightsLocation: 
   environmentCategory:
   kubernetesVersion:
   sendgridEmail:
   aksAgentVmSize: Standard_DS2_v2
   sysAdmins:
+  azureDevOpsProjectId:
+  testPipelineId:
+  runVersion:
+  testPipelineRunId:
 
 jobs:
   - template: get-approval.yaml
@@ -818,7 +822,7 @@ jobs:
           templateLocation: Linked artifact
           csmFile: $(armTemplatesDirectory)/functions.json
           csmParametersFile: $(armParametersDirectory)/functions.json
-          overrideParameters: -functionAppName $(functionApp1Name) -appInsightsLocation ${{parameters.appInsightsLocation}} -appInsightsName $(appInsightsName) -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
+          overrideParameters: -functionAppName $(functionApp1Name) -appInsightsLocation ${{parameters.appInsightsLocation}} -appInsightsName $(appInsightsName) -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~3
           deploymentMode: Incremental
           deploymentName: $(functionApp1PartialName)-$(Build.BuildId)
           addSpnToEnvironment: true
@@ -837,10 +841,11 @@ jobs:
           scriptType: bash
           inlineScript: |-
             devicetwinPropfn=$(functionApp1Name)
-            cosmosDbConn=$(az keyvault secret show --name "Global--CosmosDb--DocumentDbConnectionString" --vault-name $(keyVaultName) | grep value | awk -F '\"' '{print $4}')
-            lifecycleEvConn=$(az keyvault secret show --name "TenantManagerService--LifecycleEventHubConnectionString" --vault-name $(keyVaultName) | grep value | awk -F '\"' '{print $4}')
-            telemetryEvConn=$(az keyvault secret show --name "TenantManagerService--TelemetryEventHubConnectionString" --vault-name $(keyVaultName) | grep value | awk -F '\"' '{print $4}')
-            twinchangeEvConn=$(az keyvault secret show --name "TenantManagerService--TwinChangeEventHubConnectionString" --vault-name $(keyVaultName) | grep value | awk -F '\"' '{print $4}')
+            cosmosDbConn=$(az keyvault secret show --name "Global--CosmosDb--DocumentDbConnectionString" --vault-name $(keyVaultName) --query "value" --output tsv)
+            lifecycleEvConn=$(az keyvault secret show --name "TenantManagerService--LifecycleEventHubConnectionString" --vault-name $(keyVaultName) --query "value" --output tsv)
+            telemetryEvConn=$(az keyvault secret show --name "TenantManagerService--TelemetryEventHubConnectionString" --vault-name $(keyVaultName) --query "value" --output tsv)
+            twinchangeEvConn=$(az keyvault secret show --name "TenantManagerService--TwinChangeEventHubConnectionString" --vault-name $(keyVaultName) --query "value" --output tsv)
+            storageAccountConn=$(az keyvault secret show --name "Global--StorageAccountConnectionString" --vault-name $(keyVaultName) --query "value" --output tsv)
             az functionapp config appsettings set --name $devicetwinPropfn \
               --settings \
                 "CosmosDbConnectionString"="$cosmosDbConn" \
@@ -890,7 +895,7 @@ jobs:
           templateLocation: Linked artifact
           csmFile: $(armTemplatesDirectory)/functions.json
           csmParametersFile: $(armParametersDirectory)/functions.json
-          overrideParameters: -functionAppName $(functionApp2Name) -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.appInsightsLocation}} -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
+          overrideParameters: -functionAppName $(functionApp2Name) -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.appInsightsLocation}} -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~3
           deploymentMode: Incremental
           deploymentName: $(functionApp2PartialName)-$(Build.BuildId)
           addSpnToEnvironment: true
@@ -935,7 +940,7 @@ jobs:
           templateLocation: Linked artifact
           csmFile: $(armTemplatesDirectory)/functions.json
           csmParametersFile: $(armParametersDirectory)/functions.json
-          overrideParameters: -functionAppName ${{parameters.applicationCode}}-alertingactionsfuncapp-${{parameters.environmentCategory}} -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.appInsightsLocation}} -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
+          overrideParameters: -functionAppName ${{parameters.applicationCode}}-alertingactionsfuncapp-${{parameters.environmentCategory}} -appInsightsName $(appInsightsName) -appInsightsLocation ${{parameters.appInsightsLocation}} -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~3
           deploymentMode: Incremental
           deploymentName: alertingactionsfuncapp-$(Build.BuildId)
           addSpnToEnvironment: true
@@ -956,8 +961,8 @@ jobs:
             functionName=${{parameters.applicationCode}}-alertingactionsfuncapp-${{parameters.environmentCategory}}
             actionsEvConn=$(az keyvault secret show --name "AlertingActionsFunction--ActionsEventHubConnectionString" --vault-name $(keyVaultName) --query [value] --output tsv)
             sendGridApiKey=$(az keyvault secret show --name "IdentityGatewayService--SendGridApiKey" --vault-name $(keyVaultName) --query [value] --output tsv)
-            az functionapp config appsettings set \
-              --name $functionName \
+            storageAccountConn=$(az keyvault secret show --name "Global--StorageAccountConnectionString" --vault-name $(keyVaultName) --query "value" --output tsv)
+            az functionapp config appsettings set --name $functionName \
               --settings \
                 "ActionsEventHubConnectionString"="$actionsEvConn" \
                 "SendGridApiKey"="$sendGridApiKey" \
@@ -997,7 +1002,7 @@ jobs:
           templateLocation: Linked artifact
           csmFile: $(armTemplatesDirectory)/functions.json
           csmParametersFile: $(armParametersDirectory)/functions.json
-          overrideParameters: -functionAppName $(functionApp4Name) -appInsightsLocation ${{parameters.appInsightsLocation}} -appInsightsName $(appInsightsName) -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~2
+          overrideParameters: -functionAppName $(functionApp4Name) -appInsightsLocation ${{parameters.appInsightsLocation}} -appInsightsName $(appInsightsName) -storageAccountName $(storageAccountName) -runtime dotnet -funcVersion ~3
           deploymentMode: Incremental
           deploymentName: $(functionApp4PartialName)-$(Build.BuildId)
           addSpnToEnvironment: true
@@ -1028,6 +1033,74 @@ jobs:
                 "AzureStorageConnectionString"="$blobStorageConnString" \
                 "DeploymentsDatabaseId"="pcs-storage" \
               --resource-group $(resourceGroupName)
+
+  - job: deployFunctions
+    displayName: Deploy functions
+    dependsOn:
+      - function1
+      - function2
+      - function3
+      - function4     
+    pool:
+      vmImage: windows-latest
+    variables:
+      functionsArtifactName: functionsFiles
+    strategy:
+      matrix:
+        app-configuration:
+          functionName: app-configuration
+          appNamePartial: appconfigfuncapp
+          appName: ${{parameters.applicationCode}}-$(appNamePartial)-${{parameters.environmentCategory}}
+        messaging:
+          functionName: messaging
+          appNamePartial: devicetwinfuncapp
+          appName: ${{parameters.applicationCode}}-$(appNamePartial)-${{parameters.environmentCategory}}
+        rule-actions:
+          functionName: rule-actions
+          appNamePartial: alertingactionsfuncapp
+          appName: ${{parameters.applicationCode}}-$(appNamePartial)-${{parameters.environmentCategory}}
+        deployment-sync:
+          functionName: deployment-sync
+          appNamePartial: iotdeploymentfuncapp
+          appName: ${{parameters.applicationCode}}-$(appNamePartial)-${{parameters.environmentCategory}}
+
+    steps:
+      - checkout: self
+        displayName: Checkout repository
+
+      - task: DownloadPipelineArtifact@2
+        displayName: Download artifacts
+        inputs:
+          source: specific
+          project: ${{parameters.azureDevOpsProjectId}}
+          pipeline: ${{parameters.testPipelineId}}
+          preferTriggeringPipeline: true
+          runVersion: ${{parameters.runVersion}}
+          runId: ${{parameters.testPipelineRunId}}
+          artifact: $(functionsArtifactName)
+          path: $(Build.SourcesDirectory)\$(functionsArtifactName)
+          allowPartiallySucceededBuilds: true
+          allowFailedBuilds: true
+
+      # - script: |-
+      #     tree /f /a $(Agent.BuildDirectory)
+      #   displayName: List Agent build directory contents
+
+      - task: ArchiveFiles@2
+        displayName: Archive files
+        inputs:
+          rootFolderOrFile: $(Build.SourcesDirectory)/$(functionsArtifactName)/src/functions/$(functionName)/bin/Release/netcoreapp3.1/publish/
+          includeRootFolder: false
+          archiveFile: $(Build.SourcesDirectory)/$(functionName).zip
+
+      - task: AzureFunctionApp@1
+        displayName: Deploy Functions
+        inputs:
+          appType: functionApp
+          azureSubscription: ${{parameters.subscriptionName}}
+          appName: $(appName)
+          package: $(Build.SourcesDirectory)/$(functionName).zip
+          deploymentMethod: zipDeploy
 
   - job: automationAccount
     displayName: Provision Azure Automation and Sendgrid accounts

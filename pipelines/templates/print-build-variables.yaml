@@ -22,9 +22,10 @@ steps:
       echo Build.SourcesDirectory: $(Build.SourcesDirectory)
       echo Build.SourcesDirectoryHash: $(Build.SourcesDirectoryHash)
       echo Build.SourceVersion: $(Build.SourceVersion)
-      echo Build.SourceVersionMessage: $(Build.SourceVersionMessage)
+      echo Build.SourceVersionMessage: "$(Build.SourceVersionMessage)"
       echo Build.StagingDirectory: $(Build.StagingDirectory)
       echo Build.Repository.Git.SubmoduleCheckout: $(Build.Repository.Git.SubmoduleCheckout)
       echo Build.SourceTfvcShelveset: $(Build.SourceTfvcShelveset)
     displayName: Print Build variables
     continueOnError: true
+    
