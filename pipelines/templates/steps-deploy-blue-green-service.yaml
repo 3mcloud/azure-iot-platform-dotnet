@@ -80,7 +80,7 @@ steps:
       namespace: default
       command: upgrade
       chartType: FilePath
-      chartPath: charts/mmm-iot-service
+      chartPath: charts/mmm-iot-service-blue-green
       releaseName: ${{parameters.serviceName}}
       force: true
       install: true
@@ -97,7 +97,7 @@ steps:
       namespace: default
       command: upgrade
       chartType: FilePath
-      chartPath: charts/mmm-iot-service
+      chartPath: charts/mmm-iot-service-blue-green
       releaseName: ${{parameters.blueServiceName}}
       overrideValues: nameOverride=${{parameters.serviceName}},deployment.port.http=${{parameters.servicePort}},deployment.probes.enabled=${{parameters.serviceProbesEnabled}},deployment.image.tag=${{parameters.imageTag}},type=blue,deployment.enabled=true,service.enabled=false,deployment.name=${{parameters.blueServiceName}}
       force: true
@@ -116,7 +116,7 @@ steps:
       namespace: default
       command: upgrade
       chartType: FilePath
-      chartPath: charts/mmm-iot-service
+      chartPath: charts/mmm-iot-service-blue-green
       releaseName: ${{parameters.greenServiceName}}
       overrideValues: nameOverride=${{parameters.serviceName}},deployment.port.http=${{parameters.servicePort}},deployment.probes.enabled=${{parameters.serviceProbesEnabled}},deployment.image.tag=${{parameters.imageTag}},type=green,deployment.enabled=true,service.enabled=false,deployment.name=${{parameters.greenServiceName}}
       force: true
@@ -133,7 +133,7 @@ steps:
   #     command: upgrade
   #     type: $(type)
   #     chartType: FilePath
-  #     chartPath: charts/mmm-iot-service
+  #     chartPath: charts/mmm-iot-service-blue-green
   #     releaseName: ${{parameters.serviceName}}
   #     overrideValues: nameOverride=${{parameters.serviceName}},service.port=${{parameters.servicePort}},type="$(type)",deployment.enabled=false,service.enabled=true
   #     force: true
