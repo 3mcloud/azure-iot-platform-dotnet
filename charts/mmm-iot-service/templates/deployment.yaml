@@ -1,8 +1,7 @@
-{{- if .Values.deployment.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "deployment.name" . }}
+  name: {{ include "service.fullname" . }}
   labels:
 {{ include "service.labels" . | indent 4 }}
 spec:
@@ -11,7 +10,6 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "service.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      type: {{ include "service.type" . }}
   template:
     metadata:
       labels:
@@ -24,8 +22,6 @@ spec:
       containers:
         - name: {{ include "service.name" . }}
           image: {{ cat (include "service.deployment.image.repository" .) ":" (required "Error: missing required value .Values.deployment.image.tag" .Values.deployment.image.tag) | nospace }}
-          #image: {{ .Values.deployment.image.repository }}
-          #command: ["/bin/sh","-c","/app/run.sh", "while true; do echo hello; sleep 10;done"]
           imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
           resources:
             limits:
@@ -99,4 +95,3 @@ spec:
     {{- with .Values.deployment.tolerations }}
       tolerations: {{ toYaml . | nindent 8 }}
     {{- end }}
-{{- end }}
