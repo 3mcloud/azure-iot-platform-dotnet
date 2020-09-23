@@ -1,4 +1,4 @@
-#{{- if .Values.service.enabled }}
+{{- if .Values.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -16,4 +16,4 @@ spec:
     app.kubernetes.io/name: {{ include "service.name" . }}
     #    app.kubernetes.io/instance: {{ .Release.Name }}
     type: {{ include "service.type" . }}
-#  {{- end }}
+  {{- end }}
