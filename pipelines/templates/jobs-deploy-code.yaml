@@ -112,18 +112,6 @@ jobs:
             imageTag: ${{parameters.imageTag}}
             type: blue
 
-      - ${{ if eq(parameters.blueGreen,false) }}:
-        - template: steps-deploy-individual-service.yaml
-          parameters:
-            aksName: $(aksName)
-            resourceGroupName: $(resourceGroupName)
-            subscriptionName: ${{parameters.subscriptionName}}
-            serviceName: $(serviceName)
-            servicePort: $(servicePort)
-            serviceProbesEnabled: $(serviceProbesEnabled)
-            helmVersion: $(helmVersion)
-            imageTag: ${{parameters.imageTag}}
-
 
   - job: addKey
     displayName: Update Application Configuration with BuildNumber
