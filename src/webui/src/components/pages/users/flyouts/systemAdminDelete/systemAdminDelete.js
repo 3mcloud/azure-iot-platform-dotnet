@@ -35,6 +35,7 @@ export class SystemAdminDelete extends LinkedComponent {
                 userId: "",
                 name: "",
             },
+            expandedValue: false,
         };
 
         // Linked components
@@ -47,6 +48,7 @@ export class SystemAdminDelete extends LinkedComponent {
                 this.props.t("users.flyouts.new.validation.required")
             );
         this.deleteUsers = this.deleteUsers.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentDidMount() {
@@ -106,6 +108,18 @@ export class SystemAdminDelete extends LinkedComponent {
         return t("users.flyouts.delete.affected");
     }
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const { t, allSystemAdmins, onClose, loggedInUserId } = this.props,
             { error, changesApplied } = this.state,
@@ -125,6 +139,10 @@ export class SystemAdminDelete extends LinkedComponent {
                 header={t("users.flyouts.delete.systemAdmin.title")}
                 t={t}
                 onClose={onClose}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
                 <form
                     className="device-delete-container"

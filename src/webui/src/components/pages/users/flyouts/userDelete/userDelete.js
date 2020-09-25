@@ -34,7 +34,9 @@ export class UserDelete extends Component {
             error: undefined,
             successCount: 0,
             changesApplied: false,
+            expandedValue: false,
         };
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentDidMount() {
@@ -116,6 +118,18 @@ export class UserDelete extends Component {
         return t("users.flyouts.delete.affected");
     }
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const { t, onClose } = this.props,
             {
@@ -135,6 +149,10 @@ export class UserDelete extends Component {
                 header={t("users.flyouts.delete.title")}
                 t={t}
                 onClose={onClose}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
                 <Protected permission={permissions.deleteDevices}>
                     <form

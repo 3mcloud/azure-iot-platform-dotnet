@@ -25,10 +25,12 @@ export class DeploymentStatus extends LinkedComponent {
             isActive: false,
             haschanged: false,
             changesApplied: false,
+            expandedValue: false,
         };
         this.activateOrInactivateDeployment = this.activateOrInactivateDeployment.bind(
             this
         );
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     genericCloseClick = (eventName) => {
@@ -91,6 +93,18 @@ export class DeploymentStatus extends LinkedComponent {
         this.props.fetchDeployments();
     }
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const { t } = this.props;
         const { changesApplied } = this.state;
@@ -101,6 +115,10 @@ export class DeploymentStatus extends LinkedComponent {
                 onClose={() =>
                     this.genericCloseClick("DeploymentStatus_CloseClick")
                 }
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
                 <div className="new-deployment-content">
                     <form className="new-deployment-form" onSubmit={this.apply}>

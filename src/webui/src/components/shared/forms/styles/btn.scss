@@ -25,7 +25,7 @@ $btnIconSize: 14px;
     @include rem-fallback(height, $btnHeight);
     @include rem-fallback(width, $btnIconSize);
 
-    svg { @include square-px-rem($btnIconSize); }
+    svg, icon { @include square-px-rem($btnIconSize); }
 
     + .btn-text { @include rem-fallback(padding-left, 5px); }
   }
@@ -44,7 +44,7 @@ $btnIconSize: 14px;
     color: themed('colorBtnText');
     background-color: themed('colorBtnBackground');
 
-    .btn-icon svg { fill: themed('colorBtnSvgFill'); }
+    .btn-icon svg, .btn-icon icon { fill: themed('colorBtnSvgFill'); }
 
     &:focus {
       outline: 1px dashed themed('colorBtnOutlineFocus');
@@ -55,48 +55,48 @@ $btnIconSize: 14px;
       color: themed('colorBtnTextHover');
       background-color: themed('color-bg-item-hover');
 
-      .btn-icon svg { fill: themed('colorBtnSvgFillHover'); }
+      .btn-icon svg, .btn-icon icon { fill: themed('colorBtnSvgFillHover'); }
     }
 
     &:active {
       color: themed('colorBtnTextActive');
       background-color: themed('color-bg-item-selected');
 
-      .btn-icon svg { fill: themed('colorBtnSvgFillActive'); }
+      .btn-icon svg, .btn-icon icon { fill: themed('colorBtnSvgFillActive'); }
     }
 
     &:disabled {
       color: themed('colorBtnTextDisabled');
       background-color: themed('colorBtnBackgroundDisabled');
 
-      .btn-icon svg { fill: themed('colorBtnSvgFillDisabled'); }
+      .btn-icon svg, .btn-icon icon { fill: themed('colorBtnSvgFillDisabled'); }
     }
 
     &.btn-primary {
       color: themed('colorBtnPrimaryText');
       background-color: themed('colorBtnPrimaryBackground');
 
-      .btn-icon svg { fill: themed('colorBtnPrimarySvgFill'); }
+      .btn-icon svg, .btn-icon icon { fill: themed('colorBtnPrimarySvgFill'); }
 
       &:hover {
         color: themed('colorBtnPrimaryTextHover');
         background-color: themed('colorBtnPrimaryBackgroundHover');
 
-        .btn-icon svg { fill: themed('colorBtnPrimarySvgFillHover'); }
+        .btn-icon svg, .btn-icon icon { fill: themed('colorBtnPrimarySvgFillHover'); }
       }
 
       &:active {
         color: themed('colorBtnPrimaryTextActive');
         background-color: themed('colorBtnPrimaryBackgroundActive');
 
-        .btn-icon svg { fill: themed('colorBtnPrimarySvgFillActive'); }
+        .btn-icon svg, .btn-icon icon { fill: themed('colorBtnPrimarySvgFillActive'); }
       }
 
       &:disabled {
         color: themed('colorBtnPrimaryTextDisabled');
         background-color: themed('colorBtnPrimaryBackgroundDisabled');
 
-        .btn-icon svg { fill: themed('colorBtnPrimarySvgFillDisabled'); }
+        .btn-icon svg, .btn-icon icon { fill: themed('colorBtnPrimarySvgFillDisabled'); }
       }
     }
   }

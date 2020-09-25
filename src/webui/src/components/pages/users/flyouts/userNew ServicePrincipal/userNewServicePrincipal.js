@@ -62,6 +62,7 @@ export class UserNewServicePrincipal extends LinkedComponent {
                 role: "",
             },
             provisionedUser: {},
+            expandedValue: false,
         };
 
         // Linked components
@@ -82,6 +83,7 @@ export class UserNewServicePrincipal extends LinkedComponent {
             .check(Validator.notEmpty, () =>
                 this.props.t("users.flyouts.new.validation.required")
             );
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentWillUnmount() {
@@ -168,6 +170,18 @@ export class UserNewServicePrincipal extends LinkedComponent {
         return t("users.flyouts.new.affected");
     }
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const { t } = this.props,
             { isPending, error, changesApplied } = this.state,
@@ -179,6 +193,10 @@ export class UserNewServicePrincipal extends LinkedComponent {
                 header={t("users.flyouts.new.title")}
                 t={t}
                 onClose={() => this.onFlyoutClose("Users_TopXCloseClick")}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
                 <Protected permission={permissions.inviteUsers}>
                     <form

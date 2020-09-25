@@ -66,7 +66,9 @@ export class DeploymentNew extends LinkedComponent {
             changesApplied: false,
             packageOptions: [],
             packages: [],
+            expandedValue: false,
         };
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -285,6 +287,18 @@ export class DeploymentNew extends LinkedComponent {
         this.formControlChange();
     };
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const {
                 t,
@@ -373,6 +387,10 @@ export class DeploymentNew extends LinkedComponent {
                 onClose={() =>
                     this.genericCloseClick("NewDeployment_CloseClick")
                 }
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
                 <div className="new-deployment-content">
                     <form className="new-deployment-form" onSubmit={this.apply}>

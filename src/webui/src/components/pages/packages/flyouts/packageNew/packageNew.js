@@ -71,7 +71,9 @@ export class PackageNew extends LinkedComponent {
                 jsObject: {},
             },
             firmwareTemplateVersionField: "",
+            expandedValue: false,
         };
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentWillUnmount() {
@@ -414,6 +416,18 @@ export class PackageNew extends LinkedComponent {
         return json;
     };
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const {
                 t,
@@ -525,6 +539,10 @@ export class PackageNew extends LinkedComponent {
                 header={t("packages.flyouts.new.title")}
                 t={t}
                 onClose={() => this.genericCloseClick("NewPackage_CloseClick")}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
                 <div className="new-package-content">
                     <form className="new-package-form" onSubmit={this.apply}>

@@ -20,7 +20,9 @@ export class RuleStatus extends Component {
             isPending: false,
             error: undefined,
             changesApplied: undefined,
+            expandedValue: false,
         };
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentDidMount() {
@@ -82,6 +84,18 @@ export class RuleStatus extends Component {
             );
     };
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const { onClose, t, rules } = this.props,
             { isPending, status, error, changesApplied } = this.state,
@@ -92,6 +106,10 @@ export class RuleStatus extends Component {
                 header={t("rules.flyouts.statusTitle")}
                 t={t}
                 onClose={onClose}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
                 <Protected permission={permissions.updateRules}>
                     <form
