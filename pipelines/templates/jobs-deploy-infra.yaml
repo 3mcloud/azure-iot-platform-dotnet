@@ -89,6 +89,7 @@ jobs:
           echo "variable: resourceGroupName: $(resourceGroupName)"
           echo "variable: storageAccountName: $(storageAccountName)"
         displayName: Print variables
+
   - job: resourceGroup
     displayName: Provision resource group
     dependsOn:
@@ -116,6 +117,7 @@ jobs:
             sudo apt-get update && sudo apt-get install --only-upgrade -y azure-cli
             az --version
         displayName: Update Azure CLI
+
       - task: AzureCLI@2
         displayName: Provision Azure resource group
         inputs:
@@ -129,6 +131,7 @@ jobs:
             --location ${{parameters.locationName}} \
             --template-file $(armTemplatesDirectory)/$(resourceGroupPartialName).json \
             --parameters @$(armParametersDirectory)/$(resourceGroupPartialName).json resourceGroupName=$(resourceGroupName) resourceGroupLocation=${{parameters.locationName}}
+
       - template: steps-delete-oldest-deployment.yaml
         parameters:
           subscriptionName: ${{parameters.subscriptionName}}
@@ -234,6 +237,7 @@ jobs:
             kind: Namespace
             metadata:
               name: ingress-basic
+
       - task: Kubernetes@1
         displayName: Install the K8s Custom Resource Definition
         inputs:
@@ -262,6 +266,7 @@ jobs:
               name: cert-manager
               labels:
                 cert-manager.io/disable-validation: "true"
+
   - job: storageAccount
     displayName: Provision Storage Account
     dependsOn:
@@ -340,6 +345,7 @@ jobs:
                 Get-AzTableRow -Table $cloudTable | Format-Table
               }
             }
+
   - job: eventHub
     displayName: Provision Event Hub
     dependsOn:
@@ -547,6 +553,7 @@ jobs:
             az aks get-credentials -n $(aksName) -g $(resourceGroupName)
             appConfigurationConnectionString=$(az appconfig credential list --name $(appConfigurationName) -g $(resourceGroupName) | jq -r .[0].connectionString)
             kubectl create secret generic --namespace=default globalsecrets --from-literal=AppConfigurationConnectionString=$appConfigurationConnectionString --dry-run -o yaml | kubectl apply -f -
+
   - job: appInsights
     displayName: Provision Application Insights
     dependsOn:
@@ -670,6 +677,7 @@ jobs:
               az appconfig kv import --yes --name $(appConfigurationName) --format json --source file --path "$(System.DefaultWorkingDirectory)/pipelines/cd/permissions-config/permissions-${{parameters.environmentName}}.json"
               echo "Using permissions-${{parameters.environmentName}}.json file"
             fi
+
             az appconfig kv set --key Global:KeyVault:Name                        --value $(keyVaultName) --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:ClientAuth:Jwt:AadAppId              --value $servicePrincipalId --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:AzureActiveDirectory:AppId           --value $servicePrincipalId --name $(appConfigurationName) --yes
@@ -682,19 +690,24 @@ jobs:
             az appconfig kv set --key Global:EventHub:RootKey                     --value $(az eventhubs namespace authorization-rule keys list --resource-group $(resourceGroupName) --namespace-name $(eventHubName) --name RootManageSharedAccessKey --query primaryKey --output tsv) --name $(appConfigurationName) --yes
             az appconfig kv set --key TenantManagerService:EventHubNamespaceName  --value $(eventHubName) --name $(appConfigurationName) --yes
             az appconfig kv set --key TenantManagerService:AutomationAccountName  --value $(automationName) --name $(appConfigurationName) --yes
+
             appInsightKey=$(az resource show -g $(resourceGroupName) -n $(appInsightsName) --resource-type "Microsoft.Insights/components" --query properties.InstrumentationKey --output tsv)
             az appconfig kv set --key Global:InstrumentationKey --value $appInsightKey --name $(appConfigurationName) --yes
+
             jwtIssuer="https://$(aksName).${{parameters.locationName}}.cloudapp.azure.com/auth"
             az appconfig kv set --key Global:ClientAuth:Jwt:AuthIssuer --value $jwtIssuer --name $(appConfigurationName) --yes
+
             appConfig=$(az functionapp list --resource-group $(resourceGroupName) --query "[?contains(name, 'appconfig')]".hostNames --output tsv)
             appConfigEndpoint="https://$appConfig/api/SetAppConfigKey"
             az appconfig kv set --key TenantManagerService:SetAppConfigEndpoint --value $appConfigEndpoint --name $(appConfigurationName) --yes
             az appconfig kv set --key TenantManagerService:SetAppConfigFunction --value $appConfigEndpoint --name $(appConfigurationName) --yes
+
             deviceTwin=$(az functionapp list --resource-group $(resourceGroupName) --query "[?contains(name, 'devicetwin')]".name --output tsv)
             deviceTwinFuncUri="https://$deviceTwin.scm.azurewebsites.net"
             az appconfig kv set --key TenantManagerService:TwinChangeFunctionUri --value $deviceTwinFuncUri --name $(appConfigurationName) --yes
             az appconfig kv set --key TenantManagerService:TelemetryFunctionUri --value $deviceTwinFuncUri --name $(appConfigurationName) --yes
             az appconfig kv set --key TenantManagerService:LifecycleFunctionUri --value $deviceTwinFuncUri --name $(appConfigurationName) --yes
+
   - job: populateKeyVault
     displayName: Populate Key Vault
     dependsOn:
@@ -726,33 +739,42 @@ jobs:
           inlineScript: |-
             az keyvault secret set --vault-name $(keyVaultName) --name 'Global--ServicePrincipalId' --value $servicePrincipalId
             az keyvault secret set --vault-name $(keyVaultName) --name 'Global--ServicePrincipalKey' --value $servicePrincipalKey
+
             blobStorageKey=$(az storage account keys list -g $(resourceGroupName) -n $(storageAccountName) --query "[?contains(keyName, 'key1')]".value --output tsv)
             blobStorageConnString="DefaultEndpointsProtocol=https;AccountName=$(storageAccountName);AccountKey=$blobStorageKey;EndpointSuffix=core.windows.net"
             az keyvault secret set --vault-name $(keyVaultName) --name 'Global--StorageAccountConnectionString' --value $blobStorageConnString
+
             cosmosDBUri=$(az cosmosdb show -g $(resourceGroupName) -n $(cosmosDbAccountName) | jq -r ".documentEndpoint")
             cosmosDBAuthKey=$(az cosmosdb keys list --resource-group $(resourceGroupName) --name $(cosmosDbAccountName) --query primaryMasterKey --output tsv)
             cosmosDBConnection="AccountEndpoint=$cosmosDBUri;AccountKey=$cosmosDBAuthKey;"
             az keyvault secret set --vault-name $(keyVaultName) --name 'Global--CosmosDb--DocumentDbEndpoint' --value $cosmosDBUri
             az keyvault secret set --vault-name $(keyVaultName) --name 'Global--CosmosDb--DocumentDbAuthKey' --value $cosmosDBAuthKey
             az keyvault secret set --vault-name $(keyVaultName) --name 'Global--CosmosDb--DocumentDbConnectionString' --value $cosmosDBConnection
+
             evAccessPolicyKey=$(az eventhubs namespace authorization-rule keys list -n $(defaultSasKeyName) -g $(resourceGroupName) --namespace-name $(eventHubName) --query primaryKey -o tsv)
             az keyvault secret set --vault-name $(keyVaultName) --name 'TenantManagerService--EventHubAccessPolicyKey' --value $evAccessPolicyKey
+
             ehQueueAuthRule='iothubroutes'
             lifecycleEv=$(az eventhubs eventhub list --resource-group $(resourceGroupName) --namespace-name $(eventHubName) --query "[?contains(name, 'lifecycle')]".name --output tsv)
             lifecycleEvConn=$(az eventhubs eventhub authorization-rule keys list --resource-group $(resourceGroupName) --namespace-name $(eventHubName) --eventhub-name $lifecycleEv --name $ehQueueAuthRule --query primaryConnectionString --output tsv)
             az keyvault secret set --vault-name $(keyVaultName) --name 'TenantManagerService--LifecycleEventHubConnectionString' --value $lifecycleEvConn
+
             telemetryEv=$(az eventhubs eventhub list --resource-group $(resourceGroupName) --namespace-name $(eventHubName) --query "[?contains(name, 'telemetry')]".name --output tsv)
             telemetryEvConn=$(az eventhubs eventhub authorization-rule keys list --resource-group $(resourceGroupName) --namespace-name $(eventHubName) --eventhub-name $telemetryEv --name $ehQueueAuthRule --query primaryConnectionString --output tsv)
             az keyvault secret set --vault-name $(keyVaultName) --name 'TenantManagerService--TelemetryEventHubConnectionString' --value $telemetryEvConn
+
             twinchangeEv=$(az eventhubs eventhub list --resource-group $(resourceGroupName) --namespace-name $(eventHubName) --query "[?contains(name, 'twin-change')]".name --output tsv)
             twinchangeEvConn=$(az eventhubs eventhub authorization-rule keys list --resource-group $(resourceGroupName) --namespace-name $(eventHubName) --eventhub-name $twinchangeEv --name $ehQueueAuthRule --query primaryConnectionString --output tsv)
             az keyvault secret set --vault-name $(keyVaultName) --name 'TenantManagerService--TwinChangeEventHubConnectionString' --value $twinchangeEvConn
+
             ehActionsAuthRule='actionroutes'
             actionsEv=$(az eventhubs eventhub list --resource-group $(resourceGroupName) --namespace-name $(eventHubName) --query "[?contains(name, 'actions-eventhub')]".name --output tsv)
             actionsEvConn=$(az eventhubs eventhub authorization-rule keys list --resource-group $(resourceGroupName) --namespace-name $(eventHubName) --eventhub-name $actionsEv --name $ehActionsAuthRule --query primaryConnectionString --output tsv)
             az keyvault secret set --vault-name $(keyVaultName) --name 'AlertingActionsFunction--ActionsEventHubConnectionString' --value $actionsEvConn
+
             mapskey=$(az maps account keys list --name $(mapsName) --resource-group $(resourceGroupName) --query primaryKey --output tsv)
             az keyvault secret set --vault-name $(keyVaultName) --name 'ConfigService--AzureMapsKey' --value $mapskey
+
             key=$(az keyvault secret show --vault-name $(keyVaultName) -n IdentityGatewayService--PrivateKey)
             if [ -z "$key" ]
             then
@@ -765,6 +787,7 @@ jobs:
             else
                   echo "Identity Key already exists "
             fi
+
   - job: function1
     displayName: Create Device Twin Function
     dependsOn:
@@ -838,6 +861,7 @@ jobs:
                 "BatchThreshold"="12" \
                 "BatchWriteDelay"="85" \
               --resource-group $(resourceGroupName)
+
   - job: function2
     displayName: Create App Config Function
     dependsOn:
@@ -1009,6 +1033,7 @@ jobs:
                 "AzureStorageConnectionString"="$blobStorageConnString" \
                 "DeploymentsDatabaseId"="pcs-storage" \
               --resource-group $(resourceGroupName)
+
   - job: deployFunctions
     displayName: Deploy functions
     dependsOn:
@@ -1216,6 +1241,7 @@ jobs:
               echo "Error Deploying ingress controller" 1>&2
               exit 64
             fi
+
       # - task: AzureCLI@2
       #   displayName: Add DNS record
       #   inputs:
@@ -1234,6 +1260,7 @@ jobs:
             helm repo add jetstack https://charts.jetstack.io
             # Update your local Helm chart repository cache
             helm repo update
+
       - task: HelmDeploy@0
         displayName: Deploy cert-manager
         inputs:
