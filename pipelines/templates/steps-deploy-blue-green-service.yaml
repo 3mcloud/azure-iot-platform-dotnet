@@ -107,7 +107,6 @@ steps:
   - task: HelmDeploy@0
     displayName: Creation of Green Deployment
     condition: eq(variables.type,'green')
-    #condition: eq($variables[type], 'green')
     inputs:
       connectionType: Azure Resource Manager
       azureSubscription: ${{parameters.subscriptionName}}
@@ -122,24 +121,6 @@ steps:
       force: true
       install: true
 
-  # - task: HelmDeploy@0
-  #   inputs:
-  #     connectionType: Azure Resource Manager
-  #     azureSubscription: ${{parameters.subscriptionName}}
-  #     azureResourceGroup: ${{parameters.resourceGroupName}}
-  #     kubernetesCluster: ${{parameters.aksName}}
-  #     useClusterAdmin: false
-  #     namespace: default
-  #     command: upgrade
-  #     type: $(type)
-  #     chartType: FilePath
-  #     chartPath: charts/mmm-iot-service-blue-green
-  #     releaseName: ${{parameters.serviceName}}
-  #     overrideValues: nameOverride=${{parameters.serviceName}},service.port=${{parameters.servicePort}},type="$(type)",deployment.enabled=false,service.enabled=true
-  #     force: true
-  #     arguments: --cleanup-on-fail --set-string gitSha=$(Build.SourceVersion)
-  #     waitForExecution: true
-  #     install: true
   - task: AzureCLI@2
     displayName: Patch the AKS Service
     name: patchAKSService
@@ -160,13 +141,4 @@ steps:
         echo "_ $(type) _ Here is the type value"
 
         kubectl patch svc ${{parameters.serviceName}} -p '{"spec": {"selector": {"app.kubernetes.io/name":"${{parameters.serviceName}}", "type": "$(type)"},"unschedulable":true}}'
-        # kubectl get service ${{parameters.serviceName}} -o=yaml | sed -e "s/$var/$(type)/g" | kubectl apply -f -
-        # status=$(kubectl get pods -l iot.cld.3mcloud.com/type="$(type)" -l app.kubernetes.io/instance=${{parameters.serviceName}}-"$(type)" -o json | jq -r .items[0].status.phase | grep "Running" | wc -l)
-        # echo "$status This is the status value"
-        # while [ $status -lt 1 ]
-        # do 
-        #   sleep 10
-        #   echo "In loop"
-        #   status=$(kubectl get pods -l iot.cld.3mcloud.com/type="$(type)" -l app.kubernetes.io/instance=${{parameters.serviceName}}-"$(type)" -o json | jq -r .items[0].status.phase | grep "Running" | wc -l)
-        # done
 
