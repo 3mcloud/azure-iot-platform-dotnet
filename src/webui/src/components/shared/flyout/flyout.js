@@ -6,11 +6,6 @@ import { ContextPanel } from "@microsoft/azure-iot-ux-fluent-controls/lib/compon
 import { Btn } from "../forms";
 import { svgs } from "utilities";
 import { CopyModal } from "components/shared";
-import {
-    Balloon,
-    BalloonPosition,
-    BalloonAlignment,
-} from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Balloon/Balloon";
 
 import "./flyout.scss";
 
@@ -78,7 +73,7 @@ export class Flyout extends Component {
                         children: [
                             onExpand && (
                                 <Btn
-                                    id={"expandedButton"}
+                                    key={"expandedButton"}
                                     className={"svg-icon"}
                                     icon={
                                         expanded ? "backToWindow" : "fullScreen"
@@ -87,20 +82,16 @@ export class Flyout extends Component {
                                 ></Btn>
                             ),
                             flyoutLink && (
-                                // <Balloon
-                                //     position={BalloonPosition.Right}
-                                //     align={BalloonAlignment.End}
-                                //     tooltip={<div>Copy link</div>}
-                                // >
-                                    <Btn
-                                        svg={svgs.copyLink}
-                                        className={"svg-icon getlink-button"}
-                                        onClick={this.openModal(
-                                            "copy-link",
-                                            flyoutLink
-                                        )}
-                                    ></Btn>
-                                // </Balloon>
+                                <Btn
+                                    svg={svgs.copyLink}
+                                    key={"getLinkButton"}
+                                    className={"svg-icon getlink-button"}
+                                    onClick={this.openModal(
+                                        "copy-link",
+                                        flyoutLink
+                                    )}
+                                    title={t("flyout.getLinkTitle")}
+                                ></Btn>
                             ),
                         ],
                     },

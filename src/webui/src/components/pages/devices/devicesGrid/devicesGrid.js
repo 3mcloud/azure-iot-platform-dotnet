@@ -164,7 +164,7 @@ export class DevicesGrid extends Component {
                 flyoutLink = getFlyoutLink(
                     this.props.activeDeviceGroupId,
                     "deviceId",
-                    deviceIds,
+                    deviceIds ? deviceIds : this.state.softSelectedDeviceId,
                     "jobs"
                 );
                 return (

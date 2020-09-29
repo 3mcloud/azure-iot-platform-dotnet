@@ -64,7 +64,6 @@ export class Packages extends Component {
     }
 
     onFirstDataRendered = () => {
-        debugger;
         if (this.props.packages.length > 0) {
             this.getDefaultFlyout(this.props.packages);
         }
@@ -75,26 +74,23 @@ export class Packages extends Component {
     };
 
     getDefaultFlyout(rowData) {
-        const selectedPackageName = getParamByName(
-                this.props.location.search,
-                "packageName"
-            ),
-            selectedPackage = rowData.find(
-                (p) => p.name === selectedPackageName
-            );
-        if (this.props.location.search && selectedPackage) {
+        const { location } = this.props;
+        const selectedPackageId = getParamByName(location.search, "packageId"),
+            selectedPackage = rowData.find((p) => p.id === selectedPackageId);
+        if (location.search && selectedPackage) {
             this.setState({
                 packageJson: selectedPackage.content,
-                openFlyoutName: getFlyoutNameParam(this.props.location.search),
+                openFlyoutName: getFlyoutNameParam(location.search),
+                flyoutLink: window.location.href + location.search,
             });
-            this.selectRows(selectedPackageName);
+            this.selectRows(selectedPackageId);
         }
     }
 
-    selectRows(selectedPackageName) {
+    selectRows(selectedPackageId) {
         this.packagesGridApi.gridOptionsWrapper.gridOptions.api.forEachNode(
             (node) =>
-                node.data.name === selectedPackageName
+                node.data.id === selectedPackageId
                     ? node.setSelected(true)
                     : null
         );
@@ -140,8 +136,8 @@ export class Packages extends Component {
         );
         const flyoutLink = getFlyoutLink(
             this.props.deviceGroupId,
-            "packageName",
-            rowData.name,
+            "packageId",
+            rowData.id,
             "package-json"
         );
         this.setState({

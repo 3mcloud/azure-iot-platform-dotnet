@@ -97,11 +97,8 @@ export class Deployments extends Component {
 
     getDefaultFlyout(rowData) {
         const { location } = this.props;
-        const deploymentName = getParamByName(
-                location.search,
-                "deploymentName"
-            ),
-            deployment = rowData.find((dep) => dep.name === deploymentName);
+        const deploymentId = getParamByName(location.search, "deploymentId"),
+            deployment = rowData.find((dep) => dep.id === deploymentId);
         if (location.search && !this.state.deployment && deployment) {
             this.setState({
                 deployment: deployment,
@@ -111,17 +108,16 @@ export class Deployments extends Component {
                         x.id !== deployment.id
                 ),
                 openFlyoutName: getFlyoutNameParam(location.search),
+                flyoutLink: window.location.href + location.search,
             });
-            this.selectRows(deploymentName);
+            this.selectRows(deploymentId);
         }
     }
 
-    selectRows(deploymentName) {
+    selectRows(deploymentId) {
         this.deploymentsGridApi.gridOptionsWrapper.gridOptions.api.forEachNode(
             (node) =>
-                node.data.name === deploymentName
-                    ? node.setSelected(true)
-                    : null
+                node.data.id === deploymentId ? node.setSelected(true) : null
         );
     }
 
@@ -161,8 +157,8 @@ export class Deployments extends Component {
         if (selectedDeployment.colDef.field === "isActive") {
             const flyoutLink = getFlyoutLink(
                 this.props.activeDeviceGroupId,
-                "deploymentName",
-                selectedDeployment.data.name,
+                "deploymentId",
+                selectedDeployment.data.id,
                 "deployment-status"
             );
             this.setState({
