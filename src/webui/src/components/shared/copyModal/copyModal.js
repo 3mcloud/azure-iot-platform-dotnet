@@ -26,7 +26,10 @@ export class CopyModal extends Component {
         const { t, title, copyLink } = this.props;
 
         return (
-            <Modal className="copy-modal-container">
+            <Modal
+                className="copy-modal-container"
+                onClose={() => this.genericCloseClick()}
+            >
                 <div className="copy-header-container">
                     <div className="copy-title">{title}</div>
                 </div>

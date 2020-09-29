@@ -19,7 +19,13 @@ import { ManageDeviceGroupsBtnContainer as ManageDeviceGroupsBtn } from "compone
 import { ResetActiveDeviceQueryBtnContainer as ResetActiveDeviceQueryBtn } from "components/shell/resetActiveDeviceQueryBtn";
 import { DeploymentsGrid } from "./deploymentsGrid";
 import { DeploymentNewContainer, DeploymentStatusContainer } from "./flyouts";
-import { svgs, getDeviceGroupParam } from "utilities";
+import {
+    svgs,
+    getDeviceGroupParam,
+    getParamByName,
+    getFlyoutNameParam,
+    getFlyoutLink,
+} from "utilities";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
 import {
     Balloon,
@@ -79,12 +85,54 @@ export class Deployments extends Component {
         }
     }
 
-    closeFlyout = () => this.setState(closedFlyoutState);
+    onGridReady = (gridReadyEvent) => {
+        this.deploymentsGridApi = gridReadyEvent.api;
+    };
+
+    onFirstDataRendered = () => {
+        if (this.props.deployments.length > 0) {
+            this.getDefaultFlyout(this.props.deployments);
+        }
+    };
+
+    getDefaultFlyout(rowData) {
+        const { location } = this.props;
+        const deploymentName = getParamByName(
+                location.search,
+                "deploymentName"
+            ),
+            deployment = rowData.find((dep) => dep.name === deploymentName);
+        if (location.search && !this.state.deployment && deployment) {
+            this.setState({
+                deployment: deployment,
+                relatedDeployments: rowData.filter(
+                    (x) =>
+                        x.deviceGroupId === deployment.deviceGroupId &&
+                        x.id !== deployment.id
+                ),
+                openFlyoutName: getFlyoutNameParam(location.search),
+            });
+            this.selectRows(deploymentName);
+        }
+    }
+
+    selectRows(deploymentName) {
+        this.deploymentsGridApi.gridOptionsWrapper.gridOptions.api.forEachNode(
+            (node) =>
+                node.data.name === deploymentName
+                    ? node.setSelected(true)
+                    : null
+        );
+    }
+
+    closeFlyout = () => {
+        this.props.location.search = undefined;
+        this.setState(closedFlyoutState);
+    };
 
     onContextMenuChange = (contextBtns) =>
         this.setState({
             contextBtns,
-            openFlyoutName: undefined,
         });
 
     openNewDeploymentFlyout = () => {
@@ -111,6 +159,12 @@ export class Deployments extends Component {
 
     onCellClicked = (selectedDeployment) => {
         if (selectedDeployment.colDef.field === "isActive") {
+            const flyoutLink = getFlyoutLink(
+                this.props.activeDeviceGroupId,
+                "deploymentName",
+                selectedDeployment.data.name,
+                "deployment-status"
+            );
             this.setState({
                 openFlyoutName: "deployment-status",
                 deployment: selectedDeployment.data,
@@ -120,6 +174,7 @@ export class Deployments extends Component {
                             selectedDeployment.data.deviceGroupId &&
                         x.id !== selectedDeployment.data.id
                 ),
+                flyoutLink: flyoutLink,
             });
         }
     };
@@ -135,6 +190,8 @@ export class Deployments extends Component {
                 allActiveDeployments,
             } = this.props,
             gridProps = {
+                onGridReady: this.onGridReady,
+                onFirstDataRendered: this.onFirstDataRendered,
                 rowData: isPending ? undefined : deployments || [],
                 refresh: fetchDeployments,
                 onContextMenuChange: this.onContextMenuChange,
@@ -246,6 +303,7 @@ export class Deployments extends Component {
                             relatedDeployments={this.state.relatedDeployments}
                             t={t}
                             onClose={this.closeFlyout}
+                            flyoutLink={this.state.flyoutLink}
                         />
                     )}
                 </PageContent>

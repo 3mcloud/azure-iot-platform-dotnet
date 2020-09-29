@@ -7,7 +7,15 @@ import { permissions, toDiagnosticsModel } from "services/models";
 import { Btn, ComponentArray, PcsGrid, Protected } from "components/shared";
 import { rulesColumnDefs, defaultRulesGridProps } from "./rulesGridConfig";
 import { checkboxColumn } from "components/shared/pcsGrid/pcsGridConfig";
-import { isFunc, translateColumnDefs, svgs } from "utilities";
+import {
+    isFunc,
+    translateColumnDefs,
+    svgs,
+    getParamByName,
+    getFlyoutNameParam,
+    getFlyoutLink,
+    userHasPermission,
+} from "utilities";
 import {
     EditRuleFlyout,
     RuleDetailsFlyout,
@@ -121,6 +129,45 @@ export class RulesGrid extends Component {
         }
     }
 
+    onFirstDataRendered = () => {
+        if (this.props.rowData && this.props.rowData.length > 0) {
+            this.getDefaultFlyout(this.props.rowData);
+        }
+    };
+
+    getDefaultFlyout(rowData) {
+        const { location, userPermissions } = this.props;
+        const flyoutName = getFlyoutNameParam(location.search);
+        var isUserHasPermission = true;
+        if (
+            flyoutName === "edit" &&
+            !userHasPermission(permissions.updateRules, userPermissions)
+        ) {
+            isUserHasPermission = false;
+        }
+        const ruleId = getParamByName(location.search, "ruleId"),
+            rule = rowData.find((rule) => rule.id === ruleId);
+        if (
+            location.search &&
+            !this.state.softSelectedRuleId &&
+            rule &&
+            isUserHasPermission
+        ) {
+            this.setState({
+                softSelectedRuleId: ruleId,
+                openFlyoutName: flyoutName,
+                selectedRules: [rule],
+            });
+            this.selectRows(ruleId);
+        }
+    }
+
+    selectRows(ruleId) {
+        this.props.rulesGridApi.gridOptionsWrapper.gridOptions.api.forEachNode(
+            (node) => (node.id === ruleId ? node.setSelected(true) : null)
+        );
+    }
+
     openEditRuleFlyout = () => {
         this.props.logEvent(toDiagnosticsModel("Rule_EditClick", {}));
         this.setState({ openFlyoutName: "edit" });
@@ -133,8 +180,21 @@ export class RulesGrid extends Component {
     setSelectedRules = (selectedRules) => this.setState({ selectedRules });
 
     getOpenFlyout = () => {
+        var flyoutLink;
         switch (this.state.openFlyoutName) {
             case "view":
+                flyoutLink = getFlyoutLink(
+                    this.props.activeDeviceGroupId,
+                    "ruleId",
+                    this.state.softSelectedRuleId,
+                    "view"
+                );
+                const editFlyoutLink = getFlyoutLink(
+                    this.props.activeDeviceGroupId,
+                    "ruleId",
+                    this.state.softSelectedRuleId,
+                    "edit"
+                );
                 return (
                     <RuleDetailsFlyout
                         onClose={this.closeFlyout}
@@ -145,9 +205,18 @@ export class RulesGrid extends Component {
                         }
                         key="view-rule-flyout"
                         logEvent={this.props.logEvent}
+                        flyoutLink={flyoutLink}
+                        editFlyoutLink={editFlyoutLink}
                     />
                 );
             case "edit":
+                flyoutLink = getFlyoutLink(
+                    this.props.activeDeviceGroupId,
+                    "ruleId",
+                    this.state.softSelectedRuleId ||
+                        this.state.selectedRules[0].id,
+                    "edit"
+                );
                 return (
                     <EditRuleFlyout
                         onClose={this.closeFlyout}
@@ -158,6 +227,7 @@ export class RulesGrid extends Component {
                         }
                         key="edit-rule-flyout"
                         logEvent={this.props.logEvent}
+                        flyoutLink={flyoutLink}
                     />
                 );
             case "status":
@@ -236,12 +306,16 @@ export class RulesGrid extends Component {
 
     getSoftSelectId = ({ id } = "") => id;
 
-    closeFlyout = () => this.setState(closedFlyoutState);
+    closeFlyout = () => {
+        this.props.location.search = undefined;
+        this.setState(closedFlyoutState);
+    };
 
     render() {
         const gridProps = {
             /* Grid Properties */
             ...defaultRulesGridProps,
+            onFirstDataRendered: this.onFirstDataRendered,
             columnDefs: translateColumnDefs(this.props.t, this.columnDefs),
             sizeColumnsToFit: true,
             getSoftSelectId: this.getSoftSelectId,

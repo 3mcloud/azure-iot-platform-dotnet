@@ -18,6 +18,8 @@ import {
     getApplicationPermissionsAssigned,
     getAlerting,
     getActiveDeviceQueryConditions,
+    getActiveDeviceGroupId,
+    getUser,
 } from "store/reducers/appReducer";
 
 // Pass the devices status
@@ -33,6 +35,8 @@ const mapStateToProps = (state) => ({
             state
         ),
         activeDeviceQueryConditions: getActiveDeviceQueryConditions(state),
+        activeDeviceGroupId: getActiveDeviceGroupId(state),
+        userPermissions: getUser(state).permissions,
     }),
     // Wrap the dispatch method
     mapDispatchToProps = (dispatch) => ({

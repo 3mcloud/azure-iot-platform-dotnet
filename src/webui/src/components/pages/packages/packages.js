@@ -15,7 +15,13 @@ import {
     PageTitle,
 } from "components/shared";
 import { PackageNewContainer } from "./flyouts";
-import { svgs, getDeviceGroupParam } from "utilities";
+import {
+    svgs,
+    getDeviceGroupParam,
+    getParamByName,
+    getFlyoutNameParam,
+    getFlyoutLink,
+} from "utilities";
 
 import "./packages.scss";
 import { DeviceGroupDropdownContainer as DeviceGroupDropdown } from "../../shell/deviceGroupDropdown";
@@ -34,10 +40,6 @@ export class Packages extends Component {
             packageJson: "testjson file",
             selectedDeviceGroupId: undefined,
         };
-
-        this.props.updateCurrentWindow("Packages");
-
-        this.props.fetchPackages();
     }
 
     componentWillMount() {
@@ -61,6 +63,43 @@ export class Packages extends Component {
         }
     }
 
+    onFirstDataRendered = () => {
+        debugger;
+        if (this.props.packages.length > 0) {
+            this.getDefaultFlyout(this.props.packages);
+        }
+    };
+
+    onGridReady = (gridReadyEvent) => {
+        this.packagesGridApi = gridReadyEvent.api;
+    };
+
+    getDefaultFlyout(rowData) {
+        const selectedPackageName = getParamByName(
+                this.props.location.search,
+                "packageName"
+            ),
+            selectedPackage = rowData.find(
+                (p) => p.name === selectedPackageName
+            );
+        if (this.props.location.search && selectedPackage) {
+            this.setState({
+                packageJson: selectedPackage.content,
+                openFlyoutName: getFlyoutNameParam(this.props.location.search),
+            });
+            this.selectRows(selectedPackageName);
+        }
+    }
+
+    selectRows(selectedPackageName) {
+        this.packagesGridApi.gridOptionsWrapper.gridOptions.api.forEachNode(
+            (node) =>
+                node.data.name === selectedPackageName
+                    ? node.setSelected(true)
+                    : null
+        );
+    }
+
     componentDidMount() {
         if (this.state.selectedDeviceGroupId) {
             window.history.replaceState(
@@ -72,6 +111,7 @@ export class Packages extends Component {
     }
 
     closeFlyout = () => {
+        this.props.location.search = undefined;
         this.props.logEvent(toDiagnosticsModel("Packages_NewClose", {}));
         this.setState(closedFlyoutState);
     };
@@ -79,7 +119,6 @@ export class Packages extends Component {
     onContextMenuChange = (contextBtns) =>
         this.setState({
             contextBtns,
-            openFlyoutName: undefined,
         });
 
     openNewPackageFlyout = () => {
@@ -99,9 +138,16 @@ export class Packages extends Component {
                 displayName: rowData.name,
             })
         );
+        const flyoutLink = getFlyoutLink(
+            this.props.deviceGroupId,
+            "packageName",
+            rowData.name,
+            "package-json"
+        );
         this.setState({
             openFlyoutName: "package-json",
             packageJson: rowData.content,
+            flyoutLink: flyoutLink,
         });
     };
 
@@ -115,6 +161,8 @@ export class Packages extends Component {
                 lastUpdated,
             } = this.props,
             gridProps = {
+                onGridReady: this.onGridReady,
+                onFirstDataRendered: this.onFirstDataRendered,
                 fetchPackages,
                 rowData: isPending ? undefined : packages || [],
                 onContextMenuChange: this.onContextMenuChange,
@@ -169,6 +217,7 @@ export class Packages extends Component {
                         <PackageJSONContainer
                             packageJson={this.state.packageJson}
                             onClose={this.closeFlyout}
+                            flyoutLink={this.state.flyoutLink}
                         />
                     )}
                 </PageContent>

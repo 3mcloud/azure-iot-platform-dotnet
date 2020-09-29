@@ -351,8 +351,40 @@ export const base64toHEX = (base64) => {
     }
     return HEX.toUpperCase();
 };
-export const getDeviceGroupParam = (url) => {
+
+export const getParamByName = (url, paramName) => {
     const urlParams = new URLSearchParams(url);
-    let deviceGroupId = urlParams.get("deviceGroupId");
-    return deviceGroupId;
+    let deviceId = urlParams.get(paramName);
+    return deviceId;
+};
+
+export const getDeviceGroupParam = (url) => {
+    return getParamByName(url, "deviceGroupId");
+};
+
+export const getFlyoutNameParam = (url) => {
+    return getParamByName(url, "flyout");
+};
+
+export const getFlyoutLink = (
+    deviceGroupId,
+    paramName,
+    paramValue,
+    flyoutName
+) => {
+    return (
+        window.location.href +
+        "?deviceGroupId=" +
+        deviceGroupId +
+        "&" +
+        paramName +
+        "=" +
+        paramValue +
+        "&flyout=" +
+        flyoutName
+    );
+};
+
+export const userHasPermission = (permission, userPermissions) => {
+    return (userPermissions || new Set()).has(permission);
 };

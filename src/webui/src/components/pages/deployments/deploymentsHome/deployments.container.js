@@ -15,6 +15,7 @@ import {
     redux as appRedux,
     epics as appEpics,
     getActiveDeviceQueryConditions,
+    getActiveDeviceGroupId,
 } from "store/reducers/appReducer";
 
 // Pass the global info needed
@@ -25,6 +26,7 @@ const mapStateToProps = (state) => ({
         lastUpdated: getDeploymentsLastUpdated(state),
         activeDeviceQueryConditions: getActiveDeviceQueryConditions(state),
         allActiveDeployments: getAllDeployments(state),
+        activeDeviceGroupId: getActiveDeviceGroupId(state),
     }),
     // Wrap the dispatch methods
     mapDispatchToProps = (dispatch) => ({

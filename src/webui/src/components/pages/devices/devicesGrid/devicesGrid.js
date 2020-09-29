@@ -8,7 +8,15 @@ import { DeviceDeleteContainer } from "../flyouts/deviceDelete";
 import { DeviceJobsContainer } from "../flyouts/deviceJobs";
 import { DeviceDetailsContainer } from "../flyouts/deviceDetails";
 import { CloudToDeviceMessageContainer } from "../flyouts/cloudToDeviceMessage";
-import { isFunc, svgs, translateColumnDefs } from "utilities";
+import {
+    isFunc,
+    svgs,
+    translateColumnDefs,
+    getFlyoutNameParam,
+    getParamByName,
+    getFlyoutLink,
+    userHasPermission,
+} from "utilities";
 import { checkboxColumn } from "components/shared/pcsGrid/pcsGridConfig";
 
 const closedFlyoutState = {
@@ -70,6 +78,54 @@ export class DevicesGrid extends Component {
         );
     }
 
+    onFirstDataRendered = () => {
+        if (this.props.rowData && this.props.rowData.length > 0) {
+            this.getDefaultFlyout(this.props.rowData);
+        }
+    };
+
+    getDefaultFlyout(rowData) {
+        const { location, userPermissions } = this.props;
+        const flyoutName = getFlyoutNameParam(location.search);
+        var isUserHasPermission = true;
+        if (
+            flyoutName === "jobs" &&
+            !userHasPermission(permissions.createJobs, userPermissions)
+        ) {
+            isUserHasPermission = false;
+        }
+        const deviceIds = this.getDeviceIdsArray(
+                getParamByName(location.search, "deviceId")
+            ),
+            devices = deviceIds
+                ? rowData.filter((device) => deviceIds.includes(device.id))
+                : undefined;
+        if (
+            location.search &&
+            !this.state.softSelectedDeviceId &&
+            devices &&
+            isUserHasPermission
+        ) {
+            this.setState({
+                softSelectedDeviceId: deviceIds,
+                openFlyoutName: flyoutName,
+                selectedDevicesForFlyout: devices,
+            });
+            this.selectRows(deviceIds);
+        }
+    }
+
+    getDeviceIdsArray(deviceIdString) {
+        return deviceIdString ? deviceIdString.split("||") : undefined;
+    }
+
+    selectRows(deviceIds) {
+        this.deviceGridApi.gridOptionsWrapper.gridOptions.api.forEachNode(
+            (node) =>
+                deviceIds.includes(node.id) ? node.setSelected(true) : null
+        );
+    }
+
     /**
      * Get the grid api options
      *
@@ -90,6 +146,7 @@ export class DevicesGrid extends Component {
         });
 
     getOpenFlyout = () => {
+        var flyoutLink = undefined;
         switch (this.state.openFlyoutName) {
             case "delete":
                 return (
@@ -100,22 +157,44 @@ export class DevicesGrid extends Component {
                     />
                 );
             case "jobs":
+                const deviceIds = this.deviceGridApi
+                    .getSelectedRows()
+                    .map((d) => d.id)
+                    .join("||");
+                flyoutLink = getFlyoutLink(
+                    this.props.activeDeviceGroupId,
+                    "deviceId",
+                    deviceIds,
+                    "jobs"
+                );
                 return (
                     <DeviceJobsContainer
                         key="jobs-device-key"
                         onClose={this.closeFlyout}
-                        devices={this.deviceGridApi.getSelectedRows()}
+                        devices={
+                            this.deviceGridApi.getSelectedRows().length > 0
+                                ? this.deviceGridApi.getSelectedRows()
+                                : this.state.selectedDevicesForFlyout
+                        }
                         openPropertyEditorModal={
                             this.props.openPropertyEditorModal
                         }
+                        flyoutLink={flyoutLink}
                     />
                 );
             case "details":
+                flyoutLink = getFlyoutLink(
+                    this.props.activeDeviceGroupId,
+                    "deviceId",
+                    this.state.softSelectedDeviceId,
+                    "details"
+                );
                 return (
                     <DeviceDetailsContainer
                         key="details-device-key"
                         onClose={this.closeFlyout}
                         deviceId={this.state.softSelectedDeviceId}
+                        flyoutLink={flyoutLink}
                     />
                 );
             case "c2dmessage":
@@ -130,7 +209,10 @@ export class DevicesGrid extends Component {
         }
     };
 
-    closeFlyout = () => this.setState(closedFlyoutState);
+    closeFlyout = () => {
+        this.props.location.search = undefined;
+        this.setState(closedFlyoutState);
+    };
 
     goToTelemetryScreen = () => {
         const selectedDevices = this.deviceGridApi.getSelectedRows();
@@ -190,6 +272,7 @@ export class DevicesGrid extends Component {
         const gridProps = {
             /* Grid Properties */
             ...defaultDeviceGridProps,
+            onFirstDataRendered: this.onFirstDataRendered,
             columnDefs: translateColumnDefs(this.props.t, this.columnDefs),
             sizeColumnsToFit: true,
             getSoftSelectId: this.getSoftSelectId,
