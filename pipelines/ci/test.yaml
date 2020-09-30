@@ -63,6 +63,8 @@ variables:
     value: publishFiles
   - name: functionsArtifactName
     value: functionsFiles
+  - name: webuiArtifactName
+    value: webuiFiles
   - name: helmInstallTimeoutInSeconds
     value: 1000
   - name: mmmIotPlatformServicesHelmChartValuesFile
@@ -235,6 +237,41 @@ stages:
             artifact: $(functionsArtifactName)
             displayName: Publish Azure Functions artifacts
 
+  - stage: whiteSourceBolt
+    displayName: WhiteSource Bolt
+    dependsOn:
+      - build
+      - buildFrontEndContainers
+    jobs:
+      - job: whiteSourceBolt
+        displayName: WhiteSource Bolt
+        steps:
+          - checkout: none
+
+          - task: DownloadPipelineArtifact@2
+            displayName: Download artifacts
+            inputs:
+              source: current
+              artifact: $(publishedFilesArtifactName)
+              path: $(Build.SourcesDirectory)/$(publishedFilesArtifactName)
+
+          - task: DownloadPipelineArtifact@2
+            displayName: Download artifacts
+            inputs:
+              source: current
+              artifact: $(functionsArtifactName)
+              path: $(Build.SourcesDirectory)/$(functionsArtifactName)
+
+          - task: DownloadPipelineArtifact@2
+            displayName: Download artifacts
+            inputs:
+              source: current
+              artifact: $(webuiArtifactName)
+              path: $(Build.SourcesDirectory)/$(webuiArtifactName)
+
+          - task: WhiteSource Bolt@19
+            displayName: 'WhiteSource Bolt webui'
+
   - stage: listCommitsSinceLastRelease
     displayName: List commits since last release
     dependsOn: []
@@ -395,6 +432,18 @@ stages:
               npm run lint
             displayName: npm run lint
             workingDirectory: src/webui
+
+          - task: CopyFiles@2
+            displayName: Prepare services artifacts
+            inputs:
+              contents: |
+                src/webui/**/*
+              targetFolder: $(webuiArtifactName)
+              cleanTargetFolder: true
+
+          - publish: $(webuiArtifactName)
+            artifact: $(webuiArtifactName)
+            displayName: Publish services artifacts
 
       - job: buildFrontEndContainers
         displayName: Build front-end containers
@@ -779,7 +828,6 @@ stages:
                 set -Eeuxo pipefail
                 az aks get-credentials --name $(aksName) --resource-group $(resourceGroupName) --overwrite-existing
                 kubectl wait pods --for=condition=Ready --selector app.kubernetes.io/name=webui -n $(kubernetesNamespace)
-                kubectl wait pods --for=condition=Ready --selector app.kubernetes.io/name=reverse-proxy -n $(kubernetesNamespace)
 
           - task: DotNetCoreCLI@2
             displayName: Run functional tests
