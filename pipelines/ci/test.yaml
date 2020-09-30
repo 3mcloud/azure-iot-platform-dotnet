@@ -249,28 +249,28 @@ stages:
           - checkout: none
 
           - task: DownloadPipelineArtifact@2
-            displayName: Download artifacts
+            displayName: Download service artifacts
             inputs:
               source: current
               artifact: $(publishedFilesArtifactName)
               path: $(Build.SourcesDirectory)/$(publishedFilesArtifactName)
 
           - task: DownloadPipelineArtifact@2
-            displayName: Download artifacts
+            displayName: Download functions artifacts
             inputs:
               source: current
               artifact: $(functionsArtifactName)
               path: $(Build.SourcesDirectory)/$(functionsArtifactName)
 
           - task: DownloadPipelineArtifact@2
-            displayName: Download artifacts
+            displayName: Download webui artifacts
             inputs:
               source: current
               artifact: $(webuiArtifactName)
               path: $(Build.SourcesDirectory)/$(webuiArtifactName)
 
           - task: WhiteSource Bolt@19
-            displayName: 'WhiteSource Bolt webui'
+            displayName: 'WhiteSource Bolt'
 
   - stage: listCommitsSinceLastRelease
     displayName: List commits since last release
