@@ -106,7 +106,7 @@ export class DeploymentStatus extends LinkedComponent {
     }
 
     render() {
-        const { t } = this.props;
+        const { t, flyoutLink } = this.props;
         const { changesApplied } = this.state;
         return (
             <Flyout
@@ -119,6 +119,7 @@ export class DeploymentStatus extends LinkedComponent {
                 onExpand={() => {
                     this.expandFlyout();
                 }}
+                flyoutLink={flyoutLink}
             >
                 <div className="new-deployment-content">
                     <form className="new-deployment-form" onSubmit={this.apply}>

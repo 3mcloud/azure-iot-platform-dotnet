@@ -138,6 +138,9 @@ export class Rules extends Component {
                 lastUpdated,
                 fetchRules,
                 logEvent,
+                activeDeviceGroupId,
+                location,
+                userPermissions,
             } = this.props,
             gridProps = {
                 onGridReady: this.onGridReady,
@@ -147,6 +150,10 @@ export class Rules extends Component {
                 deviceGroups: this.props.deviceGroups,
                 refresh: fetchRules,
                 logEvent: this.props.logEvent,
+                activeDeviceGroupId: activeDeviceGroupId,
+                location: location,
+                userPermissions: userPermissions,
+                rulesGridApi: this.rulesGridApi,
             };
         return (
             <ComponentArray>

@@ -84,6 +84,7 @@ export class DeviceJobs extends LinkedComponent {
             updateTags,
             updateProperties,
             openPropertyEditorModal,
+            flyoutLink,
         } = this.props;
 
         return (
@@ -95,6 +96,7 @@ export class DeviceJobs extends LinkedComponent {
                 onExpand={() => {
                     this.expandFlyout();
                 }}
+                flyoutLink={flyoutLink}
             >
                 <Protected permission={permissions.createJobs}>
                     <div className="device-jobs-container">

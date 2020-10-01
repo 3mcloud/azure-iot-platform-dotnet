@@ -87,7 +87,8 @@
         }
     },
     "flyout": {
-        "closeTitle": "Close"
+        "closeTitle": "Close",
+        "getLinkTitle": "Get Link"
     },
     "settingsFlyout": {
         "title": "System settings",
