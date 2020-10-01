@@ -152,6 +152,7 @@ export class DeviceGroups extends React.Component {
                                             onClick={onEditDeviceGroup(
                                                 deviceGroup
                                             )}
+                                            title={deviceGroup.displayName}
                                         >
                                             {deviceGroup.displayName}
                                         </div>

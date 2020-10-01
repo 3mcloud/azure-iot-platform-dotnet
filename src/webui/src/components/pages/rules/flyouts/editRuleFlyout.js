@@ -35,7 +35,7 @@ export class EditRuleFlyout extends Component {
     }
 
     render() {
-        const { onClose, t, ruleId } = this.props;
+        const { onClose, t, ruleId, flyoutLink } = this.props;
         return (
             <Flyout.Container
                 header={t("rules.flyouts.editRule")}
@@ -45,6 +45,7 @@ export class EditRuleFlyout extends Component {
                 onExpand={() => {
                     this.expandFlyout();
                 }}
+                flyoutLink={flyoutLink}
             >
                 <Protected permission={permissions.updateRules}>
                     {(hasPermission, permission) =>

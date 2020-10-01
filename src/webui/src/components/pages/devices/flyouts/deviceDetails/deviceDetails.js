@@ -346,6 +346,7 @@ export class DeviceDetails extends Component {
                 timeSeriesExplorerUrl,
                 isDeviceModuleStatusPending,
                 deviceModuleStatusError,
+                flyoutLink,
             } = this.props,
             { telemetry, lastMessage, currentModuleStatus } = this.state,
             lastMessageTime = (lastMessage || {}).time,
@@ -392,6 +393,7 @@ export class DeviceDetails extends Component {
                 onExpand={() => {
                     this.expandFlyout();
                 }}
+                flyoutLink={flyoutLink}
             >
                 <div className="device-details-container">
                     {!device && (

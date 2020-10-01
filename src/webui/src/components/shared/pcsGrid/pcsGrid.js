@@ -97,6 +97,13 @@ export class PcsGrid extends Component {
         }
     };
 
+    /** Invoked when data is rendered for the first time */
+    onFirstDataRendered = () => {
+        if (isFunc(this.props.onFirstDataRendered)) {
+            this.props.onFirstDataRendered();
+        }
+    };
+
     /**
      * Refreshes the grid to update soft select CSS states
      * Forces and update event
@@ -162,6 +169,7 @@ export class PcsGrid extends Component {
                 headerHeight: ROW_HEIGHT,
                 rowHeight: ROW_HEIGHT,
                 onGridReady: this.onGridReady,
+                onFirstDataRendered: this.onFirstDataRendered,
                 onSelectionChanged: this.onSelectionChanged,
                 onRowClicked: this.onRowClicked,
                 rowClassRules: {

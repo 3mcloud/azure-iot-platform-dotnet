@@ -59,7 +59,7 @@ export class RuleDetailsFlyout extends Component {
     }
 
     render() {
-        const { t, onClose, ruleId } = this.props,
+        const { t, onClose, ruleId, flyoutLink, editFlyoutLink } = this.props,
             { isEditable } = this.state;
 
         return (
@@ -75,6 +75,7 @@ export class RuleDetailsFlyout extends Component {
                 onExpand={() => {
                     this.expandFlyout();
                 }}
+                flyoutLink={isEditable ? editFlyoutLink : flyoutLink}
             >
                 <div className="rule-details">
                     {!isEditable ? (

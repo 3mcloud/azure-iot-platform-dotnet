@@ -18,7 +18,6 @@ steps:
       echo "serviceProbesEnabled: ${{parameters.serviceProbesEnabled}}"
       echo "helmVersion: ${{parameters.helmVersion}}"
     displayName: Print step variables
-
   - checkout: self
     displayName: Checkout repository
 
@@ -52,6 +51,7 @@ steps:
       releaseName: ${{parameters.serviceName}}
       overrideValues: deployment.image.tag=${{parameters.imageTag}},nameOverride=${{parameters.serviceName}},service.port=${{parameters.servicePort}},deployment.port.http=${{parameters.servicePort}},deployment.probes.enabled=${{parameters.serviceProbesEnabled}}
       force: true
+      install: true
       arguments: --cleanup-on-fail --set-string gitSha=$(Build.SourceVersion)
       waitForExecution: true
-      install: true
+      
