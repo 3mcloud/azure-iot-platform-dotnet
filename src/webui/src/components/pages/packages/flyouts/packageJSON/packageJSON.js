@@ -46,7 +46,7 @@ export class PackageJSON extends LinkedComponent {
     }
 
     render() {
-        const { t, theme } = this.props;
+        const { t, theme, flyoutLink } = this.props;
         this.packageJsonLink = this.linkTo("packageJson");
 
         return (
@@ -58,6 +58,7 @@ export class PackageJSON extends LinkedComponent {
                 onExpand={() => {
                     this.expandFlyout();
                 }}
+                flyoutLink={flyoutLink}
             >
                 <div className="new-package-content">
                     <form className="new-package-form">
