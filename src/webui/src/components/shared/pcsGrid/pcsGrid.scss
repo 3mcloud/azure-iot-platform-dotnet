@@ -60,6 +60,13 @@ $doublePadding: $baseContentPadding * 2;
 
   &.movable-columns .ag-header-cell:not(.checkbox-column) { cursor: move; }
 
+  .ag-font-style {
+    user-select: initial;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    -webkit-user-select: text;
+  }
+
   .ag-row {
     margin-bottom: 0;
 
