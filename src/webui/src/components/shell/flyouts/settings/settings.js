@@ -22,7 +22,7 @@ import {
 } from "services/models";
 
 import "./settings.scss";
-import { TenantService, ConfigService } from "services";
+import { TenantService, ConfigService, IdentityGatewayService } from "services";
 import FirmwareVariableGrid from "./firmwareVariableGrid";
 
 const Section = Flyout.Section;
@@ -94,6 +94,10 @@ export class Settings extends LinkedComponent {
             this.watchAlertingStatusAndUpdate(10);
         }
         this.expandFlyout = this.expandFlyout.bind(this);
+    }
+
+    componentWillMount() {
+        IdentityGatewayService.VerifyAndRefreshCache();
     }
 
     componentWillReceiveProps({
