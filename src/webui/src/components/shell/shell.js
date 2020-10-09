@@ -104,6 +104,7 @@ class Shell extends Component {
                         className="global-nav-item"
                         activeClassName="global-nav-item-active"
                         title={label}
+                        id={tabProps.labelId}
                     >
                         <Svg
                             path={tabProps.svg}

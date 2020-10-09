@@ -14,7 +14,9 @@ export class PackageJSON extends LinkedComponent {
             packageJson: {
                 jsObject: { jsonData },
             },
+            expandedValue: false,
         };
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
     onFlyoutClose = (eventName) => {
         this.props.onClose();
@@ -31,8 +33,20 @@ export class PackageJSON extends LinkedComponent {
         }
     }
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
-        const { t, theme } = this.props;
+        const { t, theme, flyoutLink } = this.props;
         this.packageJsonLink = this.linkTo("packageJson");
 
         return (
@@ -40,6 +54,11 @@ export class PackageJSON extends LinkedComponent {
                 header={t("packages.flyouts.packageJson.title")}
                 t={t}
                 onClose={() => this.onFlyoutClose("PackageJSON_CloseClick")}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
+                flyoutLink={flyoutLink}
             >
                 <div className="new-package-content">
                     <form className="new-package-form">

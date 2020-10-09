@@ -7,19 +7,45 @@ import { RuleEditorContainer } from "./ruleEditor";
 import Flyout from "components/shared/flyout";
 
 export class EditRuleFlyout extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            expandedValue: false,
+        };
+        this.expandFlyout = this.expandFlyout.bind(this);
+    }
+
     onTopXClose = () => {
         const { logEvent, onClose } = this.props;
         logEvent(toDiagnosticsModel("Rule_TopXCloseClick", {}));
         onClose();
     };
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
-        const { onClose, t, ruleId } = this.props;
+        const { onClose, t, ruleId, flyoutLink } = this.props;
         return (
             <Flyout.Container
                 header={t("rules.flyouts.editRule")}
                 t={t}
                 onClose={this.onTopXClose}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
+                flyoutLink={flyoutLink}
             >
                 <Protected permission={permissions.updateRules}>
                     {(hasPermission, permission) =>

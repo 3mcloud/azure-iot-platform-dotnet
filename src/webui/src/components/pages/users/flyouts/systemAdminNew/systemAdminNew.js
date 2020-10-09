@@ -34,6 +34,7 @@ export class SystemAdminNew extends LinkedComponent {
                 userId: "",
                 name: "",
             },
+            expandedValue: false,
         };
 
         // Linked components
@@ -47,6 +48,7 @@ export class SystemAdminNew extends LinkedComponent {
             );
         this.onSystemAdminSelected = this.onSystemAdminSelected.bind(this);
         this.addSystemAdmin = this.addSystemAdmin.bind(this);
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentWillUnmount() {
@@ -131,6 +133,18 @@ export class SystemAdminNew extends LinkedComponent {
         return t("users.flyouts.new.affected");
     }
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const { t, allNonSystemAdmins } = this.props,
             { error, changesApplied } = this.state,
@@ -147,6 +161,10 @@ export class SystemAdminNew extends LinkedComponent {
                 header={t("users.flyouts.new.systemAdmin.title")}
                 t={t}
                 onClose={() => this.onFlyoutClose("Users_TopXCloseClick")}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
                 <form
                     className="users-new-container"

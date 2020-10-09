@@ -42,11 +42,13 @@ export class CloudToDeviceMessage extends LinkedComponent {
                     message: "Message to send to device",
                 },
             },
+            expandedValue: false,
         };
         this.jsonPayloadLink = this.linkTo("jsonPayload").check(
             (jsonPayloadObject) => !jsonPayloadObject.error,
             () => this.props.t("devices.flyouts.c2dMessage.validation.invalid")
         );
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentDidMount() {
@@ -136,6 +138,18 @@ export class CloudToDeviceMessage extends LinkedComponent {
         return t("devices.flyouts.c2dMessage.affected");
     }
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const { t, onClose, theme } = this.props,
             {
@@ -157,6 +171,10 @@ export class CloudToDeviceMessage extends LinkedComponent {
                 header={t("devices.flyouts.c2dMessage.title")}
                 t={t}
                 onClose={onClose}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
                 <Protected permission={permissions.deleteDevices}>
                     <form

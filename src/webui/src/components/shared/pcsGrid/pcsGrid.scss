@@ -60,6 +60,13 @@ $doublePadding: $baseContentPadding * 2;
 
   &.movable-columns .ag-header-cell:not(.checkbox-column) { cursor: move; }
 
+  .ag-font-style {
+    user-select: initial;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    -webkit-user-select: text;
+  }
+
   .ag-row {
     margin-bottom: 0;
 
@@ -146,6 +153,23 @@ $doublePadding: $baseContentPadding * 2;
           color: themed('colorGridCellText');
         }
       }
+    }
+  }
+}
+
+.expand-col-container {
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 10;
+  margin-top: 0;
+
+  .btn.expand-columns {
+    @include rem-fallback(width, 15px);
+  }
+
+  @include themify($themes) {
+    .btn:hover {
+      background-color: themed('color-bg-content');
     }
   }
 }

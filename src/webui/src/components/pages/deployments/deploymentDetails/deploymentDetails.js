@@ -291,6 +291,7 @@ export class DeploymentDetails extends Component {
                             time={lastUpdated}
                             isPending={isPending}
                             t={t}
+                            isShowIconOnly={true}
                         />
                     </ContextMenuAlign>
                 </ContextMenu>

@@ -22,7 +22,7 @@ import {
 } from "services/models";
 
 import "./settings.scss";
-import { TenantService, ConfigService } from "services";
+import { TenantService, ConfigService, IdentityGatewayService } from "services";
 import FirmwareVariableGrid from "./firmwareVariableGrid";
 
 const Section = Flyout.Section;
@@ -69,6 +69,7 @@ export class Settings extends LinkedComponent {
             firmwareJson: emptyFirmwareJson,
             firmwareSettingPending: false,
             firmwareSettingError: "",
+            expandedValue: false,
         };
 
         const { t } = this.props;
@@ -92,6 +93,11 @@ export class Settings extends LinkedComponent {
         if (this.state.alertingPending) {
             this.watchAlertingStatusAndUpdate(10);
         }
+        this.expandFlyout = this.expandFlyout.bind(this);
+    }
+
+    componentWillMount() {
+        IdentityGatewayService.VerifyAndRefreshCache();
     }
 
     componentWillReceiveProps({
@@ -428,6 +434,18 @@ export class Settings extends LinkedComponent {
         }
     };
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const {
                 t,
@@ -489,6 +507,10 @@ export class Settings extends LinkedComponent {
                     this,
                     "Settings_TopXClose_Click"
                 )}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
                 <form onSubmit={this.apply}>
                     <div className="settings-workflow-container">

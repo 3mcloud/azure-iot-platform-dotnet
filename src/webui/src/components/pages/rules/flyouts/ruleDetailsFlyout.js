@@ -22,7 +22,9 @@ export class RuleDetailsFlyout extends Component {
         // Set the initial state
         this.state = {
             isEditable: false,
+            expandedValue: false,
         };
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -44,8 +46,20 @@ export class RuleDetailsFlyout extends Component {
         this.setState({ isEditable: true });
     };
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
-        const { t, onClose, ruleId } = this.props,
+        const { t, onClose, ruleId, flyoutLink, editFlyoutLink } = this.props,
             { isEditable } = this.state;
 
         return (
@@ -57,6 +71,11 @@ export class RuleDetailsFlyout extends Component {
                 }
                 t={t}
                 onClose={this.onTopXClose}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
+                flyoutLink={isEditable ? editFlyoutLink : flyoutLink}
             >
                 <div className="rule-details">
                     {!isEditable ? (

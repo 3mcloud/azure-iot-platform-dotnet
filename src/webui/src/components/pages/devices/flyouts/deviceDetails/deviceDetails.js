@@ -84,6 +84,7 @@ export class DeviceDetails extends Component {
             currentModuleStatus: undefined,
             deviceUploads: undefined,
             deviceDeployments: undefined,
+            expandedValue: false,
         };
         this.baseState = this.state;
         this.columnDefs = [
@@ -106,6 +107,7 @@ export class DeviceDetails extends Component {
         } else {
             this.props.fetchModules(this.props.device.id);
         }
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentDidMount() {
@@ -323,6 +325,18 @@ export class DeviceDetails extends Component {
         this.resetTelemetry$.next(this.props.device.id);
     };
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const {
                 t,
@@ -332,6 +346,7 @@ export class DeviceDetails extends Component {
                 timeSeriesExplorerUrl,
                 isDeviceModuleStatusPending,
                 deviceModuleStatusError,
+                flyoutLink,
             } = this.props,
             { telemetry, lastMessage, currentModuleStatus } = this.state,
             lastMessageTime = (lastMessage || {}).time,
@@ -374,6 +389,11 @@ export class DeviceDetails extends Component {
                 header={t("devices.flyouts.details.title")}
                 t={t}
                 onClose={onClose}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
+                flyoutLink={flyoutLink}
             >
                 <div className="device-details-container">
                     {!device && (

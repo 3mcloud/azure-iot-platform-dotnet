@@ -22,7 +22,9 @@ export class CreateDeviceQuery extends LinkedComponent {
         this.state = {
             filterOptions: [],
             filtersError: undefined,
+            expandedValue: false,
         };
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentDidMount() {
@@ -53,6 +55,18 @@ export class CreateDeviceQuery extends LinkedComponent {
         this.props.closeFlyout();
     };
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const { t } = this.props;
 
@@ -61,6 +75,10 @@ export class CreateDeviceQuery extends LinkedComponent {
                 header={t("createDeviceQuery.title")}
                 t={t}
                 onClose={this.onCloseFlyout}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
                 <div className="manage-filters-flyout-container">
                     <CreateDeviceQueryForm {...this.props} {...this.state} />

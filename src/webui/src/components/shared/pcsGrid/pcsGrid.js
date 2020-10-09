@@ -11,6 +11,8 @@ import { ROW_HEIGHT } from "components/shared/pcsGrid/pcsGridConfig";
 import "../../../../node_modules/ag-grid-community/src/styles/ag-grid.scss";
 import "../../../../node_modules/ag-grid-community/src/styles/ag-theme-dark.scss";
 import "./pcsGrid.scss";
+import { Btn } from "../forms";
+import { ComponentArray } from "../componentArray/componentArray";
 
 /**
  * PcsGrid is a helper wrapper around AgGrid. The primary functionality of this wrapper
@@ -86,11 +88,19 @@ export class PcsGrid extends Component {
     /** Save the gridApi locally on load */
     onGridReady = (gridReadyEvent) => {
         this.gridApi = gridReadyEvent.api;
+        this.gridColumnApi = gridReadyEvent.columnApi;
         if (this.props.sizeColumnsToFit) {
             this.resizeEvents.next("r");
         }
         if (isFunc(this.props.onGridReady)) {
             this.props.onGridReady(gridReadyEvent);
+        }
+    };
+
+    /** Invoked when data is rendered for the first time */
+    onFirstDataRendered = () => {
+        if (isFunc(this.props.onFirstDataRendered)) {
+            this.props.onFirstDataRendered();
         }
     };
 
@@ -126,6 +136,24 @@ export class PcsGrid extends Component {
         }
     };
 
+    expandColumns = () => {
+        var allColumnIds = [];
+        var colTotalWidthAfterExpand = 0;
+        this.gridColumnApi.getAllColumns().forEach(function (column) {
+            allColumnIds.push(column.colId);
+        });
+        this.gridColumnApi.autoSizeColumns(allColumnIds, false);
+        this.gridColumnApi.getAllColumns().forEach(function (column) {
+            colTotalWidthAfterExpand =
+                colTotalWidthAfterExpand + column.actualWidth;
+        });
+        if (
+            colTotalWidthAfterExpand <= this.gridApi.gridPanel.getCenterWidth()
+        ) {
+            this.resizeEvents.next("r");
+        }
+    };
+
     render() {
         const {
                 onSoftSelectChange,
@@ -141,6 +169,7 @@ export class PcsGrid extends Component {
                 headerHeight: ROW_HEIGHT,
                 rowHeight: ROW_HEIGHT,
                 onGridReady: this.onGridReady,
+                onFirstDataRendered: this.onFirstDataRendered,
                 onSelectionChanged: this.onSelectionChanged,
                 onRowClicked: this.onRowClicked,
                 rowClassRules: {
@@ -163,15 +192,30 @@ export class PcsGrid extends Component {
                 </div>
             );
         return (
-            <div
-                className={`pcs-grid-container ag-theme-dark ${
-                    gridParams.suppressMovableColumns ? "" : "movable-columns"
-                }`}
-                style={style}
-            >
-                {!rowData ? loadingContainer : ""}
-                <AgGridReact {...gridParams} />
-            </div>
+            <ComponentArray>
+                {rowData && (
+                    <div className="expand-col-container">
+                        <Btn
+                            onClick={this.expandColumns}
+                            className="expand-columns"
+                            icon="chevronRightMed"
+                        >
+                            Expand Columns
+                        </Btn>
+                    </div>
+                )}
+                <div
+                    className={`pcs-grid-container ag-theme-dark ${
+                        gridParams.suppressMovableColumns
+                            ? ""
+                            : "movable-columns"
+                    }`}
+                    style={style}
+                >
+                    {!rowData ? loadingContainer : ""}
+                    <AgGridReact {...gridParams} />
+                </div>
+            </ComponentArray>
         );
     }
 }

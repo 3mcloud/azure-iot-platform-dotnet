@@ -4,7 +4,7 @@
         <IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
     </PropertyGroup>
     <ItemGroup Condition="'$(MSBuildProjectName)'=='WebService'">
-        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.14.0-beta3" />
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="5.1.0" />

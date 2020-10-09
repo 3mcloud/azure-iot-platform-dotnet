@@ -19,7 +19,13 @@ import { ManageDeviceGroupsBtnContainer as ManageDeviceGroupsBtn } from "compone
 import { ResetActiveDeviceQueryBtnContainer as ResetActiveDeviceQueryBtn } from "components/shell/resetActiveDeviceQueryBtn";
 import { DeploymentsGrid } from "./deploymentsGrid";
 import { DeploymentNewContainer, DeploymentStatusContainer } from "./flyouts";
-import { svgs, getDeviceGroupParam } from "utilities";
+import {
+    svgs,
+    getDeviceGroupParam,
+    getParamByName,
+    getFlyoutNameParam,
+    getFlyoutLink,
+} from "utilities";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
 import {
     Balloon,
@@ -79,12 +85,50 @@ export class Deployments extends Component {
         }
     }
 
-    closeFlyout = () => this.setState(closedFlyoutState);
+    onGridReady = (gridReadyEvent) => {
+        this.deploymentsGridApi = gridReadyEvent.api;
+    };
+
+    onFirstDataRendered = () => {
+        if (this.props.deployments.length > 0) {
+            this.getDefaultFlyout(this.props.deployments);
+        }
+    };
+
+    getDefaultFlyout(rowData) {
+        const { location } = this.props;
+        const deploymentId = getParamByName(location.search, "deploymentId"),
+            deployment = rowData.find((dep) => dep.id === deploymentId);
+        if (location.search && !this.state.deployment && deployment) {
+            this.setState({
+                deployment: deployment,
+                relatedDeployments: rowData.filter(
+                    (x) =>
+                        x.deviceGroupId === deployment.deviceGroupId &&
+                        x.id !== deployment.id
+                ),
+                openFlyoutName: getFlyoutNameParam(location.search),
+                flyoutLink: window.location.href + location.search,
+            });
+            this.selectRows(deploymentId);
+        }
+    }
+
+    selectRows(deploymentId) {
+        this.deploymentsGridApi.gridOptionsWrapper.gridOptions.api.forEachNode(
+            (node) =>
+                node.data.id === deploymentId ? node.setSelected(true) : null
+        );
+    }
+
+    closeFlyout = () => {
+        this.props.location.search = undefined;
+        this.setState(closedFlyoutState);
+    };
 
     onContextMenuChange = (contextBtns) =>
         this.setState({
             contextBtns,
-            openFlyoutName: undefined,
         });
 
     openNewDeploymentFlyout = () => {
@@ -111,6 +155,12 @@ export class Deployments extends Component {
 
     onCellClicked = (selectedDeployment) => {
         if (selectedDeployment.colDef.field === "isActive") {
+            const flyoutLink = getFlyoutLink(
+                this.props.activeDeviceGroupId,
+                "deploymentId",
+                selectedDeployment.data.id,
+                "deployment-status"
+            );
             this.setState({
                 openFlyoutName: "deployment-status",
                 deployment: selectedDeployment.data,
@@ -120,6 +170,7 @@ export class Deployments extends Component {
                             selectedDeployment.data.deviceGroupId &&
                         x.id !== selectedDeployment.data.id
                 ),
+                flyoutLink: flyoutLink,
             });
         }
     };
@@ -135,6 +186,8 @@ export class Deployments extends Component {
                 allActiveDeployments,
             } = this.props,
             gridProps = {
+                onGridReady: this.onGridReady,
+                onFirstDataRendered: this.onFirstDataRendered,
                 rowData: isPending ? undefined : deployments || [],
                 refresh: fetchDeployments,
                 onContextMenuChange: this.onContextMenuChange,
@@ -178,6 +231,7 @@ export class Deployments extends Component {
                             time={lastUpdated}
                             isPending={isPending}
                             t={t}
+                            isShowIconOnly={true}
                         />
                     </ContextMenuAlign>
                 </ContextMenu>
@@ -245,6 +299,7 @@ export class Deployments extends Component {
                             relatedDeployments={this.state.relatedDeployments}
                             t={t}
                             onClose={this.closeFlyout}
+                            flyoutLink={this.state.flyoutLink}
                         />
                     )}
                 </PageContent>

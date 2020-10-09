@@ -30,7 +30,9 @@ export class ExampleFlyout extends Component {
             error: undefined,
             successCount: 0,
             changesApplied: false,
+            expandedValue: false,
         };
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentWillUnmount() {
@@ -79,6 +81,18 @@ export class ExampleFlyout extends Component {
         return t("walkthrough.pageWithFlyout.flyouts.example.affected");
     }
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const { t, onClose } = this.props,
             {
@@ -97,6 +111,10 @@ export class ExampleFlyout extends Component {
                 header={t("walkthrough.pageWithFlyout.flyouts.example.header")}
                 t={t}
                 onClose={onClose}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
                 {/**
                  * Really, anything you need could go inside a flyout.

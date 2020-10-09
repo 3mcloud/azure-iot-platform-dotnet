@@ -17,6 +17,8 @@
    .copy-info {
     @include rem-fallback(padding-bottom, 20px);
     @include rem-fallback(height, 50px);
+    overflow-wrap: break-word;
+    word-wrap: break-word;
   }
 
   @include themify($themes) {

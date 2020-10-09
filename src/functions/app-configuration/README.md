@@ -1,0 +1,3 @@
+azure-iot-appconfig-function Azure Functions for writing and deleted in App Configuration. Used in the tenant management service runbooks.
+
+Open the function app in the Azure portal From the "Overview" page, there is a link to the "Deployment options configured for ExternalGit" - click this From the deployment page, along the top there is a "Sync" button - click this Wait a few minutes and check the status of your deployment to ensure your changes were deployed successfully. Setting up deployment to a Function App For directions on setting up the deployment pipeline described above, see here.

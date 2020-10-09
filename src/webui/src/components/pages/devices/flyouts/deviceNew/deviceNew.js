@@ -206,6 +206,7 @@ export class DeviceNew extends LinkedComponent {
                 secondaryKey: undefined,
             },
             provisionedDevice: {},
+            expandedValue: false,
         };
 
         if (props.deviceModelOptions === undefined) {
@@ -285,6 +286,7 @@ export class DeviceNew extends LinkedComponent {
                     : true,
             () => this.props.t("devices.flyouts.new.validation.required")
         );
+        this.expandFlyout = this.expandFlyout.bind(this);
     }
 
     componentWillUnmount() {
@@ -515,6 +517,18 @@ export class DeviceNew extends LinkedComponent {
         return t("devices.flyouts.new.affected");
     }
 
+    expandFlyout() {
+        if (this.state.expandedValue) {
+            this.setState({
+                expandedValue: false,
+            });
+        } else {
+            this.setState({
+                expandedValue: true,
+            });
+        }
+    }
+
     render() {
         const { t, deviceModelOptions } = this.props,
             {
@@ -550,6 +564,10 @@ export class DeviceNew extends LinkedComponent {
                 header={t("devices.flyouts.new.title")}
                 t={t}
                 onClose={() => this.onFlyoutClose("Devices_TopXCloseClick")}
+                expanded={this.state.expandedValue}
+                onExpand={() => {
+                    this.expandFlyout();
+                }}
             >
                 <Protected permission={permissions.createDevices}>
                     <form

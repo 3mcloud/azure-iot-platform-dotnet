@@ -5,91 +5,109 @@ VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{368A52C5-8C52-49FD-AF0B-ECFC61A55CAC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src/services/common/Services/Services.csproj", "{22C69357-542E-4A43-B031-4D8867BA3E42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src\services\common\Services\Services.csproj", "{22C69357-542E-4A43-B031-4D8867BA3E42}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test/services/common/Services.Test/Services.Test.csproj", "{0A47EDE3-1AB7-4D7A-8D41-B3EDF69AE170}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test\services\common\Services.Test\Services.Test.csproj", "{0A47EDE3-1AB7-4D7A-8D41-B3EDF69AE170}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestHelpers", "test/services/common/TestHelpers/TestHelpers.csproj", "{716C1217-55CA-47FF-9F51-C8AE0D3A9D4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestHelpers", "test\services\common\TestHelpers\TestHelpers.csproj", "{716C1217-55CA-47FF-9F51-C8AE0D3A9D4A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "asa-manager", "asa-manager", "{2C6BD869-D7C8-4B4A-BAB6-5CF026B3844E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src/services/asa-manager/Services/Services.csproj", "{ED49822D-2376-4AEE-AA83-A13EA90AA2D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src\services\asa-manager\Services\Services.csproj", "{ED49822D-2376-4AEE-AA83-A13EA90AA2D1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src/services/asa-manager/WebService/WebService.csproj", "{6128A222-D7FC-4A69-8378-2C27358A1135}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src\services\asa-manager\WebService\WebService.csproj", "{6128A222-D7FC-4A69-8378-2C27358A1135}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test/services/asa-manager/Services.Test/Services.Test.csproj", "{BE4D193E-E146-4CE9-8C1F-721940D8F70A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test\services\asa-manager\Services.Test\Services.Test.csproj", "{BE4D193E-E146-4CE9-8C1F-721940D8F70A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{C3ACFC91-515E-4229-9CF5-1D12FBF14CF3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src/services/config/Services/Services.csproj", "{FA95E536-75D1-4346-963E-920DDA0B5146}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src\services\config\Services\Services.csproj", "{FA95E536-75D1-4346-963E-920DDA0B5146}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test/services/config/Services.Test/Services.Test.csproj", "{63BE407B-6A77-4453-A476-8976AF0532C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test\services\config\Services.Test\Services.Test.csproj", "{63BE407B-6A77-4453-A476-8976AF0532C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src/services/config/WebService/WebService.csproj", "{41C69096-04E9-45F4-AFCF-C9359C11DA93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src\services\config\WebService\WebService.csproj", "{41C69096-04E9-45F4-AFCF-C9359C11DA93}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test/services/config/WebService.Test/WebService.Test.csproj", "{8630CEE5-CAA9-42A2-BBEE-22937D5C1AD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test\services\config\WebService.Test\WebService.Test.csproj", "{8630CEE5-CAA9-42A2-BBEE-22937D5C1AD0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "device-telemetry", "device-telemetry", "{1E149DA3-0A5A-41A3-809B-EC9546336F8F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src/services/device-telemetry/Services/Services.csproj", "{4CB77D8E-DD70-481F-B7C5-639A66809AC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src\services\device-telemetry\Services\Services.csproj", "{4CB77D8E-DD70-481F-B7C5-639A66809AC9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test/services/device-telemetry/Services.Test/Services.Test.csproj", "{32CA1D58-7BE4-4215-9FBD-6B8A1F758803}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test\services\device-telemetry\Services.Test\Services.Test.csproj", "{32CA1D58-7BE4-4215-9FBD-6B8A1F758803}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src/services/device-telemetry/WebService/WebService.csproj", "{8D2C0A15-732A-4D30-8171-EAB91E005F48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src\services\device-telemetry\WebService\WebService.csproj", "{8D2C0A15-732A-4D30-8171-EAB91E005F48}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test/services/device-telemetry/WebService.Test/WebService.Test.csproj", "{AD868687-C27D-41E4-BA37-464E1513008C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test\services\device-telemetry\WebService.Test\WebService.Test.csproj", "{AD868687-C27D-41E4-BA37-464E1513008C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "iothub-manager", "iothub-manager", "{3D5ADBC7-89F4-4C08-8CC0-809D87FA152A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src/services/iothub-manager/Services/Services.csproj", "{F47A3C18-D996-41C0-988D-901B782F0892}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src\services\iothub-manager\Services\Services.csproj", "{F47A3C18-D996-41C0-988D-901B782F0892}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test/services/iothub-manager/Services.Test/Services.Test.csproj", "{7A4E8BA7-9F67-4055-8D6B-34A4FB824F56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test\services\iothub-manager\Services.Test\Services.Test.csproj", "{7A4E8BA7-9F67-4055-8D6B-34A4FB824F56}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src/services/iothub-manager/WebService/WebService.csproj", "{F4F0397E-71BC-4A00-91EA-619872B992B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src\services\iothub-manager\WebService\WebService.csproj", "{F4F0397E-71BC-4A00-91EA-619872B992B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test/services/iothub-manager/WebService.Test/WebService.Test.csproj", "{D11EBE09-C8F3-4168-97CD-8D64E764A780}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test\services\iothub-manager\WebService.Test\WebService.Test.csproj", "{D11EBE09-C8F3-4168-97CD-8D64E764A780}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "identity-gateway", "identity-gateway", "{8BB47880-8BA1-486E-8709-42B59E9CC5B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src/services/identity-gateway/WebService/WebService.csproj", "{F71C4D0E-EC39-4CE7-930B-F11EADD5AD2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src\services\identity-gateway\WebService\WebService.csproj", "{F71C4D0E-EC39-4CE7-930B-F11EADD5AD2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src/services/identity-gateway/Services/Services.csproj", "{DBB3BDED-99E6-4E8C-8F0F-3596F72C648D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src\services\identity-gateway\Services\Services.csproj", "{DBB3BDED-99E6-4E8C-8F0F-3596F72C648D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test/services/identity-gateway/Services.Test/Services.Test.csproj", "{34F5D583-7F17-4D4E-BB8B-EEA0489669DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test\services\identity-gateway\Services.Test\Services.Test.csproj", "{34F5D583-7F17-4D4E-BB8B-EEA0489669DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test/services/identity-gateway/WebService.Test/WebService.Test.csproj", "{AE2E32B2-17AD-4B38-9A56-71EBFD4D8C1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test\services\identity-gateway\WebService.Test\WebService.Test.csproj", "{AE2E32B2-17AD-4B38-9A56-71EBFD4D8C1D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "storage-adapter", "storage-adapter", "{AAF4FB3E-29B8-4A42-89AD-CA7687FC0A79}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src/services/storage-adapter/Services/Services.csproj", "{2BA6AC78-7778-493D-8A71-30ED71401C7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src\services\storage-adapter\Services\Services.csproj", "{2BA6AC78-7778-493D-8A71-30ED71401C7C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test/services/storage-adapter/Services.Test/Services.Test.csproj", "{C82069A2-B682-46B4-88D8-541E3D28A503}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test\services\storage-adapter\Services.Test\Services.Test.csproj", "{C82069A2-B682-46B4-88D8-541E3D28A503}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src/services/storage-adapter/WebService/WebService.csproj", "{6186F128-CAED-477E-A5A3-E3D7B50F19FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src\services\storage-adapter\WebService\WebService.csproj", "{6186F128-CAED-477E-A5A3-E3D7B50F19FE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test/services/storage-adapter/WebService.Test/WebService.Test.csproj", "{225A9E49-1F60-403A-9405-C6E578097126}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test\services\storage-adapter\WebService.Test\WebService.Test.csproj", "{225A9E49-1F60-403A-9405-C6E578097126}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tenant-manager", "tenant-manager", "{5189373E-EC70-416D-BE18-C9B19C2A5250}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src/services/tenant-manager/WebService/WebService.csproj", "{53D708EB-2DDD-485B-B90B-8A16874DB5DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src\services\tenant-manager\WebService\WebService.csproj", "{53D708EB-2DDD-485B-B90B-8A16874DB5DE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src/services/tenant-manager/Services/Services.csproj", "{0662B27C-D894-4EF5-9ABD-447D8FB21A2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src\services\tenant-manager\Services\Services.csproj", "{0662B27C-D894-4EF5-9ABD-447D8FB21A2D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test/services/tenant-manager/Services.Test/Services.Test.csproj", "{7D36615D-D3CB-455D-BDBA-853D3E87E9F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test\services\tenant-manager\Services.Test\Services.Test.csproj", "{7D36615D-D3CB-455D-BDBA-853D3E87E9F3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test/services/tenant-manager/WebService.Test/WebService.Test.csproj", "{32A11DD1-48DD-4905-AB14-D2101912E61E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test\services\tenant-manager\WebService.Test\WebService.Test.csproj", "{32A11DD1-48DD-4905-AB14-D2101912E61E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "diagnostics", "diagnostics", "{FB25CB90-3FFE-4321-A454-86EF4E361545}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src/services/diagnostics/Services/Services.csproj", "{3E58884D-4246-44FB-ADD4-0BCD9A1C2162}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "src\services\diagnostics\Services\Services.csproj", "{3E58884D-4246-44FB-ADD4-0BCD9A1C2162}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src/services/diagnostics/WebService/WebService.csproj", "{A11FC68C-7672-4705-B486-B5CB651230A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService", "src\services\diagnostics\WebService\WebService.csproj", "{A11FC68C-7672-4705-B486-B5CB651230A8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test/services/diagnostics/Services.Test/Services.Test.csproj", "{056C79C3-7B4A-43D0-9BF8-BB1F7BDE4718}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Test", "test\services\diagnostics\Services.Test\Services.Test.csproj", "{056C79C3-7B4A-43D0-9BF8-BB1F7BDE4718}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test/services/diagnostics/WebService.Test/WebService.Test.csproj", "{220F5203-12FF-47D8-8DEE-04622EEC84C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test\services\diagnostics\WebService.Test\WebService.Test.csproj", "{220F5203-12FF-47D8-8DEE-04622EEC84C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test/services/asa-manager/WebService.Test/WebService.Test.csproj", "{14013D6D-E0B4-4F6F-AF82-E3190D1CD422}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebService.Test", "test\services\asa-manager\WebService.Test\WebService.Test.csproj", "{14013D6D-E0B4-4F6F-AF82-E3190D1CD422}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "functions", "functions", "{7840EC23-BF2C-44DD-A2CA-53DC522DD9C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app-configuration", "app-configuration", "{4793D0C6-6C35-4697-8699-46645683134D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deployment-sync", "deployment-sync", "{547C88D6-A465-4178-BF90-43DDE28E2D3F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "messaging", "messaging", "{A588C94D-E74A-41C2-AFE3-D9ACD810DC79}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rule-actions", "rule-actions", "{F8437F47-B293-499A-9B9D-74B19525EB6D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functions", "src\functions\app-configuration\Functions.csproj", "{9766C5E9-7C36-41E0-A820-2302EA3522E8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functions", "src\functions\deployment-sync\Functions.csproj", "{B035392B-4119-4286-8162-3BECCE219DD5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functions", "src\functions\messaging\Functions.csproj", "{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functions", "src\functions\rule-actions\Functions.csproj", "{6ADC0874-B6F1-4175-A865-9332458AF29E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -521,6 +539,54 @@ Global
 		{14013D6D-E0B4-4F6F-AF82-E3190D1CD422}.Release|x64.Build.0 = Release|Any CPU
 		{14013D6D-E0B4-4F6F-AF82-E3190D1CD422}.Release|x86.ActiveCfg = Release|Any CPU
 		{14013D6D-E0B4-4F6F-AF82-E3190D1CD422}.Release|x86.Build.0 = Release|Any CPU
+		{9766C5E9-7C36-41E0-A820-2302EA3522E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9766C5E9-7C36-41E0-A820-2302EA3522E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9766C5E9-7C36-41E0-A820-2302EA3522E8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9766C5E9-7C36-41E0-A820-2302EA3522E8}.Debug|x64.Build.0 = Debug|Any CPU
+		{9766C5E9-7C36-41E0-A820-2302EA3522E8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9766C5E9-7C36-41E0-A820-2302EA3522E8}.Debug|x86.Build.0 = Debug|Any CPU
+		{9766C5E9-7C36-41E0-A820-2302EA3522E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9766C5E9-7C36-41E0-A820-2302EA3522E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9766C5E9-7C36-41E0-A820-2302EA3522E8}.Release|x64.ActiveCfg = Release|Any CPU
+		{9766C5E9-7C36-41E0-A820-2302EA3522E8}.Release|x64.Build.0 = Release|Any CPU
+		{9766C5E9-7C36-41E0-A820-2302EA3522E8}.Release|x86.ActiveCfg = Release|Any CPU
+		{9766C5E9-7C36-41E0-A820-2302EA3522E8}.Release|x86.Build.0 = Release|Any CPU
+		{B035392B-4119-4286-8162-3BECCE219DD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B035392B-4119-4286-8162-3BECCE219DD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B035392B-4119-4286-8162-3BECCE219DD5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B035392B-4119-4286-8162-3BECCE219DD5}.Debug|x64.Build.0 = Debug|Any CPU
+		{B035392B-4119-4286-8162-3BECCE219DD5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B035392B-4119-4286-8162-3BECCE219DD5}.Debug|x86.Build.0 = Debug|Any CPU
+		{B035392B-4119-4286-8162-3BECCE219DD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B035392B-4119-4286-8162-3BECCE219DD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B035392B-4119-4286-8162-3BECCE219DD5}.Release|x64.ActiveCfg = Release|Any CPU
+		{B035392B-4119-4286-8162-3BECCE219DD5}.Release|x64.Build.0 = Release|Any CPU
+		{B035392B-4119-4286-8162-3BECCE219DD5}.Release|x86.ActiveCfg = Release|Any CPU
+		{B035392B-4119-4286-8162-3BECCE219DD5}.Release|x86.Build.0 = Release|Any CPU
+		{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF}.Debug|x64.Build.0 = Debug|Any CPU
+		{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF}.Debug|x86.Build.0 = Debug|Any CPU
+		{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF}.Release|x64.ActiveCfg = Release|Any CPU
+		{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF}.Release|x64.Build.0 = Release|Any CPU
+		{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF}.Release|x86.ActiveCfg = Release|Any CPU
+		{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF}.Release|x86.Build.0 = Release|Any CPU
+		{6ADC0874-B6F1-4175-A865-9332458AF29E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ADC0874-B6F1-4175-A865-9332458AF29E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ADC0874-B6F1-4175-A865-9332458AF29E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6ADC0874-B6F1-4175-A865-9332458AF29E}.Debug|x64.Build.0 = Debug|Any CPU
+		{6ADC0874-B6F1-4175-A865-9332458AF29E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6ADC0874-B6F1-4175-A865-9332458AF29E}.Debug|x86.Build.0 = Debug|Any CPU
+		{6ADC0874-B6F1-4175-A865-9332458AF29E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ADC0874-B6F1-4175-A865-9332458AF29E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ADC0874-B6F1-4175-A865-9332458AF29E}.Release|x64.ActiveCfg = Release|Any CPU
+		{6ADC0874-B6F1-4175-A865-9332458AF29E}.Release|x64.Build.0 = Release|Any CPU
+		{6ADC0874-B6F1-4175-A865-9332458AF29E}.Release|x86.ActiveCfg = Release|Any CPU
+		{6ADC0874-B6F1-4175-A865-9332458AF29E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -561,6 +627,14 @@ Global
 		{056C79C3-7B4A-43D0-9BF8-BB1F7BDE4718} = {FB25CB90-3FFE-4321-A454-86EF4E361545}
 		{220F5203-12FF-47D8-8DEE-04622EEC84C1} = {FB25CB90-3FFE-4321-A454-86EF4E361545}
 		{14013D6D-E0B4-4F6F-AF82-E3190D1CD422} = {2C6BD869-D7C8-4B4A-BAB6-5CF026B3844E}
+		{4793D0C6-6C35-4697-8699-46645683134D} = {7840EC23-BF2C-44DD-A2CA-53DC522DD9C0}
+		{547C88D6-A465-4178-BF90-43DDE28E2D3F} = {7840EC23-BF2C-44DD-A2CA-53DC522DD9C0}
+		{A588C94D-E74A-41C2-AFE3-D9ACD810DC79} = {7840EC23-BF2C-44DD-A2CA-53DC522DD9C0}
+		{F8437F47-B293-499A-9B9D-74B19525EB6D} = {7840EC23-BF2C-44DD-A2CA-53DC522DD9C0}
+		{9766C5E9-7C36-41E0-A820-2302EA3522E8} = {4793D0C6-6C35-4697-8699-46645683134D}
+		{B035392B-4119-4286-8162-3BECCE219DD5} = {547C88D6-A465-4178-BF90-43DDE28E2D3F}
+		{FE89A2A4-0B34-419C-9B52-8FF4321EA9FF} = {A588C94D-E74A-41C2-AFE3-D9ACD810DC79}
+		{6ADC0874-B6F1-4175-A865-9332458AF29E} = {F8437F47-B293-499A-9B9D-74B19525EB6D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE5A6A54-C5FC-423B-88B0-E891CDC68C46}
