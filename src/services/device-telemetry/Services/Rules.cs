@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -228,17 +229,47 @@ namespace Mmm.Iot.DeviceTelemetry.Services
             List<Rule> rules)
         {
             var lastTriggeredDateList = new Dictionary<string, string>();
+            List<string> ruleIds = rules.Select(x => x.Id).ToList();
 
             // get open alarm count and most recent alarm for each rule
+            // foreach (var rule in rules)
+            // {
+            //     try
+            //     {
+            //         // get most recent alarm for rule
+            //         var recentAlarm = await this.GetLastAlarmForRuleAsync(rule.Id, null, null, new string[] { });
+            //         if (recentAlarm != null)
+            //         {
+            //             lastTriggeredDateList.Add(rule.Id, recentAlarm.DateModified.ToString());
+            //         }
+            //         else
+            //         {
+            //             lastTriggeredDateList.Add(rule.Id, null);
+            //         }
+            //     }
+            //     catch
+            //     {
+            //         lastTriggeredDateList.Add(rule.Id, null);
+            //     }
+            // }
+            var latestAlarms = await this.GetAlarmsForRulesAsync(ruleIds);
             foreach (var rule in rules)
             {
                 try
                 {
                     // get most recent alarm for rule
-                    var recentAlarm = await this.GetLastAlarmForRuleAsync(rule.Id, null, null, new string[] { });
-                    if (recentAlarm != null)
+                    var ruleAlarms = latestAlarms.Where(x => x.RuleId == rule.Id).ToList();
+                    if (ruleAlarms != null && ruleAlarms.Count > 0)
                     {
-                        lastTriggeredDateList.Add(rule.Id, recentAlarm.DateModified.ToString());
+                        var recentAlarm = ruleAlarms.OrderByDescending(x => x.DateModified).FirstOrDefault();
+                        if (recentAlarm != null)
+                        {
+                            lastTriggeredDateList.Add(rule.Id, recentAlarm.DateModified.ToString());
+                        }
+                        else
+                        {
+                            lastTriggeredDateList.Add(rule.Id, null);
+                        }
                     }
                     else
                     {
@@ -383,6 +414,12 @@ namespace Mmm.Iot.DeviceTelemetry.Services
                 throw new ExternalDependencyException(
                     "Could not retrieve most recent alarm");
             }
+        }
+
+        private async Task<List<Alarm>> GetAlarmsForRulesAsync(List<string> ruleIds)
+        {
+            var resultList = await this.alarms.GetAllAlarmsListByRuleAsync(ruleIds.ToArray(), "desc", 0, 1000);
+            return resultList;
         }
 
         private Rule Deserialize(string jsonRule)

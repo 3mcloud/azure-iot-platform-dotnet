@@ -40,6 +40,30 @@ export const epics = createEpicScenario({
                 .map(toActionCreator(redux.actions.updateRules, fromAction))
                 .catch(handleError(fromAction)),
     },
+
+    fetchRuleLastTriggered: {
+        type: "RULES_LAST_TRIGGER_FETCH",
+        epic: (fromAction, store, action$) =>
+            TelemetryService.getAlertsForRule(fromAction.payload, {
+                order: "desc",
+                limit: 1,
+            })
+                .map(([alert]) =>
+                    redux.actions.updateRuleLastTrigger({
+                        id: fromAction.payload,
+                        lastTrigger: cellResponse(alert.dateModified),
+                    })
+                )
+                .takeUntil(action$.ofType(epics.actionTypes.fetchRules))
+                .catch((error) =>
+                    Observable.of(
+                        redux.actions.updateRuleLastTrigger({
+                            id: fromAction.payload,
+                            lastTrigger: cellResponse(undefined, error),
+                        })
+                    )
+                ),
+    },
 });
 // ========================= Epics - END
 
@@ -76,7 +100,7 @@ const ruleSchema = new schema.Entity("rules"),
         });
     },
     updateRulesReducer = (state, { payload, fromAction }) => {
-        payload.map((rule) => {
+        payload.forEach((rule) => {
             if (rule.lastTrigger) {
                 rule.lastTrigger = cellResponse(rule.lastTrigger);
             } else {
@@ -94,6 +118,10 @@ const ruleSchema = new schema.Entity("rules"),
             ...setPending(fromAction.type, false),
         });
     },
+    updateLastTriggerReducer = (state, { payload: { id, lastTrigger } }) =>
+        update(state, {
+            entities: { [id]: { lastTrigger: { $set: lastTrigger } } },
+        }),
     updateCountReducer = (state, { payload: { id, count } }) =>
         update(state, {
             entities: { [id]: { count: { $set: count } } },
@@ -108,6 +136,10 @@ export const redux = createReducerScenario({
     updateRuleCount: {
         type: "RULES_COUNT_UPDATE",
         reducer: updateCountReducer,
+    },
+    updateRuleLastTrigger: {
+        type: "RULES_LAST_TRIGGER_UPDATE",
+        reducer: updateLastTriggerReducer,
     },
     registerError: { type: "RULES_REDUCER_ERROR", reducer: errorReducer },
     isFetching: { multiType: fetchableTypes, reducer: pendingReducer },
