@@ -279,7 +279,7 @@ namespace Mmm.Iot.DeviceTelemetry.Services
                 newRule.Id = result.Key;
             }
 
-            // this.LogEventAndRuleCountToDiagnostics("Rule_Created");
+            this.LogEventAndRuleCountToDiagnostics("Rule_Created");
             return newRule;
         }
 
