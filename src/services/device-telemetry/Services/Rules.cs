@@ -230,28 +230,6 @@ namespace Mmm.Iot.DeviceTelemetry.Services
         {
             var lastTriggeredDateList = new Dictionary<string, string>();
             List<string> ruleIds = rules.Select(x => x.Id).ToList();
-
-            // get open alarm count and most recent alarm for each rule
-            // foreach (var rule in rules)
-            // {
-            //     try
-            //     {
-            //         // get most recent alarm for rule
-            //         var recentAlarm = await this.GetLastAlarmForRuleAsync(rule.Id, null, null, new string[] { });
-            //         if (recentAlarm != null)
-            //         {
-            //             lastTriggeredDateList.Add(rule.Id, recentAlarm.DateModified.ToString());
-            //         }
-            //         else
-            //         {
-            //             lastTriggeredDateList.Add(rule.Id, null);
-            //         }
-            //     }
-            //     catch
-            //     {
-            //         lastTriggeredDateList.Add(rule.Id, null);
-            //     }
-            // }
             var latestAlarms = await this.GetAlarmsForRulesAsync(ruleIds);
             foreach (var rule in rules)
             {
