@@ -20,6 +20,7 @@ import {
     setPending,
     getPending,
     getError,
+    toActionCreator,
 } from "store/utilities";
 import { formatConditions } from "utilities";
 
@@ -35,41 +36,9 @@ export const epics = createEpicScenario({
     fetchRules: {
         type: "RULES_FETCH",
         epic: (fromAction) =>
-            TelemetryService.getRules({ includeDeleted: true })
-                .flatMap((rules) =>
-                    Observable.from(rules)
-                        .flatMap(({ id, groupId }) => [
-                            epics.actions.fetchRuleLastTriggered(id),
-                        ])
-                        .startWith(
-                            redux.actions.updateRules(rules, { fromAction })
-                        )
-                )
+            TelemetryService.getRules({ includeDeleted: false })
+                .map(toActionCreator(redux.actions.updateRules, fromAction))
                 .catch(handleError(fromAction)),
-    },
-
-    fetchRuleLastTriggered: {
-        type: "RULES_LAST_TRIGGER_FETCH",
-        epic: (fromAction, store, action$) =>
-            TelemetryService.getAlertsForRule(fromAction.payload, {
-                order: "desc",
-                limit: 1,
-            })
-                .map(([alert]) =>
-                    redux.actions.updateRuleLastTrigger({
-                        id: fromAction.payload,
-                        lastTrigger: cellResponse(alert.dateModified),
-                    })
-                )
-                .takeUntil(action$.ofType(epics.actionTypes.fetchRules))
-                .catch((error) =>
-                    Observable.of(
-                        redux.actions.updateRuleLastTrigger({
-                            id: fromAction.payload,
-                            lastTrigger: cellResponse(undefined, error),
-                        })
-                    )
-                ),
     },
 });
 // ========================= Epics - END
@@ -107,6 +76,13 @@ const ruleSchema = new schema.Entity("rules"),
         });
     },
     updateRulesReducer = (state, { payload, fromAction }) => {
+        payload.map((rule) => {
+            if (rule.lastTrigger) {
+                rule.lastTrigger = cellResponse(rule.lastTrigger);
+            } else {
+                rule.lastTrigger = cellResponse(undefined, "error");
+            }
+        });
         const {
             entities: { rules = {} },
             result,
@@ -122,10 +98,6 @@ const ruleSchema = new schema.Entity("rules"),
         update(state, {
             entities: { [id]: { count: { $set: count } } },
         }),
-    updateLastTriggerReducer = (state, { payload: { id, lastTrigger } }) =>
-        update(state, {
-            entities: { [id]: { lastTrigger: { $set: lastTrigger } } },
-        }),
     /* Action types that cause a pending flag */
     fetchableTypes = [epics.actionTypes.fetchRules];
 
@@ -136,10 +108,6 @@ export const redux = createReducerScenario({
     updateRuleCount: {
         type: "RULES_COUNT_UPDATE",
         reducer: updateCountReducer,
-    },
-    updateRuleLastTrigger: {
-        type: "RULES_LAST_TRIGGER_UPDATE",
-        reducer: updateLastTriggerReducer,
     },
     registerError: { type: "RULES_REDUCER_ERROR", reducer: errorReducer },
     isFetching: { multiType: fetchableTypes, reducer: pendingReducer },

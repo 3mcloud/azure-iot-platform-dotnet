@@ -224,6 +224,36 @@ namespace Mmm.Iot.DeviceTelemetry.Services
             return alarmCountByRuleList;
         }
 
+        public async Task<Dictionary<string, string>> GetLastTriggerForRules(
+            List<Rule> rules)
+        {
+            var lastTriggeredDateList = new Dictionary<string, string>();
+
+            // get open alarm count and most recent alarm for each rule
+            foreach (var rule in rules)
+            {
+                try
+                {
+                    // get most recent alarm for rule
+                    var recentAlarm = await this.GetLastAlarmForRuleAsync(rule.Id, null, null, new string[] { });
+                    if (recentAlarm != null)
+                    {
+                        lastTriggeredDateList.Add(rule.Id, recentAlarm.DateModified.ToString());
+                    }
+                    else
+                    {
+                        lastTriggeredDateList.Add(rule.Id, null);
+                    }
+                }
+                catch
+                {
+                    lastTriggeredDateList.Add(rule.Id, null);
+                }
+            }
+
+            return lastTriggeredDateList;
+        }
+
         public async Task<Rule> CreateAsync(Rule rule)
         {
             if (rule == null)
@@ -249,8 +279,7 @@ namespace Mmm.Iot.DeviceTelemetry.Services
                 newRule.Id = result.Key;
             }
 
-            this.LogEventAndRuleCountToDiagnostics("Rule_Created");
-
+            // this.LogEventAndRuleCountToDiagnostics("Rule_Created");
             return newRule;
         }
 

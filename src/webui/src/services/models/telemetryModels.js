@@ -45,6 +45,7 @@ export const toRuleModel = (response = {}) => {
         "action.type": "type",
         deleted: "deleted",
         actions: "actions",
+        lastTrigger: "lastTrigger",
     });
     return update(model, {
         severity: { $set: (model.severity || "").toLowerCase() },

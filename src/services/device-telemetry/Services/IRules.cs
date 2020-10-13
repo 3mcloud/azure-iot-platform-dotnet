@@ -35,5 +35,8 @@ namespace Mmm.Iot.DeviceTelemetry.Services
         Task<Rule> CreateAsync(Rule rule);
 
         Task<Rule> UpsertIfNotDeletedAsync(Rule rule);
+
+        Task<Dictionary<string, string>> GetLastTriggerForRules(
+             List<Rule> rules);
     }
 }
