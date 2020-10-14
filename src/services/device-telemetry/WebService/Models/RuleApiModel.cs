@@ -107,6 +107,9 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Models
         [JsonProperty(PropertyName = "Deleted", NullValueHandling = NullValueHandling.Ignore)]
         public bool? Deleted { get; set; }
 
+        [JsonProperty(PropertyName = "LastTrigger", NullValueHandling = NullValueHandling.Ignore)]
+        public string LastTrigger { get; set; }
+
         public Rule ToServiceModel()
         {
             var conditions = new List<Condition>();

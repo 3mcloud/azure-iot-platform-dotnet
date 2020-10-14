@@ -30,7 +30,9 @@ export class TelemetryService {
 
     /** Returns a list of rules */
     static getRules(params = {}) {
-        return HttpClient.get(`${ENDPOINT}rules?${stringify(params)}`)
+        return HttpClient.get(`${ENDPOINT}rules?${stringify(params)}`, {
+            timeout: 120000,
+        })
             .catch((error) => this.catch404(error, ContinueAsEmptyAlarms))
             .map(toRulesModel);
     }
