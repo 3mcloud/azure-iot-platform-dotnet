@@ -99,6 +99,7 @@ namespace Mmm.Iot.DeviceTelemetry.Services
                 item,
                 existing.ETag);
             await this.asaManager.BeginRulesConversionAsync();
+            this.LogEventAndRuleCountToDiagnostics("Rule_Deleted");
         }
 
         public async Task<Rule> GetAsync(string id)
@@ -287,6 +288,7 @@ namespace Mmm.Iot.DeviceTelemetry.Services
                 newRule.Id = result.Key;
             }
 
+            this.LogEventAndRuleCountToDiagnostics("Rule_Created");
             return newRule;
         }
 
@@ -324,13 +326,15 @@ namespace Mmm.Iot.DeviceTelemetry.Services
         {
             if (this.diagnosticsClient.CanLogToDiagnostics)
             {
+                // Commenting the logging of rule count as we are making extra call to fetch all the rules and
+                // to decrease the burden on COSMOS DB.
+                // int ruleCount = await this.GetRuleCountAsync();
+                // var eventProperties = new Dictionary<string, object>
+                // {
+                //     { "Count", ruleCount },
+                // };
+                // await this.diagnosticsClient.LogEventAsync("Rule_Count", eventProperties);
                 await this.diagnosticsClient.LogEventAsync(eventName);
-                int ruleCount = await this.GetRuleCountAsync();
-                var eventProperties = new Dictionary<string, object>
-                {
-                    { "Count", ruleCount },
-                };
-                await this.diagnosticsClient.LogEventAsync("Rule_Count", eventProperties);
             }
         }
 

@@ -424,10 +424,6 @@ namespace Mmm.Iot.DeviceTelemetry.Services.Test
             // Act
             await this.rules.DeleteAsync("id");
 
-            // Assert
-            this.storageAdapter.Verify(x => x.GetAllAsync(It.IsAny<string>()), Times.Once);
-            this.httpClientMock.Verify(x => x.PostAsync(It.IsAny<HttpRequest>()), Times.Exactly(2));
-
             this.asaManager
                 .Verify(
                     x => x.BeginRulesConversionAsync(),
@@ -460,10 +456,6 @@ namespace Mmm.Iot.DeviceTelemetry.Services.Test
 
             // Act
             await this.rules.DeleteAsync("id");
-
-            // Assert
-            this.storageAdapter.Verify(x => x.GetAllAsync(It.IsAny<string>()), Times.Once);
-            this.httpClientMock.Verify(x => x.PostAsync(It.IsAny<HttpRequest>()), Times.Exactly(4));
 
             this.asaManager
                 .Verify(
