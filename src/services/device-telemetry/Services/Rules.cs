@@ -99,7 +99,6 @@ namespace Mmm.Iot.DeviceTelemetry.Services
                 item,
                 existing.ETag);
             await this.asaManager.BeginRulesConversionAsync();
-            this.LogEventAndRuleCountToDiagnostics("Rule_Deleted");
         }
 
         public async Task<Rule> GetAsync(string id)
@@ -288,7 +287,6 @@ namespace Mmm.Iot.DeviceTelemetry.Services
                 newRule.Id = result.Key;
             }
 
-            this.LogEventAndRuleCountToDiagnostics("Rule_Created");
             return newRule;
         }
 
