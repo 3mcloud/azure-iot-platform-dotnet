@@ -20,6 +20,7 @@ import {
     setPending,
     getPending,
     getError,
+    toActionCreator,
 } from "store/utilities";
 import { formatConditions } from "utilities";
 
@@ -35,16 +36,8 @@ export const epics = createEpicScenario({
     fetchRules: {
         type: "RULES_FETCH",
         epic: (fromAction) =>
-            TelemetryService.getRules({ includeDeleted: true })
-                .flatMap((rules) =>
-                    Observable.from(rules)
-                        .flatMap(({ id, groupId }) => [
-                            epics.actions.fetchRuleLastTriggered(id),
-                        ])
-                        .startWith(
-                            redux.actions.updateRules(rules, { fromAction })
-                        )
-                )
+            TelemetryService.getRules({ includeDeleted: false })
+                .map(toActionCreator(redux.actions.updateRules, fromAction))
                 .catch(handleError(fromAction)),
     },
 
@@ -107,6 +100,13 @@ const ruleSchema = new schema.Entity("rules"),
         });
     },
     updateRulesReducer = (state, { payload, fromAction }) => {
+        payload.forEach((rule) => {
+            if (rule.lastTrigger) {
+                rule.lastTrigger = cellResponse(rule.lastTrigger);
+            } else {
+                rule.lastTrigger = cellResponse(undefined, "error");
+            }
+        });
         const {
             entities: { rules = {} },
             result,
@@ -118,13 +118,13 @@ const ruleSchema = new schema.Entity("rules"),
             ...setPending(fromAction.type, false),
         });
     },
-    updateCountReducer = (state, { payload: { id, count } }) =>
-        update(state, {
-            entities: { [id]: { count: { $set: count } } },
-        }),
     updateLastTriggerReducer = (state, { payload: { id, lastTrigger } }) =>
         update(state, {
             entities: { [id]: { lastTrigger: { $set: lastTrigger } } },
+        }),
+    updateCountReducer = (state, { payload: { id, count } }) =>
+        update(state, {
+            entities: { [id]: { count: { $set: count } } },
         }),
     /* Action types that cause a pending flag */
     fetchableTypes = [epics.actionTypes.fetchRules];

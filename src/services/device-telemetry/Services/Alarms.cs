@@ -178,6 +178,51 @@ namespace Mmm.Iot.DeviceTelemetry.Services
             }
         }
 
+        public async Task<List<Alarm>> GetAllAlarmsListByRuleAsync(
+            string[] rules,
+            string order,
+            int skip,
+            int limit)
+        {
+            var sql = QueryBuilder.GetDocumentsSql(
+                AlarmSchemaKey,
+                order,
+                MessageReceivedKey,
+                skip,
+                limit,
+                rules,
+                RuleIdKey);
+
+            this.logger.LogDebug("Created alarm by rule query {sql}", sql);
+
+            FeedOptions queryOptions = new FeedOptions
+            {
+                EnableCrossPartitionQuery = true,
+                EnableScanInQuery = true,
+            };
+
+            try
+            {
+                List<Document> docs = await this.storageClient.QueryDocumentsAsync(
+                    this.databaseName,
+                    this.CollectionId,
+                    queryOptions,
+                    sql,
+                    skip,
+                    limit);
+
+                return docs == null ?
+                    new List<Alarm>() :
+                    docs
+                        .Select(doc => new Alarm(doc))
+                        .ToList();
+            }
+            catch (ResourceNotFoundException e)
+            {
+                throw new ResourceNotFoundException($"No alarms exist in CosmosDb. The alarms collection {this.CollectionId} does not exist.", e);
+            }
+        }
+
         public async Task<int> GetCountByRuleAsync(
             string id,
             DateTimeOffset? from,

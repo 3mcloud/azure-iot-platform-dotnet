@@ -101,6 +101,52 @@ namespace Mmm.Iot.Common.Services.Helpers
             return new SqlQuerySpec(queryBuilder.ToString(), sqlParameterCollection);
         }
 
+        public static SqlQuerySpec GetDocumentsSql(
+            string schemaName,
+            string order,
+            string orderProperty,
+            int skip,
+            int limit,
+            string[] values,
+            string valueProperty)
+        {
+            ValidateInput(ref schemaName);
+            ValidateInput(ref order);
+            ValidateInput(ref orderProperty);
+
+            var sqlParameterCollection = new SqlParameterCollection();
+
+            var queryBuilder = new StringBuilder("SELECT TOP @top * FROM c WHERE (c[\"_schema\"] = @schemaName");
+            sqlParameterCollection.Add(new SqlParameter { Name = "@top", Value = skip + limit });
+            sqlParameterCollection.Add(new SqlParameter { Name = "@schemaName", Value = schemaName });
+
+            if (values != null && values.Length > 0)
+            {
+                var devicesParameters = ConvertToSqlParameters("devicesParameterName", values);
+                queryBuilder.Append($" AND c[@devicesProperty] IN ({string.Join(",", devicesParameters.Select(p => p.Name))})");
+                sqlParameterCollection.Add(new SqlParameter { Name = "@devicesProperty", Value = valueProperty });
+                foreach (var p in devicesParameters)
+                {
+                    sqlParameterCollection.Add(p);
+                }
+            }
+
+            queryBuilder.Append(")");
+
+            if (order == null || string.Equals(order, "desc", StringComparison.OrdinalIgnoreCase))
+            {
+                queryBuilder.Append(" ORDER BY c[@orderProperty] DESC");
+            }
+            else
+            {
+                queryBuilder.Append(" ORDER BY c[@orderProperty] ASC");
+            }
+
+            sqlParameterCollection.Add(new SqlParameter { Name = "@orderProperty", Value = orderProperty });
+
+            return new SqlQuerySpec(queryBuilder.ToString(), sqlParameterCollection);
+        }
+
         public static SqlQuerySpec GetTopDeviceDocumentsSql(
             string schemaName,
             int limit,

@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -224,6 +225,44 @@ namespace Mmm.Iot.DeviceTelemetry.Services
             return alarmCountByRuleList;
         }
 
+        public async Task<Dictionary<string, string>> GetLastTriggerForRules(
+            List<Rule> rules)
+        {
+            var lastTriggeredDateList = new Dictionary<string, string>();
+            List<string> ruleIds = rules.Select(x => x.Id).ToList();
+            var latestAlarms = await this.GetAlarmsForRulesAsync(ruleIds);
+            foreach (var rule in rules)
+            {
+                try
+                {
+                    // get most recent alarm for rule
+                    var ruleAlarms = latestAlarms.Where(x => x.RuleId == rule.Id).ToList();
+                    if (ruleAlarms != null && ruleAlarms.Count > 0)
+                    {
+                        var recentAlarm = ruleAlarms.OrderByDescending(x => x.DateModified).FirstOrDefault();
+                        if (recentAlarm != null)
+                        {
+                            lastTriggeredDateList.Add(rule.Id, recentAlarm.DateModified.ToString());
+                        }
+                        else
+                        {
+                            lastTriggeredDateList.Add(rule.Id, null);
+                        }
+                    }
+                    else
+                    {
+                        lastTriggeredDateList.Add(rule.Id, null);
+                    }
+                }
+                catch
+                {
+                    lastTriggeredDateList.Add(rule.Id, null);
+                }
+            }
+
+            return lastTriggeredDateList;
+        }
+
         public async Task<Rule> CreateAsync(Rule rule)
         {
             if (rule == null)
@@ -250,7 +289,6 @@ namespace Mmm.Iot.DeviceTelemetry.Services
             }
 
             this.LogEventAndRuleCountToDiagnostics("Rule_Created");
-
             return newRule;
         }
 
@@ -354,6 +392,12 @@ namespace Mmm.Iot.DeviceTelemetry.Services
                 throw new ExternalDependencyException(
                     "Could not retrieve most recent alarm");
             }
+        }
+
+        private async Task<List<Alarm>> GetAlarmsForRulesAsync(List<string> ruleIds)
+        {
+            var resultList = await this.alarms.GetAllAlarmsListByRuleAsync(ruleIds.ToArray(), "desc", 0, 1000);
+            return resultList;
         }
 
         private Rule Deserialize(string jsonRule)

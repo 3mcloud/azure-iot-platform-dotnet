@@ -24,6 +24,20 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Models
             }
         }
 
+        public RuleListApiModel(List<Rule> rules, bool includeDeleted, Dictionary<string, string> lastTriggerValue)
+        {
+            this.items = new List<RuleApiModel>();
+            if (rules != null)
+            {
+                foreach (Rule rule in rules)
+                {
+                    RuleApiModel ruleApi = new RuleApiModel(rule, includeDeleted);
+                    ruleApi.LastTrigger = lastTriggerValue[rule.Id];
+                    this.items.Add(ruleApi);
+                }
+            }
+        }
+
         [JsonProperty(PropertyName = "Items")]
         public List<RuleApiModel> Items
         {

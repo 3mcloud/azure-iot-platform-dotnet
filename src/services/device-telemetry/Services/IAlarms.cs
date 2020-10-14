@@ -41,5 +41,11 @@ namespace Mmm.Iot.DeviceTelemetry.Services
         Task Delete(List<string> ids);
 
         Task DeleteAsync(string id);
+
+        Task<List<Alarm>> GetAllAlarmsListByRuleAsync(
+             string[] rules,
+             string order,
+             int skip,
+             int limit);
     }
 }

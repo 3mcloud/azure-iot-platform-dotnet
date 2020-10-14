@@ -2,6 +2,7 @@
 // Copyright (c) 3M. All rights reserved.
 // </copyright>
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Mmm.Iot.Common.Services.Exceptions;
@@ -60,14 +61,17 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
                 includeDeleted = false;
             }
 
-            return new RuleListApiModel(
-                await this.ruleService.GetListAsync(
+            List<Rule> rules = await this.ruleService.GetListAsync(
                     order,
                     skip.Value,
                     limit.Value,
                     groupId,
-                    includeDeleted.Value),
-                includeDeleted.Value);
+                    includeDeleted.Value);
+            Dictionary<string, string> lastTriggeredValues = await this.ruleService.GetLastTriggerForRules(rules);
+            return new RuleListApiModel(
+                rules,
+                includeDeleted.Value,
+                lastTriggeredValues);
         }
 
         [HttpPost]
