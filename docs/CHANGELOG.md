@@ -9,6 +9,17 @@ To easily get a list of committed changes between current master and the previou
 git log --oneline --no-decorate --topo-order ^<previousRelease> master
 where <previousRelease> is the release name e.g 5.1.0
 -->
+
+## [5.4.1] - 2020-10-14
+### Fix
+- Fixed performance issues reading "deleted" rules
+- Fixed rule deletion to delete rules
+- Upgraded versions of several dlls harden security 
+- Fixed rule and alarms 502 issue
+- Enabled grid cell text highlight
+- Addressed auto refresh on settings flyout
+- Force support for HTTPS in template
+
 ## [5.4.0] - 2020-10-05
 ### Add
 - Deployment history by Device
@@ -121,6 +132,7 @@ where <previousRelease> is the release name e.g 5.1.0
 - Application configuration uses Azure App Configuration service in addition to Azure Key Vault
 - Code base rearchitected to use common library and reduce duplication
 
+[5.4.1]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.4.1
 [5.4.0]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.4.0
 [5.3.0]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.3.0
 [5.2.3]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.2.3
