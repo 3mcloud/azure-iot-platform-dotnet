@@ -64,6 +64,7 @@ namespace Mmm.Iot.IdentityGateway.Services.Helpers
                 {
                     { "e", e },
                     { "kty", "RSA" },
+                    { "use", "sig" },
                     { "n", n },
                 };
                 var hash = SHA256.Create();
@@ -72,6 +73,7 @@ namespace Mmm.Iot.IdentityGateway.Services.Helpers
                 {
                     Kid = Base64UrlEncoder.Encode(hashBytes),
                     Kty = "RSA",
+                    Use = "sig",
                     E = e,
                     N = n,
                 };
