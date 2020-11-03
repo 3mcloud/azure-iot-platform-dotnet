@@ -277,7 +277,11 @@ namespace Mmm.Iot.IdentityGateway.Controllers
                 claims.Add(new Claim("nonce", authState.Nonce));
             }
 
-            string tokenString = jwtHandler.WriteToken(await this.jwtHelper.GetIdentityToken(claims, invitedTenant, originalAudience, null));
+            string accessTokenString = jwtHandler.WriteToken(await this.jwtHelper.GetIdentityToken(claims, invitedTenant, originalAudience, null));
+            claims.Add(new Claim("at_hash", this.jwtHelper.AtHash(accessTokenString)));
+            string idTokenString =
+                jwtHandler.WriteToken(
+                    await this.jwtHelper.GetIdentityToken(claims, invitedTenant, originalAudience, null));
 
             // Build Return Uri
             var returnUri = new UriBuilder(authState.ReturnUrl);
@@ -287,9 +291,10 @@ namespace Mmm.Iot.IdentityGateway.Controllers
             // query["state"] = HttpUtility.UrlEncode(authState.state);
             // returnUri.Query = query.ToString();
             returnUri.Fragment =
-                "id_token=" + tokenString + "&state=" +
+                "id_token=" + idTokenString + "&state=" +
                 HttpUtility.UrlEncode(authState
-                    .State); // pass token in Fragment for more security (Browser wont forward...)
+                    .State) // pass token in Fragment for more security (Browser wont forward...)
+                + "&access_token=" + accessTokenString;
             return this.Redirect(returnUri.Uri.ToString());
         }
     }
