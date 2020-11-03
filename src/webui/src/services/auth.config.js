@@ -4,7 +4,7 @@ import { AuthConfig } from "oidc-client";
 //   tenant: string;
 // }
 let authConfig = new AuthConfig({
-    issuer: "https://crsliotkubedev.centralus.cloudapp.azure.com/auth",
+    issuer: "http://localhost:5000/",
     // URL of the SPA to redirect the user to after login
     redirectUri: window.location.origin,
 
@@ -16,6 +16,7 @@ let authConfig = new AuthConfig({
     scope: "",
 
     strictDiscoveryDocumentValidation: false,
+    loadUserInfo: false,
 });
 
 export default authConfig;

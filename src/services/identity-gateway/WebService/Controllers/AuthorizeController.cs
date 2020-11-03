@@ -277,7 +277,7 @@ namespace Mmm.Iot.IdentityGateway.Controllers
                 claims.Add(new Claim("nonce", authState.Nonce));
             }
 
-            string accessTokenString = jwtHandler.WriteToken(await this.jwtHelper.GetIdentityToken(claims, invitedTenant, originalAudience, null));
+            string accessTokenString = jwtHandler.WriteToken(await this.jwtHelper.GetIdentityToken(claims.Select(t => (Claim)t.Clone()).ToList(), invitedTenant, originalAudience, null));
             claims.Add(new Claim("at_hash", this.jwtHelper.AtHash(accessTokenString)));
             string idTokenString =
                 jwtHandler.WriteToken(
