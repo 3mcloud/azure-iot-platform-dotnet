@@ -69,7 +69,8 @@
         "Audience": "IoTPlatform",
         "AuthIssuer": "OVERWRITTEN_IN_DEPLOYMENT",
         "ClockSkewSeconds": "300"
-      }
+      },
+      "TokenExpirationDuration": "09:00:00"
     },
     "CosmosDb": {
       "AccountName": "OVERWRITTEN_IN_DEPLOYMENT",
