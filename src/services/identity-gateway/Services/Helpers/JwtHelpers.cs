@@ -4,13 +4,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Mmm.Iot.Common.Services.Config;
@@ -137,6 +141,17 @@ namespace Mmm.Iot.IdentityGateway.Services.Helpers
             var token = this.MintToken(claims, audience, expirationDateTime);
 
             return token;
+        }
+
+        [SuppressMessage("Microsoft.StyleCop.CSharp.OrderingRules", "SA1121:UseBuiltInTypeAlias", Justification = "I need that Byte value not lowercase byte")]
+        public string AtHash(String access_token)
+        {
+            SHA256Managed hashstring = new SHA256Managed();
+            byte[] bytes = Encoding.ASCII.GetBytes(access_token);
+            byte[] hash = hashstring.ComputeHash(bytes);
+            Byte[] sixteen_bytes = new Byte[16];
+            Array.Copy(hash, sixteen_bytes, 16);
+            return WebEncoders.Base64UrlEncode(sixteen_bytes).Trim('=');
         }
 
         public JwtSecurityToken MintToken(List<Claim> claims, string audience, DateTime expirationDateTime)

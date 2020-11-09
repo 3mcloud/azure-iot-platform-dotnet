@@ -33,6 +33,7 @@ export class AuthService {
             response_type: "id_token",
             response_mode: "fragment",
             userStore: new WebStorageStateStore({ store: window.localStorage }),
+            loadUserInfo: false,
         };
         AuthService._userManager = new UserManager(AuthService.settings);
     }

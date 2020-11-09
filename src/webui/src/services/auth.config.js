@@ -16,6 +16,7 @@ let authConfig = new AuthConfig({
     scope: "",
 
     strictDiscoveryDocumentValidation: false,
+    loadUserInfo: false,
 });
 
 export default authConfig;
