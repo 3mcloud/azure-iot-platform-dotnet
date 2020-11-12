@@ -5,8 +5,10 @@
         "profile": "Profile",
         "more": "More",
         "getStarted": "Get started",
-        "documentation": "Documentation",
-        "sendSuggestion": "Send a suggestion"
+        "iotAcceleratorDocumentation": "IoT Accelerator Documentation",
+        "publicDocumentation": "Public Documentation",
+        "innerSourceDocumentation": "InnerSource Documentation",
+        "devopsDocumentation": "Devops Documentation"
     },
     "globalNav": {
         "expand": "Expand Side Navigation",
@@ -172,7 +174,8 @@
         }
     },
     "helpFlyout": {
-        "title": "Documentation"
+        "platformTitle": "Platform Documentation",
+        "microsoftTitle": "Microsoft Documentation"
     },
     "profileFlyout": {
         "title": "User Profile",
