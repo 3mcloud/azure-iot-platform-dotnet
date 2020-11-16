@@ -1,6 +1,6 @@
 {
     "AlternateContactEmail": "aarkhzz@mmm.com",
-    "ApplicationID": "CRSLAD-42",
+    "ApplicationID": "CRSLAD-42",  
     "ApplicationName": "CRSLAD-42",
     "DataClassification": "3M General",
     "ITSMServiceName": "CRSLAD",
@@ -8,3 +8,16 @@
     "Environment": "RD",
     "CCOE_RechargeDepartment": 510580
 }
+
+/*
+
+   NAME CORRECTION????
+
+  "ApplicationID": "CRSLBL-42",  
+    "ITSMServiceName": "CRSLBL",
+
+
+    SUBSCRIPTION NAME: 3M-CRSLBL42-KCI-IoT-RD
+
+    Subscription App: 3M-CRSLAD-KCI-IoT-PipelineDeployment-app
+*/

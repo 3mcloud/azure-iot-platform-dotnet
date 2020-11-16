@@ -13,7 +13,6 @@ stages:
        displayName: Check parameters
        steps:
          - checkout: none
-
          - script: |-
                 set -Eeuxo pipefail
                 echo "testPipelineRunId : '$(testPipelineRunId)'"
