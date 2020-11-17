@@ -1,10 +1,10 @@
 {
     "AlternateContactEmail": "A90Q9ZZ@mmm.com",
-    "ApplicationID": "CRSLAD-19",
-    "ApplicationName": "CRSLAD-19",
+    "ApplicationID": "UDAH-03",
+    "ApplicationName": "UDAH-03",
     "DataClassification": "3M General",
     "ITSMServiceName": "CRSLAD",
     "ProductOwnerEmail": "A5BFHZZ@mmm.com",
-    "Environment": "RD",
-    "CCOE_RechargeDepartment": 501384
+    "Environment": "QA",
+    "CCOE_RechargeDepartment": 500640
 }

@@ -1,10 +1,10 @@
 {
-    "AlternateContactEmail": "aarkhzz@mmm.com",
-    "ApplicationID": "CRSLAD-45",
-    "ApplicationName": "CRSLAD-45",
+    "AlternateContactEmail": "slarson3@mmm.com",
+    "ApplicationID": "CRSLBL-45",
+    "ApplicationName": "CRSLBL-45",
     "DataClassification": "3M General",
     "ITSMServiceName": "CRSLAD",
-    "ProductOwnerEmail": "slarson3@mmm.com",
+    "ProductOwnerEmail": "czinsmeyer@mmm.com",
     "Environment": "PR",
-    "CCOE_RechargeDepartment": 510580
+    "CCOE_RechargeDepartment": 500311
 }

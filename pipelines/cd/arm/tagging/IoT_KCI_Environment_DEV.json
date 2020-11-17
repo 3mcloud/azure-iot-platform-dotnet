@@ -1,23 +1,10 @@
 {
-    "AlternateContactEmail": "aarkhzz@mmm.com",
+    "AlternateContactEmail": "slarson3@mmm.com",
     "ApplicationID": "CRSLAD-42",  
     "ApplicationName": "CRSLAD-42",
     "DataClassification": "3M General",
     "ITSMServiceName": "CRSLAD",
-    "ProductOwnerEmail": "slarson3@mmm.com",
+    "ProductOwnerEmail": "czinsmeyer@mmm.com",
     "Environment": "RD",
-    "CCOE_RechargeDepartment": 510580
+    "CCOE_RechargeDepartment": 500311
 }
-
-/*
-
-   NAME CORRECTION????
-
-  "ApplicationID": "CRSLBL-42",  
-    "ITSMServiceName": "CRSLBL",
-
-
-    SUBSCRIPTION NAME: 3M-CRSLBL42-KCI-IoT-RD
-
-    Subscription App: 3M-CRSLAD-KCI-IoT-PipelineDeployment-app
-*/
