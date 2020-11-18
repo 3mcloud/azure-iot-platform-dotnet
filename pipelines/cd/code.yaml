@@ -141,7 +141,7 @@ stages:
           applicationShortCode: chim
           environmentCategory: qa
           imageTag: $(_imageTag)
-          blueGreen: false
+          blueGreen: true
           subscriptionId: 30975220-85e1-4769-8bc1-4542ec8569a0
 
   - stage: chimProd
@@ -157,7 +157,7 @@ stages:
           applicationShortCode: chim
           environmentCategory: prod
           imageTag: $(_imageTag)
-          blueGreen: false
+          blueGreen: true
           subscriptionId: 5401dcf9-9d00-445b-97b4-60b216ea4930
 
   - stage: psdDev
