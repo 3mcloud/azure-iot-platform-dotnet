@@ -35,7 +35,7 @@ stages:
           applicationShortCode: kci
           environmentCategory: dev
           environmentName: IoT_KCI_Environment_DEV
-          kubernetesVersion: 1.18.8
+          kubernetesVersion: 1.18.2
           sendgridEmail: aarkhzz@mmm.com
           azureDevOpsProjectId: AzurePlatform
           testPipelineId: 453
@@ -57,7 +57,7 @@ stages:
           applicationShortCode: kci
           environmentCategory: qa
           environmentName: IoT_KCI_Environment_QA
-          kubernetesVersion: 1.18.8
+          kubernetesVersion: 1.18.2
           sendgridEmail: aschmidt4@mmm.com
           azureDevOpsProjectId: AzurePlatform
           testPipelineId: 453
@@ -79,7 +79,7 @@ stages:
           applicationShortCode: kci
           environmentCategory: ct
           environmentName: IoT_KCI_Environment_CT
-          kubernetesVersion: 1.18.8
+          kubernetesVersion: 1.18.2
           sendgridEmail: aarkhzz@mmm.com
           azureDevOpsProjectId: AzurePlatform
           testPipelineId: 453
@@ -101,7 +101,7 @@ stages:
           applicationShortCode: kci
           environmentCategory: pr
           environmentName: IoT_KCI_Environment_PR
-          kubernetesVersion: 1.18.8
+          kubernetesVersion: 1.18.2
           sendgridEmail: aarkhzz@mmm.com
           azureDevOpsProjectId: AzurePlatform
           testPipelineId: 453
