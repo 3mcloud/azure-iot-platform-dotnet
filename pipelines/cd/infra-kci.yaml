@@ -49,7 +49,7 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-infra.yaml
         parameters:
-          subscriptionName: 3M-CRSLBL42-KCI-IoT-QA
+          subscriptionName: 3M-CRSLBL43-KCI-IoT-QA
           locationName: $(locationName)
           appInsightsLocation: eastus
           subscriptionId: d4fe37c0-d20e-4ef1-91c2-e196016a2410
@@ -71,7 +71,7 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-infra.yaml
         parameters:
-          subscriptionName: 3M-CRSLBL42-KCI-IoT-CT
+          subscriptionName: 3M-CRSLBL44-KCI-IoT-CT
           locationName: $(locationName)
           appInsightsLocation: eastus
           subscriptionId: be48d2d2-4f01-43e1-b700-8fadff21655b
@@ -93,7 +93,7 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-infra.yaml
         parameters:
-          subscriptionName: 3M-CRSLBL42-KCI-IoT-PR
+          subscriptionName: 3M-CRSLBL45-KCI-IoT-PR
           locationName: $(locationName)
           appInsightsLocation: eastus
           subscriptionId: 0d62cc0d-a87c-445a-b1f2-091a8f10ee71
