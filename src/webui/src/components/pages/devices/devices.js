@@ -20,6 +20,7 @@ import {
     JsonEditorModal,
 } from "components/shared";
 import { DeviceNewContainer } from "./flyouts/deviceNew";
+import { AdvanceSearchContainer } from "./advanceSearch";
 import { SIMManagementContainer } from "./flyouts/SIMManagement";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
 import { svgs, getDeviceGroupParam } from "utilities";
@@ -223,6 +224,7 @@ export class Devices extends Component {
                 <PageContent className="devices-container">
                     <PageTitle titleValue={t("devices.title")} />
                     {!!error && <AjaxError t={t} error={error} />}
+                    <AdvanceSearchContainer />
                     <SearchInput
                         onChange={this.searchOnChange}
                         onClick={this.onSearchClick}

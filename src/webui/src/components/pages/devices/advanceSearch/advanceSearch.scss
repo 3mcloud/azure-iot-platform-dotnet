@@ -1,0 +1,42 @@
+// Copyright (c) Microsoft. All rights reserved.
+
+@import 'src/styles/mixins';
+@import 'src/styles/themes';
+
+.manage-filters-container{
+  @include rem-font-size(14px);
+  @include rem-fallback(padding-bottom, 16px);
+
+  .borderless { border: none; }
+
+  .edit-device-group-btn {
+    background: none;
+    border: none;
+  }
+
+  .add-btn {
+    @include rem-fallback(margin, 0px, 0px, 5px, 0px);
+  }
+
+  .btn-icon { 
+    @include rem-fallback(min-width, 0px);
+   }
+
+  .actions-button { @include rem-fallback(min-width, 110px); }
+
+  .btn-toolbar {
+    justify-content: flex-start;
+    @include rem-fallback(padding-top, 0px);
+    @include rem-fallback(padding-bottom, 5px);
+  }
+
+  .deviceExplorer-conditions {
+    display: flex;
+    flex-wrap: nowrap;
+    @include rem-fallback(padding-bottom, 5px);
+  }
+
+  @include themify($themes) {
+    .property-grid-container .grid-header .cell { color: themed('colorContentTextDim'); }
+  }
+}

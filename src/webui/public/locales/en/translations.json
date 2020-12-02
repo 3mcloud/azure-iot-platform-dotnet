@@ -220,7 +220,8 @@
             "GT": "> Greater than",
             "LT": "< Less than",
             "GE": ">= Greater than or equal",
-            "LE": "<= Less than or equal"
+            "LE": "<= Less than or equal",
+            "LK": "Like"
         },
         "value": "Value",
         "valuePlaceholder": "Enter value",
