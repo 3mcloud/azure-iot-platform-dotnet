@@ -121,6 +121,7 @@ namespace Mmm.Iot.IoTHubManager.Services
 
         public async Task<DeviceServiceListModel> GetListAsync(string inputQuery, string continuationToken)
         {
+            string querytoBeCached = inputQuery;
             IEnumerable<QueryConditionClause> clauses = null;
             IEnumerable<QueryConditionClause> deviceIdClauses = null;
             if (!string.IsNullOrWhiteSpace(inputQuery))
@@ -143,7 +144,7 @@ namespace Mmm.Iot.IoTHubManager.Services
 
             string tenantId = this.tenantConnectionHelper.TenantId;
 
-            var resultModel = await this.deviceQueryCache.GetCachedQueryResultAsync(tenantId, inputQuery);
+            var resultModel = await this.deviceQueryCache.GetCachedQueryResultAsync(tenantId, querytoBeCached);
 
             if (resultModel != null)
             {
@@ -223,7 +224,7 @@ namespace Mmm.Iot.IoTHubManager.Services
                 allTwins.ContinuationToken);
             this.deviceQueryCache.SetTenantQueryResult(
                 this.tenantConnectionHelper.TenantId,
-                inputQuery,
+                querytoBeCached,
                 new DeviceQueryCacheResultServiceModel
                 {
                     Result = resultModel,
