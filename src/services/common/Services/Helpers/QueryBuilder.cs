@@ -193,6 +193,27 @@ namespace Mmm.Iot.Common.Services.Helpers
             return new SqlQuerySpec(queryBuilder.ToString(), sqlParameterCollection);
         }
 
+        public static SqlQuerySpec GetDeviceDocumentsSqlByKeyLikeSearch(
+            string key,
+            string value)
+        {
+            var sqlParameterCollection = new SqlParameterCollection();
+            ValidateInput(ref key);
+            ValidateInput(ref value);
+
+            var queryBuilder = new StringBuilder("SELECT * FROM c");
+
+            if (!string.IsNullOrEmpty(value))
+            {
+                queryBuilder.Append($" WHERE CONTAINS (LOWER(c[@keyProperty]), @value)");
+                sqlParameterCollection.Add(new SqlParameter { Name = "@keyProperty", Value = key });
+                sqlParameterCollection.Add(new SqlParameter { Name = "@value", Value = value });
+            }
+
+            queryBuilder.Append(" ORDER BY c[\"_ts\"] DESC");
+            return new SqlQuerySpec(queryBuilder.ToString(), sqlParameterCollection);
+        }
+
         public static SqlQuerySpec GetCountSql(
         string schemaName,
         string byId,

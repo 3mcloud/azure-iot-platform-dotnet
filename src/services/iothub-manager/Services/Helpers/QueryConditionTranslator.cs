@@ -22,6 +22,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Helpers
             { "GT", ">" },
             { "GE", ">=" },
             { "IN", "IN" },
+            { "LK", "LIKE" },
         };
 
         public static string ToQueryString(string conditions)
