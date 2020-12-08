@@ -132,6 +132,24 @@ namespace Mmm.Iot.TenantManager.Services
                 }
             }
 
+            // Add all the system admins as admin users to this system
+            try
+            {
+                IdentityGatewayApiListModel systemAdmins = await this.identityGatewayClient.GetAllSystemAdminsAsync();
+
+                foreach (var systemAdmin in systemAdmins.Models)
+                {
+                    if (systemAdmin.UserId != userId)
+                    {
+                        await this.identityGatewayClient.AddTenantForUserAsync(systemAdmin.UserId, tenantId, CreatedRole, systemAdmin.Name);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not insert system admins as users.", e);
+            }
+
             // Write tenant info cosmos db collection name to app config
             try
             {
