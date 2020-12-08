@@ -141,7 +141,7 @@ stages:
           applicationShortCode: chim
           environmentCategory: qa
           imageTag: $(_imageTag)
-          blueGreen: false
+          blueGreen: true
           subscriptionId: 30975220-85e1-4769-8bc1-4542ec8569a0
 
   - stage: chimProd
@@ -157,7 +157,7 @@ stages:
           applicationShortCode: chim
           environmentCategory: prod
           imageTag: $(_imageTag)
-          blueGreen: false
+          blueGreen: true
           subscriptionId: 5401dcf9-9d00-445b-97b4-60b216ea4930
 
   - stage: psdDev
@@ -287,3 +287,67 @@ stages:
           imageTag: $(_imageTag)
           blueGreen: false
           subscriptionId: e9f61243-5e9a-4b8a-918c-09fe7e9f1ec1
+
+  - stage: kciDev
+    displayName: KCI dev
+    dependsOn:
+      - crslWkbnch
+    jobs:
+      - template: ../templates/jobs-deploy-code.yaml
+        parameters:
+          environmentName: IoT_KCI_Environment_DEV
+          subscriptionName: 3M-CRSLBL42-KCI-IoT-RD
+          applicationCode: kciiot
+          applicationShortCode: kci
+          environmentCategory: dev
+          imageTag: $(_imageTag)
+          blueGreen: true
+          subscriptionId: 63eaf61c-4cb7-419e-ac27-553edf67c39d
+
+  - stage: kciQa
+    displayName: KCI qa
+    dependsOn:
+      - kciDev
+    jobs:
+      - template: ../templates/jobs-deploy-code.yaml
+        parameters: 
+          environmentName: IoT_KCI_Environment_QA
+          subscriptionName: 3M-CRSLBL43-KCI-IoT-QA
+          applicationCode: kciiot
+          applicationShortCode: kci
+          environmentCategory: qa
+          imageTag: $(_imageTag)
+          blueGreen: true
+          subscriptionId: d4fe37c0-d20e-4ef1-91c2-e196016a2410     
+
+  - stage: kciCt
+    displayName: KCI ct
+    dependsOn:
+      - kciQa
+    jobs:
+      - template: ../templates/jobs-deploy-code.yaml
+        parameters:
+          environmentName: IoT_KCI_Environment_CT
+          subscriptionName: 3M-CRSLBL44-KCI-IoT-CT
+          applicationCode: kciiot
+          applicationShortCode: kci
+          environmentCategory: ct
+          imageTag: $(_imageTag)
+          blueGreen: true
+          subscriptionId:  be48d2d2-4f01-43e1-b700-8fadff21655b
+
+  - stage: kciPr
+    displayName: KCI Pr
+    dependsOn:
+      - kciCt
+    jobs:
+      - template: ../templates/jobs-deploy-code.yaml
+        parameters:
+          environmentName: IoT_KCI_Environment_PR
+          subscriptionName: 3M-CRSLBL45-KCI-IoT-PR
+          applicationCode: kciiot
+          applicationShortCode: kci
+          environmentCategory: pr
+          imageTag: $(_imageTag)
+          blueGreen: true
+          subscriptionId:  0d62cc0d-a87c-445a-b1f2-091a8f10ee71
