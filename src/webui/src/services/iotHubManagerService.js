@@ -195,7 +195,7 @@ export class IoTHubManagerService {
     static getDeviceStatistics(conditions = []) {
         const query = encodeURIComponent(JSON.stringify(conditions));
         return HttpClient.get(
-            `${ENDPOINT}/devices/statistics?query=${query}`
+            `${ENDPOINT}devices/statistics?query=${query}`
         ).map(toDeviceStatisticsModel);
     }
 }

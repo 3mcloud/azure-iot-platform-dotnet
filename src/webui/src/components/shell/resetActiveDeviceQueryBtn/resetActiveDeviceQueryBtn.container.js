@@ -14,7 +14,8 @@ const mapDispatchToProps = (dispatch) => ({
     resetActiveDeviceQueryConditions: () =>
         dispatch(appRedux.actions.setActiveDeviceQueryConditions([])),
     fetchDevices: () => dispatch(devicesEpics.actions.fetchDevices()),
-    fetchDeviceStatistics: () => dispatch(devicesEpics.actions.fetchDeviceStatistics()),
+    fetchDeviceStatistics: () =>
+        dispatch(devicesEpics.actions.fetchDeviceStatistics()),
     logEvent: (diagnosticsModel) =>
         dispatch(appEpics.actions.logEvent(diagnosticsModel)),
 });

@@ -33,8 +33,8 @@ namespace Mmm.Iot.IoTHubManager.Services
         private const int MaximumGetList = 1000;
         private const string QueryPrefix = "SELECT * FROM devices";
         private const string ModuleQueryPrefix = "SELECT * FROM devices.modules";
-        private const string DeviceCountQueryPrefix = "SELECT COUNT() AS DeviceCount FROM devices";
-        private const string ConnectedDeviceCountQueryPrefix = "SELECT COUNT() AS ConnectedDeviceCount FROM devices";
+        private const string DeviceConnectionStateCountQueryPrefix = "SELECT COUNT() AS numberOfDevices, connectionState FROM devices";
+        private const string DeviceConnectionState = "connectionState";
         private const string DevicesConnectedQuery = "connectionState = 'Connected'";
         private readonly ITenantConnectionHelper tenantConnectionHelper;
         private readonly IAsaManagerClient asaManager;
@@ -342,25 +342,14 @@ namespace Mmm.Iot.IoTHubManager.Services
                 query = QueryConditionTranslator.ToQueryString(query);
             }
 
-            var data = await this.GetIotDataQueryAsync<DeviceStatisticsServiceModel>(
-                DeviceCountQueryPrefix,
+            var data = await this.GetIotDataQueryAsync<DeviceConnectionStatusCountModel>(
+                DeviceConnectionStateCountQueryPrefix,
                 query,
+                DeviceConnectionState,
                 null,
                 MaximumGetList);
 
-            var connectedDeviceQuery = string.IsNullOrEmpty(query) ? DevicesConnectedQuery : $"{query} AND {DevicesConnectedQuery}";
-
-            var connectedData = await this.GetIotDataQueryAsync<DeviceStatisticsServiceModel>(
-                ConnectedDeviceCountQueryPrefix,
-                connectedDeviceQuery,
-                null,
-                MaximumGetList);
-
-            return new DeviceStatisticsServiceModel()
-            {
-                DeviceCount = data.Result.SingleOrDefault().DeviceCount,
-                ConnectedDeviceCount = connectedData.Result.SingleOrDefault().ConnectedDeviceCount,
-            };
+            return new DeviceStatisticsServiceModel(data.Result);
         }
 
         private async Task<ResultWithContinuationToken<List<Twin>>> GetTwinByQueryAsync(
@@ -421,10 +410,13 @@ namespace Mmm.Iot.IoTHubManager.Services
         private async Task<ResultWithContinuationToken<List<T>>> GetIotDataQueryAsync<T>(
             string queryPrefix,
             string query,
+            string groupBy,
             string continuationToken,
             int numberOfResult)
         {
             query = string.IsNullOrEmpty(query) ? queryPrefix : $"{queryPrefix} where {query}";
+
+            query = string.IsNullOrEmpty(groupBy) ? query : $"{query} GROUP BY {groupBy}";
 
             var jsonResult = new List<string>();
 

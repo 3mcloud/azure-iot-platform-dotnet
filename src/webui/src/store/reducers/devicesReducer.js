@@ -39,8 +39,8 @@ export const epics = createEpicScenario({
         type: "DEVICES_FETCH",
         epic: (fromAction, store) => {
             const rawConditions = getActiveDeviceGroupConditions(
-                store.getState()
-            ).concat(getActiveDeviceQueryConditions(store.getState())),
+                    store.getState()
+                ).concat(getActiveDeviceQueryConditions(store.getState())),
                 conditions = rawConditions.filter((condition) => {
                     return (
                         !!condition.key &&
@@ -147,7 +147,7 @@ export const epics = createEpicScenario({
                 .distinctUntilChanged()
                 .flatMap((_) => [
                     epics.actions.fetchDevices(),
-                    epics.actions.fetchDeviceStatistics()
+                    epics.actions.fetchDeviceStatistics(),
                 ]),
     },
 
@@ -156,8 +156,8 @@ export const epics = createEpicScenario({
         type: "DEVICE_STATISTICS_FETCH",
         epic: (fromAction, store) => {
             const rawConditions = getActiveDeviceGroupConditions(
-                store.getState()
-            ).concat(getActiveDeviceQueryConditions(store.getState())),
+                    store.getState()
+                ).concat(getActiveDeviceQueryConditions(store.getState())),
                 conditions = rawConditions.filter((condition) => {
                     return (
                         !!condition.key &&
@@ -166,7 +166,12 @@ export const epics = createEpicScenario({
                     );
                 });
             return IoTHubManagerService.getDeviceStatistics(conditions)
-                .map(toActionCreator(redux.actions.updateDeviceStatistics, fromAction))
+                .map(
+                    toActionCreator(
+                        redux.actions.updateDeviceStatistics,
+                        fromAction
+                    )
+                )
                 .catch(handleError(fromAction));
         },
     },
@@ -184,7 +189,7 @@ const deviceSchema = new schema.Entity("devices"),
         entities: {},
         items: [],
         lastUpdated: "",
-        deviceCount: 0,
+        totalDeviceCount: 0,
         connectedDeviceCount: 0,
         cancelDeviceCalls: false,
     },
@@ -202,7 +207,7 @@ const deviceSchema = new schema.Entity("devices"),
     },
     updateDeviceStatisticsReducer = (state, { payload, fromAction }) => {
         return update(state, {
-            deviceCount: { $set: payload.deviceCount },
+            totalDeviceCount: { $set: payload.totalDeviceCount },
             connectedDeviceCount: { $set: payload.connectedDeviceCount },
             ...setPending(fromAction.type, false),
         });
@@ -253,13 +258,13 @@ const deviceSchema = new schema.Entity("devices"),
         );
 
         const updatedDevices = payload.deviceIds.map((id) =>
-            update(state.entities[id], {
-                tags: {
-                    $merge: updatedTagData,
-                    $unset: payload.deletedTags,
-                },
-            })
-        ),
+                update(state.entities[id], {
+                    tags: {
+                        $merge: updatedTagData,
+                        $unset: payload.deletedTags,
+                    },
+                })
+            ),
             {
                 entities: { devices },
             } = normalize(updatedDevices, deviceListSchema);
@@ -284,13 +289,13 @@ const deviceSchema = new schema.Entity("devices"),
         );
 
         const updatedDevices = payload.deviceIds.map((id) =>
-            update(state.entities[id], {
-                desiredProperties: {
-                    $merge: updatedPropertyData,
-                    $unset: payload.deletedProperties,
-                },
-            })
-        ),
+                update(state.entities[id], {
+                    desiredProperties: {
+                        $merge: updatedPropertyData,
+                        $unset: payload.deletedProperties,
+                    },
+                })
+            ),
             {
                 entities: { devices },
             } = normalize(updatedDevices, deviceListSchema);
@@ -379,9 +384,9 @@ export const getDeviceModuleStatus = (state) => {
     const deviceModuleStatus = getDevicesReducer(state).deviceModuleStatus;
     return deviceModuleStatus
         ? {
-            code: deviceModuleStatus.code,
-            description: deviceModuleStatus.description,
-        }
+              code: deviceModuleStatus.code,
+              description: deviceModuleStatus.description,
+          }
         : undefined;
 };
 export const getDeviceModuleStatusPendingStatus = (state) =>
@@ -392,16 +397,16 @@ export const getDeviceStatistics = (state) => {
     const deviceState = getDevicesReducer(state);
     return deviceState
         ? {
-            deviceCount: deviceState.deviceCount,
-            connectedDeviceCount: deviceState.connectedDeviceCount,
-        }
+              totalDeviceCount: deviceState.totalDeviceCount,
+              connectedDeviceCount: deviceState.connectedDeviceCount,
+          }
         : undefined;
 };
 export const getDeviceStatisticsPendingStatus = (state) =>
-    getPending(getDevicesReducer(state), epics.actionTypes.fetchDeviceStatistics);
-export const getDeviceStatisticsError = (state) =>
-    getError(
+    getPending(
         getDevicesReducer(state),
         epics.actionTypes.fetchDeviceStatistics
     );
+export const getDeviceStatisticsError = (state) =>
+    getError(getDevicesReducer(state), epics.actionTypes.fetchDeviceStatistics);
 // ========================= Selectors - END

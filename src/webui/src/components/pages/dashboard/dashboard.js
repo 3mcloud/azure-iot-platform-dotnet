@@ -419,7 +419,7 @@ export class Dashboard extends Component {
                 deviceStatistics,
                 deviceStatisticsIsPending,
                 deviceStatisticsError,
-                
+
                 activeDeviceGroup,
                 deviceGroups,
                 deviceGroupError,
@@ -455,7 +455,7 @@ export class Dashboard extends Component {
                 ? deviceStatistics.connectedDeviceCount
                 : undefined,
             offlineDeviceCount = deviceStatistics
-                ? deviceStatistics.deviceCount -
+                ? deviceStatistics.totalDeviceCount -
                   deviceStatistics.connectedDeviceCount
                 : undefined,
             // Add parameters to Time Series Insights Url
@@ -544,7 +544,8 @@ export class Dashboard extends Component {
                                 onlineDeviceCount={onlineDeviceCount}
                                 offlineDeviceCount={offlineDeviceCount}
                                 isPending={
-                                    analyticsIsPending || deviceStatisticsIsPending
+                                    analyticsIsPending ||
+                                    deviceStatisticsIsPending
                                 }
                                 error={
                                     deviceGroupError ||

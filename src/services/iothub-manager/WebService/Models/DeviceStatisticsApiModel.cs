@@ -21,13 +21,13 @@ namespace Mmm.Iot.IoTHubManager.WebService.Models
         {
             if (deviceStatisticsServiceModel != null)
             {
-                this.DeviceCount = deviceStatisticsServiceModel.DeviceCount;
+                this.TotalDeviceCount = deviceStatisticsServiceModel.TotalDeviceCount;
                 this.ConnectedDeviceCount = deviceStatisticsServiceModel.ConnectedDeviceCount;
             }
         }
 
-        [JsonProperty("DeviceCount")]
-        public int DeviceCount { get; set; }
+        [JsonProperty("TotalDeviceCount")]
+        public int TotalDeviceCount { get; set; }
 
         [JsonProperty("ConnectedDeviceCount")]
         public int ConnectedDeviceCount { get; set; }
