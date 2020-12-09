@@ -70,5 +70,7 @@ namespace Mmm.Iot.TenantManager.Services.Models
         }
 
         public string TenantName { get; set; }
+
+        public string IotHubName { get; set; }
     }
 }
