@@ -107,7 +107,7 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
                 Tenant = this.GetTenantId(),
                 Roles = model.Roles,
                 Name = model.Name,
-                Type = model.Type,
+                Type = string.IsNullOrWhiteSpace(model.Type) ? "Member" : model.Type,
             };
             return await this.container.CreateAsync(input);
         }
