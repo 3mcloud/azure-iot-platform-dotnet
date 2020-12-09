@@ -78,6 +78,7 @@ class TenantGrid extends React.Component {
                                 {tenant.displayName}
                             </a>
                         )}
+                        <p className="iotHub-Name">{tenant.iotHubName}</p>
                     </Cell>
                 )}
                 {this.state.isEdit && this.state.tenantId !== tenant.id && (
@@ -94,14 +95,18 @@ class TenantGrid extends React.Component {
                                 {tenant.displayName}
                             </a>
                         )}
+                        <p className="iotHub-Name">{tenant.iotHubName}</p>
                     </Cell>
                 )}
                 {this.state.isEdit && this.state.tenantId === tenant.id && (
-                    <FormControl
-                        value={this.state.tenantName}
-                        type="text"
-                        onChange={this.handleChange}
-                    />
+                    <div>
+                        <FormControl
+                            value={this.state.tenantName}
+                            type="text"
+                            onChange={this.handleChange}
+                        />
+                        <p className="iotHub-Name">{tenant.iotHubName}</p>
+                    </div>
                 )}
                 <Cell>{tenant.role}</Cell>
                 <Cell>

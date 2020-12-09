@@ -27,6 +27,9 @@ export class DeviceGroupDropdown extends Component {
         // Don't try to update the device group if the device id doesn't exist
         if (deviceGroupIds.indexOf(value) > -1) {
             this.props.changeDeviceGroup(value);
+            if (this.props.updateLoadMore) {
+                this.props.updateLoadMore();
+            }
         }
         this.props.logEvent(toDiagnosticsModel("DeviceFilter_Select", {}));
     };

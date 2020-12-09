@@ -218,7 +218,7 @@ const deploymentSchema = new schema.Entity("deployments"),
         { payload: [modules, devices], fromAction }
     ) => {
         const normalizedDevices =
-                normalize(devices, deployedDevicesListSchema).entities
+                normalize(devices.items, deployedDevicesListSchema).entities
                     .deployedDevices || {},
             normalizedModules =
                 normalize(modules, deployedDevicesListSchema).entities
@@ -243,7 +243,7 @@ const deploymentSchema = new schema.Entity("deployments"),
     },
     updateADMDeployedDevicesReducer = (state, { payload, fromAction }) => {
         const normalizedDevices =
-                normalize(payload, deployedDevicesListSchema).entities
+                normalize(payload.items, deployedDevicesListSchema).entities
                     .deployedDevices || {},
             deployedDevices = Object.keys(normalizedDevices).reduce(
                 (acc, deviceId) => ({

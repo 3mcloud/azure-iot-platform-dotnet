@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 import React, { Component } from "react";
+import { Toggle } from "@microsoft/azure-iot-ux-fluent-controls/lib/components/Toggle";
 
 import { permissions, toDiagnosticsModel } from "services/models";
 import { DevicesGridContainer } from "./devicesGrid";
@@ -40,6 +41,7 @@ export class Devices extends Component {
             ...closedFlyoutState,
             contextBtns: null,
             selectedDeviceGroupId: undefined,
+            loadMore: true,
         };
 
         this.props.updateCurrentWindow("Devices");
@@ -146,6 +148,7 @@ export class Devices extends Component {
 
         let children = [
             <DeviceGroupDropdown
+                updateLoadMore={this.updateLoadMoreOnDeviceGroupChange}
                 deviceGroupIdFromUrl={this.state.selectedDeviceGroupId}
             />,
             <Protected permission={permissions.updateDeviceGroups}>
@@ -176,6 +179,32 @@ export class Devices extends Component {
         return children;
     };
 
+    switchLoadMore = (value) => {
+        if (!value) {
+            this.setState({ loadMore: false });
+            return this.props.cancelDeviceCalls({
+                cancelSubsequentCalls: true,
+            });
+        } else {
+            this.setState({ loadMore: true });
+            this.props.cancelDeviceCalls({
+                cancelSubsequentCalls: false,
+            });
+            return this.props.fetchDevicesByCToken();
+        }
+    };
+
+    refreshDevices = () => {
+        this.setState({ loadMore: true });
+        this.props.cancelDeviceCalls({ cancelSubsequentCalls: false });
+        return this.props.fetchDevices();
+    };
+
+    updateLoadMoreOnDeviceGroupChange = () => {
+        this.setState({ loadMore: true });
+        this.props.cancelDeviceCalls({ cancelSubsequentCalls: false });
+    };
+
     render() {
         const {
                 t,
@@ -184,7 +213,6 @@ export class Devices extends Component {
                 deviceError,
                 isPending,
                 lastUpdated,
-                fetchDevices,
                 routeProps,
             } = this.props,
             gridProps = {
@@ -211,7 +239,7 @@ export class Devices extends Component {
                             </Btn>
                         </Protected>,
                         <RefreshBar
-                            refresh={fetchDevices}
+                            refresh={this.refreshDevices}
                             time={lastUpdated}
                             isPending={isPending}
                             t={t}
@@ -223,12 +251,28 @@ export class Devices extends Component {
                 <PageContent className="devices-container">
                     <PageTitle titleValue={t("devices.title")} />
                     {!!error && <AjaxError t={t} error={error} />}
-                    <SearchInput
-                        onChange={this.searchOnChange}
-                        onClick={this.onSearchClick}
-                        aria-label={t("devices.ariaLabel")}
-                        placeholder={t("devices.searchPlaceholder")}
-                    />
+                    <div className="search-left-div">
+                        <SearchInput
+                            onChange={this.searchOnChange}
+                            onClick={this.onSearchClick}
+                            aria-label={t("devices.ariaLabel")}
+                            placeholder={t("devices.searchPlaceholder")}
+                        />
+                    </div>
+                    <div className="cancel-right-div">
+                        <Toggle
+                            attr={{
+                                button: {
+                                    "aria-label": t("devices.loadMore"),
+                                    type: "button",
+                                },
+                            }}
+                            on={this.state.loadMore}
+                            onLabel={t("devices.loadMore")}
+                            offLabel={t("devices.loadMore")}
+                            onChange={this.switchLoadMore}
+                        />
+                    </div>
                     {!error && (
                         <DevicesGridContainer
                             {...gridProps}
