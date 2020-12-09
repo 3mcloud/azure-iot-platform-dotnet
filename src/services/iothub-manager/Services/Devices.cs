@@ -33,6 +33,8 @@ namespace Mmm.Iot.IoTHubManager.Services
         private const int MaximumGetList = 1000;
         private const string QueryPrefix = "SELECT * FROM devices";
         private const string ModuleQueryPrefix = "SELECT * FROM devices.modules";
+        private const string DeviceConnectionStateCountQueryPrefix = "SELECT COUNT() AS numberOfDevices, connectionState FROM devices";
+        private const string DeviceConnectionState = "connectionState";
         private const string DevicesConnectedQuery = "connectionState = 'Connected'";
         private readonly ITenantConnectionHelper tenantConnectionHelper;
         private readonly IAsaManagerClient asaManager;
@@ -332,6 +334,24 @@ namespace Mmm.Iot.IoTHubManager.Services
             return new TwinServiceListModel(result, null);
         }
 
+        public async Task<DeviceStatisticsServiceModel> GetDeviceStatisticsAsync(string query)
+        {
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                // Try to translate clauses to query
+                query = QueryConditionTranslator.ToQueryString(query);
+            }
+
+            var data = await this.GetIotDataQueryAsync<DeviceConnectionStatusCountModel>(
+                DeviceConnectionStateCountQueryPrefix,
+                query,
+                DeviceConnectionState,
+                null,
+                MaximumGetList); // Currently data does not show correct edge device connected status count. Will be supported in future.
+
+            return new DeviceStatisticsServiceModel(data.Result);
+        }
+
         private async Task<ResultWithContinuationToken<List<Twin>>> GetTwinByQueryAsync(
             string queryPrefix,
             string query,
@@ -385,6 +405,36 @@ namespace Mmm.Iot.IoTHubManager.Services
             var query = $"deviceId='{deviceId}' AND {DevicesConnectedQuery}";
             var edgeModules = await this.GetModuleTwinsByQueryAsync(query, string.Empty);
             return edgeModules.Items.Any();
+        }
+
+        private async Task<ResultWithContinuationToken<List<T>>> GetIotDataQueryAsync<T>(
+            string queryPrefix,
+            string query,
+            string groupBy,
+            string continuationToken,
+            int numberOfResult)
+        {
+            query = string.IsNullOrEmpty(query) ? queryPrefix : $"{queryPrefix} where {query}";
+
+            query = string.IsNullOrEmpty(groupBy) ? query : $"{query} GROUP BY {groupBy}";
+
+            var jsonResult = new List<string>();
+
+            var jsonQuery = this.tenantConnectionHelper.GetRegistry().CreateQuery(query);
+
+            QueryOptions options = new QueryOptions();
+            options.ContinuationToken = continuationToken;
+
+            while (jsonQuery.HasMoreResults && jsonResult.Count < numberOfResult)
+            {
+                var response = await jsonQuery.GetNextAsJsonAsync(options);
+                options.ContinuationToken = response.ContinuationToken;
+                jsonResult.AddRange(response);
+            }
+
+            List<T> result = jsonResult.Select(result => JsonConvert.DeserializeObject<T>(result)).ToList();
+
+            return new ResultWithContinuationToken<List<T>>(result, options.ContinuationToken);
         }
 
         private class ResultWithContinuationToken<T>

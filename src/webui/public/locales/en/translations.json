@@ -412,6 +412,7 @@
         "refresh": "Refresh",
         "showTelemetry": "Show telemetry",
         "returnToDevices": "Devices",
+        "loadMore": "Load more",
         "grid": {
             "connected": "Connected",
             "deviceName": "Device name",

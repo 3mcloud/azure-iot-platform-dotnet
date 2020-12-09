@@ -55,9 +55,9 @@ namespace Mmm.Iot.TenantManager.Services.External
             }
         }
 
-        public async Task<IdentityGatewayApiModel> AddTenantForUserAsync(string userId, string tenantId, string roles)
+        public async Task<IdentityGatewayApiModel> AddTenantForUserAsync(string userId, string tenantId, string roles, string name = null)
         {
-            IdentityGatewayApiModel bodyContent = new IdentityGatewayApiModel(roles);
+            IdentityGatewayApiModel bodyContent = new IdentityGatewayApiModel(roles, name);
             string url = this.RequestUrl($"tenants/{userId}");
             return await this.requestHelper.ProcessRequestAsync(HttpMethod.Post, url, bodyContent, tenantId);
         }
@@ -95,6 +95,12 @@ namespace Mmm.Iot.TenantManager.Services.External
         public async Task<IdentityGatewayApiListModel> GetAllTenantsForUserAsync(string userId)
         {
             string url = this.RequestUrl($"tenants/{userId}/all");
+            return await this.requestHelper.ProcessRequestAsync<IdentityGatewayApiListModel>(HttpMethod.Get, url);
+        }
+
+        public async Task<IdentityGatewayApiListModel> GetAllSystemAdminsAsync()
+        {
+            string url = this.RequestUrl($"systemAdmin/getAllSystemAdmins");
             return await this.requestHelper.ProcessRequestAsync<IdentityGatewayApiListModel>(HttpMethod.Get, url);
         }
     }

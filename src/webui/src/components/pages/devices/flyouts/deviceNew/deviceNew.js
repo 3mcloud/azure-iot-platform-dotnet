@@ -492,6 +492,7 @@ export class DeviceNew extends LinkedComponent {
                         this.props.logEvent(
                             toDiagnosticsModel("Devices_Created", metadata)
                         );
+                        this.props.fetchDeviceStatistics();
                     },
                     (error) => {
                         this.setState({

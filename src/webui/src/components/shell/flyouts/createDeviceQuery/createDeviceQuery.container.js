@@ -19,6 +19,8 @@ const mapStateToProps = (state) => ({
     }),
     mapDispatchToProps = (dispatch) => ({
         fetchDevices: () => dispatch(devicesEpics.actions.fetchDevices()),
+        fetchDeviceStatistics: () =>
+            dispatch(devicesEpics.actions.fetchDeviceStatistics()),
         closeFlyout: () =>
             dispatch(appRedux.actions.setCreateDeviceQueryFlyoutStatus(false)),
         setActiveDeviceQueryConditions: (queryConditions) =>

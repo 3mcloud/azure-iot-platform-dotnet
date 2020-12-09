@@ -25,6 +25,8 @@ const mapStateToProps = (state) => ({
             ),
         insertDevices: (devices) =>
             dispatch(devicesRedux.actions.insertDevices(devices)),
+        fetchDeviceStatistics: () =>
+            dispatch(devicesEpics.actions.fetchDeviceStatistics()),
         fetchDevices: () => dispatch(devicesEpics.actions.fetchDevices()),
         logEvent: (diagnosticsModel) =>
             dispatch(appEpics.actions.logEvent(diagnosticsModel)),
