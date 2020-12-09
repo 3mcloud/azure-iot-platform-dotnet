@@ -103,6 +103,7 @@ class CreateDeviceQueryForm extends LinkedComponent {
                             return toDeviceConditionModel(condition);
                         })
                     );
+                    this.props.fetchDeviceStatistics();
                     this.props.fetchDevices();
                     resolve();
                 });
@@ -155,6 +156,7 @@ class CreateDeviceQueryForm extends LinkedComponent {
                     },
                     () => {
                         this.props.setActiveDeviceQueryConditions([]);
+                        this.props.fetchDeviceStatistics(); // reload the device statistics
                         this.props.fetchDevices(); // reload the devices grid with a blank query
                         this.render();
                         resolve();

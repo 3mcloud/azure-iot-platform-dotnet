@@ -303,3 +303,9 @@ export const toDeviceDeploymentHistoryModel = (twinServiceModel = {}) => {
         return modelData;
     }
 };
+
+export const toDeviceStatisticsModel = (response = {}) =>
+    camelCaseReshape(response, {
+        deviceCount: "deviceCount",
+        connectedDeviceCount: "connectedDeviceCount",
+    });

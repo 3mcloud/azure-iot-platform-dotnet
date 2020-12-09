@@ -416,7 +416,10 @@ export class Dashboard extends Component {
                 devices,
                 devicesError,
                 devicesIsPending,
-
+                deviceStatistics,
+                deviceStatisticsIsPending,
+                deviceStatisticsError,
+                
                 activeDeviceGroup,
                 deviceGroups,
                 deviceGroupError,
@@ -448,16 +451,12 @@ export class Dashboard extends Component {
                 lastRefreshed,
             } = this.state,
             // Count the number of online and offline devices
-            deviceIds = Object.keys(devices),
-            onlineDeviceCount = deviceIds.length
-                ? deviceIds.reduce(
-                      (count, deviceId) =>
-                          devices[deviceId].connected ? count + 1 : count,
-                      0
-                  )
+            onlineDeviceCount = deviceStatistics
+                ? deviceStatistics.connectedDeviceCount
                 : undefined,
-            offlineDeviceCount = deviceIds.length
-                ? deviceIds.length - onlineDeviceCount
+            offlineDeviceCount = deviceStatistics
+                ? deviceStatistics.deviceCount -
+                  deviceStatistics.connectedDeviceCount
                 : undefined,
             // Add parameters to Time Series Insights Url
             timeSeriesParamUrl = timeSeriesExplorerUrl
@@ -545,11 +544,11 @@ export class Dashboard extends Component {
                                 onlineDeviceCount={onlineDeviceCount}
                                 offlineDeviceCount={offlineDeviceCount}
                                 isPending={
-                                    analyticsIsPending || devicesIsPending
+                                    analyticsIsPending || deviceStatisticsIsPending
                                 }
                                 error={
                                     deviceGroupError ||
-                                    devicesError ||
+                                    deviceStatisticsError ||
                                     analyticsError
                                 }
                                 alerting={alerting}
