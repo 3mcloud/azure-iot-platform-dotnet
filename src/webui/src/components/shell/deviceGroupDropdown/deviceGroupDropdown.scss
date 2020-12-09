@@ -26,3 +26,13 @@
     top: 4 * $grid-size;
   }
 }
+
+.devices-loaded-label {
+  font-size: smaller;
+  font-family: 'Segoe UI';
+  color: darkgray;
+}
+
+.devices-loaded-value {
+  font-family: Tahoma;
+}

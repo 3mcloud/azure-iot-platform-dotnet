@@ -10,6 +10,7 @@ import {
     getDevicesError,
     getDevicesLastUpdated,
     getDevicesPendingStatus,
+    getLoadMoreToggleState,
 } from "store/reducers/devicesReducer";
 import {
     redux as appRedux,
@@ -28,6 +29,7 @@ const mapStateToProps = (state) => ({
         deviceGroupError: getDeviceGroupError(state),
         lastUpdated: getDevicesLastUpdated(state),
         activeDeviceQueryConditions: getActiveDeviceQueryConditions(state),
+        loadMoreState: getLoadMoreToggleState(state),
     }),
     // Wrap the dispatch method
     mapDispatchToProps = (dispatch) => ({

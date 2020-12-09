@@ -41,7 +41,7 @@ export class Devices extends Component {
             ...closedFlyoutState,
             contextBtns: null,
             selectedDeviceGroupId: undefined,
-            loadMore: true,
+            loadMore: props.loadMoreState,
         };
 
         this.props.updateCurrentWindow("Devices");
