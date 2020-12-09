@@ -347,7 +347,7 @@ namespace Mmm.Iot.IoTHubManager.Services
                 query,
                 DeviceConnectionState,
                 null,
-                MaximumGetList);
+                MaximumGetList); // Currently data does not show correct edge device connected status count. Will be supported in future.
 
             return new DeviceStatisticsServiceModel(data.Result);
         }

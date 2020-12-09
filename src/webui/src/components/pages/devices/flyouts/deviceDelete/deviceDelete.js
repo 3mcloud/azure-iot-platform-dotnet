@@ -104,12 +104,17 @@ export class DeviceDelete extends Component {
                         isPending: false,
                         changesApplied: true,
                     }),
-                () =>
+                () => {
                     this.setState({
                         isPending: false,
                         changesApplied: true,
                         confirmStatus: false,
-                    })
+                    });
+
+                    if (this.state.successCount > 0) {
+                        this.props.fetchDeviceStatistics();
+                    }
+                }
             );
     };
 
