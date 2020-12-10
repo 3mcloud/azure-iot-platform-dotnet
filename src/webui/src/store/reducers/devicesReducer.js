@@ -399,6 +399,7 @@ export const getDeviceStatistics = (state) => {
         ? {
               totalDeviceCount: deviceState.totalDeviceCount,
               connectedDeviceCount: deviceState.connectedDeviceCount,
+              loadedDeviceCount: deviceState.items.length,
           }
         : undefined;
 };
@@ -409,4 +410,8 @@ export const getDeviceStatisticsPendingStatus = (state) =>
     );
 export const getDeviceStatisticsError = (state) =>
     getError(getDevicesReducer(state), epics.actionTypes.fetchDeviceStatistics);
+export const getLoadMoreToggleState = (state) => {
+    const deviceState = getDevicesReducer(state);
+    return !deviceState.cancelDeviceCalls;
+};
 // ========================= Selectors - END
