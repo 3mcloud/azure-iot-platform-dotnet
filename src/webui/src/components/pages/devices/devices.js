@@ -183,26 +183,26 @@ export class Devices extends Component {
         if (!value) {
             this.setState({ loadMore: false });
             return this.props.cancelDeviceCalls({
-                cancelSubsequentCalls: true,
+                makeSubsequentCalls: false,
             });
         } else {
             this.setState({ loadMore: true });
             this.props.cancelDeviceCalls({
-                cancelSubsequentCalls: false,
+                makeSubsequentCalls: true,
             });
             return this.props.fetchDevicesByCToken();
         }
     };
 
     refreshDevices = () => {
-        this.setState({ loadMore: true });
-        this.props.cancelDeviceCalls({ cancelSubsequentCalls: false });
+        this.setState({ loadMore: false });
+        this.props.cancelDeviceCalls({ makeSubsequentCalls: false });
         return this.props.fetchDevices();
     };
 
     updateLoadMoreOnDeviceGroupChange = () => {
-        this.setState({ loadMore: true });
-        this.props.cancelDeviceCalls({ cancelSubsequentCalls: false });
+        this.setState({ loadMore: false });
+        this.props.cancelDeviceCalls({ makeSubsequentCalls: false });
     };
 
     render() {

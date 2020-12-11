@@ -57,7 +57,10 @@ export const epics = createEpicScenario({
                 .flatMap((action) => {
                     const actions = [];
                     actions.push(action);
-                    if (cToken && !store.getState().devices.cancelDeviceCalls) {
+                    if (
+                        cToken &&
+                        store.getState().devices.makeCTokenDeviceCalls
+                    ) {
                         actions.push(epics.actions.fetchDevicesByCToken());
                     }
                     return actions;
@@ -94,7 +97,7 @@ export const epics = createEpicScenario({
                         actions.push(action);
                         if (
                             cToken &&
-                            !store.getState().devices.cancelDeviceCalls
+                            store.getState().devices.makeCTokenDeviceCalls
                         ) {
                             actions.push(epics.actions.fetchDevicesByCToken());
                         }
@@ -102,6 +105,7 @@ export const epics = createEpicScenario({
                     })
                     .catch(handleError(fromAction));
             }
+            return [];
         },
     },
 
@@ -191,7 +195,7 @@ const deviceSchema = new schema.Entity("devices"),
         lastUpdated: "",
         totalDeviceCount: 0,
         connectedDeviceCount: 0,
-        cancelDeviceCalls: false,
+        makeCTokenDeviceCalls: false,
     },
     updateDevicesReducer = (state, { payload, fromAction }) => {
         const {
@@ -305,7 +309,7 @@ const deviceSchema = new schema.Entity("devices"),
     },
     cancelDeviceCallsReducer = (state, { payload }) => {
         return update(state, {
-            cancelDeviceCalls: { $set: payload.cancelSubsequentCalls },
+            makeCTokenDeviceCalls: { $set: payload.makeSubsequentCalls },
         });
     },
     /* Action types that cause a pending flag */
@@ -412,6 +416,6 @@ export const getDeviceStatisticsError = (state) =>
     getError(getDevicesReducer(state), epics.actionTypes.fetchDeviceStatistics);
 export const getLoadMoreToggleState = (state) => {
     const deviceState = getDevicesReducer(state);
-    return !deviceState.cancelDeviceCalls;
+    return deviceState.makeCTokenDeviceCalls;
 };
 // ========================= Selectors - END
