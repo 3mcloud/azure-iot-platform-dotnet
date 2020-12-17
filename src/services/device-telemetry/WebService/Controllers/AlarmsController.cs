@@ -152,12 +152,11 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
                 limit = 1000;
             }
 
-            if (deviceIds.Length > DeviceLimit)
-            {
-                this.logger.LogWarning("The client requested too many devices {count}", deviceIds.Length);
-                throw new BadRequestException("The number of devices cannot exceed " + DeviceLimit);
-            }
-
+            // if (deviceIds.Length > DeviceLimit)
+            // {
+            //     this.logger.LogWarning("The client requested too many devices {count}", deviceIds.Length);
+            //     throw new BadRequestException("The number of devices cannot exceed " + DeviceLimit);
+            // }
             List<Alarm> alarmsList = await this.alarmService.ListAsync(
                 fromDate,
                 toDate,

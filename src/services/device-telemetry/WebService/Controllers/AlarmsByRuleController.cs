@@ -142,12 +142,12 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
              * storage type the limit will be different. DEVICE_LIMIT is CosmosDb
              * limit for the IN clause.
              */
-            if (deviceIds.Length > DeviceLimit)
-            {
-                this.logger.LogWarning("The client requested too many devices {count}", deviceIds.Length);
-                throw new BadRequestException("The number of devices cannot exceed " + DeviceLimit);
-            }
 
+            // if (deviceIds.Length > DeviceLimit)
+            // {
+            //     this.logger.LogWarning("The client requested too many devices {count}", deviceIds.Length);
+            //     throw new BadRequestException("The number of devices cannot exceed " + DeviceLimit);
+            // }
             List<AlarmCountByRule> alarmsList
                 = await this.ruleService.GetAlarmCountForListAsync(
                     fromDate,
@@ -191,12 +191,12 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
              * storage type the limit will be different. DEVICE_LIMIT is CosmosDb
              * limit for the IN clause.
              */
-            if (deviceIds.Length > DeviceLimit)
-            {
-                this.logger.LogWarning("The client requested too many devices {count}", deviceIds.Length);
-                throw new BadRequestException("The number of devices cannot exceed " + DeviceLimit);
-            }
 
+            // if (deviceIds.Length > DeviceLimit)
+            // {
+            //     this.logger.LogWarning("The client requested too many devices {count}", deviceIds.Length);
+            //     throw new BadRequestException("The number of devices cannot exceed " + DeviceLimit);
+            // }
             List<Alarm> alarmsList = await this.alarmService.ListByRuleAsync(
                 id,
                 fromDate,
