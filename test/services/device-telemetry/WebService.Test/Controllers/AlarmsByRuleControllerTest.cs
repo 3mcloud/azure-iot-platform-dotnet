@@ -66,7 +66,7 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Test.Controllers
 
             Alarms alarmService = new Alarms(config, this.storage, new Mock<ILogger<Alarms>>().Object, this.httpContextAccessor.Object, this.appConfigHelper.Object);
             Rules rulesService = new Rules(storageAdapterClient.Object, this.asaManager.Object, new Mock<ILogger<Rules>>().Object, alarmService, new Mock<IDiagnosticsClient>().Object);
-            this.controller = new AlarmsByRuleController(alarmService, rulesService, this.logger.Object);
+            this.controller = new AlarmsByRuleController(alarmService, rulesService, this.logger.Object, config);
         }
 
         // Ignoring test. Updating .net core and xunit version wants this class to be public. However, this test fails when the class is made public.

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Mmm.Iot.Common.Services.Config;
 using Mmm.Iot.Common.Services.Exceptions;
 using Mmm.Iot.Common.Services.Filters;
 using Mmm.Iot.Common.Services.Models;
@@ -21,19 +22,22 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
     [TypeFilter(typeof(ExceptionsFilterAttribute))]
     public class AlarmsByRuleController : Controller
     {
-        private const int DeviceLimit = 1000;
         private readonly IAlarms alarmService;
         private readonly IRules ruleService;
         private readonly ILogger logger;
+        private readonly AppConfig appConfig;
+        private int deviceLimit = 1000;
 
         public AlarmsByRuleController(
             IAlarms alarmService,
             IRules ruleService,
-            ILogger<AlarmsByRuleController> logger)
+            ILogger<AlarmsByRuleController> logger,
+            AppConfig appConfig)
         {
             this.alarmService = alarmService;
             this.ruleService = ruleService;
             this.logger = logger;
+            this.appConfig = appConfig;
         }
 
         [HttpGet]
@@ -143,11 +147,21 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
              * limit for the IN clause.
              */
 
-            // if (deviceIds.Length > DeviceLimit)
-            // {
-            //     this.logger.LogWarning("The client requested too many devices {count}", deviceIds.Length);
-            //     throw new BadRequestException("The number of devices cannot exceed " + DeviceLimit);
-            // }
+            try
+            {
+                this.deviceLimit = this.appConfig.Global.Limits.FileUploadLimit;
+            }
+            catch
+            {
+                this.deviceLimit = 1000;
+            }
+
+            if (!this.appConfig.Global.Limits.ProcessIOTHubBeyondLimit && deviceIds.Length > this.deviceLimit)
+            {
+                this.logger.LogWarning("The client requested too many devices {count}", deviceIds.Length);
+                throw new BadRequestException("The number of devices cannot exceed " + this.deviceLimit);
+            }
+
             List<AlarmCountByRule> alarmsList
                 = await this.ruleService.GetAlarmCountForListAsync(
                     fromDate,
