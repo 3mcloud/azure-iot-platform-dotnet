@@ -3,19 +3,16 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using Azure.Storage.Queues.Models;
 using Microsoft.Extensions.Hosting;
-
 using Mmm.Iot.Common.Services.Config;
-using Mmm.Iot.Common.Services.External.AppConfiguration;
 using Mmm.Iot.Common.Services.External.StorageAdapter;
-using Mmm.Iot.Common.Services.External.TableStorage;
 using Mmm.Iot.IoTHubManager.Services.Models;
 
 using Newtonsoft.Json;
@@ -99,7 +96,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Tasks
                     {
                         // Receive and process 20 messages
                         QueueMessage[] receivedMessages = devicesChunk;
-                        foreach (QueueMessage message in receivedMessages)
+                        var tasks = receivedMessages.Select(async message =>
                         {
                             byte[] data = Convert.FromBase64String(message.MessageText);
                             string decodedString = Encoding.UTF8.GetString(data);
@@ -108,7 +105,8 @@ namespace Mmm.Iot.IoTHubManager.Services.Tasks
 
                             // Delete the message
                             queueClient.DeleteMessage(message.MessageId, message.PopReceipt);
-                        }
+                        });
+                        await Task.WhenAll(tasks);
 
                         devicesChunk = queueClient.ReceiveMessages(20, TimeSpan.FromMinutes(5));
                     }
