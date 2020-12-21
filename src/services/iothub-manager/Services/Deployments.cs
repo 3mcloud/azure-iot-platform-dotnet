@@ -931,7 +931,7 @@ namespace Mmm.Iot.IoTHubManager.Services
 
         private async Task StoreDevicePropertiesInStorage(List<TwinServiceModel> deviceTwins, string deploymentId, string tenantId)
         {
-            if (deviceTwins != null)
+            if (deviceTwins != null && deviceTwins.Count > 0)
             {
                 string connectionString = this.config.Global.StorageAccountConnectionString;
 
