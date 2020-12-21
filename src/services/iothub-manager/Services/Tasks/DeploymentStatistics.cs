@@ -82,13 +82,13 @@ namespace Mmm.Iot.IoTHubManager.Services.Tasks
 
         protected async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            // Get the connection string from app settings
+            string connectionString = this.config.Global.StorageAccountConnectionString;
+
+            // Instantiate a QueueClient which will be used to manipulate the queue
+            QueueClient queueClient = new QueueClient(connectionString, "devicetwins");
             while (!stoppingToken.IsCancellationRequested)
             {
-                // Get the connection string from app settings
-                string connectionString = this.config.Global.StorageAccountConnectionString;
-
-                // Instantiate a QueueClient which will be used to manipulate the queue
-                QueueClient queueClient = new QueueClient(connectionString, "devicetwins");
                 if (queueClient.Exists())
                 {
                     var devicesChunk = queueClient.ReceiveMessages(20, TimeSpan.FromMinutes(5));
@@ -112,7 +112,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Tasks
                     }
                 }
 
-                await Task.Delay(2000, stoppingToken);
+                await Task.Delay(600000, stoppingToken);
             }
         }
 
