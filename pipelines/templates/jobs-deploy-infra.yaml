@@ -345,6 +345,17 @@ jobs:
                 Get-AzTableRow -Table $cloudTable | Format-Table
               }
             }
+            else{
+              $cloudTable = (Get-AzStorageTable -Name $(tableStorageName) -Context $storageAccountContext).CloudTable
+              Install-Module -Name AzTable -Force
+              '${{parameters.sysAdmins}}' | ConvertFrom-Json -Depth 100 | Write-Output | ForEach-Object {
+                $userPresent= Get-AzTableRow -table $cloudTable –partitionKey $_.UserId | ft
+                if(!$userPresent){
+                  Add-AzTableRow -Table $cloudTable -PartitionKey $_.UserId -RowKey $_.UserId -Property @{ "Name" = $_.Name }
+                  Get-AzTableRow -Table $cloudTable | Format-Table
+                }
+              }
+            }
 
   - job: eventHub
     displayName: Provision Event Hub
@@ -688,6 +699,7 @@ jobs:
             az appconfig kv set --key Global:CosmosDb:AccountName                 --value $(cosmosDbAccountName) --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:EventHub:Name                        --value $(eventHubName) --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:EventHub:RootKey                     --value $(az eventhubs namespace authorization-rule keys list --resource-group $(resourceGroupName) --namespace-name $(eventHubName) --name RootManageSharedAccessKey --query primaryKey --output tsv) --name $(appConfigurationName) --yes
+            az appconfig kv set --key Global:InviteFromEmail                      --value $(inviteEmail) --name $(appConfigurationName) --yes
             az appconfig kv set --key TenantManagerService:EventHubNamespaceName  --value $(eventHubName) --name $(appConfigurationName) --yes
             az appconfig kv set --key TenantManagerService:AutomationAccountName  --value $(automationName) --name $(appConfigurationName) --yes
 
@@ -1216,7 +1228,7 @@ jobs:
           scriptType: bash
           inlineScript: |-
             helm version
-            helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+            helm repo add stable https://charts.helm.sh/stable
             helm repo update
             n=0
             until [ $n -ge 5 ]

@@ -27,6 +27,9 @@ export class DeviceGroupDropdown extends Component {
         // Don't try to update the device group if the device id doesn't exist
         if (deviceGroupIds.indexOf(value) > -1) {
             this.props.changeDeviceGroup(value);
+            if (this.props.updateLoadMore) {
+                this.props.updateLoadMore();
+            }
         }
         this.props.logEvent(toDiagnosticsModel("DeviceFilter_Select", {}));
     };
@@ -68,7 +71,7 @@ export class DeviceGroupDropdown extends Component {
             }));
 
     render() {
-        const { deviceGroups } = this.props,
+        const { deviceGroups, deviceStatistics } = this.props,
             deviceGroupIds = deviceGroups.map(({ id }) => id);
         let activeDeviceGroupId = this.props.activeDeviceGroupId;
         if (deviceGroups && this.state.deviceGroupIdFromUrl) {
@@ -100,6 +103,21 @@ export class DeviceGroupDropdown extends Component {
                 <Btn svg={svgs.copyLink} onClick={this.openModal("copy-link")}>
                     Get Link
                 </Btn>
+                <div>
+                    <label className="devices-loaded-label">
+                        Devices Loaded
+                    </label>
+                    <p className="devices-loaded-value">
+                        {" "}
+                        {deviceStatistics
+                            ? deviceStatistics.loadedDeviceCount
+                            : undefined}
+                        /{" "}
+                        {deviceStatistics
+                            ? deviceStatistics.totalDeviceCount
+                            : undefined}
+                    </p>
+                </div>
                 {this.getOpenModal()}
             </ComponentArray>
         );

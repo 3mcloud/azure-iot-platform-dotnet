@@ -42,6 +42,13 @@ namespace Mmm.Iot.IoTHubManager.WebService.Controllers
             return new DeviceListApiModel(await this.devices.GetListAsync(query, continuationToken));
         }
 
+        [HttpGet("statistics")]
+        [Authorize("ReadAll")]
+        public async Task<DeviceStatisticsApiModel> GetDevicesStatisticsAsync([FromQuery] string query)
+        {
+            return new DeviceStatisticsApiModel(await this.devices.GetDeviceStatisticsAsync(query));
+        }
+
         [HttpPost("query")]
         [Authorize("ReadAll")]
         public async Task<DeviceListApiModel> QueryDevicesAsync([FromBody] string query)

@@ -13,6 +13,7 @@ export class ResetActiveDeviceQueryBtn extends Component {
         );
         this.props.resetActiveDeviceQueryConditions();
         this.props.fetchDevices();
+        this.props.fetchDeviceStatistics();
     };
 
     render() {

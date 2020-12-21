@@ -5,10 +5,12 @@ import { withNamespaces } from "react-i18next";
 import { Devices } from "./devices";
 import {
     epics as devicesEpics,
+    redux as devicesRedux,
     getDevices,
     getDevicesError,
     getDevicesLastUpdated,
     getDevicesPendingStatus,
+    getLoadMoreToggleState,
 } from "store/reducers/devicesReducer";
 import {
     redux as appRedux,
@@ -27,14 +29,19 @@ const mapStateToProps = (state) => ({
         deviceGroupError: getDeviceGroupError(state),
         lastUpdated: getDevicesLastUpdated(state),
         activeDeviceQueryConditions: getActiveDeviceQueryConditions(state),
+        loadMoreState: getLoadMoreToggleState(state),
     }),
     // Wrap the dispatch method
     mapDispatchToProps = (dispatch) => ({
         fetchDevices: () => dispatch(devicesEpics.actions.fetchDevices()),
+        fetchDevicesByCToken: () =>
+            dispatch(devicesEpics.actions.fetchDevicesByCToken()),
         updateCurrentWindow: (currentWindow) =>
             dispatch(appRedux.actions.updateCurrentWindow(currentWindow)),
         logEvent: (diagnosticsModel) =>
             dispatch(appEpics.actions.logEvent(diagnosticsModel)),
+        cancelDeviceCalls: (payload) =>
+            dispatch(devicesRedux.actions.cancelDeviceCalls(payload)),
     });
 
 export const DevicesContainer = withNamespaces()(

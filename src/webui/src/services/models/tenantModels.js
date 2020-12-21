@@ -4,6 +4,7 @@ export const toTenantModel = (response = { Models: [] }) =>
             id: model.tenantId,
             displayName: model.tenantName,
             role: model.roles,
+            iotHubName: model.iotHubName,
         };
     });
 

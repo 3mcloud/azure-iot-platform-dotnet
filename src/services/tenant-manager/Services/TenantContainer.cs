@@ -132,6 +132,24 @@ namespace Mmm.Iot.TenantManager.Services
                 }
             }
 
+            // Add all the system admins as admin users to this system
+            try
+            {
+                IdentityGatewayApiListModel systemAdmins = await this.identityGatewayClient.GetAllSystemAdminsAsync();
+
+                foreach (var systemAdmin in systemAdmins.Models)
+                {
+                    if (systemAdmin.UserId != userId)
+                    {
+                        await this.identityGatewayClient.AddTenantForUserAsync(systemAdmin.UserId, tenantId, CreatedRole, systemAdmin.Name);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not insert system admins as users.", e);
+            }
+
             // Write tenant info cosmos db collection name to app config
             try
             {
@@ -388,7 +406,9 @@ namespace Mmm.Iot.TenantManager.Services
 
                 foreach (var userTenant in userTenants.Models)
                 {
-                    userTenant.TenantName = await this.GetTenantNameAsync(userTenant.TenantId);
+                    var tenantResponse = await this.GetTenantNameAsync(userTenant.TenantId);
+                    userTenant.TenantName = tenantResponse != null && !string.IsNullOrWhiteSpace(tenantResponse.TenantName) ? tenantResponse.TenantName : $"tenant#{tenantResponse.TenantId.Substring(0, 5)}";
+                    userTenant.IotHubName = tenantResponse != null && !string.IsNullOrWhiteSpace(tenantResponse.IotHubName) ? tenantResponse.IotHubName : string.Empty;
                 }
 
                 return userTenants;
@@ -399,13 +419,12 @@ namespace Mmm.Iot.TenantManager.Services
             }
         }
 
-        public async Task<string> GetTenantNameAsync(string tenantId)
+        public async Task<TenantModel> GetTenantNameAsync(string tenantId)
         {
             try
             {
                 TenantModel tenant = await this.GetTenantAsync(tenantId);
-
-                return tenant != null && !string.IsNullOrWhiteSpace(tenant.TenantName) ? tenant.TenantName : $"tenant#{tenant.TenantId.Substring(0, 5)}";
+                return tenant;
             }
             catch (Exception e)
             {

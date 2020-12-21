@@ -11,3 +11,17 @@
     .status { color: themed('colorContentText'); }
   }
 }
+
+.search-left-div{
+  width: 50%; 
+  height: 10%; 
+  float: left;
+}
+
+.cancel-right-div{
+  display: flex;
+  justify-content: flex-end;
+  margin-left: 50%; 
+  height: 10%;
+  margin-top: 1.5%;
+}
