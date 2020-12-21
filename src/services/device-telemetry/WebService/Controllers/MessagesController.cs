@@ -106,16 +106,19 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
             // TODO: move this logic to the storage engine, depending on the
             // storage type the limit will be different. DEVICE_LIMIT is CosmosDb
             // limit for the IN clause.
+            bool processIOTHubBeyondLimit = false;
             try
             {
-                this.deviceLimit = this.config.Global.Limits.FileUploadLimit;
+                this.deviceLimit = this.config.Global.Limits.MaximumDeviceCount;
+                processIOTHubBeyondLimit = this.config.Global.Limits.ProcessIOTHubBeyondLimit;
             }
             catch
             {
                 this.deviceLimit = 1000;
+                processIOTHubBeyondLimit = false;
             }
 
-            if (!this.config.Global.Limits.ProcessIOTHubBeyondLimit && deviceIds.Length > this.deviceLimit)
+            if (!processIOTHubBeyondLimit && deviceIds.Length > this.deviceLimit)
             {
                 this.logger.LogWarning("The client requested too many devices {count}", deviceIds.Length);
                 throw new BadRequestException("The number of devices cannot exceed " + this.deviceLimit);

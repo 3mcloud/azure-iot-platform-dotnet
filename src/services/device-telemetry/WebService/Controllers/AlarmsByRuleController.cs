@@ -147,16 +147,19 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
              * limit for the IN clause.
              */
 
+            bool processIOTHubBeyondLimit = false;
             try
             {
-                this.deviceLimit = this.appConfig.Global.Limits.FileUploadLimit;
+                this.deviceLimit = this.appConfig.Global.Limits.MaximumDeviceCount;
+                processIOTHubBeyondLimit = this.appConfig.Global.Limits.ProcessIOTHubBeyondLimit;
             }
             catch
             {
                 this.deviceLimit = 1000;
+                processIOTHubBeyondLimit = false;
             }
 
-            if (!this.appConfig.Global.Limits.ProcessIOTHubBeyondLimit && deviceIds.Length > this.deviceLimit)
+            if (!processIOTHubBeyondLimit && deviceIds.Length > this.deviceLimit)
             {
                 this.logger.LogWarning("The client requested too many devices {count}", deviceIds.Length);
                 throw new BadRequestException("The number of devices cannot exceed " + this.deviceLimit);
