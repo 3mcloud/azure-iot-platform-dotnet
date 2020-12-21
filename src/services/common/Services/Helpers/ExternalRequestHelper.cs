@@ -104,9 +104,12 @@ namespace Mmm.Iot.Common.Services.Helpers
 
             request.AddHeader(TenantHeader, tenantId);
 
-            foreach (string item in headers.AllKeys)
+            if (headers != null)
             {
-                request.AddHeader(item, headers[item]);
+                foreach (string item in headers.AllKeys)
+                {
+                    request.AddHeader(item, headers[item]);
+                }
             }
 
             if (url.ToLowerInvariant().StartsWith("https:"))

@@ -105,36 +105,27 @@ namespace Mmm.Iot.AsaManager.Services
                 try
                 {
                     string cToken = string.Empty;
+                    List<DeviceModel> completeDevicesList = new List<DeviceModel>();
 
-                    // DeviceListModel devicesList = await this.iotHubManager.GetListAsync(deviceGroup.Conditions, tenantId);
-
-                    // cToken = devicesList.ContinuationToken;
-
-                    // if (devicesList.Items.Count() > 0)
-                    // {
-                    //    deviceMapping.Add(deviceGroup, devicesList);
-                    // }
-
-                    // while (!string.IsNullOrEmpty(cToken))
-                    // {
-                    //    DeviceListModel devicesListCToken = await this.iotHubManager.GetListAsync(deviceGroup.Conditions, tenantId, cToken);
-                    //    if (devicesListCToken.Items.Count() > 0)
-                    //    {
-                    //        deviceMapping.Add(deviceGroup, devicesListCToken);
-                    //    }
-                    //    cToken = devicesListCToken.ContinuationToken;
-                    // }
                     do
                     {
                         DeviceListModel devicesList = await this.iotHubManager.GetListAsync(deviceGroup.Conditions, tenantId, cToken);
                         if (devicesList.Items.Count() > 0)
                         {
-                            deviceMapping.Add(deviceGroup, devicesList);
+                            completeDevicesList.AddRange(devicesList.Items);
                         }
 
                         cToken = devicesList.ContinuationToken;
                     }
                     while (!string.IsNullOrEmpty(cToken));
+
+                    if (completeDevicesList.Count > 0)
+                    {
+                        deviceMapping.Add(deviceGroup, new DeviceListModel()
+                        {
+                        Items = completeDevicesList,
+                        });
+                    }
                 }
                 catch (Exception e)
                 {
