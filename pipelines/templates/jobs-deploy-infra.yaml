@@ -679,6 +679,8 @@ jobs:
             fi
 
             az appconfig kv set --key Global:KeyVault:Name                        --value $(keyVaultName) --name $(appConfigurationName) --yes
+            az appconfig kv set --key Global:Limits:MaximumDeviceCount            --value $(maxDeviceCount) --name $(appConfigurationName) --yes
+            az appconfig kv set --key Global:Limits:ProcessIOTHubBeyondLimit      --value $(processIOTHubBeyondLimit) --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:ClientAuth:Jwt:AadAppId              --value $servicePrincipalId --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:AzureActiveDirectory:AppId           --value $servicePrincipalId --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:AzureActiveDirectory:AppSecret       --value $servicePrincipalKey --name $(appConfigurationName) --yes
