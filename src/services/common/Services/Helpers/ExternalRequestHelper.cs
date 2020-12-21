@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -20,6 +21,7 @@ namespace Mmm.Iot.Common.Services.Helpers
     {
         private const string TenantHeader = "ApplicationTenantID";
         private const string AzdsRouteKey = "azds-route-as";
+        private const string CTokenHeader = "x-ms-continuation";
 
         private readonly IHttpClient httpClient;
         private readonly IHttpContextAccessor httpContextAccessor;
@@ -35,21 +37,21 @@ namespace Mmm.Iot.Common.Services.Helpers
             return await this.ProcessRequestAsync<StatusServiceModel>(HttpMethod.Get, $"{uri}/status");
         }
 
-        public async Task<T> ProcessRequestAsync<T>(HttpMethod method, string url, string tenantId = null)
+        public async Task<T> ProcessRequestAsync<T>(HttpMethod method, string url, string tenantId = null, NameValueCollection headers = null)
         {
-            IHttpRequest request = this.CreateRequest(url, tenantId);
+            IHttpRequest request = this.CreateRequest(url, tenantId, headers);
             return await this.SendRequestAsync<T>(method, request);
         }
 
-        public async Task<T> ProcessRequestAsync<T>(HttpMethod method, string url, T content, string tenantId = null)
+        public async Task<T> ProcessRequestAsync<T>(HttpMethod method, string url, T content, string tenantId = null, NameValueCollection headers = null)
         {
             IHttpRequest request = this.CreateRequest(url, content, tenantId);
             return await this.SendRequestAsync<T>(method, request);
         }
 
-        public async Task<IHttpResponse> ProcessRequestAsync(HttpMethod method, string url, string tenantId = null)
+        public async Task<IHttpResponse> ProcessRequestAsync(HttpMethod method, string url, string tenantId = null, NameValueCollection headers = null)
         {
-            IHttpRequest request = this.CreateRequest(url, tenantId);
+            IHttpRequest request = this.CreateRequest(url, tenantId, headers);
             return await this.SendRequestAsync(method, request);
         }
 
@@ -83,7 +85,7 @@ namespace Mmm.Iot.Common.Services.Helpers
             return response;
         }
 
-        private IHttpRequest CreateRequest(string url, string tenantId = null)
+        private IHttpRequest CreateRequest(string url, string tenantId = null, NameValueCollection headers = null)
         {
             var request = new HttpRequest();
             request.SetUriFromString(url);
@@ -101,6 +103,11 @@ namespace Mmm.Iot.Common.Services.Helpers
             }
 
             request.AddHeader(TenantHeader, tenantId);
+
+            foreach (string item in headers.AllKeys)
+            {
+                request.AddHeader(item, headers[item]);
+            }
 
             if (url.ToLowerInvariant().StartsWith("https:"))
             {
@@ -123,9 +130,9 @@ namespace Mmm.Iot.Common.Services.Helpers
             return request;
         }
 
-        private IHttpRequest CreateRequest<T>(string url, T content, string tenantId)
+        private IHttpRequest CreateRequest<T>(string url, T content, string tenantId, NameValueCollection headers = null)
         {
-            IHttpRequest request = this.CreateRequest(url, tenantId);
+            IHttpRequest request = this.CreateRequest(url, tenantId, headers);
             request.SetContent(content);
             return request;
         }
