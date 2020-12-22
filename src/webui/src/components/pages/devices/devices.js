@@ -43,7 +43,7 @@ export class Devices extends Component {
             contextBtns: null,
             selectedDeviceGroupId: undefined,
             loadMore: props.loadMoreState,
-            isDeviceSearch: false
+            isDeviceSearch: false,
         };
 
         this.props.updateCurrentWindow("Devices");
@@ -58,15 +58,14 @@ export class Devices extends Component {
             });
         }
 
-        if (this.props && this.props.location.pathname === '/deviceSearch') {
+        if (this.props && this.props.location.pathname === "/deviceSearch") {
             this.setState({
                 isDeviceSearch: true,
-            })
-        }
-        else {
+            });
+        } else {
             this.setState({
                 isDeviceSearch: false,
-            }) 
+            });
         }
 
         IdentityGatewayService.VerifyAndRefreshCache();
@@ -163,20 +162,23 @@ export class Devices extends Component {
 
         let children = [];
 
-        if(!isDeviceSearch){
+        if (!isDeviceSearch) {
             children.push([
-               <DeviceGroupDropdown
-                   updateLoadMore={this.updateLoadMoreOnDeviceGroupChange}
-                   deviceGroupIdFromUrl={this.state.selectedDeviceGroupId}
-               />,
-               <Protected permission={permissions.updateDeviceGroups}>
-                   <ManageDeviceGroupsBtn />
-               </Protected>,
-               <CreateDeviceQueryBtn />,
-           ]);
+                <DeviceGroupDropdown
+                    updateLoadMore={this.updateLoadMoreOnDeviceGroupChange}
+                    deviceGroupIdFromUrl={this.state.selectedDeviceGroupId}
+                />,
+                <Protected permission={permissions.updateDeviceGroups}>
+                    <ManageDeviceGroupsBtn />
+                </Protected>,
+                <CreateDeviceQueryBtn />,
+            ]);
         }
 
-        if (!isDeviceSearch && this.props.activeDeviceQueryConditions.length !== 0) {
+        if (
+            !isDeviceSearch &&
+            this.props.activeDeviceQueryConditions.length !== 0
+        ) {
             children.push(<ResetActiveDeviceQueryBtn />);
         }
 
@@ -226,14 +228,14 @@ export class Devices extends Component {
 
     render() {
         const {
-            t,
-            devices,
-            deviceGroupError,
-            deviceError,
-            isPending,
-            lastUpdated,
-            routeProps,
-        } = this.props,
+                t,
+                devices,
+                deviceGroupError,
+                deviceError,
+                isPending,
+                lastUpdated,
+                routeProps,
+            } = this.props,
             gridProps = {
                 onGridReady: this.onGridReady,
                 rowData: isPending ? undefined : devices || [],
@@ -250,12 +252,14 @@ export class Devices extends Component {
                 <ContextMenuAgile
                     farChildren={[
                         <Protected permission={permissions.createDevices}>
-                            <Btn
-                                svg={svgs.plus}
-                                onClick={this.openNewDeviceFlyout}
-                            >
-                                {t("devices.flyouts.new.contextMenuName")}
-                            </Btn>
+                            {!this.state.isDeviceSearch && (
+                                <Btn
+                                    svg={svgs.plus}
+                                    onClick={this.openNewDeviceFlyout}
+                                >
+                                    {t("devices.flyouts.new.contextMenuName")}
+                                </Btn>
+                            )}
                         </Protected>,
                         <RefreshBar
                             refresh={this.refreshDevices}
@@ -279,20 +283,22 @@ export class Devices extends Component {
                         />
                     </div>
                     <div className="cancel-right-div">
-                        <Toggle
-                            attr={{
-                                button: {
-                                    "aria-label": t("devices.loadMore"),
-                                    type: "button",
-                                },
-                            }}
-                            on={this.state.loadMore}
-                            onLabel={t("devices.loadMore")}
-                            offLabel={t("devices.loadMore")}
-                            onChange={this.switchLoadMore}
-                        />
+                        {!this.state.isDeviceSearch && (
+                            <Toggle
+                                attr={{
+                                    button: {
+                                        "aria-label": t("devices.loadMore"),
+                                        type: "button",
+                                    },
+                                }}
+                                on={this.state.loadMore}
+                                onLabel={t("devices.loadMore")}
+                                offLabel={t("devices.loadMore")}
+                                onChange={this.switchLoadMore}
+                            />
+                        )}
                     </div>
-                    <AdvanceSearchContainer />
+                    {this.state.isDeviceSearch && <AdvanceSearchContainer />}
                     {!error && (
                         <DevicesGridContainer
                             {...gridProps}
