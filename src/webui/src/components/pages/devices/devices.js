@@ -43,6 +43,7 @@ export class Devices extends Component {
             contextBtns: null,
             selectedDeviceGroupId: undefined,
             loadMore: props.loadMoreState,
+            isDeviceSearch: false
         };
 
         this.props.updateCurrentWindow("Devices");
@@ -56,6 +57,18 @@ export class Devices extends Component {
                 ),
             });
         }
+
+        if (this.props && this.props.location.pathname === '/deviceSearch') {
+            this.setState({
+                isDeviceSearch: true,
+            })
+        }
+        else {
+            this.setState({
+                isDeviceSearch: false,
+            }) 
+        }
+
         IdentityGatewayService.VerifyAndRefreshCache();
     }
 
@@ -146,19 +159,24 @@ export class Devices extends Component {
 
     priorityChildren = () => {
         const { t } = this.props;
+        const { isDeviceSearch } = this.state;
 
-        let children = [
-            <DeviceGroupDropdown
-                updateLoadMore={this.updateLoadMoreOnDeviceGroupChange}
-                deviceGroupIdFromUrl={this.state.selectedDeviceGroupId}
-            />,
-            <Protected permission={permissions.updateDeviceGroups}>
-                <ManageDeviceGroupsBtn />
-            </Protected>,
-            <CreateDeviceQueryBtn />,
-        ];
+        let children = [];
 
-        if (this.props.activeDeviceQueryConditions.length !== 0) {
+        if(!isDeviceSearch){
+            children.push([
+               <DeviceGroupDropdown
+                   updateLoadMore={this.updateLoadMoreOnDeviceGroupChange}
+                   deviceGroupIdFromUrl={this.state.selectedDeviceGroupId}
+               />,
+               <Protected permission={permissions.updateDeviceGroups}>
+                   <ManageDeviceGroupsBtn />
+               </Protected>,
+               <CreateDeviceQueryBtn />,
+           ]);
+        }
+
+        if (!isDeviceSearch && this.props.activeDeviceQueryConditions.length !== 0) {
             children.push(<ResetActiveDeviceQueryBtn />);
         }
 
@@ -208,14 +226,14 @@ export class Devices extends Component {
 
     render() {
         const {
-                t,
-                devices,
-                deviceGroupError,
-                deviceError,
-                isPending,
-                lastUpdated,
-                routeProps,
-            } = this.props,
+            t,
+            devices,
+            deviceGroupError,
+            deviceError,
+            isPending,
+            lastUpdated,
+            routeProps,
+        } = this.props,
             gridProps = {
                 onGridReady: this.onGridReady,
                 rowData: isPending ? undefined : devices || [],
