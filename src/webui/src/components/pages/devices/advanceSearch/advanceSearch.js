@@ -212,15 +212,18 @@ export class AdvanceSearch extends LinkedComponent {
 
         return (
             <form onSubmit={this.apply}>
+                <div>
+                    <h1>Advance Search</h1>
+                </div>
                 <div className="manage-filters-container">
                     <Grid>
                         {conditionLinks.length > 0 && (
                             <Row>
                                 <Cell className="col-1"></Cell>
                                 <Cell className="col-1"></Cell>
-                                <Cell className="col-3">Field</Cell>                                
+                                <Cell className="col-3">Field</Cell>
                                 <Cell className="col-1"></Cell>
-                                <Cell className="col-2">Operator</Cell>                             
+                                <Cell className="col-2">Operator</Cell>
                                 <Cell className="col-1"></Cell>
                                 <Cell className="col-3">Value</Cell>
                             </Row>
@@ -297,26 +300,28 @@ export class AdvanceSearch extends LinkedComponent {
                     >
                         Add a condition
                     </Btn>
-                    <BtnToolbar>
-                        <Btn
-                            primary
-                            disabled={
-                                !this.formIsValid() ||
-                                conditionHasErrors ||
-                                this.state.isPending
-                            }
-                            type="submit"
-                        >
-                            Query
-                        </Btn>
-                        <Btn
-                            disabled={this.state.isPending}
-                            svg={svgs.cancelX}
-                            onClick={this.onReset}
-                        >
-                            Reset
-                        </Btn>
-                    </BtnToolbar>
+                    <div className="cancel-right-div">
+                        <BtnToolbar>
+                            <Btn
+                                primary
+                                disabled={
+                                    !this.formIsValid() ||
+                                    conditionHasErrors ||
+                                    this.state.isPending
+                                }
+                                type="submit"
+                            >
+                                Query
+                            </Btn>
+                            <Btn
+                                disabled={this.state.isPending}
+                                svg={svgs.cancelX}
+                                onClick={this.onReset}
+                            >
+                                Reset
+                            </Btn>
+                        </BtnToolbar>
+                    </div>
                     {this.state.error && (
                         <AjaxError t={t} error={this.state.error} />
                     )}
