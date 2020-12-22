@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Mmm.Iot.AsaManager.Services;
@@ -63,7 +64,7 @@ namespace Mmm.Iot.AsaManager.Services.Test
                     It.Is<HttpMethod>(m => m == HttpMethod.Get),
                     It.Is<string>(url => url.Contains(MockApiUrl)),
                     It.Is<string>(s => s == tenantId),
-                    null))
+                    It.IsAny<NameValueCollection>()))
                 .ReturnsAsync(deviceListModel);
 
             DeviceListModel response = await this.client.GetListAsync(conditions, tenantId);
@@ -74,7 +75,7 @@ namespace Mmm.Iot.AsaManager.Services.Test
                         It.Is<HttpMethod>(m => m == HttpMethod.Get),
                         It.Is<string>(url => url.Contains(MockApiUrl)),
                         It.Is<string>(s => s == tenantId),
-                        null),
+                        It.IsAny<NameValueCollection>()),
                     Times.Once);
 
             Assert.Equal(deviceListModel, response);
