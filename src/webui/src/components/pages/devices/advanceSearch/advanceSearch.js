@@ -21,12 +21,10 @@ import "./advanceSearch.scss";
 let conditionKey = 0;
 
 const operators = ["EQ", "GT", "LT", "GE", "LE", "LK"],
-    valueTypes = ["Number", "Text"],
     // Creates a state object for a condition
     newCondition = () => ({
         field: undefined,
         operator: undefined,
-        type: undefined,
         value: "",
         key: conditionKey++, // Used by react to track the rendered elements
     }),
@@ -36,11 +34,6 @@ const operators = ["EQ", "GT", "LT", "GE", "LE", "LK"],
                 field: model.key,
                 operator: model.operator,
                 value: model.value || "",
-                type: model.value
-                    ? isNaN(model.value)
-                        ? "Text"
-                        : "Number"
-                    : undefined,
                 key: conditionKey++,
             };
         });
@@ -68,12 +61,7 @@ export class AdvanceSearch extends LinkedComponent {
     }
 
     conditionIsNew(condition) {
-        return (
-            !condition.field &&
-            !condition.operator &&
-            !condition.type &&
-            !condition.value
-        );
+        return !condition.field && !condition.operator && !condition.value;
     }
 
     formIsValid() {
@@ -196,15 +184,6 @@ export class AdvanceSearch extends LinkedComponent {
                                     "deviceQueryConditions.errorMsg.operatorCantBeEmpty"
                                 )
                             ),
-                        type = conditionLink
-                            .forkTo("type")
-                            .map(({ value }) => value)
-                            .check(
-                                Validator.notEmpty,
-                                t(
-                                    "deviceQueryConditions.errorMsg.typeCantBeEmpty"
-                                )
-                            ),
                         value = conditionLink
                             .forkTo("value")
                             .check(
@@ -212,38 +191,22 @@ export class AdvanceSearch extends LinkedComponent {
                                 t(
                                     "deviceQueryConditions.errorMsg.valueCantBeEmpty"
                                 )
-                            )
-                            .check(
-                                (val) =>
-                                    type.value === "Number"
-                                        ? !isNaN(val)
-                                        : true,
-                                t("deviceQueryConditions.errorMsg.selectedType")
                             ),
                         edited = !(
                             !field.value &&
                             !operator.value &&
-                            !value.value &&
-                            !type.value
+                            !value.value
                         );
                     let error =
-                        (edited &&
-                            (field.error ||
-                                operator.error ||
-                                value.error ||
-                                type.error)) ||
-                        "";
-                    return { field, operator, value, type, edited, error };
+                        edited &&
+                        (field.error || operator.error || value.error || "");
+                    return { field, operator, value, edited, error };
                 }
             ),
             editedConditions = conditionLinks.filter(({ edited }) => edited),
             conditionHasErrors = editedConditions.some(({ error }) => !!error),
             operatorOptions = operators.map((value) => ({
                 label: t(`deviceQueryConditions.operatorOptions.${value}`),
-                value,
-            })),
-            typeOptions = valueTypes.map((value) => ({
-                label: t(`deviceQueryConditions.typeOptions.${value}`),
                 value,
             }));
 
@@ -255,10 +218,11 @@ export class AdvanceSearch extends LinkedComponent {
                             <Row>
                                 <Cell className="col-1"></Cell>
                                 <Cell className="col-1"></Cell>
-                                <Cell className="col-3">Field</Cell>
-                                <Cell className="col-3">Operator</Cell>
-                                <Cell className="col-2">Value</Cell>
-                                <Cell className="col-2">Type</Cell>
+                                <Cell className="col-3">Field</Cell>                                
+                                <Cell className="col-1"></Cell>
+                                <Cell className="col-2">Operator</Cell>                             
+                                <Cell className="col-1"></Cell>
+                                <Cell className="col-3">Value</Cell>
                             </Row>
                         )}
                         {conditionLinks.map((condition, idx) => (
@@ -296,7 +260,8 @@ export class AdvanceSearch extends LinkedComponent {
                                         link={condition.field}
                                     />
                                 </Cell>
-                                <Cell className="col-3">
+                                <Cell className="col-1"></Cell>
+                                <Cell className="col-2">
                                     <FormControl
                                         type="select"
                                         ariaLabel={t(
@@ -312,29 +277,14 @@ export class AdvanceSearch extends LinkedComponent {
                                         link={condition.operator}
                                     />
                                 </Cell>
-                                <Cell className="col-2">
+                                <Cell className="col-1"></Cell>
+                                <Cell className="col-3">
                                     <FormControl
                                         type="text"
                                         placeholder={t(
                                             "deviceQueryConditions.valuePlaceholder"
                                         )}
                                         link={condition.value}
-                                    />
-                                </Cell>
-                                <Cell className="col-2">
-                                    <FormControl
-                                        type="select"
-                                        ariaLabel={t(
-                                            "deviceQueryConditions.type"
-                                        )}
-                                        className="short"
-                                        clearable={false}
-                                        searchable={false}
-                                        options={typeOptions}
-                                        placeholder={t(
-                                            "deviceQueryConditions.typePlaceholder"
-                                        )}
-                                        link={condition.type}
                                     />
                                 </Cell>
                             </Row>

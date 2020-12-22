@@ -272,8 +272,15 @@ export class Devices extends Component {
                     priorityChildren={this.priorityChildren()}
                 />
                 <PageContent className="devices-container">
-                    <PageTitle titleValue={t("devices.title")} />
+                    <PageTitle
+                        titleValue={
+                            !this.state.isDeviceSearch
+                                ? t("devices.title")
+                                : t("devices.deviceSearch")
+                        }
+                    />
                     {!!error && <AjaxError t={t} error={error} />}
+                    {this.state.isDeviceSearch && <AdvanceSearchContainer />}
                     <div className="search-left-div">
                         <SearchInput
                             onChange={this.searchOnChange}
@@ -298,7 +305,6 @@ export class Devices extends Component {
                             />
                         )}
                     </div>
-                    {this.state.isDeviceSearch && <AdvanceSearchContainer />}
                     {!error && (
                         <DevicesGridContainer
                             {...gridProps}

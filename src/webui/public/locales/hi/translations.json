@@ -398,6 +398,7 @@
     "ariaLabel": "खोज उपकरणों",
     "searchPlaceholder": "खोज उपकरणों...",
     "noneFound": "कोई उपकरण नहीं मिला है.",
+    "deviceSearch": "Device Search",
     "refresh": "ताज़ा",
     "grid": {
       "connected": "जुड़ा हुआ है",
