@@ -397,6 +397,7 @@
     "title": "Geräte-Explorer",
     "ariaLabel": "Geräte suchen",
     "searchPlaceholder": "Geräte suchen...",
+    "deviceSearch": "Device Search",
     "noneFound": "Keine Geräte gefunden.",
     "refresh": "Aktualisieren",
     "grid": {

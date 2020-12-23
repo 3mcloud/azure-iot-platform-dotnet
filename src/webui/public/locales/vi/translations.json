@@ -398,6 +398,7 @@
     "ariaLabel": "Tìm kiếm thiết bị",
     "searchPlaceholder": "Tìm kiếm các thiết bị...",
     "noneFound": "Không có thiết bị tìm thấy.",
+    "deviceSearch": "Device Search",
     "refresh": "Làm mới",
     "grid": {
       "connected": "Kết nối",

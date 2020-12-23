@@ -398,6 +398,7 @@
     "ariaLabel": "Búsqueda de dispositivos",
     "searchPlaceholder": "Búsqueda de dispositivos...",
     "noneFound": "No se encuentran los dispositivos.",
+    "deviceSearch": "Device Search",
     "refresh": "Actualización",
     "grid": {
       "connected": "Conectado",

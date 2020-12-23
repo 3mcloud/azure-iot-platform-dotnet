@@ -398,6 +398,7 @@
     "ariaLabel": "Rechercher les appareils",
     "searchPlaceholder": "Rechercher les appareils...",
     "noneFound": "Aucun périphérique trouvé.",
+    "deviceSearch": "Device Search",
     "refresh": "Actualiser",
     "grid": {
       "connected": "Connecté",

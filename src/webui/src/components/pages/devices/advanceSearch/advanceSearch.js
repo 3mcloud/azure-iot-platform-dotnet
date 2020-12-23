@@ -21,12 +21,10 @@ import "./advanceSearch.scss";
 let conditionKey = 0;
 
 const operators = ["EQ", "GT", "LT", "GE", "LE", "LK"],
-    valueTypes = ["Number", "Text"],
     // Creates a state object for a condition
     newCondition = () => ({
         field: undefined,
         operator: undefined,
-        type: undefined,
         value: "",
         key: conditionKey++, // Used by react to track the rendered elements
     });
@@ -48,12 +46,7 @@ export class AdvanceSearch extends LinkedComponent {
     }
 
     conditionIsNew(condition) {
-        return (
-            !condition.field &&
-            !condition.operator &&
-            !condition.type &&
-            !condition.value
-        );
+        return !condition.field && !condition.operator && !condition.value;
     }
 
     formIsValid() {
@@ -171,15 +164,6 @@ export class AdvanceSearch extends LinkedComponent {
                                     "deviceQueryConditions.errorMsg.operatorCantBeEmpty"
                                 )
                             ),
-                        type = conditionLink
-                            .forkTo("type")
-                            .map(({ value }) => value)
-                            .check(
-                                Validator.notEmpty,
-                                t(
-                                    "deviceQueryConditions.errorMsg.typeCantBeEmpty"
-                                )
-                            ),
                         value = conditionLink
                             .forkTo("value")
                             .check(
@@ -187,28 +171,16 @@ export class AdvanceSearch extends LinkedComponent {
                                 t(
                                     "deviceQueryConditions.errorMsg.valueCantBeEmpty"
                                 )
-                            )
-                            .check(
-                                (val) =>
-                                    type.value === "Number"
-                                        ? !isNaN(val)
-                                        : true,
-                                t("deviceQueryConditions.errorMsg.selectedType")
                             ),
                         edited = !(
                             !field.value &&
                             !operator.value &&
-                            !value.value &&
-                            !type.value
+                            !value.value
                         );
                     let error =
-                        (edited &&
-                            (field.error ||
-                                operator.error ||
-                                value.error ||
-                                type.error)) ||
-                        "";
-                    return { field, operator, value, type, edited, error };
+                        edited &&
+                        (field.error || operator.error || value.error || "");
+                    return { field, operator, value, edited, error };
                 }
             ),
             editedConditions = conditionLinks.filter(({ edited }) => edited),
@@ -216,14 +188,13 @@ export class AdvanceSearch extends LinkedComponent {
             operatorOptions = operators.map((value) => ({
                 label: t(`deviceQueryConditions.operatorOptions.${value}`),
                 value,
-            })),
-            typeOptions = valueTypes.map((value) => ({
-                label: t(`deviceQueryConditions.typeOptions.${value}`),
-                value,
             }));
 
         return (
             <form onSubmit={this.apply}>
+                <div>
+                    <h1>Advance Search</h1>
+                </div>
                 <div className="manage-filters-container">
                     <Grid>
                         {conditionLinks.length > 0 && (
@@ -231,9 +202,10 @@ export class AdvanceSearch extends LinkedComponent {
                                 <Cell className="col-1"></Cell>
                                 <Cell className="col-1"></Cell>
                                 <Cell className="col-3">Field</Cell>
-                                <Cell className="col-3">Operator</Cell>
-                                <Cell className="col-2">Value</Cell>
-                                <Cell className="col-2">Type</Cell>
+                                <Cell className="col-1"></Cell>
+                                <Cell className="col-2">Operator</Cell>
+                                <Cell className="col-1"></Cell>
+                                <Cell className="col-3">Value</Cell>
                             </Row>
                         )}
                         {conditionLinks.map((condition, idx) => (
@@ -271,7 +243,8 @@ export class AdvanceSearch extends LinkedComponent {
                                         link={condition.field}
                                     />
                                 </Cell>
-                                <Cell className="col-3">
+                                <Cell className="col-1"></Cell>
+                                <Cell className="col-2">
                                     <FormControl
                                         type="select"
                                         ariaLabel={t(
@@ -287,29 +260,14 @@ export class AdvanceSearch extends LinkedComponent {
                                         link={condition.operator}
                                     />
                                 </Cell>
-                                <Cell className="col-2">
+                                <Cell className="col-1"></Cell>
+                                <Cell className="col-3">
                                     <FormControl
                                         type="text"
                                         placeholder={t(
                                             "deviceQueryConditions.valuePlaceholder"
                                         )}
                                         link={condition.value}
-                                    />
-                                </Cell>
-                                <Cell className="col-2">
-                                    <FormControl
-                                        type="select"
-                                        ariaLabel={t(
-                                            "deviceQueryConditions.type"
-                                        )}
-                                        className="short"
-                                        clearable={false}
-                                        searchable={false}
-                                        options={typeOptions}
-                                        placeholder={t(
-                                            "deviceQueryConditions.typePlaceholder"
-                                        )}
-                                        link={condition.type}
                                     />
                                 </Cell>
                             </Row>
@@ -322,26 +280,28 @@ export class AdvanceSearch extends LinkedComponent {
                     >
                         Add a condition
                     </Btn>
-                    <BtnToolbar>
-                        <Btn
-                            primary
-                            disabled={
-                                !this.formIsValid() ||
-                                conditionHasErrors ||
-                                this.state.isPending
-                            }
-                            type="submit"
-                        >
-                            Query
-                        </Btn>
-                        <Btn
-                            disabled={this.state.isPending}
-                            svg={svgs.cancelX}
-                            onClick={this.onReset}
-                        >
-                            Reset
-                        </Btn>
-                    </BtnToolbar>
+                    <div className="cancel-right-div">
+                        <BtnToolbar>
+                            <Btn
+                                primary
+                                disabled={
+                                    !this.formIsValid() ||
+                                    conditionHasErrors ||
+                                    this.state.isPending
+                                }
+                                type="submit"
+                            >
+                                Query
+                            </Btn>
+                            <Btn
+                                disabled={this.state.isPending}
+                                svg={svgs.cancelX}
+                                onClick={this.onReset}
+                            >
+                                Reset
+                            </Btn>
+                        </BtnToolbar>
+                    </div>
                     {this.state.error && (
                         <AjaxError t={t} error={this.state.error} />
                     )}
