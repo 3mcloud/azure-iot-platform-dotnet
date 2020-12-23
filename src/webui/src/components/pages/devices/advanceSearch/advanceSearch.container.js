@@ -10,14 +10,15 @@ import {
 } from "store/reducers/appReducer";
 
 const mapDispatchToProps = (dispatch) => ({
-        fetchDevicesByCondition: (data) => dispatch(devicesEpics.actions.fetchDevicesByCondition(data)),
-        setActiveDeviceQueryConditions: (queryConditions) =>
-            dispatch(
-                appRedux.actions.setActiveDeviceQueryConditions(queryConditions)
-            ),
-        logEvent: (diagnosticsModel) =>
-            dispatch(appEpics.actions.logEvent(diagnosticsModel)),
-    });
+    fetchDevicesByCondition: (data) =>
+        dispatch(devicesEpics.actions.fetchDevicesByCondition(data)),
+    setActiveDeviceQueryConditions: (queryConditions) =>
+        dispatch(
+            appRedux.actions.setActiveDeviceQueryConditions(queryConditions)
+        ),
+    logEvent: (diagnosticsModel) =>
+        dispatch(appEpics.actions.logEvent(diagnosticsModel)),
+});
 
 export const AdvanceSearchContainer = withNamespaces()(
     connect(null, mapDispatchToProps)(AdvanceSearch)

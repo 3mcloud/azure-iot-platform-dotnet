@@ -128,6 +128,16 @@ class App extends Component {
                     crumbs: [{ to: "/deviceSearch", labelId: "Device Search" }],
                 },
                 {
+                    path: "/deviceSearch/telemetry",
+                    crumbs: [
+                        { to: "/deviceSearch", labelId: "tabs.devices" },
+                        {
+                            to: "/deviceSearch/telemetry",
+                            labelId: "devices.telemetry",
+                        },
+                    ],
+                },
+                {
                     path: "/rules",
                     crumbs: [{ to: "/rules", labelId: "tabs.rules" }],
                 },

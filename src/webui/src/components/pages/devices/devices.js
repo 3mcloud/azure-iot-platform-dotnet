@@ -218,9 +218,7 @@ export class Devices extends Component {
     refreshDevices = () => {
         this.setState({ loadMore: false });
         this.props.cancelDeviceCalls({ makeSubsequentCalls: false });
-        return this.state.isDeviceSearch
-            ? this.props.fetchDevicesByCondition()
-            : this.props.fetchDevices();
+        return this.props.fetchDevices();
     };
 
     updateLoadMoreOnDeviceGroupChange = () => {
@@ -272,13 +270,15 @@ export class Devices extends Component {
                                 </Btn>
                             )}
                         </Protected>,
-                        <RefreshBar
-                            refresh={this.refreshDevices}
-                            time={lastUpdated}
-                            isPending={isPending}
-                            t={t}
-                            isShowIconOnly={true}
-                        />,
+                        !this.state.isDeviceSearch && (
+                            <RefreshBar
+                                refresh={this.refreshDevices}
+                                time={lastUpdated}
+                                isPending={isPending}
+                                t={t}
+                                isShowIconOnly={true}
+                            />
+                        ),
                     ]}
                     priorityChildren={this.priorityChildren()}
                 />

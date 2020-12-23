@@ -22,7 +22,7 @@
         "jwt-decode": "^2.2.0",
         "moment": "^2.22.2",
         "njwt": "^1.0.0",
-        "node-sass": "4.11.0",
+        "node-sass": "^4.11.0",
         "normalizr": "3.3.0",
         "oidc-client": "^1.9.0",
         "prop-types": "15.6.2",
@@ -53,7 +53,7 @@
         "prettier": "2.0.2"
     },
     "scripts": {
-        "start": "./node_modules/.bin/eslint . && react-scripts start",
+        "start": "./node_modules/.bin/eslint . --fix && react-scripts start",
         "build": "GENERATE_SOURCEMAP=false react-scripts build",
         "lint": "./node_modules/.bin/eslint .",
         "test": "react-scripts test",
