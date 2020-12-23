@@ -21,6 +21,7 @@ import {
     getParamByName,
     getFlyoutNameParam,
     getFlyoutLink,
+    getTenantIdParam,
 } from "utilities";
 
 import "./packages.scss";
@@ -44,6 +45,11 @@ export class Packages extends Component {
 
     componentWillMount() {
         if (this.props.location.search) {
+            const tenantId = getTenantIdParam(this.props.location.search);
+            this.props.checkTenantAndSwitch({
+                tenantId: tenantId,
+                redirectUrl: window.location.href,
+            });
             this.setState({
                 selectedDeviceGroupId: getDeviceGroupParam(
                     this.props.location.search
@@ -135,6 +141,7 @@ export class Packages extends Component {
             })
         );
         const flyoutLink = getFlyoutLink(
+            this.props.currentTenantId,
             this.props.deviceGroupId,
             "packageId",
             rowData.id,

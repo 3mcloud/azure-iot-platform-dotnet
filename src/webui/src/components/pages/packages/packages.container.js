@@ -15,6 +15,7 @@ import {
     epics as appEpics,
     getDeviceGroups,
     getActiveDeviceGroupId,
+    getUserCurrentTenant,
 } from "store/reducers/appReducer";
 
 // Pass the packages status
@@ -25,6 +26,7 @@ const mapStateToProps = (state) => ({
         error: getPackagesError(state),
         isPending: getPackagesPendingStatus(state),
         lastUpdated: getPackagesLastUpdated(state),
+        currentTenantId: getUserCurrentTenant(state),
     }),
     // Wrap the dispatch method
     mapDispatchToProps = (dispatch) => ({
@@ -33,6 +35,8 @@ const mapStateToProps = (state) => ({
             dispatch(appRedux.actions.updateCurrentWindow(currentWindow)),
         logEvent: (diagnosticsModel) =>
             dispatch(appEpics.actions.logEvent(diagnosticsModel)),
+        checkTenantAndSwitch: (payload) =>
+            dispatch(appRedux.actions.checkTenantAndSwitch(payload)),
     });
 
 export const PackagesContainer = withNamespaces()(

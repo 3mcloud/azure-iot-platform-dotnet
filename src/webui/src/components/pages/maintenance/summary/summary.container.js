@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Summary } from "./summary";
 import {
     epics as appEpics,
+    redux as appRedux,
     getActiveDeviceQueryConditions,
 } from "store/reducers/appReducer";
 
@@ -14,6 +15,8 @@ const mapStateToProps = (state) => ({
     mapDispatchToProps = (dispatch) => ({
         logEvent: (diagnosticsModel) =>
             dispatch(appEpics.actions.logEvent(diagnosticsModel)),
+        checkTenantAndSwitch: (payload) =>
+            dispatch(appRedux.actions.checkTenantAndSwitch(payload)),
     });
 
 export const SummaryContainer = connect(

@@ -20,6 +20,7 @@ import {
     getActiveDeviceQueryConditions,
     getActiveDeviceGroupId,
     getUser,
+    getUserCurrentTenant,
 } from "store/reducers/appReducer";
 
 // Pass the devices status
@@ -37,6 +38,7 @@ const mapStateToProps = (state) => ({
         activeDeviceQueryConditions: getActiveDeviceQueryConditions(state),
         activeDeviceGroupId: getActiveDeviceGroupId(state),
         userPermissions: getUser(state).permissions,
+        currentTenantId: getUserCurrentTenant(state),
     }),
     // Wrap the dispatch method
     mapDispatchToProps = (dispatch) => ({
@@ -45,6 +47,8 @@ const mapStateToProps = (state) => ({
             dispatch(appRedux.actions.updateCurrentWindow(currentWindow)),
         logEvent: (diagnosticsModel) =>
             dispatch(appEpics.actions.logEvent(diagnosticsModel)),
+        checkTenantAndSwitch: (payload) =>
+            dispatch(appRedux.actions.checkTenantAndSwitch(payload)),
     });
 
 export const RulesContainer = withNamespaces()(
