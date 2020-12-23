@@ -33,7 +33,20 @@ export class DeviceTelemetry extends Component {
             telemetryQueryExceededLimit: false,
             deviceIds: props.location.state.deviceIds,
             lastRefreshed: undefined,
+            isDeviceSearch: false,
         };
+    }
+    
+    componentWillMount() {
+        if (this.props && this.props.location.pathname === "/deviceSearch/telemetry") {
+            this.setState({
+                isDeviceSearch: true,
+            });
+        } else {
+            this.setState({
+                isDeviceSearch: false,
+            });
+        }
     }
 
     componentDidMount() {
@@ -107,7 +120,13 @@ export class DeviceTelemetry extends Component {
     }
 
     navigateToDevices = () => {
-        this.props.history.push("/devices");
+        if(this.state.isDeviceSearch)
+        {            
+            this.props.history.push("/deviceSearch");
+        }
+        else {      
+            this.props.history.push("/devices");
+        }
     };
 
     updateTimeInterval = (timeInterval) => {
