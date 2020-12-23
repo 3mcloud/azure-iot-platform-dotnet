@@ -10,6 +10,9 @@ import {
     getDevicesError,
     getDevicesLastUpdated,
     getDevicesPendingStatus,
+    getDevicesByCondition,
+    getDevicesByConditionError,
+    getDevicesByConditionPendingStatus,
     getLoadMoreToggleState,
 } from "store/reducers/devicesReducer";
 import {
@@ -25,6 +28,9 @@ const mapStateToProps = (state) => ({
         devices: getDevices(state),
         deviceError: getDevicesError(state),
         isPending: getDevicesPendingStatus(state),
+        devicesByCondition: getDevicesByCondition(state),
+        devicesByConditionError: getDevicesByConditionError(state),
+        isDevicesByConditionPanding: getDevicesByConditionPendingStatus(state),
         deviceGroups: getDeviceGroups(state),
         deviceGroupError: getDeviceGroupError(state),
         lastUpdated: getDevicesLastUpdated(state),
@@ -34,6 +40,8 @@ const mapStateToProps = (state) => ({
     // Wrap the dispatch method
     mapDispatchToProps = (dispatch) => ({
         fetchDevices: () => dispatch(devicesEpics.actions.fetchDevices()),
+        fetchDevicesByCondition: () =>
+            dispatch(devicesEpics.actions.fetchDevicesByCondition()),
         fetchDevicesByCToken: () =>
             dispatch(devicesEpics.actions.fetchDevicesByCToken()),
         updateCurrentWindow: (currentWindow) =>

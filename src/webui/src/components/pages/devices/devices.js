@@ -218,7 +218,9 @@ export class Devices extends Component {
     refreshDevices = () => {
         this.setState({ loadMore: false });
         this.props.cancelDeviceCalls({ makeSubsequentCalls: false });
-        return this.props.fetchDevices();
+        return this.state.isDeviceSearch
+            ? this.props.fetchDevicesByCondition()
+            : this.props.fetchDevices();
     };
 
     updateLoadMoreOnDeviceGroupChange = () => {
@@ -233,19 +235,28 @@ export class Devices extends Component {
                 deviceGroupError,
                 deviceError,
                 isPending,
+                devicesByCondition,
+                devicesByConditionError,
+                isDevicesByConditionPanding,
                 lastUpdated,
                 routeProps,
             } = this.props,
+            { isDeviceSearch } = this.state,
+            deviceData = isDeviceSearch ? devicesByCondition : devices,
+            dataError = isDeviceSearch ? devicesByConditionError : deviceError,
+            isDataPending = isDeviceSearch
+                ? isDevicesByConditionPanding
+                : isPending,
             gridProps = {
                 onGridReady: this.onGridReady,
-                rowData: isPending ? undefined : devices || [],
+                rowData: isDataPending ? undefined : deviceData || [],
                 onContextMenuChange: this.onContextMenuChange,
                 t: this.props.t,
             },
             newDeviceFlyoutOpen = this.state.openFlyoutName === "new-device",
             simManagementFlyoutOpen =
                 this.state.openFlyoutName === "sim-management",
-            error = deviceGroupError || deviceError;
+            error = deviceGroupError || dataError;
 
         return (
             <ComponentArray>

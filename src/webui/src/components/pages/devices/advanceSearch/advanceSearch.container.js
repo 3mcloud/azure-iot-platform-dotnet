@@ -7,14 +7,10 @@ import { epics as devicesEpics } from "store/reducers/devicesReducer";
 import {
     redux as appRedux,
     epics as appEpics,
-    getActiveDeviceQueryConditions,
 } from "store/reducers/appReducer";
 
-const mapStateToProps = (state) => ({
-        activeDeviceQueryConditions: getActiveDeviceQueryConditions(state),
-    }),
-    mapDispatchToProps = (dispatch) => ({
-        fetchDevices: () => dispatch(devicesEpics.actions.fetchDevices()),
+const mapDispatchToProps = (dispatch) => ({
+        fetchDevicesByCondition: (data) => dispatch(devicesEpics.actions.fetchDevicesByCondition(data)),
         setActiveDeviceQueryConditions: (queryConditions) =>
             dispatch(
                 appRedux.actions.setActiveDeviceQueryConditions(queryConditions)
@@ -24,5 +20,5 @@ const mapStateToProps = (state) => ({
     });
 
 export const AdvanceSearchContainer = withNamespaces()(
-    connect(mapStateToProps, mapDispatchToProps)(AdvanceSearch)
+    connect(null, mapDispatchToProps)(AdvanceSearch)
 );

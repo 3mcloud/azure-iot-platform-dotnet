@@ -39,8 +39,8 @@ export const epics = createEpicScenario({
         type: "DEVICES_FETCH",
         epic: (fromAction, store) => {
             const rawConditions = getActiveDeviceGroupConditions(
-                    store.getState()
-                ).concat(getActiveDeviceQueryConditions(store.getState())),
+                store.getState()
+            ).concat(getActiveDeviceQueryConditions(store.getState())),
                 conditions = rawConditions.filter((condition) => {
                     return (
                         !!condition.key &&
@@ -75,8 +75,8 @@ export const epics = createEpicScenario({
         epic: (fromAction, store) => {
             if (cToken) {
                 const rawConditions = getActiveDeviceGroupConditions(
-                        store.getState()
-                    ).concat(getActiveDeviceQueryConditions(store.getState())),
+                    store.getState()
+                ).concat(getActiveDeviceQueryConditions(store.getState())),
                     conditions = rawConditions.filter((condition) => {
                         return (
                             !!condition.key &&
@@ -114,6 +114,9 @@ export const epics = createEpicScenario({
         type: "DEVICES_FETCH_BY_CONDITION",
         epic: (fromAction) => {
             return IoTHubManagerService.getDevices(fromAction.payload)
+                .map((response) => {
+                    return response.items;
+                })
                 .map(
                     toActionCreator(
                         redux.actions.updateDevicesByCondition,
@@ -160,8 +163,8 @@ export const epics = createEpicScenario({
         type: "DEVICE_STATISTICS_FETCH",
         epic: (fromAction, store) => {
             const rawConditions = getActiveDeviceGroupConditions(
-                    store.getState()
-                ).concat(getActiveDeviceQueryConditions(store.getState())),
+                store.getState()
+            ).concat(getActiveDeviceQueryConditions(store.getState())),
                 conditions = rawConditions.filter((condition) => {
                     return (
                         !!condition.key &&
@@ -196,6 +199,8 @@ const deviceSchema = new schema.Entity("devices"),
         totalDeviceCount: 0,
         connectedDeviceCount: 0,
         makeCTokenDeviceCalls: false,
+        devicesByConditionEntities: {},
+        devicesByConditionItems: [],
     },
     updateDevicesReducer = (state, { payload, fromAction }) => {
         const {
@@ -219,9 +224,11 @@ const deviceSchema = new schema.Entity("devices"),
     updateDevicesByConditionReducer = (state, { payload, fromAction }) => {
         const {
             entities: { devices },
+            result,
         } = normalize(payload, deviceListSchema);
         return update(state, {
-            devicesByCondition: { $set: devices },
+            devicesByConditionEntities: { $set: devices },
+            devicesByConditionItems: { $set: result },
             ...setPending(fromAction.type, false),
         });
     },
@@ -262,13 +269,13 @@ const deviceSchema = new schema.Entity("devices"),
         );
 
         const updatedDevices = payload.deviceIds.map((id) =>
-                update(state.entities[id], {
-                    tags: {
-                        $merge: updatedTagData,
-                        $unset: payload.deletedTags,
-                    },
-                })
-            ),
+            update(state.entities[id], {
+                tags: {
+                    $merge: updatedTagData,
+                    $unset: payload.deletedTags,
+                },
+            })
+        ),
             {
                 entities: { devices },
             } = normalize(updatedDevices, deviceListSchema);
@@ -293,13 +300,13 @@ const deviceSchema = new schema.Entity("devices"),
         );
 
         const updatedDevices = payload.deviceIds.map((id) =>
-                update(state.entities[id], {
-                    desiredProperties: {
-                        $merge: updatedPropertyData,
-                        $unset: payload.deletedProperties,
-                    },
-                })
-            ),
+            update(state.entities[id], {
+                desiredProperties: {
+                    $merge: updatedPropertyData,
+                    $unset: payload.deletedProperties,
+                },
+            })
+        ),
             {
                 entities: { devices },
             } = normalize(updatedDevices, deviceListSchema);
@@ -366,8 +373,13 @@ export const getDevicesError = (state) =>
     getError(getDevicesReducer(state), epics.actionTypes.fetchDevices);
 export const getDevicesPendingStatus = (state) =>
     getPending(getDevicesReducer(state), epics.actionTypes.fetchDevices);
-export const getDevicesByCondition = (state) =>
-    getDevicesReducer(state).devicesByCondition || {};
+export const getDevicesByConditionEntities = (state) => getDevicesReducer(state).devicesByConditionEntities || {};
+export const getDevicesByConditionItems = (state) => getDevicesReducer(state).devicesByConditionItems || [];
+export const getDevicesByCondition = createSelector(
+    getDevicesByConditionEntities,
+    getDevicesByConditionItems,
+    (entities, items) => items.map((id) => entities[id])
+);
 export const getDevicesByConditionError = (state) =>
     getError(
         getDevicesReducer(state),
@@ -388,9 +400,9 @@ export const getDeviceModuleStatus = (state) => {
     const deviceModuleStatus = getDevicesReducer(state).deviceModuleStatus;
     return deviceModuleStatus
         ? {
-              code: deviceModuleStatus.code,
-              description: deviceModuleStatus.description,
-          }
+            code: deviceModuleStatus.code,
+            description: deviceModuleStatus.description,
+        }
         : undefined;
 };
 export const getDeviceModuleStatusPendingStatus = (state) =>
@@ -401,10 +413,10 @@ export const getDeviceStatistics = (state) => {
     const deviceState = getDevicesReducer(state);
     return deviceState
         ? {
-              totalDeviceCount: deviceState.totalDeviceCount,
-              connectedDeviceCount: deviceState.connectedDeviceCount,
-              loadedDeviceCount: deviceState.items.length,
-          }
+            totalDeviceCount: deviceState.totalDeviceCount,
+            connectedDeviceCount: deviceState.connectedDeviceCount,
+            loadedDeviceCount: deviceState.items.length,
+        }
         : undefined;
 };
 export const getDeviceStatisticsPendingStatus = (state) =>

@@ -29,22 +29,7 @@ const operators = ["EQ", "GT", "LT", "GE", "LE", "LK"],
         type: undefined,
         value: "",
         key: conditionKey++, // Used by react to track the rendered elements
-    }),
-    toFormConditionModels = (models = []) => {
-        return models.map((model) => {
-            return {
-                field: model.key,
-                operator: model.operator,
-                value: model.value || "",
-                type: model.value
-                    ? isNaN(model.value)
-                        ? "Text"
-                        : "Number"
-                    : undefined,
-                key: conditionKey++,
-            };
-        });
-    };
+    });
 
 export class AdvanceSearch extends LinkedComponent {
     constructor(props) {
@@ -52,12 +37,7 @@ export class AdvanceSearch extends LinkedComponent {
 
         this.state = {
             filterOptions: [{ label: "Device Name", value: "deviceId" }],
-            deviceQueryConditions:
-                this.props.activeDeviceQueryConditions.length === 0
-                    ? [newCondition()]
-                    : toFormConditionModels(
-                          this.props.activeDeviceQueryConditions
-                      ),
+            deviceQueryConditions: [newCondition()],
             isPending: false,
             error: undefined,
         };
@@ -94,12 +74,9 @@ export class AdvanceSearch extends LinkedComponent {
                             return !this.conditionIsNew(condition);
                         }
                     );
-                    this.props.setActiveDeviceQueryConditions(
-                        rawQueryConditions.map((condition) => {
-                            return toDeviceConditionModel(condition);
-                        })
-                    );
-                    this.props.fetchDevices();
+                    this.props.fetchDevicesByCondition(rawQueryConditions.map((condition) => {
+                        return toDeviceConditionModel(condition);
+                    }));
                     resolve();
                 });
             } catch (error) {
@@ -150,8 +127,6 @@ export class AdvanceSearch extends LinkedComponent {
                         isPending: true,
                     },
                     () => {
-                        this.props.setActiveDeviceQueryConditions([]);
-                        this.props.fetchDevices(); // reload the devices grid with a blank query
                         this.render();
                         resolve();
                     }
