@@ -134,6 +134,7 @@ export class AdvanceSearch extends LinkedComponent {
 
     onReset = () => {
         this.props.logEvent(toDiagnosticsModel("CreateDeviceQuery_Reset", {}));
+        this.props.resetDeviceByCondition();
         this.resetFlyoutAndDevices()
             .then(() => {
                 this.setState({ error: undefined, isPending: false });

@@ -59,6 +59,7 @@ export class Devices extends Component {
         }
 
         if (this.props && this.props.location.pathname === "/deviceSearch") {
+            this.props.resetDeviceByCondition();
             this.setState({
                 isDeviceSearch: true,
             });

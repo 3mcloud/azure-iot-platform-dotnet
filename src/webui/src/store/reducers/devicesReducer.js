@@ -232,6 +232,12 @@ const deviceSchema = new schema.Entity("devices"),
             ...setPending(fromAction.type, false),
         });
     },
+    resetDeviceByConditionReducer = (state) => {
+        return update(state, {
+            devicesByConditionEntities: { $set: {}},
+            devicesByConditionItems: { $set: []},
+        })
+    },
     deleteDevicesReducer = (state, { payload }) => {
         const spliceArr = payload.reduce((idxAcc, payloadItem) => {
             const idx = state.items.indexOf(payloadItem);
@@ -336,6 +342,10 @@ export const redux = createReducerScenario({
     updateDevicesByCondition: {
         type: "DEVICES_UPDATE_BY_CONDITION",
         reducer: updateDevicesByConditionReducer,
+    },
+    resetDeviceByCondition: {
+        type: "DEVICES_RESET_BY_CONDITION",
+        reducer: resetDeviceByConditionReducer,
     },
     registerError: { type: "DEVICES_REDUCER_ERROR", reducer: errorReducer },
     isFetching: { multiType: fetchableTypes, reducer: pendingReducer },
