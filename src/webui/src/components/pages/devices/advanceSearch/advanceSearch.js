@@ -20,7 +20,7 @@ import "./advanceSearch.scss";
 // A counter for creating unique keys per new condition
 let conditionKey = 0;
 
-const operators = ["EQ", "GT", "LT", "GE", "LE", "LK"],
+const operators = ["EQ", "LK"],
     // Creates a state object for a condition
     newCondition = () => ({
         field: undefined,
@@ -35,7 +35,7 @@ export class AdvanceSearch extends LinkedComponent {
 
         this.state = {
             filterOptions: [{ label: "Device Name", value: "deviceId" }],
-            deviceQueryConditions: [newCondition()],
+            deviceQueryConditions: [],
             isPending: false,
             error: undefined,
         };
@@ -195,9 +195,6 @@ export class AdvanceSearch extends LinkedComponent {
 
         return (
             <form onSubmit={this.apply}>
-                <div>
-                    <h1>Advance Search</h1>
-                </div>
                 <div className="manage-filters-container">
                     <Grid>
                         {conditionLinks.length > 0 && (
@@ -271,6 +268,7 @@ export class AdvanceSearch extends LinkedComponent {
                                             "deviceQueryConditions.valuePlaceholder"
                                         )}
                                         link={condition.value}
+                                        className="width-70"
                                     />
                                 </Cell>
                             </Row>
@@ -290,7 +288,8 @@ export class AdvanceSearch extends LinkedComponent {
                                 disabled={
                                     !this.formIsValid() ||
                                     conditionHasErrors ||
-                                    this.state.isPending
+                                    this.state.isPending ||
+                                    this.state.deviceQueryConditions.length == 0
                                 }
                                 type="submit"
                             >
