@@ -289,7 +289,7 @@ export class AdvanceSearch extends LinkedComponent {
                                     !this.formIsValid() ||
                                     conditionHasErrors ||
                                     this.state.isPending ||
-                                    this.state.deviceQueryConditions.length == 0
+                                    this.state.deviceQueryConditions.length === 0
                                 }
                                 type="submit"
                             >

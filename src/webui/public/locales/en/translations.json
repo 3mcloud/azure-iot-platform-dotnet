@@ -221,7 +221,7 @@
             "LT": "< Less than",
             "GE": ">= Greater than or equal",
             "LE": "<= Less than or equal",
-            "LK": "Like"
+            "LK": "Contains"
         },
         "value": "Value",
         "valuePlaceholder": "Enter value",
