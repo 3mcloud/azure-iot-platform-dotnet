@@ -40,3 +40,12 @@
   font-family: $fontSelawikSemilight;
   color: darkgray;
 }
+
+.pcs-renderer-cell {
+  @include themify($themes) {
+    .pcs-renderer-icon svg { fill: themed('colorWarning'); }
+  }
+  .current-tenant-text {
+    font-weight: 600;
+  }
+}

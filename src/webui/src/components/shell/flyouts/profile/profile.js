@@ -3,6 +3,7 @@
 import React from "react";
 import { Trans } from "react-i18next";
 import Config from "app.config";
+import { Svg } from "components/shared/svg/svg";
 import { svgs, getEnumTranslation } from "utilities";
 import {
     Btn,
@@ -107,10 +108,16 @@ export const Profile = (props) => {
                                 {t("profileFlyout.tenants.tenantHeader")}
                             </Section.Header>
                             <Section.Content>
-                                <div>
-                                    {currentTenant && currentTenant !== ""
-                                        ? "Current: " + currentTenant
-                                        : ""}
+                                <div className="pcs-renderer-cell">
+                                    <Svg
+                                        path={svgs.star}
+                                        className="pcs-renderer-icon"
+                                    />
+                                    <div className="current-tenant-text">
+                                        {currentTenant && currentTenant !== ""
+                                            ? "Current: " + currentTenant
+                                            : ""}
+                                    </div>
                                 </div>
                                 {/* Create the list of available tenants if there are any */
                                 !tenants || tenants.length === 0 ? (
