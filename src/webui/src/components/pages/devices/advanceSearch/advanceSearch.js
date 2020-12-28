@@ -20,7 +20,7 @@ import "./advanceSearch.scss";
 // A counter for creating unique keys per new condition
 let conditionKey = 0;
 
-const operators = ["EQ", "LK"],
+const operators = ["EQ", "GT", "LT", "GE", "LE", "LK"],
     // Creates a state object for a condition
     newCondition = () => ({
         field: undefined,
