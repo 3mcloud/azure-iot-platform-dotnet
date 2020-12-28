@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Mmm.Iot.Common.Services.Config;
 using Mmm.Iot.Common.Services.Exceptions;
 using Mmm.Iot.Common.Services.Filters;
 using Mmm.Iot.Common.Services.Models;
@@ -21,19 +22,22 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
     [TypeFilter(typeof(ExceptionsFilterAttribute))]
     public class AlarmsByRuleController : Controller
     {
-        private const int DeviceLimit = 1000;
         private readonly IAlarms alarmService;
         private readonly IRules ruleService;
         private readonly ILogger logger;
+        private readonly AppConfig appConfig;
+        private int deviceLimit = 1000;
 
         public AlarmsByRuleController(
             IAlarms alarmService,
             IRules ruleService,
-            ILogger<AlarmsByRuleController> logger)
+            ILogger<AlarmsByRuleController> logger,
+            AppConfig appConfig)
         {
             this.alarmService = alarmService;
             this.ruleService = ruleService;
             this.logger = logger;
+            this.appConfig = appConfig;
         }
 
         [HttpGet]
@@ -142,10 +146,23 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
              * storage type the limit will be different. DEVICE_LIMIT is CosmosDb
              * limit for the IN clause.
              */
-            if (deviceIds.Length > DeviceLimit)
+
+            bool processIOTHubBeyondLimit = false;
+            try
+            {
+                this.deviceLimit = this.appConfig.Global.Limits.MaximumDeviceCount;
+                processIOTHubBeyondLimit = this.appConfig.Global.Limits.ProcessIOTHubBeyondLimit;
+            }
+            catch
+            {
+                this.deviceLimit = 1000;
+                processIOTHubBeyondLimit = false;
+            }
+
+            if (!processIOTHubBeyondLimit && deviceIds.Length > this.deviceLimit)
             {
                 this.logger.LogWarning("The client requested too many devices {count}", deviceIds.Length);
-                throw new BadRequestException("The number of devices cannot exceed " + DeviceLimit);
+                throw new BadRequestException("The number of devices cannot exceed " + this.deviceLimit);
             }
 
             List<AlarmCountByRule> alarmsList
@@ -191,10 +208,23 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
              * storage type the limit will be different. DEVICE_LIMIT is CosmosDb
              * limit for the IN clause.
              */
-            if (deviceIds.Length > DeviceLimit)
+
+            bool processIOTHubBeyondLimit = false;
+            try
+            {
+                this.deviceLimit = this.appConfig.Global.Limits.MaximumDeviceCount;
+                processIOTHubBeyondLimit = this.appConfig.Global.Limits.ProcessIOTHubBeyondLimit;
+            }
+            catch
+            {
+                this.deviceLimit = 1000;
+                processIOTHubBeyondLimit = false;
+            }
+
+            if (!processIOTHubBeyondLimit && deviceIds.Length > this.deviceLimit)
             {
                 this.logger.LogWarning("The client requested too many devices {count}", deviceIds.Length);
-                throw new BadRequestException("The number of devices cannot exceed " + DeviceLimit);
+                throw new BadRequestException("The number of devices cannot exceed " + this.deviceLimit);
             }
 
             List<Alarm> alarmsList = await this.alarmService.ListByRuleAsync(

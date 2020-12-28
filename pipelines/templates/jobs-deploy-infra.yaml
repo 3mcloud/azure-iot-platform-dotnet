@@ -345,6 +345,17 @@ jobs:
                 Get-AzTableRow -Table $cloudTable | Format-Table
               }
             }
+            else{
+              $cloudTable = (Get-AzStorageTable -Name $(tableStorageName) -Context $storageAccountContext).CloudTable
+              Install-Module -Name AzTable -Force
+              '${{parameters.sysAdmins}}' | ConvertFrom-Json -Depth 100 | Write-Output | ForEach-Object {
+                $userPresent= Get-AzTableRow -table $cloudTable –partitionKey $_.UserId | ft
+                if(!$userPresent){
+                  Add-AzTableRow -Table $cloudTable -PartitionKey $_.UserId -RowKey $_.UserId -Property @{ "Name" = $_.Name }
+                  Get-AzTableRow -Table $cloudTable | Format-Table
+                }
+              }
+            }
 
   - job: eventHub
     displayName: Provision Event Hub
@@ -679,6 +690,8 @@ jobs:
             fi
 
             az appconfig kv set --key Global:KeyVault:Name                        --value $(keyVaultName) --name $(appConfigurationName) --yes
+            az appconfig kv set --key Global:Limits:MaximumDeviceCount            --value $(maxDeviceCount) --name $(appConfigurationName) --yes
+            az appconfig kv set --key Global:Limits:ProcessIOTHubBeyondLimit      --value $(processIOTHubBeyondLimit) --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:ClientAuth:Jwt:AadAppId              --value $servicePrincipalId --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:AzureActiveDirectory:AppId           --value $servicePrincipalId --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:AzureActiveDirectory:AppSecret       --value $servicePrincipalKey --name $(appConfigurationName) --yes
