@@ -5,20 +5,13 @@ import { withNamespaces } from "react-i18next";
 import { AdvanceSearch } from "./advanceSearch";
 import {
     epics as devicesEpics,
-    redux as devicesRedux
+    redux as devicesRedux,
 } from "store/reducers/devicesReducer";
-import {
-    redux as appRedux,
-    epics as appEpics,
-} from "store/reducers/appReducer";
+import { epics as appEpics } from "store/reducers/appReducer";
 
 const mapDispatchToProps = (dispatch) => ({
     fetchDevicesByCondition: (data) =>
         dispatch(devicesEpics.actions.fetchDevicesByCondition(data)),
-    setActiveDeviceQueryConditions: (queryConditions) =>
-        dispatch(
-            appRedux.actions.setActiveDeviceQueryConditions(queryConditions)
-        ),
     logEvent: (diagnosticsModel) =>
         dispatch(appEpics.actions.logEvent(diagnosticsModel)),
     resetDeviceByCondition: () =>

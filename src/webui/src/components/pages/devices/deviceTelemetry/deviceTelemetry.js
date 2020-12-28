@@ -36,9 +36,12 @@ export class DeviceTelemetry extends Component {
             isDeviceSearch: false,
         };
     }
-    
+
     componentWillMount() {
-        if (this.props && this.props.location.pathname === "/deviceSearch/telemetry") {
+        if (
+            this.props &&
+            this.props.location.pathname === "/deviceSearch/telemetry"
+        ) {
             this.setState({
                 isDeviceSearch: true,
             });
@@ -120,11 +123,9 @@ export class DeviceTelemetry extends Component {
     }
 
     navigateToDevices = () => {
-        if(this.state.isDeviceSearch)
-        {            
+        if (this.state.isDeviceSearch) {
             this.props.history.push("/deviceSearch");
-        }
-        else {      
+        } else {
             this.props.history.push("/devices");
         }
     };

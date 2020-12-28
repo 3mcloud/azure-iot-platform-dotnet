@@ -234,9 +234,9 @@ const deviceSchema = new schema.Entity("devices"),
     },
     resetDeviceByConditionReducer = (state) => {
         return update(state, {
-            devicesByConditionEntities: { $set: {}},
-            devicesByConditionItems: { $set: []},
-        })
+            devicesByConditionEntities: { $set: {} },
+            devicesByConditionItems: { $set: [] },
+        });
     },
     deleteDevicesReducer = (state, { payload }) => {
         const spliceArr = payload.reduce((idxAcc, payloadItem) => {
@@ -408,6 +408,8 @@ export const getDevices = createSelector(
     (entities, items) => items.map((id) => entities[id])
 );
 export const getDeviceById = (state, id) => getEntities(state)[id];
+export const getDeviceByConditionById = (state, id) =>
+    getDevicesByConditionEntities(state)[id];
 export const getDeviceModuleStatus = (state) => {
     const deviceModuleStatus = getDevicesReducer(state).deviceModuleStatus;
     return deviceModuleStatus

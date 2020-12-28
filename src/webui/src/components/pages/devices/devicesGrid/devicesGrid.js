@@ -80,7 +80,7 @@ export class DevicesGrid extends Component {
             </ComponentArray>
         );
     }
-    
+
     componentWillMount() {
         if (this.props && this.props.location.pathname === "/deviceSearch") {
             this.setState({
@@ -210,6 +210,7 @@ export class DevicesGrid extends Component {
                         onClose={this.closeFlyout}
                         deviceId={this.state.softSelectedDeviceId}
                         flyoutLink={flyoutLink}
+                        isDeviceSearch={this.state.isDeviceSearch}
                     />
                 );
             case "c2dmessage":
@@ -231,13 +232,11 @@ export class DevicesGrid extends Component {
 
     goToTelemetryScreen = () => {
         const selectedDevices = this.deviceGridApi.getSelectedRows();
-        if(this.state.isDeviceSearch)
-        {            
+        if (this.state.isDeviceSearch) {
             this.props.history.push("/deviceSearch/telemetry", {
                 deviceIds: selectedDevices.map(({ id }) => id),
             });
-        }
-        else {      
+        } else {
             this.props.history.push("/devices/telemetry", {
                 deviceIds: selectedDevices.map(({ id }) => id),
             });

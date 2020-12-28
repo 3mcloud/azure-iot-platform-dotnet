@@ -51,7 +51,7 @@ const mapStateToProps = (state) => ({
         cancelDeviceCalls: (payload) =>
             dispatch(devicesRedux.actions.cancelDeviceCalls(payload)),
         resetDeviceByCondition: () =>
-            dispatch(devicesRedux.actions.resetDeviceByCondition())
+            dispatch(devicesRedux.actions.resetDeviceByCondition()),
     });
 
 export const DevicesContainer = withNamespaces()(
