@@ -66,7 +66,7 @@ variables:
   - name: webuiArtifactName
     value: webuiFiles
   - name: helmInstallTimeoutInSeconds
-    value: 2000
+    value: 1000
   - name: mmmIotPlatformServicesHelmChartValuesFile
     value: pipelines/ci/mmm-iot-platform-chart-values.yaml
   - name: mmmIotPlatformServicesHelmChartReleaseName
