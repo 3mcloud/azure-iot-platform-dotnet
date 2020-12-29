@@ -20,10 +20,10 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
     [TypeFilter(typeof(ExceptionsFilterAttribute))]
     public sealed class MessagesController : Controller
     {
-        private const int DeviceLimit = 1000;
         private readonly IMessages messageService;
         private readonly ILogger logger;
         private readonly AppConfig config;
+        private int deviceLimit = 1000;
 
         public MessagesController(
             IMessages messageService,
@@ -106,10 +106,22 @@ namespace Mmm.Iot.DeviceTelemetry.WebService.Controllers
             // TODO: move this logic to the storage engine, depending on the
             // storage type the limit will be different. DEVICE_LIMIT is CosmosDb
             // limit for the IN clause.
-            if (deviceIds.Length > DeviceLimit)
+            bool processIOTHubBeyondLimit = false;
+            try
+            {
+                this.deviceLimit = this.config.Global.Limits.MaximumDeviceCount;
+                processIOTHubBeyondLimit = this.config.Global.Limits.ProcessIOTHubBeyondLimit;
+            }
+            catch
+            {
+                this.deviceLimit = 1000;
+                processIOTHubBeyondLimit = false;
+            }
+
+            if (!processIOTHubBeyondLimit && deviceIds.Length > this.deviceLimit)
             {
                 this.logger.LogWarning("The client requested too many devices {count}", deviceIds.Length);
-                throw new BadRequestException("The number of devices cannot exceed " + DeviceLimit);
+                throw new BadRequestException("The number of devices cannot exceed " + this.deviceLimit);
             }
 
             MessageList messageList = await this.messageService.ListAsync(
