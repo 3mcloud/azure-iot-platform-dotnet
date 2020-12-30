@@ -40,7 +40,7 @@ export class AdvanceSearch extends LinkedComponent {
                     label: "Firmware",
                     value: "firmwareVersion",
                 },
-                { label: "Status", value: "ConnectedState" },
+                { label: "Status", value: "connectionState" },
             ],
             deviceQueryConditions: [],
             isPending: false,
@@ -153,16 +153,18 @@ export class AdvanceSearch extends LinkedComponent {
 
     operatorOptionArr = (options, key) => {
         var optionArr = options;
-        if(this.state.deviceQueryConditions.length > 0  && this.state.deviceQueryConditions[key].field !== 'deviceId')
-        {
-            optionArr = optionArr.filter(option => option.value !== 'LK');
-            if (this.state.deviceQueryConditions[key].operator === 'LK') {
+        if (
+            this.state.deviceQueryConditions.length > 0 &&
+            this.state.deviceQueryConditions[key].field !== "deviceId"
+        ) {
+            optionArr = optionArr.filter((option) => option.value !== "LK");
+            if (this.state.deviceQueryConditions[key].operator === "LK") {
                 this.state.deviceQueryConditions[key].operator = undefined;
             }
         }
 
         return optionArr;
-    }
+    };
 
     render() {
         const { t } = this.props,
@@ -273,7 +275,10 @@ export class AdvanceSearch extends LinkedComponent {
                                         className="long"
                                         searchable={false}
                                         clearable={false}
-                                        options={this.operatorOptionArr(operatorOptions, idx)}
+                                        options={this.operatorOptionArr(
+                                            operatorOptions,
+                                            idx
+                                        )}
                                         placeholder={t(
                                             "deviceQueryConditions.operatorPlaceholder"
                                         )}
