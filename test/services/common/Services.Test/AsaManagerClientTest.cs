@@ -79,6 +79,7 @@ namespace Mmm.Iot.Common.Services.Test
                 .Setup(x => x.ProcessRequestAsync<T>(
                     It.Is<HttpMethod>(m => m == HttpMethod.Post),
                     It.IsAny<string>(),
+                    null,
                     null))
                 .ReturnsAsync(responseModel);
         }
@@ -90,6 +91,7 @@ namespace Mmm.Iot.Common.Services.Test
                     x => x.ProcessRequestAsync<T>(
                         It.Is<HttpMethod>(m => m == HttpMethod.Post),
                         It.Is<string>(s => s == $"{MockServiceUri}/{entity}"),
+                        null,
                         null),
                     Times.Once);
         }

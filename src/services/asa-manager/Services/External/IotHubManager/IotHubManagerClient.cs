@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Mmm.Iot.AsaManager.Services.Models.DeviceGroups;
@@ -23,13 +24,19 @@ namespace Mmm.Iot.AsaManager.Services.External.IotHubManager
         {
         }
 
-        public async Task<DeviceListModel> GetListAsync(IEnumerable<DeviceGroupConditionModel> conditions, string tenantId)
+        public async Task<DeviceListModel> GetListAsync(IEnumerable<DeviceGroupConditionModel> conditions, string tenantId, string cToken = null)
         {
             try
             {
+                var headers = new NameValueCollection();
+                if (!string.IsNullOrEmpty(cToken))
+                {
+                    headers.Add("x-ms-continuation", cToken);
+                }
+
                 var query = JsonConvert.SerializeObject(conditions);
                 var url = $"{this.ServiceUri}/devices?query={query}";
-                return await this.RequestHelper.ProcessRequestAsync<DeviceListModel>(HttpMethod.Get, url, tenantId);
+                return await this.RequestHelper.ProcessRequestAsync<DeviceListModel>(HttpMethod.Get, url, tenantId, headers);
             }
             catch (Exception e)
             {

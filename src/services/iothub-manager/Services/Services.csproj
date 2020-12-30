@@ -5,6 +5,7 @@
         <LangVersion>8</LangVersion>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="Azure.Storage.Queues" Version="12.3.2" />
         <PackageReference Include="Microsoft.Azure.Devices" Version="1.27.0-preview-004" />
     </ItemGroup>
     <ItemGroup>

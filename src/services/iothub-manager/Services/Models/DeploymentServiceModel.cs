@@ -27,6 +27,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Models
             this.Name = deployment.Labels[ConfigurationsHelper.DeploymentNameLabel];
             this.CreatedDateTimeUtc = deployment.CreatedTimeUtc;
             this.DeviceGroupId = deployment.Labels[ConfigurationsHelper.DeploymentGroupIdLabel];
+            this.TargetCondition = deployment.TargetCondition;
 
             if (deployment.Labels.ContainsKey(ConfigurationsHelper.DeploymentGroupNameLabel))
             {
