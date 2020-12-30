@@ -3,7 +3,6 @@
 import React from "react";
 import { Trans } from "react-i18next";
 import Config from "app.config";
-import { Svg } from "components/shared/svg/svg";
 import { svgs, getEnumTranslation } from "utilities";
 import {
     Btn,
@@ -109,10 +108,6 @@ export const Profile = (props) => {
                             </Section.Header>
                             <Section.Content>
                                 <div className="pcs-renderer-cell">
-                                    <Svg
-                                        path={svgs.star}
-                                        className="pcs-renderer-icon"
-                                    />
                                     <div className="current-tenant-text">
                                         {currentTenant && currentTenant !== ""
                                             ? "Current: " + currentTenant
