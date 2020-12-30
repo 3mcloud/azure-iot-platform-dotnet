@@ -34,7 +34,14 @@ export class AdvanceSearch extends LinkedComponent {
         super(props);
 
         this.state = {
-            filterOptions: [{ label: "Device Name", value: "deviceId" }],
+            filterOptions: [
+                { label: "Device Name", value: "deviceId" },
+                {
+                    label: "Firmware",
+                    value: "firmwareVersion",
+                },
+                { label: "Status", value: "ConnectedState" },
+            ],
             deviceQueryConditions: [],
             isPending: false,
             error: undefined,
@@ -143,6 +150,19 @@ export class AdvanceSearch extends LinkedComponent {
                 this.setState({ error: error, isPending: false });
             });
     };
+
+    operatorOptionArr = (options, key) => {
+        var optionArr = options;
+        if(this.state.deviceQueryConditions.length > 0  && this.state.deviceQueryConditions[key].field !== 'deviceId')
+        {
+            optionArr = optionArr.filter(option => option.value !== 'LK');
+            if (this.state.deviceQueryConditions[key].operator === 'LK') {
+                this.state.deviceQueryConditions[key].operator = undefined;
+            }
+        }
+
+        return optionArr;
+    }
 
     render() {
         const { t } = this.props,
@@ -253,7 +273,7 @@ export class AdvanceSearch extends LinkedComponent {
                                         className="long"
                                         searchable={false}
                                         clearable={false}
-                                        options={operatorOptions}
+                                        options={this.operatorOptionArr(operatorOptions, idx)}
                                         placeholder={t(
                                             "deviceQueryConditions.operatorPlaceholder"
                                         )}
@@ -289,7 +309,8 @@ export class AdvanceSearch extends LinkedComponent {
                                     !this.formIsValid() ||
                                     conditionHasErrors ||
                                     this.state.isPending ||
-                                    this.state.deviceQueryConditions.length === 0
+                                    this.state.deviceQueryConditions.length ===
+                                        0
                                 }
                                 type="submit"
                             >

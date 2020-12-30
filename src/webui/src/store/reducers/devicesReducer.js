@@ -246,13 +246,16 @@ const deviceSchema = new schema.Entity("devices"),
             }
             return idxAcc;
         }, []);
-        const spliceDevicesByConditionItems = payload.reduce((idxAcc, payloadItem) => {
-            const idx = state.devicesByConditionItems.indexOf(payloadItem);
-            if (idx !== -1) {
-                idxAcc.push([idx, 1]);
-            }
-            return idxAcc;
-        }, []);
+        const spliceDevicesByConditionItems = payload.reduce(
+            (idxAcc, payloadItem) => {
+                const idx = state.devicesByConditionItems.indexOf(payloadItem);
+                if (idx !== -1) {
+                    idxAcc.push([idx, 1]);
+                }
+                return idxAcc;
+            },
+            []
+        );
         return update(state, {
             entities: { $unset: payload },
             items: { $splice: spliceArr },
