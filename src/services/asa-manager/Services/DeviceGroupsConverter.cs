@@ -104,10 +104,27 @@ namespace Mmm.Iot.AsaManager.Services
             {
                 try
                 {
-                    DeviceListModel devicesList = await this.iotHubManager.GetListAsync(deviceGroup.Conditions, tenantId);
-                    if (devicesList.Items.Count() > 0)
+                    string cToken = string.Empty;
+                    List<DeviceModel> completeDevicesList = new List<DeviceModel>();
+
+                    do
                     {
-                        deviceMapping.Add(deviceGroup, devicesList);
+                        DeviceListModel devicesList = await this.iotHubManager.GetListAsync(deviceGroup.Conditions, tenantId, cToken);
+                        if (devicesList.Items.Count() > 0)
+                        {
+                            completeDevicesList.AddRange(devicesList.Items);
+                        }
+
+                        cToken = devicesList.ContinuationToken;
+                    }
+                    while (!string.IsNullOrEmpty(cToken));
+
+                    if (completeDevicesList.Count > 0)
+                    {
+                        deviceMapping.Add(deviceGroup, new DeviceListModel()
+                        {
+                        Items = completeDevicesList,
+                        });
                     }
                 }
                 catch (Exception e)

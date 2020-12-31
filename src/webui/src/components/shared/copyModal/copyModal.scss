@@ -16,9 +16,17 @@
 
    .copy-info {
     @include rem-fallback(padding-bottom, 20px);
-    @include rem-fallback(height, 50px);
+    @include rem-fallback(height, 80px);
     overflow-wrap: break-word;
     word-wrap: break-word;
+    overflow-y: scroll;
+  }
+
+  .btn-toolbar {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+    @include rem-fallback(padding-top, 10px);
   }
 
   @include themify($themes) {

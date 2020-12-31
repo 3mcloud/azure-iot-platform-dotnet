@@ -24,7 +24,12 @@ import {
     StatGroup,
     StatProperty,
 } from "components/shared";
-import { svgs, renderUndefined, getDeviceGroupParam } from "utilities";
+import {
+    svgs,
+    renderUndefined,
+    getDeviceGroupParam,
+    getTenantIdParam,
+} from "utilities";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
 
 import "./summary.scss";
@@ -39,6 +44,11 @@ export class Summary extends Component {
 
     componentWillMount() {
         if (this.props.location.search) {
+            const tenantId = getTenantIdParam(this.props.location.search);
+            this.props.checkTenantAndSwitch({
+                tenantId: tenantId,
+                redirectUrl: window.location.href,
+            });
             this.setState({
                 selectedDeviceGroupId: getDeviceGroupParam(
                     this.props.location.search
