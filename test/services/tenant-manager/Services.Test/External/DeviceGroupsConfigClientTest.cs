@@ -44,7 +44,7 @@ namespace Mmm.Iot.TenantManager.Services.Test
         {
             // Arrange
             var defaultDeviceGroupDisplayName = this.any.String();
-            this.mockExternalRequestHelper.Setup(m => m.ProcessRequestAsync(It.IsAny<HttpMethod>(), It.IsAny<string>(), It.IsAny<DeviceGroupApiModel>(), this.tenantId)).ReturnsAsync(new DeviceGroupApiModel { DisplayName = defaultDeviceGroupDisplayName });
+            this.mockExternalRequestHelper.Setup(m => m.ProcessRequestAsync(It.IsAny<HttpMethod>(), It.IsAny<string>(), It.IsAny<DeviceGroupApiModel>(), this.tenantId, null)).ReturnsAsync(new DeviceGroupApiModel { DisplayName = defaultDeviceGroupDisplayName });
 
             // Act
             var result = await this.deviceGroupsConfigClient.CreateDefaultDeviceGroupAsync(this.tenantId);

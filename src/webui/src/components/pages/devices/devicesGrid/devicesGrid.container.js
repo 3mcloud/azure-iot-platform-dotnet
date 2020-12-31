@@ -6,11 +6,13 @@ import {
     epics as appEpics,
     getActiveDeviceGroupId,
     getUser,
+    getUserCurrentTenant,
 } from "store/reducers/appReducer";
 
 const mapStateToProps = (state) => ({
         activeDeviceGroupId: getActiveDeviceGroupId(state),
         userPermissions: getUser(state).permissions,
+        currentTenantId: getUserCurrentTenant(state),
     }),
     // Wrap the dispatch method
     mapDispatchToProps = (dispatch) => ({

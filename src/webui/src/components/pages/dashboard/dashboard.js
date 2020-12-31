@@ -12,6 +12,7 @@ import {
     getIntervalParams,
     retryHandler,
     getDeviceGroupParam,
+    getTenantIdParam,
 } from "utilities";
 import { Grid, Cell } from "./grid";
 import { PanelErrorBoundary } from "./panel";
@@ -40,6 +41,7 @@ import {
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
 
 import "./dashboard.scss";
+import { HttpClient } from "utilities/httpClient";
 
 const initialState = {
         // Telemetry data
@@ -88,7 +90,18 @@ export class Dashboard extends Component {
     }
 
     componentWillMount() {
+        const redirectUrl = HttpClient.getLocalStorageValue("redirectUrl");
+        HttpClient.removeLocalStorageItem("redirectUrl");
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
+        }
+
         if (this.props.location.search) {
+            const tenantId = getTenantIdParam(this.props.location.search);
+            this.props.checkTenantAndSwitch({
+                tenantId: tenantId,
+                redirectUrl: window.location.href,
+            });
             this.setState({
                 selectedDeviceGroupId: getDeviceGroupParam(
                     this.props.location.search

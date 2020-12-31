@@ -112,7 +112,7 @@ namespace Mmm.Iot.Common.Services.External.StorageAdapter
             string tenantId = null)
         {
             string url = this.RequestUrl($"collections/{collectionId}/values/{key}");
-            await this.RequestHelper.ProcessRequestAsync(HttpMethod.Delete, url, tenantId);
+            await this.RequestHelper.ProcessRequestAsync(HttpMethod.Delete, url, tenantId: tenantId);
         }
     }
 }

@@ -64,6 +64,8 @@ const mapStateToProps = (state) => ({
             dispatch(appRedux.actions.updateTimeInterval(timeInterval)),
         updateCurrentWindow: (currentWindow) =>
             dispatch(appRedux.actions.updateCurrentWindow(currentWindow)),
+        checkTenantAndSwitch: (payload) =>
+            dispatch(appRedux.actions.checkTenantAndSwitch(payload)),
     });
 
 export const DashboardContainer = withNamespaces()(

@@ -25,6 +25,7 @@ import {
     getParamByName,
     getFlyoutNameParam,
     getFlyoutLink,
+    getTenantIdParam,
 } from "utilities";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
 import {
@@ -56,6 +57,11 @@ export class Deployments extends Component {
 
     componentWillMount() {
         if (this.props.location.search) {
+            const tenantId = getTenantIdParam(this.props.location.search);
+            this.props.checkTenantAndSwitch({
+                tenantId: tenantId,
+                redirectUrl: window.location.href,
+            });
             this.setState({
                 selectedDeviceGroupId: getDeviceGroupParam(
                     this.props.location.search
@@ -156,6 +162,7 @@ export class Deployments extends Component {
     onCellClicked = (selectedDeployment) => {
         if (selectedDeployment.colDef.field === "isActive") {
             const flyoutLink = getFlyoutLink(
+                this.props.currentTenantId,
                 this.props.activeDeviceGroupId,
                 "deploymentId",
                 selectedDeployment.data.id,

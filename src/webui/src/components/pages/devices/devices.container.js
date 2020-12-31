@@ -50,6 +50,8 @@ const mapStateToProps = (state) => ({
             dispatch(appEpics.actions.logEvent(diagnosticsModel)),
         cancelDeviceCalls: (payload) =>
             dispatch(devicesRedux.actions.cancelDeviceCalls(payload)),
+        checkTenantAndSwitch: (payload) =>
+            dispatch(appRedux.actions.checkTenantAndSwitch(payload)),
         resetDeviceByCondition: () =>
             dispatch(devicesRedux.actions.resetDeviceByCondition()),
     });

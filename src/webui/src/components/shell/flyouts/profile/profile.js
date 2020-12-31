@@ -107,10 +107,12 @@ export const Profile = (props) => {
                                 {t("profileFlyout.tenants.tenantHeader")}
                             </Section.Header>
                             <Section.Content>
-                                <div>
-                                    {currentTenant && currentTenant !== ""
-                                        ? "Current: " + currentTenant
-                                        : ""}
+                                <div className="pcs-renderer-cell">
+                                    <div className="current-tenant-text">
+                                        {currentTenant && currentTenant !== ""
+                                            ? "Current: " + currentTenant
+                                            : ""}
+                                    </div>
                                 </div>
                                 {/* Create the list of available tenants if there are any */
                                 !tenants || tenants.length === 0 ? (

@@ -24,6 +24,7 @@ import {
     joinClasses,
     renderUndefined,
     getDeviceGroupParam,
+    getTenantIdParam,
 } from "utilities";
 import { DevicesGridContainer } from "components/pages/devices/devicesGrid/devicesGrid.container";
 import { DeviceGroupDropdownContainer as DeviceGroupDropdown } from "components/shell/deviceGroupDropdown";
@@ -89,6 +90,11 @@ export class RuleDetails extends Component {
 
     componentWillMount() {
         if (this.props.location.search) {
+            const tenantId = getTenantIdParam(this.props.location.search);
+            this.props.checkTenantAndSwitch({
+                tenantId: tenantId,
+                redirectUrl: window.location.href,
+            });
             this.setState({
                 selectedDeviceGroupId: getDeviceGroupParam(
                     this.props.location.search

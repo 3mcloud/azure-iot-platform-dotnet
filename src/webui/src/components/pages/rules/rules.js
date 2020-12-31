@@ -20,7 +20,7 @@ import {
     SearchInput,
 } from "components/shared";
 import { NewRuleFlyout } from "./flyouts";
-import { svgs, getDeviceGroupParam } from "utilities";
+import { svgs, getDeviceGroupParam, getTenantIdParam } from "utilities";
 import { toSinglePropertyDiagnosticsModel } from "services/models";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
 
@@ -57,6 +57,11 @@ export class Rules extends Component {
 
     componentWillMount() {
         if (this.props.location.search) {
+            const tenantId = getTenantIdParam(this.props.location.search);
+            this.props.checkTenantAndSwitch({
+                tenantId: tenantId,
+                redirectUrl: window.location.href,
+            });
             this.setState({
                 selectedDeviceGroupId: getDeviceGroupParam(
                     this.props.location.search
@@ -141,6 +146,7 @@ export class Rules extends Component {
                 activeDeviceGroupId,
                 location,
                 userPermissions,
+                currentTenantId,
             } = this.props,
             gridProps = {
                 onGridReady: this.onGridReady,
@@ -154,6 +160,7 @@ export class Rules extends Component {
                 location: location,
                 userPermissions: userPermissions,
                 rulesGridApi: this.rulesGridApi,
+                currentTenantId: currentTenantId,
             };
         return (
             <ComponentArray>
