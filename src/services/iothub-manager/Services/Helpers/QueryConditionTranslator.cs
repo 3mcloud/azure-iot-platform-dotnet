@@ -75,7 +75,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Helpers
 
                 if (c.Key == "firmwareVersion")
                 {
-                    return $"( properties.reported.firmware.currentFwVersion {op} {value.ToString()} or properties.reported.firmware {op} {value.ToString()} )";
+                    return $"( properties.reported.firmware.currentFwVersion {op} {value.ToString()} or properties.reported.Firmware {op} {value.ToString()} )";
                 }
 
                 if (c.Key == "connectionState")
