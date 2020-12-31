@@ -24,7 +24,7 @@ import { DeviceNewContainer } from "./flyouts/deviceNew";
 import { AdvanceSearchContainer } from "./advanceSearch";
 import { SIMManagementContainer } from "./flyouts/SIMManagement";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
-import { svgs, getDeviceGroupParam } from "utilities";
+import { svgs, getDeviceGroupParam, getTenantIdParam } from "utilities";
 
 import "./devices.scss";
 import { IdentityGatewayService } from "services";
@@ -51,6 +51,11 @@ export class Devices extends Component {
 
     componentWillMount() {
         if (this.props.location.search) {
+            const tenantId = getTenantIdParam(this.props.location.search);
+            this.props.checkTenantAndSwitch({
+                tenantId: tenantId,
+                redirectUrl: window.location.href,
+            });
             this.setState({
                 selectedDeviceGroupId: getDeviceGroupParam(
                     this.props.location.search

@@ -354,8 +354,8 @@ export const base64toHEX = (base64) => {
 
 export const getParamByName = (url, paramName) => {
     const urlParams = new URLSearchParams(url);
-    let deviceId = urlParams.get(paramName);
-    return deviceId;
+    let param = urlParams.get(paramName);
+    return param;
 };
 
 export const getDeviceGroupParam = (url) => {
@@ -366,7 +366,12 @@ export const getFlyoutNameParam = (url) => {
     return getParamByName(url, "flyout");
 };
 
+export const getTenantIdParam = (url) => {
+    return getParamByName(url, "tenantId");
+};
+
 export const getFlyoutLink = (
+    tenantId,
     deviceGroupId,
     paramName,
     paramValue,
@@ -374,7 +379,9 @@ export const getFlyoutLink = (
 ) => {
     return (
         window.location.href +
-        "?deviceGroupId=" +
+        "?tenantId=" +
+        tenantId +
+        "&deviceGroupId=" +
         deviceGroupId +
         "&" +
         paramName +

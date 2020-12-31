@@ -32,6 +32,7 @@ import {
 } from "store/utilities";
 import { svgs, compareByProperty } from "utilities";
 import { toSinglePropertyDiagnosticsModel } from "services/models";
+import { HttpClient } from "utilities/httpClient";
 
 // ========================= Epics - START
 const handleError = (fromAction) => (error) =>
@@ -487,6 +488,41 @@ const deviceGroupSchema = new schema.Entity("deviceGroups"),
         }),
     updateCurrentWindow = (state, { payload }) =>
         update(state, { currentWindow: { $set: payload } }),
+    checkTenantAndSwitchReducer = (state, { payload }) => {
+        let urlTenant = payload.tenantId;
+        const currentTenant = state.user.tenant;
+        const availableTenants = state.user.availableTenants;
+        if (urlTenant && currentTenant !== urlTenant) {
+            if (availableTenants.has(urlTenant)) {
+                // Put in local storage
+                HttpClient.setLocalStorageValue(
+                    "redirectUrl",
+                    payload.redirectUrl
+                );
+                // Switch Tenant
+                TenantService.tenantIsDeployed(urlTenant).subscribe(
+                    (response) => {
+                        if (response) {
+                            AuthService.switchTenant(urlTenant);
+                        } else {
+                            alert(
+                                "The tenant you're trying to switch to is not fully deployed. Please wait a few minutes before trying to access your new tenant."
+                            );
+                        }
+                    },
+                    (error) => {
+                        alert(
+                            "An error ocurred while trying to switch tenants."
+                        );
+                    }
+                );
+            } else {
+                alert("Tenant doesn't exist or you do not have access");
+                window.history.back();
+            }
+        }
+        return update(state, {});
+    },
     /* Action types that cause a pending flag */
     fetchableTypes = [
         epics.actionTypes.fetchSelectedDeviceGroup,
@@ -564,6 +600,10 @@ export const redux = createReducerScenario({
         reducer: updateCurrentWindow,
     },
     isFetching: { multiType: fetchableTypes, reducer: pendingReducer },
+    checkTenantAndSwitch: {
+        type: "CHECK_TENANT_AND_SWITCH",
+        reducer: checkTenantAndSwitchReducer,
+    },
 });
 
 export const reducer = { app: redux.getReducer(initialState) };
@@ -648,4 +688,7 @@ export const getActionPollingTimeout = (state) =>
 
 export const getApplicationPermissionsAssigned = (state) =>
     getAppReducer(state).applicationPermissionsAssigned;
+
+export const getUserCurrentTenant = (state) => getAppReducer(state).user.tenant;
+
 // ========================= Selectors - END

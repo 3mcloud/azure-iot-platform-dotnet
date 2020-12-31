@@ -177,6 +177,7 @@ export class DevicesGrid extends Component {
                     .map((d) => d.id)
                     .join("||");
                 flyoutLink = getFlyoutLink(
+                    this.props.currentTenantId,
                     this.props.activeDeviceGroupId,
                     "deviceId",
                     deviceIds ? deviceIds : this.state.softSelectedDeviceId,
@@ -199,6 +200,7 @@ export class DevicesGrid extends Component {
                 );
             case "details":
                 flyoutLink = getFlyoutLink(
+                    this.props.currentTenantId,
                     this.props.activeDeviceGroupId,
                     "deviceId",
                     this.state.softSelectedDeviceId,
