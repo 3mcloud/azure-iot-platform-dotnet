@@ -42,6 +42,10 @@ export class AdvanceSearch extends LinkedComponent {
                 },
                 { label: "Status", value: "connectionState" },
             ],
+            statusOptions: [
+                { label: "Online", value: "Connected" },
+                { label: "Offline", value: "Disconnected" },
+            ],
             deviceQueryConditions: [],
             isPending: false,
             error: undefined,
@@ -166,12 +170,22 @@ export class AdvanceSearch extends LinkedComponent {
         return optionArr;
     };
 
+    onFieldChange = (key) => {
+        if (
+            this.state.deviceQueryConditions[key].field !== "connectionState" &&
+            (this.state.deviceQueryConditions[key].value === "Connected" ||
+                this.state.deviceQueryConditions[key].value === "Disconnected")
+        ) {
+            this.state.deviceQueryConditions[key].value = "";
+        }
+    };
+
     render() {
         const { t } = this.props,
             // Create the state link for the dynamic form elements
             conditionLinks = this.conditionsLink.getLinkedChildren(
                 (conditionLink) => {
-                    const field = conditionLink
+                    let field = conditionLink
                             .forkTo("field")
                             .map(({ value }) => value)
                             .check(
@@ -202,6 +216,17 @@ export class AdvanceSearch extends LinkedComponent {
                             !operator.value &&
                             !value.value
                         );
+                    if (field.value === "connectionState") {
+                        value = conditionLink
+                            .forkTo("value")
+                            .map(({ value }) => value)
+                            .check(
+                                Validator.notEmpty,
+                                t(
+                                    "deviceQueryConditions.errorMsg.valueCantBeEmpty"
+                                )
+                            );
+                    }
                     let error =
                         edited &&
                         (field.error || operator.error || value.error || "");
@@ -263,6 +288,7 @@ export class AdvanceSearch extends LinkedComponent {
                                         )}
                                         options={this.state.filterOptions}
                                         link={condition.field}
+                                        onChange={this.onFieldChange(idx)}
                                     />
                                 </Cell>
                                 <Cell className="col-1"></Cell>
@@ -287,14 +313,34 @@ export class AdvanceSearch extends LinkedComponent {
                                 </Cell>
                                 <Cell className="col-1"></Cell>
                                 <Cell className="col-3">
-                                    <FormControl
-                                        type="text"
-                                        placeholder={t(
-                                            "deviceQueryConditions.valuePlaceholder"
-                                        )}
-                                        link={condition.value}
-                                        className="width-70"
-                                    />
+                                    {this.state.deviceQueryConditions[idx]
+                                        .field !== "connectionState" && (
+                                        <FormControl
+                                            type="text"
+                                            placeholder={t(
+                                                "deviceQueryConditions.valuePlaceholder"
+                                            )}
+                                            link={condition.value}
+                                            className="width-70"
+                                        />
+                                    )}
+                                    {this.state.deviceQueryConditions[idx]
+                                        .field === "connectionState" && (
+                                        <FormControl
+                                            type="select"
+                                            ariaLabel={t(
+                                                "deviceQueryConditions.status"
+                                            )}
+                                            className="long"
+                                            searchable={false}
+                                            clearable={false}
+                                            options={this.state.statusOptions}
+                                            placeholder={t(
+                                                "deviceQueryConditions.statusPlaceholder"
+                                            )}
+                                            link={condition.value}
+                                        />
+                                    )}
                                 </Cell>
                             </Row>
                         ))}

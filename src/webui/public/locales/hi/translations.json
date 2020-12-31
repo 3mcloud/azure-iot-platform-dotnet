@@ -230,8 +230,11 @@
       "operatorCantBeEmpty": "ऑपरेटर आवश्यक है",
       "valueCantBeEmpty": "मूल्य की आवश्यकता है",
       "typeCantBeEmpty": "प्रकार की आवश्यकता है",
-      "selectedType": "किया जाना चाहिए के चयनित प्रकार"
-    }
+      "selectedType": "किया जाना चाहिए के चयनित प्रकार",
+      "statusCantBeEmpty": "Status is Required"
+    },
+    "status": "Status",
+    "statusPlaceholder": "Select Status"
   },
   "deviceGroupsFlyout": {
     "actions": "कार्रवाई",

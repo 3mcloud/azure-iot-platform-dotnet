@@ -230,8 +230,11 @@
       "operatorCantBeEmpty": "Operator ist erforderlich",
       "valueCantBeEmpty": "Wert ist erforderlich",
       "typeCantBeEmpty": "Typ erforderlich ist",
-      "selectedType": "Muss der Typ ausgewählt"
-    }
+      "selectedType": "Muss der Typ ausgewählt",
+      "statusCantBeEmpty": "Status is Required"
+    },
+    "status": "Status",
+    "statusPlaceholder": "Select Status"
   },
   "deviceGroupsFlyout": {
     "actions": "Aktionen",

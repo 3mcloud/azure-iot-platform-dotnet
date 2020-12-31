@@ -230,8 +230,11 @@
       "operatorCantBeEmpty": "ஆபரேட்டர் தேவைப்படும்",
       "valueCantBeEmpty": "மதிப்பு தேவை",
       "typeCantBeEmpty": "வகை தேவைப்படுகிறது",
-      "selectedType": "இருக்க வேண்டும், தேர்ந்தெடுக்கப்பட்ட வகை"
-    }
+      "selectedType": "இருக்க வேண்டும், தேர்ந்தெடுக்கப்பட்ட வகை",
+      "statusCantBeEmpty": "Status is Required"
+    },
+    "status": "Status",
+    "statusPlaceholder": "Select Status"
   },
   "deviceGroupsFlyout": {
     "actions": "செயல்கள்",

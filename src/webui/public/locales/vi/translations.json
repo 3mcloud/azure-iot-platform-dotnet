@@ -230,8 +230,11 @@
       "operatorCantBeEmpty": "Điều hành là cần thiết",
       "valueCantBeEmpty": "Giá trị là cần thiết",
       "typeCantBeEmpty": "Loại là cần thiết",
-      "selectedType": "Phải có sự lựa chọn loại"
-    }
+      "selectedType": "Phải có sự lựa chọn loại",
+      "statusCantBeEmpty": "Status is Required"
+    },
+    "status": "Status",
+    "statusPlaceholder": "Select Status"
   },
   "deviceGroupsFlyout": {
     "actions": "Hành động",

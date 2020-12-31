@@ -230,8 +230,11 @@
       "operatorCantBeEmpty": "L'exploitant est tenu",
       "valueCantBeEmpty": "La valeur est requise",
       "typeCantBeEmpty": "Type est nécessaire",
-      "selectedType": "Doit être du type sélectionné"
-    }
+      "selectedType": "Doit être du type sélectionné",
+      "statusCantBeEmpty": "Status is Required"
+    },
+    "status": "Status",
+    "statusPlaceholder": "Select Status"
   },
   "deviceGroupsFlyout": {
     "actions": "Actions",
