@@ -133,7 +133,7 @@ namespace Mmm.Iot.IoTHubManager.Services
 
                 if (deviceIdClauses != null && deviceIdClauses.Count() > 0)
                 {
-                    clauses = clauses.Where(x => x.Key != "deviceId" && x.Operator == "LK");
+                    clauses = clauses.Where(x => x.Key != "deviceId" && x.Operator != "LK");
                     inputQuery = JsonConvert.SerializeObject(clauses);
                 }
 
@@ -173,7 +173,7 @@ namespace Mmm.Iot.IoTHubManager.Services
                         if (batchDeviceIds != null && batchDeviceIds.Count > 0)
                         {
                             // deviceListValue = $"({string.Join(" or ", deviceIds.Select(v => $"deviceId = '{v}'"))})";
-                            deviceListValue = string.Join("','", batchDeviceIds.Select(p => p));
+                            deviceListValue = string.Join(",", batchDeviceIds.Select(p => $"'{p}'"));
                         }
 
                         if (!string.IsNullOrWhiteSpace(inputQuery))
@@ -183,7 +183,7 @@ namespace Mmm.Iot.IoTHubManager.Services
                         }
                         else
                         {
-                            query = $" deviceId IN ['{deviceListValue}']";
+                            query = $" deviceId IN [{deviceListValue}]";
                         }
 
                         int countOfDevicestoFetch = string.IsNullOrWhiteSpace(deviceListValue) ? MaximumGetList : deviceIds.Count();

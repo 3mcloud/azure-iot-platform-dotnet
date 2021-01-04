@@ -228,13 +228,11 @@ export class AdvanceSearch extends LinkedComponent {
                             );
                     }
                     let error =
-                        edited &&
                         (field.error || operator.error || value.error || "");
                     return { field, operator, value, edited, error };
                 }
             ),
-            editedConditions = conditionLinks.filter(({ edited }) => edited),
-            conditionHasErrors = editedConditions.some(({ error }) => !!error),
+            conditionHasErrors = conditionLinks.some(({ error }) => !!error),
             operatorOptions = operators.map((value) => ({
                 label: t(`deviceQueryConditions.operatorOptions.${value}`),
                 value,
