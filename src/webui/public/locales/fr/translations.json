@@ -398,10 +398,12 @@
   },
   "devices": {
     "title": "Device Explorer",
+    "titleDescription": "Explore devices within the current device group.",
     "ariaLabel": "Rechercher les appareils",
     "searchPlaceholder": "Rechercher les appareils...",
     "noneFound": "Aucun périphérique trouvé.",
-    "deviceSearch": "Device Search",
+    "deviceSearchTitle": "Device Search",
+    "deviceSearchTitleDescription": "Search across all devices.",
     "refresh": "Actualiser",
     "grid": {
       "connected": "Connecté",

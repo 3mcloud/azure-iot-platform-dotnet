@@ -78,23 +78,6 @@ namespace Mmm.Iot.IoTHubManager.Services.Helpers
                     return $"( properties.reported.firmware.currentFwVersion {op} {value.ToString()} or properties.reported.Firmware {op} {value.ToString()} )";
                 }
 
-                if (c.Key == "connectionState")
-                {
-                    string connectionState = JsonConvert.DeserializeObject<string>(value.ToString());
-
-                    switch (connectionState.ToUpperInvariant())
-                    {
-                        case "ONLINE":
-                            connectionState = DeviceConnectionState.Connected.ToString();
-                            break;
-                        case "OFFLINE":
-                            connectionState = DeviceConnectionState.Disconnected.ToString();
-                            break;
-                    }
-
-                    return $"{c.Key} {op} '{connectionState}'";
-                }
-
                 return $"{c.Key} {op} {value.ToString()}";
             });
 

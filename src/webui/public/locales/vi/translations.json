@@ -398,10 +398,12 @@
   },
   "devices": {
     "title": "Thiết Bị Explorer",
+    "titleDescription": "Explore devices within the current device group.",
     "ariaLabel": "Tìm kiếm thiết bị",
     "searchPlaceholder": "Tìm kiếm các thiết bị...",
     "noneFound": "Không có thiết bị tìm thấy.",
-    "deviceSearch": "Device Search",
+    "deviceSearchTitle": "Device Search",
+    "deviceSearchTitleDescription": "Search across all devices.",
     "refresh": "Làm mới",
     "grid": {
       "connected": "Kết nối",
