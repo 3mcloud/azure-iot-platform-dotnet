@@ -69,11 +69,13 @@ class TenantGrid extends React.Component {
                     <Cell>
                         {tenant.displayName === this.props.currentTenant ? (
                             <div className="pcs-renderer-cell">
-                                {tenant.displayName}
-                                <Svg
-                                    path={svgs.star}
-                                    className="pcs-renderer-icon"
-                                />
+                                <p>
+                                    {tenant.displayName}
+                                    <Svg
+                                        path={svgs.star}
+                                        className="pcs-renderer-icon"
+                                    />
+                                </p>
                             </div>
                         ) : (
                             <a
@@ -82,7 +84,7 @@ class TenantGrid extends React.Component {
                                 }
                                 href="#"
                             >
-                                {tenant.displayName}
+                                <p>{tenant.displayName}</p>
                             </a>
                         )}
                         <p className="iotHub-Name">{tenant.iotHubName}</p>
@@ -92,11 +94,13 @@ class TenantGrid extends React.Component {
                     <Cell>
                         {tenant.displayName === this.props.currentTenant ? (
                             <div className="pcs-renderer-cell">
-                                {tenant.displayName}{" "}
-                                <Svg
-                                    path={svgs.star}
-                                    className="pcs-renderer-icon"
-                                />{" "}
+                                <p>
+                                    {tenant.displayName}{" "}
+                                    <Svg
+                                        path={svgs.star}
+                                        className="pcs-renderer-icon"
+                                    />{" "}
+                                </p>
                             </div>
                         ) : (
                             <a
@@ -105,7 +109,7 @@ class TenantGrid extends React.Component {
                                 }
                                 href="#"
                             >
-                                {tenant.displayName}
+                                <p>{tenant.displayName} </p>
                             </a>
                         )}
                         <p className="iotHub-Name">{tenant.iotHubName}</p>
