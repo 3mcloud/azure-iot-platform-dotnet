@@ -228,7 +228,7 @@ export class AdvanceSearch extends LinkedComponent {
                             );
                     }
                     let error =
-                        (field.error || operator.error || value.error || "");
+                        field.error || operator.error || value.error || "";
                     return { field, operator, value, edited, error };
                 }
             ),

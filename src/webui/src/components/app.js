@@ -64,7 +64,7 @@ class App extends Component {
                 {
                     to: "/deviceSearch",
                     exact: false,
-                    svg: svgs.tabs.devices,
+                    svg: svgs.tabs.devicesSearch,
                     labelId: "Device Search",
                     component: DevicesRouter,
                 },

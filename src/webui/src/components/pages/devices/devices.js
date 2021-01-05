@@ -293,7 +293,12 @@ export class Devices extends Component {
                         titleValue={
                             !this.state.isDeviceSearch
                                 ? t("devices.title")
-                                : t("devices.deviceSearch")
+                                : t("devices.deviceSearchTitle")
+                        }
+                        descriptionValue={
+                            !this.state.isDeviceSearch
+                            ? t("devices.titleDescription")
+                            : t("devices.deviceSearchTitleDescription")
                         }
                     />
                     {!!error && <AjaxError t={t} error={error} />}
