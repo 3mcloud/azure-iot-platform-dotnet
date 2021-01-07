@@ -68,6 +68,7 @@ export const svgs = {
     tabs: {
         dashboard: TabDashboardIconPath,
         devices: TabDevicesIconPath,
+        devicesSearch: SearchIconPath,
         deployments: TabDeploymentsIconPath,
         maintenance: TabMaintenanceIconPath,
         packages: TabPackagesIconPath,

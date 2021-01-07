@@ -230,8 +230,11 @@
       "operatorCantBeEmpty": "ऑपरेटर आवश्यक है",
       "valueCantBeEmpty": "मूल्य की आवश्यकता है",
       "typeCantBeEmpty": "प्रकार की आवश्यकता है",
-      "selectedType": "किया जाना चाहिए के चयनित प्रकार"
-    }
+      "selectedType": "किया जाना चाहिए के चयनित प्रकार",
+      "statusCantBeEmpty": "Status is Required"
+    },
+    "status": "Status",
+    "statusPlaceholder": "Select Status"
   },
   "deviceGroupsFlyout": {
     "actions": "कार्रवाई",
@@ -395,9 +398,12 @@
   },
   "devices": {
     "title": "डिवाइस एक्सप्लोरर",
+    "titleDescription": "Explore devices within the current device group.",
     "ariaLabel": "खोज उपकरणों",
     "searchPlaceholder": "खोज उपकरणों...",
     "noneFound": "कोई उपकरण नहीं मिला है.",
+    "deviceSearchTitle": "Device Search",
+    "deviceSearchTitleDescription": "Search across all devices.",
     "refresh": "ताज़ा",
     "grid": {
       "connected": "जुड़ा हुआ है",

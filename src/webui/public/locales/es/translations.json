@@ -230,8 +230,11 @@
       "operatorCantBeEmpty": "El operador se requiere",
       "valueCantBeEmpty": "Valor es necesario",
       "typeCantBeEmpty": "Tipo es necesario",
-      "selectedType": "Debe ser del tipo seleccionado"
-    }
+      "selectedType": "Debe ser del tipo seleccionado",
+      "statusCantBeEmpty": "Status is Required"
+    },
+    "status": "Status",
+    "statusPlaceholder": "Select Status"
   },
   "deviceGroupsFlyout": {
     "actions": "Acciones",
@@ -395,9 +398,12 @@
   },
   "devices": {
     "title": "Explorador De Dispositivos",
+    "titleDescription": "Explore devices within the current device group.",
     "ariaLabel": "Búsqueda de dispositivos",
     "searchPlaceholder": "Búsqueda de dispositivos...",
     "noneFound": "No se encuentran los dispositivos.",
+    "deviceSearchTitle": "Device Search",
+    "deviceSearchTitleDescription": "Search across all devices.",
     "refresh": "Actualización",
     "grid": {
       "connected": "Conectado",

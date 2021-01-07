@@ -34,7 +34,10 @@ export class DevicesGrid extends Component {
         super(props);
 
         // Set the initial state
-        this.state = closedFlyoutState;
+        this.state = {
+            ...closedFlyoutState,
+            isDeviceSearch: false,
+        };
 
         // Default device grid columns
         this.columnDefs = [
@@ -76,6 +79,18 @@ export class DevicesGrid extends Component {
                 </Btn>
             </ComponentArray>
         );
+    }
+
+    componentWillMount() {
+        if (this.props && this.props.location.pathname === "/deviceSearch") {
+            this.setState({
+                isDeviceSearch: true,
+            });
+        } else {
+            this.setState({
+                isDeviceSearch: false,
+            });
+        }
     }
 
     onFirstDataRendered = () => {
@@ -197,6 +212,7 @@ export class DevicesGrid extends Component {
                         onClose={this.closeFlyout}
                         deviceId={this.state.softSelectedDeviceId}
                         flyoutLink={flyoutLink}
+                        isDeviceSearch={this.state.isDeviceSearch}
                     />
                 );
             case "c2dmessage":
@@ -218,9 +234,15 @@ export class DevicesGrid extends Component {
 
     goToTelemetryScreen = () => {
         const selectedDevices = this.deviceGridApi.getSelectedRows();
-        this.props.history.push("/devices/telemetry", {
-            deviceIds: selectedDevices.map(({ id }) => id),
-        });
+        if (this.state.isDeviceSearch) {
+            this.props.history.push("/deviceSearch/telemetry", {
+                deviceIds: selectedDevices.map(({ id }) => id),
+            });
+        } else {
+            this.props.history.push("/devices/telemetry", {
+                deviceIds: selectedDevices.map(({ id }) => id),
+            });
+        }
     };
 
     /**
