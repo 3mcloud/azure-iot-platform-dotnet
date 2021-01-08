@@ -15,9 +15,9 @@ export const PageTitle = ({
     descriptionClassName,
 }) => (
     <div className={joinClasses("page-title", className)}>
-        <h2 className={joinClasses("page-title-header", hearderClassName)}>
+        <h1 className={joinClasses("page-title-header", hearderClassName)}>
             {titleValue}
-        </h2>
+        </h1>
         {descriptionValue && (
             <h5 className={joinClasses(descriptionClassName)}>
                 {descriptionValue}

@@ -17,7 +17,6 @@ import {
     PageTitle,
     Protected,
     RefreshBarContainer as RefreshBar,
-    SearchInput,
     JsonEditorModal,
 } from "components/shared";
 import { DeviceNewContainer } from "./flyouts/deviceNew";
@@ -121,18 +120,6 @@ export class Devices extends Component {
             contextBtns,
             openFlyoutName: undefined,
         });
-
-    onGridReady = (gridReadyEvent) => (this.deviceGridApi = gridReadyEvent.api);
-
-    searchOnChange = ({ target: { value } }) => {
-        if (this.deviceGridApi) {
-            this.deviceGridApi.setQuickFilter(value);
-        }
-    };
-
-    onSearchClick = () => {
-        this.props.logEvent(toDiagnosticsModel("Devices_Search", {}));
-    };
 
     openModal = (modalName, jsonValue) => {
         this.setState({
@@ -256,6 +243,8 @@ export class Devices extends Component {
                 rowData: isDataPending ? undefined : deviceData || [],
                 onContextMenuChange: this.onContextMenuChange,
                 t: this.props.t,
+                searchPlaceholder: this.props.t("devices.searchPlaceholder"),
+                searchAreaLabel: this.props.t("devices.ariaLabel")
             },
             newDeviceFlyoutOpen = this.state.openFlyoutName === "new-device",
             simManagementFlyoutOpen =
@@ -303,16 +292,8 @@ export class Devices extends Component {
                     />
                     {!!error && <AjaxError t={t} error={error} />}
                     {this.state.isDeviceSearch && <AdvanceSearchContainer />}
-                    <div className="search-left-div">
-                        <SearchInput
-                            onChange={this.searchOnChange}
-                            onClick={this.onSearchClick}
-                            aria-label={t("devices.ariaLabel")}
-                            placeholder={t("devices.searchPlaceholder")}
-                        />
-                    </div>
+                    {!this.state.isDeviceSearch && (
                     <div className="cancel-right-div">
-                        {!this.state.isDeviceSearch && (
                             <Toggle
                                 attr={{
                                     button: {
@@ -325,8 +306,8 @@ export class Devices extends Component {
                                 offLabel={t("devices.loadMore")}
                                 onChange={this.switchLoadMore}
                             />
-                        )}
                     </div>
+                        )}
                     {!error && (
                         <DevicesGridContainer
                             {...gridProps}
