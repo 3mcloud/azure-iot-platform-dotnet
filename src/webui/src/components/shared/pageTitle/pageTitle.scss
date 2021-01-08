@@ -7,11 +7,10 @@
 .page-title {
   margin: 0;
   @include rem-fallback(margin-right, 10px);
-  @include rem-fallback(padding-bottom, 30px);
+  @include rem-fallback(padding-bottom, 10px);
 
   .page-title-header {
-    font-weight: 700;
-    @include rem-font-size(48px);
+    font-weight: bold;
   }  
   
   @include themify($themes) {

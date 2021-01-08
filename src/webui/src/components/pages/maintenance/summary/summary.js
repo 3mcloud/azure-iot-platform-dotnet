@@ -121,7 +121,7 @@ export class Summary extends Component {
                                     label={this.props.t(
                                         "maintenance.openAlerts"
                                     )}
-                                    size="large"
+                                    size="medium"
                                 />
                             </StatGroup>
                         )}
@@ -151,7 +151,7 @@ export class Summary extends Component {
                                     this.props.failedJobsCount
                                 )}
                                 label={this.props.t("maintenance.failedJobs")}
-                                size="large"
+                                size="medium"
                             />
                         </StatGroup>
                         <StatGroup>

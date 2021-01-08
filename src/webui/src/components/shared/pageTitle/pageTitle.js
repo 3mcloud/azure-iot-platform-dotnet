@@ -15,13 +15,13 @@ export const PageTitle = ({
     descriptionClassName,
 }) => (
     <div className={joinClasses("page-title", className)}>
-        <h1 className={joinClasses("page-title-header", hearderClassName)}>
+        <h2 className={joinClasses("page-title-header", hearderClassName)}>
             {titleValue}
-        </h1>
+        </h2>
         {descriptionValue && (
-            <h4 className={joinClasses(descriptionClassName)}>
+            <h5 className={joinClasses(descriptionClassName)}>
                 {descriptionValue}
-            </h4>
+            </h5>
         )}
     </div>
 );
