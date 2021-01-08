@@ -32,6 +32,7 @@ export class IoTHubManagerService {
                 "x-ms-continuation": cToken,
             };
         }
+        options.timeout = 120000;
         const query = encodeURIComponent(JSON.stringify(conditions));
         return HttpClient.get(`${ENDPOINT}devices?query=${query}`, options).map(
             toDevicesModel

@@ -156,7 +156,7 @@ export class Devices extends Component {
         let children = [];
 
         if (!isDeviceSearch) {
-            children.push([
+            children.push(
                 <DeviceGroupDropdown
                     updateLoadMore={this.updateLoadMoreOnDeviceGroupChange}
                     deviceGroupIdFromUrl={this.state.selectedDeviceGroupId}
@@ -164,8 +164,8 @@ export class Devices extends Component {
                 <Protected permission={permissions.updateDeviceGroups}>
                     <ManageDeviceGroupsBtn />
                 </Protected>,
-                <CreateDeviceQueryBtn />,
-            ]);
+                <CreateDeviceQueryBtn />
+            );
         }
 
         if (
