@@ -337,7 +337,7 @@ export class RulesGrid extends Component {
             onHardSelectChange: this.onHardSelectChange,
             onSoftSelectChange: this.onSoftSelectChange,
             searchPlaceholder: this.props.t("rules.searchPlaceholder"),
-            searchAreaLabel: this.props.t("rules.ariaLabel")
+            searchAreaLabel: this.props.t("rules.ariaLabel"),
         };
 
         return (

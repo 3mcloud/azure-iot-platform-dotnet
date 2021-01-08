@@ -173,10 +173,10 @@ $doublePadding: $baseContentPadding * 2;
 
 .btn.expand-columns {
   @include rem-fallback(width, 15px);
-    @include themify($themes) {
+  @include rem-fallback(margin, 10px, 0px, 10px, 0px);
+  @include themify($themes) {
   .btn:hover {
     background-color: themed('color-bg-content');
   }
-  margin-top: 15px;
 }
 }

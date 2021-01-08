@@ -244,7 +244,7 @@ export class Devices extends Component {
                 onContextMenuChange: this.onContextMenuChange,
                 t: this.props.t,
                 searchPlaceholder: this.props.t("devices.searchPlaceholder"),
-                searchAreaLabel: this.props.t("devices.ariaLabel")
+                searchAreaLabel: this.props.t("devices.ariaLabel"),
             },
             newDeviceFlyoutOpen = this.state.openFlyoutName === "new-device",
             simManagementFlyoutOpen =
@@ -293,7 +293,7 @@ export class Devices extends Component {
                     {!!error && <AjaxError t={t} error={error} />}
                     {this.state.isDeviceSearch && <AdvanceSearchContainer />}
                     {!this.state.isDeviceSearch && (
-                    <div className="cancel-right-div">
+                        <div className="cancel-right-div">
                             <Toggle
                                 attr={{
                                     button: {
@@ -306,8 +306,8 @@ export class Devices extends Component {
                                 offLabel={t("devices.loadMore")}
                                 onChange={this.switchLoadMore}
                             />
-                    </div>
-                        )}
+                        </div>
+                    )}
                     {!error && (
                         <DevicesGridContainer
                             {...gridProps}

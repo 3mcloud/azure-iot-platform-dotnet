@@ -102,7 +102,7 @@ export class Users extends Component {
                 onContextMenuChange: this.onContextMenuChange,
                 t: this.props.t,
                 searchAreaLabel: this.props.t("users.ariaLabel"),
-                searchPlaceholder: this.props.t("users.searchPlaceholder")
+                searchPlaceholder: this.props.t("users.searchPlaceholder"),
             },
             newUserFlyoutOpen = this.state.openFlyoutName === "new-user",
             newServicePrincipalFlyoutOpen =

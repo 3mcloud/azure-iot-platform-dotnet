@@ -202,15 +202,15 @@ export class PcsGrid extends Component {
             <ComponentArray>
                 {rowData && (
                     <div className="flex-container">
-                        {this.props.searchPlaceholder && 
-                        (<div className="flex-child">
-                            <SearchInput
-                                onChange={this.searchOnChange}
-                                placeholder={this.props.searchPlaceholder}
-                                aria-label={this.props.searchAreaLabel}
-                            />
-                        </div>)
-                        }
+                        {this.props.searchPlaceholder && (
+                            <div className="flex-child">
+                                <SearchInput
+                                    onChange={this.searchOnChange}
+                                    placeholder={this.props.searchPlaceholder}
+                                    aria-label={this.props.searchAreaLabel}
+                                />
+                            </div>
+                        )}
                         <div className="flex-child">
                             <Btn
                                 onClick={this.expandColumns}
