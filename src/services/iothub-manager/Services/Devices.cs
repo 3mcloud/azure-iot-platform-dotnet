@@ -128,13 +128,20 @@ namespace Mmm.Iot.IoTHubManager.Services
             IEnumerable<QueryConditionClause> deviceIdClauses = null;
             if (!string.IsNullOrWhiteSpace(inputQuery))
             {
-                clauses = JsonConvert.DeserializeObject<IEnumerable<QueryConditionClause>>(inputQuery);
-                deviceIdClauses = clauses.Where(x => x.Key == "deviceId" && x.Operator == "LK").ToList();
-
-                if (deviceIdClauses != null && deviceIdClauses.Count() > 0)
+                try
                 {
-                    clauses = clauses.Where(x => x.Key != "deviceId" && x.Operator != "LK");
-                    inputQuery = JsonConvert.SerializeObject(clauses);
+                    clauses = JsonConvert.DeserializeObject<IEnumerable<QueryConditionClause>>(inputQuery);
+                    deviceIdClauses = clauses.Where(x => x.Key == "deviceId" && x.Operator == "LK").ToList();
+
+                    if (deviceIdClauses != null && deviceIdClauses.Count() > 0)
+                    {
+                        clauses = clauses.Where(x => x.Key != "deviceId" && x.Operator != "LK");
+                        inputQuery = JsonConvert.SerializeObject(clauses);
+                    }
+                }
+                catch
+                {
+                    // Any exception raised in deserializing will be ignored
                 }
 
                 if (!string.IsNullOrWhiteSpace(inputQuery))
