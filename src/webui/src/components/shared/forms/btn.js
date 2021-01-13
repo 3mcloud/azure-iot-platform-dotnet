@@ -34,4 +34,5 @@ Btn.propTypes = {
     className: PropTypes.string,
     primary: PropTypes.bool,
     svg: PropTypes.string,
+    icon: PropTypes.string,
 };

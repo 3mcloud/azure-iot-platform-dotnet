@@ -223,7 +223,8 @@
             "GT": "> Greater than",
             "LT": "< Less than",
             "GE": ">= Greater than or equal",
-            "LE": "<= Less than or equal"
+            "LE": "<= Less than or equal",
+            "LK": "Contains"
         },
         "value": "Value",
         "valuePlaceholder": "Enter value",
@@ -240,8 +241,11 @@
             "operatorCantBeEmpty": "Operator is required",
             "valueCantBeEmpty": "Value is required",
             "typeCantBeEmpty": "Type is required",
-            "selectedType": "Must be of the selected type"
-        }
+            "selectedType": "Must be of the selected type",
+            "statusCantBeEmpty": "Status is Required"
+        },
+        "status": "Status",
+        "statusPlaceholder": "Select Status"
     },
     "deviceGroupsFlyout": {
         "actions": "Actions",
@@ -406,10 +410,13 @@
     },
     "devices": {
         "title": "Device Explorer",
+        "titleDescription": "Explore devices within the current device group.",
         "ariaLabel": "Search devices",
         "searchPlaceholder": "Search devices...",
         "noneFound": "No devices found.",
         "refresh": "Refresh",
+        "deviceSearchTitle": "Device Search",
+        "deviceSearchTitleDescription": "Search across all devices.",
         "showTelemetry": "Show telemetry",
         "returnToDevices": "Devices",
         "loadMore": "Load more",

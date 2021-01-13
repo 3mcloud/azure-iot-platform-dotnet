@@ -40,3 +40,23 @@
   font-family: $fontSelawikSemilight;
   color: darkgray;
 }
+
+a > p, .pcs-renderer-cell > p {
+  word-break: break-all;
+  padding-right: 2px;
+}
+
+.pcs-renderer-cell {
+  height: auto;
+  @include themify($themes) {
+    .pcs-renderer-icon svg { fill: themed('colorWarning'); }
+  }
+  .pcs-renderer-icon {
+    margin-bottom: 4px !important;
+    margin-left: 3px !important;
+    display: inline-block !important;
+  }
+  .current-tenant-text {
+    font-weight: 600;
+  }
+}

@@ -12,6 +12,7 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Mmm.Iot.Common.Services.Config;
 using Mmm.Iot.Common.Services.Exceptions;
+using Mmm.Iot.Common.Services.External.AppConfiguration;
 using Mmm.Iot.Common.Services.External.AsaManager;
 using Mmm.Iot.Common.Services.External.CosmosDb;
 using Mmm.Iot.Common.Services.Helpers;
@@ -36,17 +37,22 @@ namespace Mmm.Iot.IoTHubManager.Services
         private const string DeviceConnectionStateCountQueryPrefix = "SELECT COUNT() AS numberOfDevices, connectionState FROM devices";
         private const string DeviceConnectionState = "connectionState";
         private const string DevicesConnectedQuery = "connectionState = 'Connected'";
+        private const string TwinChangeDatabase = "iot";
+        private const string AppConfigTenantInfoKey = "tenant";
+        private const string AppConfigTwinChangeCollectionKey = "twin-change-collection";
         private readonly ITenantConnectionHelper tenantConnectionHelper;
         private readonly IAsaManagerClient asaManager;
         private readonly IDeviceQueryCache deviceQueryCache;
         private readonly IStorageClient storageClient;
+        private readonly IAppConfigurationClient appConfigurationClient;
 
         public Devices(
             AppConfig config,
             ITenantConnectionHelper tenantConnectionHelper,
             IAsaManagerClient asaManagerClient,
             IDeviceQueryCache deviceQueryCache,
-            IStorageClient storageClient)
+            IStorageClient storageClient,
+            IAppConfigurationClient appConfigurationClient)
         {
             if (config == null)
             {
@@ -57,6 +63,7 @@ namespace Mmm.Iot.IoTHubManager.Services
             this.asaManager = asaManagerClient;
             this.deviceQueryCache = deviceQueryCache;
             this.storageClient = storageClient;
+            this.appConfigurationClient = appConfigurationClient;
         }
 
         public Devices(
@@ -114,43 +121,132 @@ namespace Mmm.Iot.IoTHubManager.Services
             return result;
         }
 
-        public async Task<DeviceServiceListModel> GetListAsync(string query, string continuationToken)
+        public async Task<DeviceServiceListModel> GetListAsync(string inputQuery, string continuationToken)
         {
-            if (!string.IsNullOrWhiteSpace(query))
+            string querytoBeCached = inputQuery;
+            IEnumerable<QueryConditionClause> clauses = null;
+            IEnumerable<QueryConditionClause> deviceIdClauses = null;
+            if (!string.IsNullOrWhiteSpace(inputQuery))
             {
-                // Try to translate clauses to query
-                query = QueryConditionTranslator.ToQueryString(query);
+                try
+                {
+                    clauses = JsonConvert.DeserializeObject<IEnumerable<QueryConditionClause>>(inputQuery);
+                    deviceIdClauses = clauses.Where(x => x.Key == "deviceId" && x.Operator == "LK").ToList();
+
+                    if (deviceIdClauses != null && deviceIdClauses.Count() > 0)
+                    {
+                        clauses = clauses.Where(x => x.Key != "deviceId" && x.Operator != "LK");
+                        inputQuery = JsonConvert.SerializeObject(clauses);
+                    }
+                }
+                catch
+                {
+                    // Any exception raised in deserializing will be ignored
+                }
+
+                if (!string.IsNullOrWhiteSpace(inputQuery))
+                {
+                    // Try to translate clauses to query
+                    inputQuery = QueryConditionTranslator.ToQueryString(inputQuery);
+                }
             }
 
-            var resultModel = await this.deviceQueryCache.GetCachedQueryResultAsync(this.tenantConnectionHelper.TenantId, query);
+            DeviceServiceListModel resultModel = null;
+            string tenantId = this.tenantConnectionHelper.TenantId;
 
-            if (resultModel != null)
+            if (string.IsNullOrWhiteSpace(continuationToken))
             {
-                return resultModel;
+                resultModel = await this.deviceQueryCache.GetCachedQueryResultAsync(tenantId, querytoBeCached);
+
+                if (resultModel != null)
+                {
+                    return resultModel;
+                }
             }
 
-            var twins = await this.GetTwinByQueryAsync(
+            string query = string.Empty;
+            int iotHublimit = 500;
+            string deviceListValue = string.Empty;
+            ResultWithContinuationToken<List<Twin>> allTwins = new ResultWithContinuationToken<List<Twin>>(new List<Twin>(), continuationToken);
+            if (deviceIdClauses != null && deviceIdClauses.Count() > 0)
+            {
+                foreach (var deviceIdClause in deviceIdClauses)
+                {
+                    List<string> deviceIds = await this.GetDevicesBasedOnInputDeviceString(deviceIdClause.Value.ToString().ToLower(), tenantId);
+                    for (int i = 0; i < (deviceIds.Count / iotHublimit) + 1; i++)
+                    {
+                        if (i != 0 && (deviceIds.Count % (i * iotHublimit)) <= 0)
+                        {
+                            break;
+                        }
+
+                        List<string> batchDeviceIds = deviceIds.Skip(i * iotHublimit).Take(iotHublimit).ToList();
+                        if (batchDeviceIds != null && batchDeviceIds.Count > 0)
+                        {
+                            // deviceListValue = $"({string.Join(" or ", deviceIds.Select(v => $"deviceId = '{v}'"))})";
+                            deviceListValue = string.Join(",", batchDeviceIds.Select(p => $"'{p}'"));
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(inputQuery))
+                        {
+                            // Try to translate clauses to query
+                            query = $"{inputQuery} AND deviceId IN [{deviceListValue}]";
+                        }
+                        else
+                        {
+                            query = $" deviceId IN [{deviceListValue}]";
+                        }
+
+                        int countOfDevicestoFetch = string.IsNullOrWhiteSpace(deviceListValue) ? MaximumGetList : deviceIds.Count();
+
+                        var twins = await this.GetTwinByQueryAsync(
+                            QueryPrefix,
+                            query,
+                            continuationToken,
+                            countOfDevicestoFetch);
+
+                        allTwins.Result.AddRange(twins.Result.Except(allTwins.Result));
+                        while (!string.IsNullOrWhiteSpace(twins.ContinuationToken))
+                        {
+                            twins = await this.GetTwinByQueryAsync(
+                            QueryPrefix,
+                            query,
+                            continuationToken,
+                            countOfDevicestoFetch);
+                            allTwins.Result.AddRange(twins.Result);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                allTwins = await this.GetTwinByQueryAsync(
                 QueryPrefix,
-                query,
+                inputQuery,
                 continuationToken,
                 MaximumGetList);
+            }
 
-            var connectedEdgeDevices = await this.GetConnectedEdgeDevices(twins.Result);
+            var connectedEdgeDevices = await this.GetConnectedEdgeDevices(allTwins.Result);
 
             resultModel = new DeviceServiceListModel(
-                twins.Result.Select(azureTwin => new DeviceServiceModel(
+                allTwins.Result.Select(azureTwin => new DeviceServiceModel(
                     azureTwin,
                     this.tenantConnectionHelper.GetIotHubName(),
                     connectedEdgeDevices.ContainsKey(azureTwin.DeviceId))),
-                twins.ContinuationToken);
-            this.deviceQueryCache.SetTenantQueryResult(
-                this.tenantConnectionHelper.TenantId,
-                query,
-                new DeviceQueryCacheResultServiceModel
-                {
-                    Result = resultModel,
-                    ResultTimestamp = DateTimeOffset.Now,
-                });
+                allTwins.ContinuationToken);
+
+            if (string.IsNullOrWhiteSpace(continuationToken))
+            {
+                this.deviceQueryCache.SetTenantQueryResult(
+                    this.tenantConnectionHelper.TenantId,
+                    querytoBeCached,
+                    new DeviceQueryCacheResultServiceModel
+                    {
+                        Result = resultModel,
+                        ResultTimestamp = DateTimeOffset.Now,
+                    });
+            }
 
             return resultModel;
         }
@@ -405,6 +501,29 @@ namespace Mmm.Iot.IoTHubManager.Services
             var query = $"deviceId='{deviceId}' AND {DevicesConnectedQuery}";
             var edgeModules = await this.GetModuleTwinsByQueryAsync(query, string.Empty);
             return edgeModules.Items.Any();
+        }
+
+        private async Task<List<string>> GetDevicesBasedOnInputDeviceString(string deviceInput, string tenantId)
+        {
+            var sql = QueryBuilder.GetDeviceDocumentsSqlByKeyLikeSearch("deviceId", deviceInput);
+
+            var twinChangeResult = await this.storageClient.QueryDocumentsAsync(
+                TwinChangeDatabase,
+                this.GetTwinChangeCollectionId(tenantId),
+                new FeedOptions
+                {
+                    EnableCrossPartitionQuery = true,
+                },
+                sql,
+                0,
+                10000);
+            return twinChangeResult.Select(x => x.Id).ToList();
+        }
+
+        private string GetTwinChangeCollectionId(string tenantId)
+        {
+            return this.appConfigurationClient.GetValue(
+                $"{AppConfigTenantInfoKey}:{tenantId}:{AppConfigTwinChangeCollectionKey}");
         }
 
         private async Task<ResultWithContinuationToken<List<T>>> GetIotDataQueryAsync<T>(

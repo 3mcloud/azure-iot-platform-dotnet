@@ -14,7 +14,6 @@ import {
     PageTitle,
     Protected,
     RefreshBarContainer as RefreshBar,
-    SearchInput,
 } from "components/shared";
 import { UserNewContainer } from "./flyouts/userNew";
 import { UserNewServicePrincipalContainer } from "./flyouts/userNewServicePrincipal/userNewServicePrincipal.container";
@@ -86,16 +85,6 @@ export class Users extends Component {
         }
     };
 
-    searchOnChange = ({ target: { value } }) => {
-        if (this.userGridApi) {
-            this.userGridApi.setQuickFilter(value);
-        }
-    };
-
-    onSearchClick = () => {
-        this.props.logEvent(toDiagnosticsModel("Users_Search", {}));
-    };
-
     render() {
         const {
                 t,
@@ -112,6 +101,8 @@ export class Users extends Component {
                 rowData: isPending ? undefined : users || [],
                 onContextMenuChange: this.onContextMenuChange,
                 t: this.props.t,
+                searchAreaLabel: this.props.t("users.ariaLabel"),
+                searchPlaceholder: this.props.t("users.searchPlaceholder"),
             },
             newUserFlyoutOpen = this.state.openFlyoutName === "new-user",
             newServicePrincipalFlyoutOpen =
@@ -171,12 +162,6 @@ export class Users extends Component {
                 <PageContent className="users-container">
                     <PageTitle titleValue={t("users.title")} />
                     {!!error && <AjaxError t={t} error={error} />}
-                    <SearchInput
-                        onChange={this.searchOnChange}
-                        onClick={this.onSearchClick}
-                        aria-label={t("users.ariaLabel")}
-                        placeholder={t("users.searchPlaceholder")}
-                    />
                     {!error && <UsersGridContainer {...gridProps} />}
                     {newUserFlyoutOpen && (
                         <UserNewContainer onClose={this.closeFlyout} />

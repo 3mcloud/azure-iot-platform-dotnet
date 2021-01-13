@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.Azure.Devices;
 using Mmm.Iot.Common.Services.Exceptions;
 using Newtonsoft.Json;
 
@@ -22,6 +23,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Helpers
             { "GT", ">" },
             { "GE", ">=" },
             { "IN", "IN" },
+            { "LK", "LIKE" },
         };
 
         public static string ToQueryString(string conditions)
@@ -69,6 +71,11 @@ namespace Mmm.Iot.IoTHubManager.Services.Helpers
                     List<string> values = JsonConvert.DeserializeObject<List<string>>(value.ToString());
                     string joinValues = string.Join(" or ", values.Select(v => $"{c.Key} = '{v}'"));
                     return $"({joinValues})";
+                }
+
+                if (c.Key == "firmwareVersion")
+                {
+                    return $"( properties.reported.firmware.currentFwVersion {op} {value.ToString()} or properties.reported.Firmware {op} {value.ToString()} )";
                 }
 
                 return $"{c.Key} {op} {value.ToString()}";

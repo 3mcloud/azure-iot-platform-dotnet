@@ -57,7 +57,10 @@ export const epics = createEpicScenario({
                 .flatMap((action) => {
                     const actions = [];
                     actions.push(action);
-                    if (cToken && !store.getState().devices.cancelDeviceCalls) {
+                    if (
+                        cToken &&
+                        store.getState().devices.makeCTokenDeviceCalls
+                    ) {
                         actions.push(epics.actions.fetchDevicesByCToken());
                     }
                     return actions;
@@ -94,7 +97,7 @@ export const epics = createEpicScenario({
                         actions.push(action);
                         if (
                             cToken &&
-                            !store.getState().devices.cancelDeviceCalls
+                            store.getState().devices.makeCTokenDeviceCalls
                         ) {
                             actions.push(epics.actions.fetchDevicesByCToken());
                         }
@@ -102,6 +105,7 @@ export const epics = createEpicScenario({
                     })
                     .catch(handleError(fromAction));
             }
+            return [];
         },
     },
 
@@ -110,6 +114,9 @@ export const epics = createEpicScenario({
         type: "DEVICES_FETCH_BY_CONDITION",
         epic: (fromAction) => {
             return IoTHubManagerService.getDevices(fromAction.payload)
+                .map((response) => {
+                    return response.items;
+                })
                 .map(
                     toActionCreator(
                         redux.actions.updateDevicesByCondition,
@@ -191,7 +198,9 @@ const deviceSchema = new schema.Entity("devices"),
         lastUpdated: "",
         totalDeviceCount: 0,
         connectedDeviceCount: 0,
-        cancelDeviceCalls: false,
+        makeCTokenDeviceCalls: false,
+        devicesByConditionEntities: {},
+        devicesByConditionItems: [],
     },
     updateDevicesReducer = (state, { payload, fromAction }) => {
         const {
@@ -215,10 +224,18 @@ const deviceSchema = new schema.Entity("devices"),
     updateDevicesByConditionReducer = (state, { payload, fromAction }) => {
         const {
             entities: { devices },
+            result,
         } = normalize(payload, deviceListSchema);
         return update(state, {
-            devicesByCondition: { $set: devices },
+            devicesByConditionEntities: { $set: devices },
+            devicesByConditionItems: { $set: result },
             ...setPending(fromAction.type, false),
+        });
+    },
+    resetDeviceByConditionReducer = (state) => {
+        return update(state, {
+            devicesByConditionEntities: { $set: {} },
+            devicesByConditionItems: { $set: [] },
         });
     },
     deleteDevicesReducer = (state, { payload }) => {
@@ -229,9 +246,21 @@ const deviceSchema = new schema.Entity("devices"),
             }
             return idxAcc;
         }, []);
+        const spliceDevicesByConditionItems = payload.reduce(
+            (idxAcc, payloadItem) => {
+                const idx = state.devicesByConditionItems.indexOf(payloadItem);
+                if (idx !== -1) {
+                    idxAcc.push([idx, 1]);
+                }
+                return idxAcc;
+            },
+            []
+        );
         return update(state, {
             entities: { $unset: payload },
             items: { $splice: spliceArr },
+            devicesByConditionEntities: { $unset: payload },
+            devicesByConditionItems: { $splice: spliceDevicesByConditionItems },
         });
     },
     insertDevicesReducer = (state, { payload }) => {
@@ -305,7 +334,7 @@ const deviceSchema = new schema.Entity("devices"),
     },
     cancelDeviceCallsReducer = (state, { payload }) => {
         return update(state, {
-            cancelDeviceCalls: { $set: payload.cancelSubsequentCalls },
+            makeCTokenDeviceCalls: { $set: payload.makeSubsequentCalls },
         });
     },
     /* Action types that cause a pending flag */
@@ -325,6 +354,10 @@ export const redux = createReducerScenario({
     updateDevicesByCondition: {
         type: "DEVICES_UPDATE_BY_CONDITION",
         reducer: updateDevicesByConditionReducer,
+    },
+    resetDeviceByCondition: {
+        type: "DEVICES_RESET_BY_CONDITION",
+        reducer: resetDeviceByConditionReducer,
     },
     registerError: { type: "DEVICES_REDUCER_ERROR", reducer: errorReducer },
     isFetching: { multiType: fetchableTypes, reducer: pendingReducer },
@@ -362,8 +395,15 @@ export const getDevicesError = (state) =>
     getError(getDevicesReducer(state), epics.actionTypes.fetchDevices);
 export const getDevicesPendingStatus = (state) =>
     getPending(getDevicesReducer(state), epics.actionTypes.fetchDevices);
-export const getDevicesByCondition = (state) =>
-    getDevicesReducer(state).devicesByCondition || {};
+export const getDevicesByConditionEntities = (state) =>
+    getDevicesReducer(state).devicesByConditionEntities || {};
+export const getDevicesByConditionItems = (state) =>
+    getDevicesReducer(state).devicesByConditionItems || [];
+export const getDevicesByCondition = createSelector(
+    getDevicesByConditionEntities,
+    getDevicesByConditionItems,
+    (entities, items) => items.map((id) => entities[id])
+);
 export const getDevicesByConditionError = (state) =>
     getError(
         getDevicesReducer(state),
@@ -380,6 +420,8 @@ export const getDevices = createSelector(
     (entities, items) => items.map((id) => entities[id])
 );
 export const getDeviceById = (state, id) => getEntities(state)[id];
+export const getDeviceByConditionById = (state, id) =>
+    getDevicesByConditionEntities(state)[id];
 export const getDeviceModuleStatus = (state) => {
     const deviceModuleStatus = getDevicesReducer(state).deviceModuleStatus;
     return deviceModuleStatus
@@ -399,6 +441,7 @@ export const getDeviceStatistics = (state) => {
         ? {
               totalDeviceCount: deviceState.totalDeviceCount,
               connectedDeviceCount: deviceState.connectedDeviceCount,
+              loadedDeviceCount: deviceState.items.length,
           }
         : undefined;
 };
@@ -409,4 +452,8 @@ export const getDeviceStatisticsPendingStatus = (state) =>
     );
 export const getDeviceStatisticsError = (state) =>
     getError(getDevicesReducer(state), epics.actionTypes.fetchDeviceStatistics);
+export const getLoadMoreToggleState = (state) => {
+    const deviceState = getDevicesReducer(state);
+    return deviceState.makeCTokenDeviceCalls;
+};
 // ========================= Selectors - END

@@ -105,7 +105,7 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
 
             if (devicesStatuses != null && devicesStatuses.Keys.Count > 0)
             {
-                var deviceTwins = await this.GetDeviceProperties(tenantId, devicesStatuses.Keys);
+                var deviceTwins = await this.GetDeviceProperties(tenantId, deployment);
                 if (deviceTwins != null && deviceTwins.Count > 0)
                 {
                     await this.SaveDeviceProperties(tenantId, deployment.Id, deviceTwins);
@@ -113,7 +113,7 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
 
                 if (ConfigurationsHelper.IsEdgeDeployment(configuration))
                 {
-                    var moduleTwins = await this.GetDeviceProperties(tenantId, devicesStatuses.Keys, PackageType.EdgeManifest);
+                    var moduleTwins = await this.GetDeviceProperties(tenantId, deployment, PackageType.EdgeManifest);
                     await this.StoreModuleTwinsInStorage(tenantId, moduleTwins, deployment.Id);
                 }
             }
@@ -516,27 +516,25 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
             return deviceMetrics;
         }
 
-        private async Task<List<TwinServiceModel>> GetDeviceProperties(string tenantId, IEnumerable<string> deviceIds, PackageType packageType = PackageType.DeviceConfiguration)
+        private async Task<List<TwinServiceModel>> GetDeviceProperties(string tenantId, DeploymentServiceModel deploymentDetail, PackageType packageType = PackageType.DeviceConfiguration)
         {
             List<TwinServiceModel> twins = new List<TwinServiceModel>();
-            string deviceQuery = @"deviceId IN [{0}]";
-            string moduleQuery = @"deviceId IN [{0}] AND moduleId = '$edgeAgent'";
-
-            if (deviceIds != null && deviceIds.Count() > 0)
+            if (packageType == PackageType.EdgeManifest)
             {
-                var deviceIdsQuery = string.Join(",", deviceIds.Select(d => $"'{d}'"));
-                if (packageType == PackageType.EdgeManifest)
+                IEnumerable<string> deviceIds = deploymentDetail.DeploymentMetrics.DeviceStatuses.Keys;
+                if (deviceIds != null && deviceIds.Count() > 0)
                 {
+                    string moduleQuery = @"deviceId IN [{0}] AND moduleId = '$edgeAgent'";
+                    var deviceIdsQuery = string.Join(",", deviceIds.Select(d => $"'{d}'"));
                     var query = string.Format(moduleQuery, deviceIdsQuery);
 
                     await this.GetModuleTwins(tenantId, query, null, twins);
                 }
-                else
-                {
-                    var query = string.Format(deviceQuery, deviceIdsQuery);
-
-                    await this.GetDeviceTwins(tenantId, query, null, twins);
-                }
+            }
+            else
+            {
+                string deviceQuery = deploymentDetail.TargetCondition == "*" ? string.Empty : deploymentDetail.TargetCondition;
+                await this.GetDeviceTwins(tenantId, deviceQuery, null, twins);
             }
 
             return twins;
@@ -545,14 +543,14 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
         private async Task GetDeviceTwins(string tenantId, string query, string continuationToken, List<TwinServiceModel> twins)
         {
             DeviceServiceListModel devices = null;
-            devices = await this.GetListAsync(tenantId, query, null);
+            devices = await this.GetListAsync(tenantId, query, continuationToken);
 
             if (devices != null && devices.Items.Count() > 0)
             {
                 twins.AddRange(devices.Items.Select(i => i.Twin));
                 if (!string.IsNullOrWhiteSpace(devices.ContinuationToken))
                 {
-                    await this.GetDeviceTwins(tenantId, query, continuationToken, twins);
+                    await this.GetDeviceTwins(tenantId, query, devices.ContinuationToken, twins);
                 }
             }
         }
@@ -560,14 +558,14 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
         private async Task GetModuleTwins(string tenantId, string query, string continuationToken, List<TwinServiceModel> twins)
         {
             TwinServiceListModel moduleTwins = null;
-            moduleTwins = await this.GetModuleTwinsByQueryAsync(tenantId, query, null);
+            moduleTwins = await this.GetModuleTwinsByQueryAsync(tenantId, query, continuationToken);
 
             if (moduleTwins != null && moduleTwins.Items.Count() > 0)
             {
                 twins.AddRange(moduleTwins.Items);
                 if (!string.IsNullOrWhiteSpace(moduleTwins.ContinuationToken))
                 {
-                    await this.GetModuleTwins(tenantId, query, continuationToken, twins);
+                    await this.GetModuleTwins(tenantId, query, moduleTwins.ContinuationToken, twins);
                 }
             }
         }
@@ -579,7 +577,7 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
                 QueryPrefix,
                 query,
                 continuationToken,
-                1000);
+                MaximumGetList);
 
             var connectedEdgeDevices = await this.GetConnectedEdgeDevices(tenantId, twins.Result);
 

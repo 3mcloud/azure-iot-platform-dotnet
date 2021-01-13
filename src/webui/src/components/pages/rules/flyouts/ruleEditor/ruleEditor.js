@@ -308,7 +308,7 @@ export class RuleEditor extends LinkedComponent {
                 )
                     .flatMap(
                         (devices) => {
-                            const deviceIds = devices
+                            const deviceIds = devices.items
                                     .map((dvc) => `'${dvc.id}'`)
                                     .join(","),
                                 modulesQuery = `deviceId IN [${deviceIds}]`;
@@ -317,7 +317,7 @@ export class RuleEditor extends LinkedComponent {
                             );
                         },
                         (devices, modules) => {
-                            return [devices, modules];
+                            return [devices.items, modules];
                         }
                     )
                     .subscribe(

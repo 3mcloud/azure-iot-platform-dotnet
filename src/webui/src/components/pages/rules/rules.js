@@ -17,10 +17,9 @@ import {
     PageTitle,
     Protected,
     RefreshBarContainer as RefreshBar,
-    SearchInput,
 } from "components/shared";
 import { NewRuleFlyout } from "./flyouts";
-import { svgs, getDeviceGroupParam } from "utilities";
+import { svgs, getDeviceGroupParam, getTenantIdParam } from "utilities";
 import { toSinglePropertyDiagnosticsModel } from "services/models";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
 
@@ -57,6 +56,11 @@ export class Rules extends Component {
 
     componentWillMount() {
         if (this.props.location.search) {
+            const tenantId = getTenantIdParam(this.props.location.search);
+            this.props.checkTenantAndSwitch({
+                tenantId: tenantId,
+                redirectUrl: window.location.href,
+            });
             this.setState({
                 selectedDeviceGroupId: getDeviceGroupParam(
                     this.props.location.search
@@ -108,12 +112,6 @@ export class Rules extends Component {
 
     onGridReady = (gridReadyEvent) => (this.rulesGridApi = gridReadyEvent.api);
 
-    searchOnChange = ({ target: { value } }) => {
-        if (this.rulesGridApi) {
-            this.rulesGridApi.setQuickFilter(value);
-        }
-    };
-
     onContextMenuChange = (contextBtns) => this.setState({ contextBtns });
 
     logApplicationPermissions(applicationPermissionsAssigned) {
@@ -141,6 +139,7 @@ export class Rules extends Component {
                 activeDeviceGroupId,
                 location,
                 userPermissions,
+                currentTenantId,
             } = this.props,
             gridProps = {
                 onGridReady: this.onGridReady,
@@ -154,6 +153,7 @@ export class Rules extends Component {
                 location: location,
                 userPermissions: userPermissions,
                 rulesGridApi: this.rulesGridApi,
+                currentTenantId: currentTenantId,
             };
         return (
             <ComponentArray>
@@ -202,11 +202,6 @@ export class Rules extends Component {
                     <PageContent className="rules-container">
                         <PageTitle titleValue={t("rules.title")} />
                         {!!error && <AjaxError t={t} error={error} />}
-                        <SearchInput
-                            onChange={this.searchOnChange}
-                            placeholder={t("rules.searchPlaceholder")}
-                            aria-label={t("rules.ariaLabel")}
-                        />
                         {!error && <RulesGrid {...gridProps} />}
                         {this.state.openFlyoutName === "newRule" && (
                             <NewRuleFlyout

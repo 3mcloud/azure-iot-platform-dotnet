@@ -355,7 +355,6 @@ export class Maintenance extends Component {
                         />
                     )}
                 />
-                }
                 <Route
                     exact
                     path={"/maintenance/job/:id"}

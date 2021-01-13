@@ -21,6 +21,20 @@ export const DevicesRouter = () => (
                 <DeviceTelemetryContainer {...routeProps} />
             )}
         />
+        <Route
+            exact
+            path={"/deviceSearch"}
+            render={(routeProps) => (
+                <DevicesContainer {...routeProps} routeProps={routeProps} />
+            )}
+        />
+        <Route
+            exact
+            path={"/deviceSearch/telemetry"}
+            render={(routeProps) => (
+                <DeviceTelemetryContainer {...routeProps} />
+            )}
+        />
         <Redirect to="/devices" />
     </Switch>
 );

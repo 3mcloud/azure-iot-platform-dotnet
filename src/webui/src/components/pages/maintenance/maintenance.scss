@@ -38,11 +38,11 @@ $font-weight-bold: 700;
       padding: $grid-size 0;
       padding-bottom: 2*$grid-size;
       font-weight: $font-weight-bold;
-      margin-right: 8*$grid-size;
+      margin-right: 4*$grid-size;
       background: none;
       border: none;
       cursor: pointer;
-      @include rem-font-size(8*$grid-size);
+      @include rem-font-size(4*$grid-size);
     }
   }
 

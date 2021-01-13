@@ -18,6 +18,7 @@ import {
 } from "store/reducers/rulesReducer";
 import {
     getDeviceById,
+    getDeviceByConditionById,
     getDeviceModuleStatus,
     getDeviceModuleStatusPendingStatus,
     getDeviceModuleStatusError,
@@ -27,7 +28,9 @@ import {
 
 // Pass the device details
 const mapStateToProps = (state, props) => ({
-        device: getDeviceById(state, props.deviceId),
+        device: props.isDeviceSearch
+            ? getDeviceByConditionById(state, props.deviceId)
+            : getDeviceById(state, props.deviceId),
         isRulesPending: getRulesPendingStatus(state),
         rules: getRulesEntities(state),
         rulesLastUpdated: getRulesLastUpdated(state),

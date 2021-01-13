@@ -68,7 +68,7 @@ export class RuleSummary extends Component {
                 ).subscribe(
                     (groupDevices) => {
                         this.setState({
-                            devicesAffected: groupDevices.length,
+                            devicesAffected: groupDevices.items.length,
                         });
                     },
                     (error) => this.setState({ error })

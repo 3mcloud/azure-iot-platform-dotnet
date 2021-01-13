@@ -10,6 +10,10 @@ import {
     getDevicesError,
     getDevicesLastUpdated,
     getDevicesPendingStatus,
+    getDevicesByCondition,
+    getDevicesByConditionError,
+    getDevicesByConditionPendingStatus,
+    getLoadMoreToggleState,
 } from "store/reducers/devicesReducer";
 import {
     redux as appRedux,
@@ -24,14 +28,20 @@ const mapStateToProps = (state) => ({
         devices: getDevices(state),
         deviceError: getDevicesError(state),
         isPending: getDevicesPendingStatus(state),
+        devicesByCondition: getDevicesByCondition(state),
+        devicesByConditionError: getDevicesByConditionError(state),
+        isDevicesByConditionPanding: getDevicesByConditionPendingStatus(state),
         deviceGroups: getDeviceGroups(state),
         deviceGroupError: getDeviceGroupError(state),
         lastUpdated: getDevicesLastUpdated(state),
         activeDeviceQueryConditions: getActiveDeviceQueryConditions(state),
+        loadMoreState: getLoadMoreToggleState(state),
     }),
     // Wrap the dispatch method
     mapDispatchToProps = (dispatch) => ({
         fetchDevices: () => dispatch(devicesEpics.actions.fetchDevices()),
+        fetchDevicesByCondition: () =>
+            dispatch(devicesEpics.actions.fetchDevicesByCondition()),
         fetchDevicesByCToken: () =>
             dispatch(devicesEpics.actions.fetchDevicesByCToken()),
         updateCurrentWindow: (currentWindow) =>
@@ -40,6 +50,10 @@ const mapStateToProps = (state) => ({
             dispatch(appEpics.actions.logEvent(diagnosticsModel)),
         cancelDeviceCalls: (payload) =>
             dispatch(devicesRedux.actions.cancelDeviceCalls(payload)),
+        checkTenantAndSwitch: (payload) =>
+            dispatch(appRedux.actions.checkTenantAndSwitch(payload)),
+        resetDeviceByCondition: () =>
+            dispatch(devicesRedux.actions.resetDeviceByCondition()),
     });
 
 export const DevicesContainer = withNamespaces()(

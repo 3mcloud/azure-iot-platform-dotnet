@@ -62,6 +62,13 @@ class App extends Component {
                     component: DevicesRouter,
                 },
                 {
+                    to: "/deviceSearch",
+                    exact: false,
+                    svg: svgs.tabs.devicesSearch,
+                    labelId: "Device Search",
+                    component: DevicesRouter,
+                },
+                {
                     to: "/users",
                     exact: true,
                     svg: svgs.tabs.users,
@@ -112,6 +119,20 @@ class App extends Component {
                         { to: "/devices", labelId: "tabs.devices" },
                         {
                             to: "/devices/telemetry",
+                            labelId: "devices.telemetry",
+                        },
+                    ],
+                },
+                {
+                    path: "/deviceSearch",
+                    crumbs: [{ to: "/deviceSearch", labelId: "Device Search" }],
+                },
+                {
+                    path: "/deviceSearch/telemetry",
+                    crumbs: [
+                        { to: "/deviceSearch", labelId: "tabs.devices" },
+                        {
+                            to: "/deviceSearch/telemetry",
                             labelId: "devices.telemetry",
                         },
                     ],

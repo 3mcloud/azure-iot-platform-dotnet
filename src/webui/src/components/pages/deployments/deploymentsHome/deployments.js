@@ -25,6 +25,7 @@ import {
     getParamByName,
     getFlyoutNameParam,
     getFlyoutLink,
+    getTenantIdParam,
 } from "utilities";
 import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "components/shell/createDeviceQueryBtn";
 import {
@@ -56,6 +57,11 @@ export class Deployments extends Component {
 
     componentWillMount() {
         if (this.props.location.search) {
+            const tenantId = getTenantIdParam(this.props.location.search);
+            this.props.checkTenantAndSwitch({
+                tenantId: tenantId,
+                redirectUrl: window.location.href,
+            });
             this.setState({
                 selectedDeviceGroupId: getDeviceGroupParam(
                     this.props.location.search
@@ -156,6 +162,7 @@ export class Deployments extends Component {
     onCellClicked = (selectedDeployment) => {
         if (selectedDeployment.colDef.field === "isActive") {
             const flyoutLink = getFlyoutLink(
+                this.props.currentTenantId,
                 this.props.activeDeviceGroupId,
                 "deploymentId",
                 selectedDeployment.data.id,
@@ -240,10 +247,10 @@ export class Deployments extends Component {
                         className="deployments-title"
                         titleValue={t("deployments.title")}
                     />
-                    <h1 className="right-corner">
+                    <h2 className="right-corner">
                         <Balloon
                             position={BalloonPosition.Bottom}
-                            align={BalloonAlignment.Center}
+                            align={BalloonAlignment.End}
                             tooltip={
                                 <div>
                                     Number of Active deployments associated with
@@ -256,7 +263,7 @@ export class Deployments extends Component {
                         /
                         <Balloon
                             position={BalloonPosition.Bottom}
-                            align={BalloonAlignment.Center}
+                            align={BalloonAlignment.End}
                             tooltip={
                                 <div>
                                     Number of Active deployments associated with
@@ -272,7 +279,7 @@ export class Deployments extends Component {
                         /
                         <Balloon
                             position={BalloonPosition.Bottom}
-                            align={BalloonAlignment.Center}
+                            align={BalloonAlignment.End}
                             tooltip={
                                 <div>
                                     Total number of deployments available in IOT
@@ -284,7 +291,7 @@ export class Deployments extends Component {
                                 allActiveDeployments.filter((x) => x.isActive)
                                     .length}
                         </Balloon>
-                    </h1>
+                    </h2>
                     {!!error && <AjaxError t={t} error={error} />}
                     {!error && <DeploymentsGrid {...gridProps} />}
                     {this.state.openFlyoutName === "newDeployment" && (

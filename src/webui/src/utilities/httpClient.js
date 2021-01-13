@@ -129,6 +129,9 @@ export class HttpClient {
     static setLocalStorageValue(key, value) {
         localStorage.setItem(key, value);
     }
+    static removeLocalStorageItem(key) {
+        localStorage.removeItem(key);
+    }
 }
 
 // HttpClient helper methods

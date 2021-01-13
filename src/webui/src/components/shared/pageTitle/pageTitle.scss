@@ -5,13 +5,15 @@
 @import 'src/styles/themes';
 
 .page-title {
-  font-weight: 700;
   margin: 0;
   @include rem-fallback(margin-right, 10px);
-  @include rem-font-size(48px);
-  @include rem-fallback(padding-bottom, 30px);
+  @include rem-fallback(padding-bottom, 10px);
 
+  .page-title-header {
+    font-weight: bold;
+  }  
+  
   @include themify($themes) {
-     color: themed('colorHeaderText');
+    color: themed('colorHeaderText');
   }
 }

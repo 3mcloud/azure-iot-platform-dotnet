@@ -99,7 +99,6 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
         }
 
         [HttpPut("ActiveDeviceGroup/{value}")]
-        [Authorize("UserManage")]
         public async Task<UserSettingsModel> PutUserActiveDeviceGroupAsync(string value)
         {
             return await this.PutAsync(this.GetClaimsUserId(), this.GetUserActiveDeviceGroupKey(), value);

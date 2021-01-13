@@ -53,7 +53,7 @@ namespace Mmm.Iot.TenantManager.Services.Test
         {
             // Arrange
             IdentityGatewayApiModel model = new IdentityGatewayApiModel { TenantId = this.tenantId, Roles = this.roles, UserId = this.userId };
-            this.mockExternalRequestHelper.Setup(m => m.ProcessRequestAsync<IdentityGatewayApiModel>(It.IsAny<HttpMethod>(), It.IsAny<string>(), this.tenantId)).ReturnsAsync(model);
+            this.mockExternalRequestHelper.Setup(m => m.ProcessRequestAsync<IdentityGatewayApiModel>(It.IsAny<HttpMethod>(), It.IsAny<string>(), this.tenantId, null)).ReturnsAsync(model);
 
             // Act
             IdentityGatewayApiModel result = await this.identityGatewayClient.GetTenantForUserAsync(this.userId, this.tenantId);
@@ -70,7 +70,7 @@ namespace Mmm.Iot.TenantManager.Services.Test
         {
             // Arrange
             IdentityGatewayApiModel model = new IdentityGatewayApiModel { TenantId = this.tenantId, Roles = this.roles, UserId = this.userId };
-            this.mockExternalRequestHelper.Setup(m => m.ProcessRequestAsync<IdentityGatewayApiModel>(It.IsAny<HttpMethod>(), It.IsAny<string>(), It.IsAny<IdentityGatewayApiModel>(), this.tenantId)).ReturnsAsync(model);
+            this.mockExternalRequestHelper.Setup(m => m.ProcessRequestAsync<IdentityGatewayApiModel>(It.IsAny<HttpMethod>(), It.IsAny<string>(), It.IsAny<IdentityGatewayApiModel>(), this.tenantId, null)).ReturnsAsync(model);
 
             // Act
             var result = await this.identityGatewayClient.AddTenantForUserAsync(this.userId, this.tenantId, this.roles);
@@ -87,7 +87,7 @@ namespace Mmm.Iot.TenantManager.Services.Test
         {
             // Arrange
             IdentityGatewayApiSettingModel model = new IdentityGatewayApiSettingModel { Value = this.value, UserId = this.userId };
-            this.mockExternalRequestHelper.Setup(m => m.ProcessRequestAsync<IdentityGatewayApiSettingModel>(It.IsAny<HttpMethod>(), It.IsAny<string>(), null)).ReturnsAsync(model);
+            this.mockExternalRequestHelper.Setup(m => m.ProcessRequestAsync<IdentityGatewayApiSettingModel>(It.IsAny<HttpMethod>(), It.IsAny<string>(), null, null)).ReturnsAsync(model);
 
             // Act
             var result = await this.identityGatewayClient.UpdateSettingsForUserAsync(this.userId, this.tenantId, this.value);
@@ -103,7 +103,7 @@ namespace Mmm.Iot.TenantManager.Services.Test
         {
             // Arrange
             IdentityGatewayApiSettingModel model = new IdentityGatewayApiSettingModel { Value = this.value, UserId = this.userId };
-            this.mockExternalRequestHelper.Setup(m => m.ProcessRequestAsync<IdentityGatewayApiSettingModel>(It.IsAny<HttpMethod>(), It.IsAny<string>(), null)).ReturnsAsync(model);
+            this.mockExternalRequestHelper.Setup(m => m.ProcessRequestAsync<IdentityGatewayApiSettingModel>(It.IsAny<HttpMethod>(), It.IsAny<string>(), null, null)).ReturnsAsync(model);
 
             // Act
             var result = await this.identityGatewayClient.AddSettingsForUserAsync(this.userId, this.tenantId, this.value);
@@ -119,7 +119,7 @@ namespace Mmm.Iot.TenantManager.Services.Test
         {
             // Arrange
             IdentityGatewayApiModel model = new IdentityGatewayApiModel { };
-            this.mockExternalRequestHelper.Setup(m => m.ProcessRequestAsync<IdentityGatewayApiModel>(It.IsAny<HttpMethod>(), It.IsAny<string>(), this.tenantId)).ReturnsAsync(model);
+            this.mockExternalRequestHelper.Setup(m => m.ProcessRequestAsync<IdentityGatewayApiModel>(It.IsAny<HttpMethod>(), It.IsAny<string>(), this.tenantId, null)).ReturnsAsync(model);
 
             // Act
             var result = await this.identityGatewayClient.DeleteTenantForAllUsersAsync(this.tenantId);

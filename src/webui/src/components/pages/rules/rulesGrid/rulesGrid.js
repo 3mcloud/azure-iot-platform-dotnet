@@ -184,12 +184,14 @@ export class RulesGrid extends Component {
         switch (this.state.openFlyoutName) {
             case "view":
                 flyoutLink = getFlyoutLink(
+                    this.props.currentTenantId,
                     this.props.activeDeviceGroupId,
                     "ruleId",
                     this.state.softSelectedRuleId,
                     "view"
                 );
                 const editFlyoutLink = getFlyoutLink(
+                    this.props.currentTenantId,
                     this.props.activeDeviceGroupId,
                     "ruleId",
                     this.state.softSelectedRuleId,
@@ -211,6 +213,7 @@ export class RulesGrid extends Component {
                 );
             case "edit":
                 flyoutLink = getFlyoutLink(
+                    this.props.currentTenantId,
                     this.props.activeDeviceGroupId,
                     "ruleId",
                     this.state.softSelectedRuleId ||
@@ -333,6 +336,8 @@ export class RulesGrid extends Component {
             onRowClicked: ({ node }) => node.setSelected(!node.isSelected()),
             onHardSelectChange: this.onHardSelectChange,
             onSoftSelectChange: this.onSoftSelectChange,
+            searchPlaceholder: this.props.t("rules.searchPlaceholder"),
+            searchAreaLabel: this.props.t("rules.ariaLabel"),
         };
 
         return (
