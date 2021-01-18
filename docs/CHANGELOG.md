@@ -10,6 +10,25 @@ git log --oneline --no-decorate --topo-order ^<previousRelease> master
 where <previousRelease> is the release name e.g 5.1.0
 -->
 
+## [5.4.2] - 2020-01-18
+### Add
+- UI now supports unlimited devices
+- Start/stop toogle for loading additional devices with stats in toolbar
+- Device Search page to manage devices independent of Device Group
+- Highlights current tenant of settings flyout
+- Displays IoT Hub name on settings flyout
+- Updated documentation links
+- TenantId added to GetLink URL
+
+### Fix
+- Deployment now updates sys admins
+- Adds System Admins on new tenant creation
+- Improvements to cToken changes
+- Fixed add rule issue in WebUI
+- Readers can now change Device Group
+- Json web keys now use=sig
+
+
 ## [5.4.1] - 2020-10-14
 ### Fix
 - Fixed performance issues reading "deleted" rules
@@ -132,6 +151,7 @@ where <previousRelease> is the release name e.g 5.1.0
 - Application configuration uses Azure App Configuration service in addition to Azure Key Vault
 - Code base rearchitected to use common library and reduce duplication
 
+[5.4.2]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.4.2
 [5.4.1]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.4.1
 [5.4.0]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.4.0
 [5.3.0]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.3.0
