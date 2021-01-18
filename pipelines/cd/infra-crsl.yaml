@@ -56,7 +56,7 @@ stages:
           subscriptionName: 3M-CRSLAD16-BBIoTP-DEV
           locationName: $(locationName)
           appInsightsLocation: eastus
-          environmentName: IoT_CRSL_Environment_Dev
+          environmentName: ACS-Environment
           subscriptionId: c36fb2f8-f98d-40d0-90a9-d65e93acb428
           applicationCode: acshyd
           applicationShortCode: acs
