@@ -21,6 +21,7 @@ import {
     getDeviceGroups,
     getDeviceGroupError,
     getActiveDeviceQueryConditions,
+    getActiveDeviceGroupConditions,
 } from "store/reducers/appReducer";
 
 // Pass the devices status
@@ -35,6 +36,7 @@ const mapStateToProps = (state) => ({
         deviceGroupError: getDeviceGroupError(state),
         lastUpdated: getDevicesLastUpdated(state),
         activeDeviceQueryConditions: getActiveDeviceQueryConditions(state),
+        activeDeviceGroupConditions: getActiveDeviceGroupConditions(state),
         loadMoreState: getLoadMoreToggleState(state),
     }),
     // Wrap the dispatch method

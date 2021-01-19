@@ -81,7 +81,7 @@
     },
     "deviceGroupDropDown": {
         "ariaLabel": "Device group",
-        "modals" : {
+        "modals": {
             "copyLink": {
                 "contextMenuName": "Copy Link",
                 "title": "Copy Link"
@@ -417,6 +417,7 @@
         "refresh": "Refresh",
         "deviceSearchTitle": "Device Search",
         "deviceSearchTitleDescription": "Search across all devices.",
+        "downloadDeviceReport": "Download",
         "showTelemetry": "Show telemetry",
         "returnToDevices": "Devices",
         "loadMore": "Load more",
@@ -496,7 +497,7 @@
                     "title": "Device Deployments",
                     "description": "Deployment History of device",
                     "noneExist": "No history present for this device",
-                    "firmwareVersion" : "Firmware Version",
+                    "firmwareVersion": "Firmware Version",
                     "startDate": "Start Date Time",
                     "endDate": "End Date Time"
                 }
@@ -1070,13 +1071,13 @@
         "firmware": "Firmware",
         "custom": "Custom"
     },
-  "modal": {
-    "delete": "Delete",
-    "cancel": "Cancel",
-    "close": "Close",
-    "copy": "Copy",
-    "ok": "Ok"
-  },
+    "modal": {
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "close": "Close",
+        "copy": "Copy",
+        "ok": "Ok"
+    },
     "walkthrough": {
         "tabs": {
             "dashboard": "Dashboard",

@@ -448,6 +448,30 @@ namespace Mmm.Iot.IoTHubManager.Services
             return new DeviceStatisticsServiceModel(data.Result);
         }
 
+        public async Task<List<DeviceReportServiceModel>> GetDeviceListForReport(string query)
+        {
+            List<DeviceReportServiceModel> devices = new List<DeviceReportServiceModel>();
+
+            await this.GetDevices(query, null, devices);
+
+            return devices;
+        }
+
+        private async Task GetDevices(string query, string continuationToken, List<DeviceReportServiceModel> devices)
+        {
+            DeviceServiceListModel devicesFromQuery = null;
+            devicesFromQuery = await this.GetListAsync(query, continuationToken);
+
+            if (devicesFromQuery != null && devicesFromQuery.Items.Count() > 0)
+            {
+                devices.AddRange(devicesFromQuery.Items.Select(i => new DeviceReportServiceModel(i)));
+                if (!string.IsNullOrWhiteSpace(devicesFromQuery.ContinuationToken))
+                {
+                    await this.GetDevices(query, devicesFromQuery.ContinuationToken, devices);
+                }
+            }
+        }
+
         private async Task<ResultWithContinuationToken<List<Twin>>> GetTwinByQueryAsync(
             string queryPrefix,
             string query,

@@ -199,4 +199,14 @@ export class IoTHubManagerService {
             `${ENDPOINT}devices/statistics?query=${query}`
         ).map(toDeviceStatisticsModel);
     }
+
+    /** Queries Devices */
+    static getDevicesReportByQuery(conditions=[]) {
+        const query = encodeURIComponent(JSON.stringify(conditions));
+        var response = HttpClient.get(
+            `${ENDPOINT}devices/report?query=${query}`,
+            { responseType: "blob", timeout: 120000 }
+        );
+        return response;
+    }
 }
