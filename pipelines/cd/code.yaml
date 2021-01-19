@@ -64,17 +64,17 @@ stages:
           blueGreen: true
           subscriptionId: c36fb2f8-f98d-40d0-90a9-d65e93acb428
 
-  - stage: ggkDev
-    displayName: GGK dev
+  - stage: acsDev
+    displayName: ACS dev
     dependsOn:
       - checkParameters
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: GGK-Environment
+          environmentName: ACS-Environment
           subscriptionName: 3M-CRSLAD16-BBIoTP-DEV
-          applicationCode: ggktech
-          applicationShortCode: ggk
+          applicationCode: acshyd
+          applicationShortCode: acs
           environmentCategory: dev
           imageTag: $(_imageTag)
           blueGreen: true
