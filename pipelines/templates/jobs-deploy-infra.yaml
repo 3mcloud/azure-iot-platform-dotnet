@@ -792,7 +792,7 @@ jobs:
             key=$(az keyvault secret show --vault-name $(keyVaultName) -n IdentityGatewayService--PrivateKey)
             if [ -z "$key" ]
             then
-                  ssh-keygen -b 2048 -t rsa -C "a9my8zz@mmm.com" -f $(System.DefaultWorkingDirectory)/sshkeys -q -N ""
+                  ssh-keygen -b 2048 -m PEM -t rsa -C "a9my8zz@mmm.com" -f $(System.DefaultWorkingDirectory)/sshkeys -q -N ""
                   cat sshkeys > identityGatewayKeys.pem
                   ssh-keygen -f sshkeys.pub -e -m pem >> identityGatewayKeys.pem
                   ssh-keygen -f sshkeys.pub -e -m pem > identitypub.pem
