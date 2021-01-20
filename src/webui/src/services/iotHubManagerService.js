@@ -201,7 +201,7 @@ export class IoTHubManagerService {
     }
 
     /** Queries Devices */
-    static getDevicesReportByQuery(conditions=[]) {
+    static getDevicesReportByQuery(conditions = []) {
         const query = encodeURIComponent(JSON.stringify(conditions));
         var response = HttpClient.get(
             `${ENDPOINT}devices/report?query=${query}`,

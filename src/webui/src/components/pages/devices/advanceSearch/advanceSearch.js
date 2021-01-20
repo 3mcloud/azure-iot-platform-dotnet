@@ -210,14 +210,14 @@ export class AdvanceSearch extends LinkedComponent {
             conditionLinks = this.conditionsLink.getLinkedChildren(
                 (conditionLink) => {
                     let field = conditionLink
-                        .forkTo("field")
-                        .map(({ value }) => value)
-                        .check(
-                            Validator.notEmpty,
-                            t(
-                                "deviceQueryConditions.errorMsg.fieldCantBeEmpty"
-                            )
-                        ),
+                            .forkTo("field")
+                            .map(({ value }) => value)
+                            .check(
+                                Validator.notEmpty,
+                                t(
+                                    "deviceQueryConditions.errorMsg.fieldCantBeEmpty"
+                                )
+                            ),
                         operator = conditionLink
                             .forkTo("operator")
                             .map(({ value }) => value)
@@ -280,7 +280,7 @@ export class AdvanceSearch extends LinkedComponent {
                         {conditionLinks.map((condition, idx) => (
                             <Row
                                 key={this.state.deviceQueryConditions[idx].key}
-                            // className="deviceExplorer-conditions"
+                                // className="deviceExplorer-conditions"
                             >
                                 <Cell className="col-1">
                                     <Btn
@@ -337,32 +337,32 @@ export class AdvanceSearch extends LinkedComponent {
                                 <Cell className="col-3">
                                     {this.state.deviceQueryConditions[idx]
                                         .field !== "connectionState" && (
-                                            <FormControl
-                                                type="text"
-                                                placeholder={t(
-                                                    "deviceQueryConditions.valuePlaceholder"
-                                                )}
-                                                link={condition.value}
-                                                className="width-70"
-                                            />
-                                        )}
+                                        <FormControl
+                                            type="text"
+                                            placeholder={t(
+                                                "deviceQueryConditions.valuePlaceholder"
+                                            )}
+                                            link={condition.value}
+                                            className="width-70"
+                                        />
+                                    )}
                                     {this.state.deviceQueryConditions[idx]
                                         .field === "connectionState" && (
-                                            <FormControl
-                                                type="select"
-                                                ariaLabel={t(
-                                                    "deviceQueryConditions.status"
-                                                )}
-                                                className="long"
-                                                searchable={false}
-                                                clearable={false}
-                                                options={this.state.statusOptions}
-                                                placeholder={t(
-                                                    "deviceQueryConditions.statusPlaceholder"
-                                                )}
-                                                link={condition.value}
-                                            />
-                                        )}
+                                        <FormControl
+                                            type="select"
+                                            ariaLabel={t(
+                                                "deviceQueryConditions.status"
+                                            )}
+                                            className="long"
+                                            searchable={false}
+                                            clearable={false}
+                                            options={this.state.statusOptions}
+                                            placeholder={t(
+                                                "deviceQueryConditions.statusPlaceholder"
+                                            )}
+                                            link={condition.value}
+                                        />
+                                    )}
                                 </Cell>
                             </Row>
                         ))}
@@ -384,7 +384,7 @@ export class AdvanceSearch extends LinkedComponent {
                                     conditionHasErrors ||
                                     this.state.isPending ||
                                     this.state.deviceQueryConditions.length ===
-                                    0
+                                        0
                                 }
                                 onClick={this.downloadFile}
                             >
@@ -397,10 +397,9 @@ export class AdvanceSearch extends LinkedComponent {
                                     conditionHasErrors ||
                                     this.state.isPending ||
                                     this.state.deviceQueryConditions.length ===
-                                    0
+                                        0
                                 }
                                 type="submit"
-
                             >
                                 Query
                             </Btn>
