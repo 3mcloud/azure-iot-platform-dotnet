@@ -16,6 +16,7 @@ import {
 } from "components/shared";
 
 import "./advanceSearch.scss";
+import { IoTHubManagerService } from "services";
 
 // A counter for creating unique keys per new condition
 let conditionKey = 0;
@@ -180,20 +181,43 @@ export class AdvanceSearch extends LinkedComponent {
         }
     };
 
+    downloadFile = () => {
+        const rawQueryConditions = this.state.deviceQueryConditions.filter(
+            (condition) => {
+                return !this.conditionIsNew(condition);
+            }
+        );
+
+        IoTHubManagerService.getDevicesReportByQuery(
+            rawQueryConditions.map((condition) => {
+                return toDeviceConditionModel(condition);
+            })
+        ).subscribe((response) => {
+            var blob = new Blob([response.response], {
+                type: response.response.type,
+            });
+            let url = window.URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = "FilteredDevicesList.xlsx";
+            a.click();
+        });
+    };
+
     render() {
         const { t } = this.props,
             // Create the state link for the dynamic form elements
             conditionLinks = this.conditionsLink.getLinkedChildren(
                 (conditionLink) => {
                     let field = conditionLink
-                            .forkTo("field")
-                            .map(({ value }) => value)
-                            .check(
-                                Validator.notEmpty,
-                                t(
-                                    "deviceQueryConditions.errorMsg.fieldCantBeEmpty"
-                                )
-                            ),
+                        .forkTo("field")
+                        .map(({ value }) => value)
+                        .check(
+                            Validator.notEmpty,
+                            t(
+                                "deviceQueryConditions.errorMsg.fieldCantBeEmpty"
+                            )
+                        ),
                         operator = conditionLink
                             .forkTo("operator")
                             .map(({ value }) => value)
@@ -256,7 +280,7 @@ export class AdvanceSearch extends LinkedComponent {
                         {conditionLinks.map((condition, idx) => (
                             <Row
                                 key={this.state.deviceQueryConditions[idx].key}
-                                // className="deviceExplorer-conditions"
+                            // className="deviceExplorer-conditions"
                             >
                                 <Cell className="col-1">
                                     <Btn
@@ -313,32 +337,32 @@ export class AdvanceSearch extends LinkedComponent {
                                 <Cell className="col-3">
                                     {this.state.deviceQueryConditions[idx]
                                         .field !== "connectionState" && (
-                                        <FormControl
-                                            type="text"
-                                            placeholder={t(
-                                                "deviceQueryConditions.valuePlaceholder"
-                                            )}
-                                            link={condition.value}
-                                            className="width-70"
-                                        />
-                                    )}
+                                            <FormControl
+                                                type="text"
+                                                placeholder={t(
+                                                    "deviceQueryConditions.valuePlaceholder"
+                                                )}
+                                                link={condition.value}
+                                                className="width-70"
+                                            />
+                                        )}
                                     {this.state.deviceQueryConditions[idx]
                                         .field === "connectionState" && (
-                                        <FormControl
-                                            type="select"
-                                            ariaLabel={t(
-                                                "deviceQueryConditions.status"
-                                            )}
-                                            className="long"
-                                            searchable={false}
-                                            clearable={false}
-                                            options={this.state.statusOptions}
-                                            placeholder={t(
-                                                "deviceQueryConditions.statusPlaceholder"
-                                            )}
-                                            link={condition.value}
-                                        />
-                                    )}
+                                            <FormControl
+                                                type="select"
+                                                ariaLabel={t(
+                                                    "deviceQueryConditions.status"
+                                                )}
+                                                className="long"
+                                                searchable={false}
+                                                clearable={false}
+                                                options={this.state.statusOptions}
+                                                placeholder={t(
+                                                    "deviceQueryConditions.statusPlaceholder"
+                                                )}
+                                                link={condition.value}
+                                            />
+                                        )}
                                 </Cell>
                             </Row>
                         ))}
@@ -353,15 +377,30 @@ export class AdvanceSearch extends LinkedComponent {
                     <div className="cancel-right-div">
                         <BtnToolbar>
                             <Btn
+                                svg={svgs.upload}
+                                className="download-deviceQueryReport"
+                                disabled={
+                                    !this.formIsValid() ||
+                                    conditionHasErrors ||
+                                    this.state.isPending ||
+                                    this.state.deviceQueryConditions.length ===
+                                    0
+                                }
+                                onClick={this.downloadFile}
+                            >
+                                {t("devices.downloadDeviceReport")}
+                            </Btn>
+                            <Btn
                                 primary
                                 disabled={
                                     !this.formIsValid() ||
                                     conditionHasErrors ||
                                     this.state.isPending ||
                                     this.state.deviceQueryConditions.length ===
-                                        0
+                                    0
                                 }
                                 type="submit"
+
                             >
                                 Query
                             </Btn>

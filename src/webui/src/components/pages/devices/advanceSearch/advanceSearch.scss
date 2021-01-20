@@ -43,3 +43,11 @@
 .width-70 {
   width: 70% !important;
 }
+
+.download-deviceQueryReport > .svg-container.btn-icon{
+  transform: rotate(180deg) !important;
+}
+
+.btn:disabled .btn-icon {
+  display: inline-flex !important; 
+}
