@@ -26,7 +26,7 @@ import { CreateDeviceQueryBtnContainer as CreateDeviceQueryBtn } from "component
 import { svgs, getDeviceGroupParam, getTenantIdParam } from "utilities";
 
 import "./devices.scss";
-import { IdentityGatewayService } from "services";
+import { IdentityGatewayService, IoTHubManagerService } from "services";
 
 const closedFlyoutState = { openFlyoutName: undefined };
 
@@ -219,6 +219,21 @@ export class Devices extends Component {
         this.props.cancelDeviceCalls({ makeSubsequentCalls: false });
     };
 
+    downloadFile = () => {
+        IoTHubManagerService.getDevicesReportByQuery(
+            this.props.activeDeviceGroupConditions
+        ).subscribe((response) => {
+            var blob = new Blob([response.response], {
+                type: response.response.type,
+            });
+            let url = window.URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = "DevicesList.xlsx";
+            a.click();
+        });
+    };
+
     render() {
         const {
                 t,
@@ -306,6 +321,13 @@ export class Devices extends Component {
                                 offLabel={t("devices.loadMore")}
                                 onChange={this.switchLoadMore}
                             />
+                            <Btn
+                                svg={svgs.upload}
+                                className="download-deviceReport"
+                                onClick={this.downloadFile}
+                            >
+                                {t("devices.downloadDeviceReport")}
+                            </Btn>
                         </div>
                     )}
                     {!error && (
