@@ -173,7 +173,7 @@ stages:
           applicationShortCode: psd
           environmentCategory: dev
           imageTag: $(_imageTag)
-          blueGreen: false
+          blueGreen: true
           subscriptionId: 1d0a4e20-e44d-43b5-97b0-9b577f5bf048
 
   - stage: psdQa
