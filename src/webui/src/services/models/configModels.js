@@ -198,6 +198,7 @@ export const backupDefaultFirmwareModel = {
                     fileName: "${packageFile.name}",
                     serialNumber: "",
                     checkSum: "${blobData.CheckSum}",
+                    softwareConfigId: "${uniqueId}",
                 },
             },
         },

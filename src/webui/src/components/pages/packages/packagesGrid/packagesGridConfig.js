@@ -13,6 +13,7 @@ import {
 } from "components/shared/pcsGrid/pcsGridConfig";
 import { getPackageTypeTranslation, getConfigTypeTranslation } from "utilities";
 import { INACTIVE_PACKAGE_TAG } from "services/configService";
+import { CopyToClipBoardRenderer } from "components/shared/cellRenderers/copyToClipBoardRenderer/copyToClipBoardRenderer";
 
 const { checkForEmpty } = gridValueFormatters;
 
@@ -28,6 +29,11 @@ export const packagesColumnDefs = {
             checkboxColumn.headerCheckboxSelectionFilteredOnly,
         suppressMovable: checkboxColumn.suppressMovable,
         width: 50,
+    },
+    id: {
+        headerName: " ",
+        field: "id",
+        cellRendererFramework: CopyToClipBoardRenderer,
     },
     name: {
         headerName: "packages.grid.name",

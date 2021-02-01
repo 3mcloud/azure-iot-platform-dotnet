@@ -48,7 +48,8 @@ const fileInputAccept = ".json,application/json",
     firmwareFileInputAccept =
         "*.zip,*.tar,*.bin,*.ipa,*.rar,*.gz,*.bz2,*.tgz,*.swu",
     isVersionValid = (str) => /^(\d+\.)*(\d+)$/.test(str),
-    firmwareJsonVariableReplace = /\$\{(blobData|packageFile)\.(.*)\}/;
+    firmwareJsonVariableReplace = /\$\{(blobData|packageFile)\.(.*)\}/,
+    firmwareJsonUniqueIdReplace = /\$\{uniqueId\}/;
 
 export class PackageNew extends LinkedComponent {
     constructor(props) {
@@ -103,6 +104,7 @@ export class PackageNew extends LinkedComponent {
         if (configType === "Firmware" && !uploadedFirmwareSuccessfully) {
             ConfigService.uploadFirmware(packageFile).subscribe(
                 (blobData) => {
+                    let uniqueId = uuid();
                     ConfigService.getDefaultFirmwareSetting().subscribe(
                         (firmwareTemplate) => {
                             firmwareTemplate.jsObject.id =
@@ -117,6 +119,10 @@ export class PackageNew extends LinkedComponent {
                                     packageFile: packageFile,
                                     blobData: blobData,
                                 }
+                            );
+                            this.replaceFirmwareUniqueIdVariable(
+                                firmwareTemplate.jsObject,
+                                uniqueId
                             );
                             this.replaceFirmwareVersion(
                                 firmwareTemplate.jsObject,
@@ -410,6 +416,20 @@ export class PackageNew extends LinkedComponent {
                         let child = parent[varReplace[2]];
                         json[key] = child || value;
                     }
+                }
+            }
+        }
+        return json;
+    };
+
+    replaceFirmwareUniqueIdVariable = (json, uniqueId) => {
+        for (const [key, value] of Object.entries(json)) {
+            if (value instanceof Object) {
+                this.replaceFirmwareUniqueIdVariable(value, uniqueId);
+            } else if (typeof value === "string" || value instanceof String) {
+                let varReplace = value.match(firmwareJsonUniqueIdReplace);
+                if (varReplace) {
+                    json[key] = uniqueId;
                 }
             }
         }

@@ -168,7 +168,8 @@
                     },
                     "deployment": {
                         "id": "When deploying your package, this value will be replaced by the ID of your deployment"
-                    }
+                    },
+                    "uniqueId":"Parent only. UniqueId used to attach to a Firmware Package creation."
                 }
             }
         }
