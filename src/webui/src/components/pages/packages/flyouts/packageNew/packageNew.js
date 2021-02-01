@@ -393,7 +393,6 @@ export class PackageNew extends LinkedComponent {
     };
 
     replaceFirmwareVersion = (json, version, versionKey) => {
-        debugger;
         const versionKeySplit = versionKey.split("//");
         let jsonChild = json;
         versionKeySplit.forEach((key, idx) => {

@@ -10,7 +10,6 @@ import "./packageJSON.scss";
 export class PackageJSON extends LinkedComponent {
     constructor(props) {
         super(props);
-        console.log(props);
         var jsonData = JSON.parse(this.props.packageJson);
         this.state = {
             packageJson: {
