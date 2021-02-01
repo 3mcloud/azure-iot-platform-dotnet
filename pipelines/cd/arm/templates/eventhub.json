@@ -298,6 +298,15 @@
                                 "twin-change"
                             ],
                             "properties": {}
+                        },
+                        {
+                            "apiVersion": "2017-04-01",
+                            "name": "devicedeploymenthistory",
+                            "type": "consumergroups",
+                            "dependsOn": [
+                                "twin-change"
+                            ],
+                            "properties": {}
                         }
                     ]
                 }

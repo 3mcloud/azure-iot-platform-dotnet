@@ -383,61 +383,13 @@ namespace Mmm.Iot.IoTHubManager.Services
             await this.MarkDeploymentAsActive(deploymentId, userId);
         }
 
-        public async Task<DeviceServiceListModel> GetDeviceListAsync(string deploymentId, List<string> deviceIds, string tenantId)
+        public async Task<DeviceServiceListModel> GetDeployedDevicesAsync(string deploymentId, string tenantId, bool isLatest = false)
         {
-            string query = string.Empty;
-            int iotHublimit = 500;
-            string deviceListValue = string.Empty;
-            DeviceServiceListModel allDevices = new DeviceServiceListModel(new List<DeviceServiceModel>(), null);
+            var deploymentDetails = await this.GetAsync(deploymentId, true, isLatest);
 
-            if (deviceIds.Count > 0)
-            {
-                for (int i = 0; i < (deviceIds.Count / iotHublimit) + 1; i++)
-                {
-                    if (i != 0 && (deviceIds.Count % (i * iotHublimit)) <= 0)
-                    {
-                        break;
-                    }
+            List<string> deviceIds = deploymentDetails?.DeploymentMetrics?.DeviceStatuses?.Keys?.ToList();
 
-                    List<string> batchDeviceIds = deviceIds.Skip(i * iotHublimit).Take(iotHublimit).ToList();
-                    if (batchDeviceIds != null && batchDeviceIds.Count > 0)
-                    {
-                        deviceListValue = string.Join(",", batchDeviceIds.Select(p => $"'{p}'"));
-                    }
-
-                    query = $" deviceId IN [{deviceListValue}]";
-
-                    int countOfDevicestoFetch = string.IsNullOrWhiteSpace(deviceListValue) ? 1000 : deviceIds.Count();
-
-                    var devices = await this.devices.GetListAsync(query, null);
-
-                    allDevices.Items.AddRange(devices.Items);
-
-                    while (!string.IsNullOrWhiteSpace(devices.ContinuationToken))
-                    {
-                        devices = await this.devices.GetListAsync(query, null);
-                        allDevices.Items.AddRange(devices.Items);
-                    }
-                }
-
-                var deploymentDeviceHistory = await this.GetDeploymentDevicesAsync(deploymentId, tenantId);
-                if (deploymentDeviceHistory != null && deploymentDeviceHistory.Items.Count > 0)
-                {
-                    allDevices.Items.ForEach(item =>
-                    {
-                        var twin = deploymentDeviceHistory.Items.FirstOrDefault(i => i.DeviceId == item.Id)?.Twin;
-
-                        if (twin != null)
-                        {
-                            item.Twin = twin;
-                        }
-
-                        item.PreviousTwin = deploymentDeviceHistory.Items.FirstOrDefault(i => i.DeviceId == item.Id)?.PreviousFirmwareTwin;
-                    });
-                }
-            }
-
-            return allDevices;
+            return await this.GetDeviceListAsync(deploymentId, deviceIds, tenantId);
         }
 
         public async Task<TwinServiceListModel> GetModulesListAsync(string deploymentId, string query, bool isLatest)
@@ -456,31 +408,28 @@ namespace Mmm.Iot.IoTHubManager.Services
             return moduletwins;
         }
 
-        public async Task<List<DeviceDeploymentStatusServiceModel>> GetDeploymentStatusReport(string id, string tenantId, bool isLatest = true)
+        public async Task<List<DeviceDeploymentStatusServiceModel>> GetDeploymentStatusReport(string deploymentId, string tenantId, bool isLatest = true)
         {
             List<DeviceDeploymentStatusServiceModel> deviceDeploymentStatuses = new List<DeviceDeploymentStatusServiceModel>();
-            var deploymentDetails = await this.GetAsync(id, true, isLatest);
+            var deploymentDetails = await this.GetAsync(deploymentId, true, isLatest);
 
             if (deploymentDetails != null && deploymentDetails.DeploymentMetrics != null && deploymentDetails.DeploymentMetrics.DeviceStatuses != null && deploymentDetails.DeploymentMetrics.DeviceStatuses.Keys.Count > 0)
             {
                 var deviceIds = deploymentDetails.DeploymentMetrics.DeviceStatuses.Keys.ToList();
 
-                var devices = await this.GetDeviceListAsync(id, deviceIds, tenantId);
+                var devices = await this.GetDeviceListAsync(deploymentId, deviceIds, tenantId);
 
                 foreach (var item in deploymentDetails.DeploymentMetrics.DeviceStatuses)
                 {
                     var reportedProperties = devices.Items.First(x => x.Id == item.Key).Twin.ReportedProperties;
-                    var previosReportedProperties = devices.Items.First(x => x.Id == item.Key)?.PreviousTwin?.ReportedProperties;
+                    var previousReportedProperties = devices.Items.First(x => x.Id == item.Key)?.PreviousTwin?.ReportedProperties;
 
-                    // var json = JToken.Parse(JsonConvert.SerializeObject(reportedProperties));
-                    // var fieldsCollector = new JsonFieldsCollector(json);
-                    // var fields = fieldsCollector.GetAllFields();
                     var fields = this.FieldsCollection(reportedProperties);
                     Dictionary<string, JValue> previousFields = null;
 
-                    if (previosReportedProperties != null)
+                    if (previousReportedProperties != null)
                     {
-                        previousFields = this.FieldsCollection(previosReportedProperties);
+                        previousFields = this.FieldsCollection(previousReportedProperties);
                     }
 
                     deviceDeploymentStatuses.Add(new DeviceDeploymentStatusServiceModel(item.Key, item.Value, fields, previousFields));
@@ -550,6 +499,66 @@ namespace Mmm.Iot.IoTHubManager.Services
             var deployments = deploymentsFromStorage.Select(d => this.CreateDeploymentServiceModel(d));
 
             return deployments.ToDictionary(dep => dep.Id, dep => dep.Name);
+        }
+
+        private async Task<DeviceServiceListModel> GetDeviceListAsync(string deploymentId, List<string> deviceIds, string tenantId)
+        {
+            string query = string.Empty;
+            int iotHublimit = 500;
+            string deviceListValue = string.Empty;
+
+            var deploymentDeviceTask = this.GetDeploymentDevicesAsync(deploymentId, tenantId);
+
+            DeviceServiceListModel allDevices = new DeviceServiceListModel(new List<DeviceServiceModel>(), null);
+
+            if (deviceIds?.Count > 0)
+            {
+                for (int i = 0; i < (deviceIds.Count / iotHublimit) + 1; i++)
+                {
+                    if (i != 0 && (deviceIds.Count % (i * iotHublimit)) <= 0)
+                    {
+                        break;
+                    }
+
+                    List<string> batchDeviceIds = deviceIds.Skip(i * iotHublimit).Take(iotHublimit).ToList();
+                    if (batchDeviceIds != null && batchDeviceIds.Count > 0)
+                    {
+                        deviceListValue = string.Join(",", batchDeviceIds.Select(p => $"'{p}'"));
+                    }
+
+                    query = $" deviceId IN [{deviceListValue}]";
+
+                    int countOfDevicestoFetch = string.IsNullOrWhiteSpace(deviceListValue) ? 1000 : deviceIds.Count();
+
+                    var devices = await this.devices.GetListAsync(query, null);
+
+                    allDevices.Items.AddRange(devices.Items);
+
+                    while (!string.IsNullOrWhiteSpace(devices.ContinuationToken))
+                    {
+                        devices = await this.devices.GetListAsync(query, null);
+                        allDevices.Items.AddRange(devices.Items);
+                    }
+                }
+
+                var deploymentDeviceHistory = await deploymentDeviceTask;
+                if (deploymentDeviceHistory != null && deploymentDeviceHistory.Items.Count > 0)
+                {
+                    Parallel.ForEach(allDevices.Items, item =>
+                    {
+                        var twin = deploymentDeviceHistory.Items.FirstOrDefault(i => i.DeviceId == item.Id)?.Twin;
+
+                        if (twin != null)
+                        {
+                            item.Twin = twin;
+                        }
+
+                        item.PreviousTwin = deploymentDeviceHistory.Items.FirstOrDefault(i => i.DeviceId == item.Id)?.PreviousFirmwareTwin;
+                    });
+                }
+            }
+
+            return allDevices;
         }
 
         private async Task<DeploymentHistoryListModel> GetDeploymentDevicesAsync(string deploymentId, string tenantId)

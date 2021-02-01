@@ -117,11 +117,11 @@ namespace Mmm.Iot.IoTHubManager.WebService.Controllers
             await this.deployments.ReactivateDeploymentAsyc(id, this.GetClaimsUserDetails(), this.GetTenantId());
         }
 
-        [HttpPost("Devices/{id}")]
+        [HttpGet("Devices/{id}")]
         [Authorize("ReadAll")]
-        public async Task<DeviceListApiModel> GetDeploymentImpactedDevices(string id, [FromBody] List<string> deviceIds)
+        public async Task<DeviceListApiModel> GetDeploymentImpactedDevices(string id, [FromQuery] bool isLatest = true)
         {
-            return new DeviceListApiModel(await this.deployments.GetDeviceListAsync(id, deviceIds, this.GetTenantId()));
+            return new DeviceListApiModel(await this.deployments.GetDeployedDevicesAsync(id, this.GetTenantId(), isLatest));
         }
 
         [HttpPost("Modules/{id}")]

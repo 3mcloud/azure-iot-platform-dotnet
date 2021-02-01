@@ -36,12 +36,8 @@ const handleError = (fromAction) => (error) =>
             .map((id) => `'${id}'`)
             .join();
     },
-    getDeployedDeviceIdsArray = (payload) => {
-        return Object.keys(dot.pick("deviceStatuses", payload)).map((id) => id);
-    },
     createEdgeAgentQuery = (ids) =>
         `"deviceId IN [${ids}] AND moduleId = '$edgeAgent'"`;
-// createDevicesQuery = (ids) => `"deviceId IN [${ids}]"`;
 
 export const epics = createEpicScenario({
     /** Loads all Deployments */
@@ -81,7 +77,7 @@ export const epics = createEpicScenario({
             ) {
                 return IoTHubManagerService.getDevicesByQueryForDeployment(
                     fromAction.payload.id,
-                    getDeployedDeviceIdsArray(fromAction.payload)
+                    fromAction.payload.isLatest
                 )
                     .map(
                         toActionCreator(
@@ -101,7 +97,7 @@ export const epics = createEpicScenario({
                 ),
                 IoTHubManagerService.getDevicesByQueryForDeployment(
                     fromAction.payload.id,
-                    getDeployedDeviceIdsArray(fromAction.payload)
+                    fromAction.payload.isLatest
                 )
             )
                 .map(

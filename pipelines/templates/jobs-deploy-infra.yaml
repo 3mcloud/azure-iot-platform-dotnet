@@ -1045,6 +1045,7 @@ jobs:
                 "AppConfigurationConnectionString"="$appConfigurationConnectionString" \
                 "TableStorageConnectionString"="$blobStorageConnString" \
                 "AzureStorageConnectionString"="$blobStorageConnString" \
+                "DeviceDeploymentHistoryConsumerGroup"="devicedeploymenthistory" \
                 "DeploymentsDatabaseId"="pcs-storage" \
               --resource-group $(resourceGroupName)
 
