@@ -498,7 +498,7 @@ namespace Mmm.Iot.IoTHubManager.Services
             try
             {
                 deploymentHistory = await this.storageClient.QueryDocumentsAsync(
-                        "pcs-storage",
+                        this.DocumentDbDatabaseId,
                         this.GetPcsCollectionId(tenantId),
                         new FeedOptions
                         {
@@ -528,7 +528,7 @@ namespace Mmm.Iot.IoTHubManager.Services
             try
             {
                 docs = await this.storageClient.QueryDocumentsAsync(
-                        "pcs-storage",
+                        this.DocumentDbDatabaseId,
                         this.GetPcsCollectionId(tenantId),
                         new FeedOptions
                         {

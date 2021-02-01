@@ -49,6 +49,30 @@ namespace Mmm.Iot.IoTHubManager.Services.Tasks
             this.appConfigurationClient = appConfigurationClient;
         }
 
+        public virtual string DocumentDataType
+        {
+            get
+            {
+                return "pcs";
+            }
+        }
+
+        public virtual string DocumentDatabaseSuffix
+        {
+            get
+            {
+                return "storage";
+            }
+        }
+
+        public virtual string DocumentDbDatabaseId
+        {
+            get
+            {
+                return $"{this.DocumentDataType}-{this.DocumentDatabaseSuffix}";
+            }
+        }
+
         public Task StartAsync(CancellationToken cancellationToken)
         {
             // Store the task we're executing
@@ -217,7 +241,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Tasks
 
             try
             {
-                await this.client.CreateDocumentAsync("pcs-storage", this.GetPcsCollectionId(tenantId), document);
+                await this.client.CreateDocumentAsync(this.DocumentDbDatabaseId, this.GetPcsCollectionId(tenantId), document);
                 isSuccess = true;
             }
             catch (Exception)
@@ -232,7 +256,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Tasks
             string docId = DocumentIdHelper.GenerateId(collectionId, key);
             try
             {
-                await this.client.DeleteDocumentAsync("pcs-storage", this.GetPcsCollectionId(tenantId), docId);
+                await this.client.DeleteDocumentAsync(this.DocumentDbDatabaseId, this.GetPcsCollectionId(tenantId), docId);
             }
             catch (Exception)
             {
