@@ -209,15 +209,8 @@ namespace Mmm.Iot.IoTHubManager.Services.Tasks
                     // Update the TenantMigrationStatus to true;
                     await this.InsertTenantMigrationStatus(tenantToMigrate);
                 }
-                else
-                {
-                    // Since there are no more tenants to process, cancel the token to stop the process.
-                    // Cancel the process
-                    Console.WriteLine("Stopping the process");
-                    this.stoppingCts.Cancel();
-                }
 
-                await Task.Delay(30 * 1000, stoppingToken);
+                await Task.Delay(300 * 1000, stoppingToken);
             }
         }
 
