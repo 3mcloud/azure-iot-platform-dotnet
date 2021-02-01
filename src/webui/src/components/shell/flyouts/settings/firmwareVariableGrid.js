@@ -22,6 +22,7 @@ class FirmwareVariableGrid extends React.Component {
                     "type",
                 ],
                 deployment: ["id"],
+                uniqueId:[""],
             },
             variableRows = [];
 

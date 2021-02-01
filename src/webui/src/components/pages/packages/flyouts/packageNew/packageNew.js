@@ -48,7 +48,8 @@ const fileInputAccept = ".json,application/json",
     firmwareFileInputAccept =
         "*.zip,*.tar,*.bin,*.ipa,*.rar,*.gz,*.bz2,*.tgz,*.swu",
     isVersionValid = (str) => /^(\d+\.)*(\d+)$/.test(str),
-    firmwareJsonVariableReplace = /\$\{(blobData|packageFile)\.(.*)\}/;
+    firmwareJsonVariableReplace = /\$\{(blobData|packageFile)\.(.*)\}/,
+    firmwareJsonUniqueIdReplace = /\$\{uniqueId\}/;
 
 export class PackageNew extends LinkedComponent {
     constructor(props) {
@@ -103,6 +104,7 @@ export class PackageNew extends LinkedComponent {
         if (configType === "Firmware" && !uploadedFirmwareSuccessfully) {
             ConfigService.uploadFirmware(packageFile).subscribe(
                 (blobData) => {
+                    let uniqueId = uuid();
                     ConfigService.getDefaultFirmwareSetting().subscribe(
                         (firmwareTemplate) => {
                             firmwareTemplate.jsObject.id =
@@ -115,8 +117,12 @@ export class PackageNew extends LinkedComponent {
                                 firmwareTemplate.jsObject,
                                 {
                                     packageFile: packageFile,
-                                    blobData: blobData,
+                                    blobData: blobData
                                 }
+                            );
+                            this.replaceFirmwareUniqueIdVariable(
+                                firmwareTemplate.jsObject,
+                                uniqueId
                             );
                             this.replaceFirmwareVersion(
                                 firmwareTemplate.jsObject,
@@ -134,11 +140,11 @@ export class PackageNew extends LinkedComponent {
                                 firmwarePackageName: packageFile.name,
                                 packageFile: dataURLtoFile(
                                     "data:application/json;base64," +
-                                        btoa(
-                                            JSON.stringify(
-                                                firmwareTemplate.jsObject
-                                            )
-                                        ),
+                                    btoa(
+                                        JSON.stringify(
+                                            firmwareTemplate.jsObject
+                                        )
+                                    ),
                                     packageFile.name
                                 ),
                             });
@@ -353,7 +359,7 @@ export class PackageNew extends LinkedComponent {
                 packageJson: e.target.value,
                 packageFile: dataURLtoFile(
                     "data:application/json;base64," +
-                        btoa(JSON.stringify(e.target.value.jsObject)),
+                    btoa(JSON.stringify(e.target.value.jsObject)),
                     this.state.firmwarePackageName
                 ),
                 packageVersion: version,
@@ -387,6 +393,7 @@ export class PackageNew extends LinkedComponent {
     };
 
     replaceFirmwareVersion = (json, version, versionKey) => {
+        debugger;
         const versionKeySplit = versionKey.split("//");
         let jsonChild = json;
         versionKeySplit.forEach((key, idx) => {
@@ -416,6 +423,20 @@ export class PackageNew extends LinkedComponent {
         return json;
     };
 
+    replaceFirmwareUniqueIdVariable = (json, uniqueId) => {
+        for (const [key, value] of Object.entries(json)) {
+            if (value instanceof Object) {
+                this.replaceFirmwareUniqueIdVariable(value, uniqueId);
+            } else if (typeof value === "string" || value instanceof String) {
+                let varReplace = value.match(firmwareJsonUniqueIdReplace);
+                if (varReplace) {
+                    json[key] = uniqueId;
+                }
+            }
+        }
+        return json;
+    };
+
     expandFlyout() {
         if (this.state.expandedValue) {
             this.setState({
@@ -430,14 +451,14 @@ export class PackageNew extends LinkedComponent {
 
     render() {
         const {
-                t,
-                theme,
-                isPending,
-                error,
-                configTypes,
-                configTypesError,
-                configTypesIsPending,
-            } = this.props,
+            t,
+            theme,
+            isPending,
+            error,
+            configTypes,
+            configTypesError,
+            configTypesIsPending,
+        } = this.props,
             {
                 packageType,
                 configType,
@@ -478,7 +499,7 @@ export class PackageNew extends LinkedComponent {
                 // Validate for non-empty value if packageType is of type 'Device Configuration'
                 (configValue) =>
                     this.packageTypeLink.value ===
-                    packagesEnum.deviceConfiguration
+                        packagesEnum.deviceConfiguration
                         ? Validator.notEmpty(configValue)
                         : true,
                 this.props.t("packages.flyouts.new.validation.required")
@@ -513,7 +534,7 @@ export class PackageNew extends LinkedComponent {
                 (val) =>
                     this.packageTypeLink.value ===
                         packagesEnum.deviceConfiguration &&
-                    this.configTypeLink.value === "Firmware"
+                        this.configTypeLink.value === "Firmware"
                         ? Validator.notEmpty(val)
                         : true,
                 this.props.t("packages.flyouts.new.validation.required")
@@ -522,14 +543,14 @@ export class PackageNew extends LinkedComponent {
                 (val) =>
                     this.packageTypeLink.value ===
                         packagesEnum.deviceConfiguration &&
-                    this.configTypeLink.value === "Firmware"
+                        this.configTypeLink.value === "Firmware"
                         ? isVersionValid(val)
                         : true,
                 t("packages.flyouts.new.validation.invalidVersion")
             );
 
         const configTypeEnabled =
-                this.packageTypeLink.value === packagesEnum.deviceConfiguration,
+            this.packageTypeLink.value === packagesEnum.deviceConfiguration,
             customTextVisible =
                 configTypeEnabled &&
                 this.configTypeLink.value === configsEnum.custom;
@@ -606,13 +627,13 @@ export class PackageNew extends LinkedComponent {
                                 )}
                                 {configTypesIsPending && <Indicator />}
                                 {/** Displays an error message if one occurs while fetching configTypes. */
-                                configTypesError && (
-                                    <AjaxError
-                                        className="new-package-flyout-error"
-                                        t={t}
-                                        error={configTypesError}
-                                    />
-                                )}
+                                    configTypesError && (
+                                        <AjaxError
+                                            className="new-package-flyout-error"
+                                            t={t}
+                                            error={configTypesError}
+                                        />
+                                    )}
                                 {completedSuccessfully && (
                                     <FormLabel className="new-package-success-labels">
                                         {configType}
@@ -848,13 +869,13 @@ export class PackageNew extends LinkedComponent {
                                 </div>
                             )}
                             {/** Displays an error message if one occurs while applying changes. */
-                            error && (
-                                <AjaxError
-                                    className="new-package-flyout-error"
-                                    t={t}
-                                    error={error}
-                                />
-                            )}
+                                error && (
+                                    <AjaxError
+                                        className="new-package-flyout-error"
+                                        t={t}
+                                        error={error}
+                                    />
+                                )}
                             {fileError && (
                                 <AjaxError
                                     className="new-firmware-flyout-error"
@@ -863,60 +884,60 @@ export class PackageNew extends LinkedComponent {
                                 />
                             )}
                             {/** If package is selected, show the buttons for uploading and closing the flyout. */
-                            packageFile && !completedSuccessfully && (
-                                <BtnToolbar>
-                                    <Btn
-                                        svg={svgs.upload}
-                                        primary={true}
-                                        disabled={
-                                            isPending || !this.formIsValid()
-                                        }
-                                        type="submit"
-                                    >
-                                        {t("packages.flyouts.new.upload")}
-                                    </Btn>
-                                    <Btn
-                                        svg={svgs.cancelX}
-                                        onClick={() =>
-                                            this.genericCloseClick(
-                                                "NewPackage_CancelClick"
-                                            )
-                                        }
-                                    >
-                                        {t("packages.flyouts.new.cancel")}
-                                    </Btn>
-                                </BtnToolbar>
-                            )}
+                                packageFile && !completedSuccessfully && (
+                                    <BtnToolbar>
+                                        <Btn
+                                            svg={svgs.upload}
+                                            primary={true}
+                                            disabled={
+                                                isPending || !this.formIsValid()
+                                            }
+                                            type="submit"
+                                        >
+                                            {t("packages.flyouts.new.upload")}
+                                        </Btn>
+                                        <Btn
+                                            svg={svgs.cancelX}
+                                            onClick={() =>
+                                                this.genericCloseClick(
+                                                    "NewPackage_CancelClick"
+                                                )
+                                            }
+                                        >
+                                            {t("packages.flyouts.new.cancel")}
+                                        </Btn>
+                                    </BtnToolbar>
+                                )}
                             {/** If package is not selected, show only the cancel button. */
-                            !packageFile && (
-                                <BtnToolbar>
-                                    <Btn
-                                        svg={svgs.cancelX}
-                                        onClick={() =>
-                                            this.genericCloseClick(
-                                                "NewPackage_CancelClick"
-                                            )
-                                        }
-                                    >
-                                        {t("packages.flyouts.new.cancel")}
-                                    </Btn>
-                                </BtnToolbar>
-                            )}
+                                !packageFile && (
+                                    <BtnToolbar>
+                                        <Btn
+                                            svg={svgs.cancelX}
+                                            onClick={() =>
+                                                this.genericCloseClick(
+                                                    "NewPackage_CancelClick"
+                                                )
+                                            }
+                                        >
+                                            {t("packages.flyouts.new.cancel")}
+                                        </Btn>
+                                    </BtnToolbar>
+                                )}
                             {/** After successful upload, show close button. */
-                            completedSuccessfully && (
-                                <BtnToolbar>
-                                    <Btn
-                                        svg={svgs.cancelX}
-                                        onClick={() =>
-                                            this.genericCloseClick(
-                                                "NewPackage_CancelClick"
-                                            )
-                                        }
-                                    >
-                                        {t("packages.flyouts.new.close")}
-                                    </Btn>
-                                </BtnToolbar>
-                            )}
+                                completedSuccessfully && (
+                                    <BtnToolbar>
+                                        <Btn
+                                            svg={svgs.cancelX}
+                                            onClick={() =>
+                                                this.genericCloseClick(
+                                                    "NewPackage_CancelClick"
+                                                )
+                                            }
+                                        >
+                                            {t("packages.flyouts.new.close")}
+                                        </Btn>
+                                    </BtnToolbar>
+                                )}
                         </SummarySection>
                     </form>
                 </div>
