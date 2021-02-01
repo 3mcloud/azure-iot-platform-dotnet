@@ -126,7 +126,7 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
                 else
                 {
                     bool deviceDeploymentTwins = await this.DoesDeploymentTwinsExist(tenantId, deployment.Id);
-                    if (deviceDeploymentTwins)
+                    if (!deviceDeploymentTwins)
                     {
                         var deviceTwins = await this.GetDeviceProperties(tenantId, deployment);
                         if (deviceTwins != null && deviceTwins.Count > 0)
@@ -300,7 +300,7 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
                sql,
                0,
                1);
-            return docs != null;
+            return docs != null && docs.Count > 0;
         }
 
         private bool CheckIfDeploymentWasMadeByRM(Configuration conf)
