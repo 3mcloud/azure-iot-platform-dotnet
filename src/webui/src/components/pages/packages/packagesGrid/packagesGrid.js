@@ -29,7 +29,6 @@ export class PackagesGrid extends Component {
 
         this.columnDefs = [
             packagesColumnDefs.checkBox,
-            packagesColumnDefs.id,
             packagesColumnDefs.name,
             packagesColumnDefs.packageType,
             packagesColumnDefs.configType,

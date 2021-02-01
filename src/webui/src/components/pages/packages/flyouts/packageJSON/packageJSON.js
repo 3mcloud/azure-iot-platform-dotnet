@@ -2,15 +2,7 @@
 
 import React from "react";
 import { LinkedComponent, svgs, copyToClipboard } from "utilities";
-import {
-    Btn,
-    Flyout,
-    FormControl,
-    PropertyGrid as Grid,
-    PropertyRow as Row,
-    PropertyCell as Cell,
-} from "components/shared";
-import { Svg } from "components/shared/svg/svg";
+import { Btn, Flyout, FormControl } from "components/shared";
 
 import "../packageNew/packageNew.scss";
 import "./packageJSON.scss";
@@ -71,7 +63,10 @@ export class PackageJSON extends LinkedComponent {
                 flyoutLink={flyoutLink}
             >
                 <div>
-                    <div className="pcs-renderer-cell highlight"><span><h4>Package Id</h4></span>
+                    <div className="pcs-renderer-cell highlight">
+                        <span>
+                            <h4>Package Id</h4>
+                        </span>
                         <span>
                             <Btn
                                 className={"copy-icon"}
@@ -80,13 +75,13 @@ export class PackageJSON extends LinkedComponent {
                             ></Btn>
                         </span>
                     </div>
-                    <div>
-                        {packageId}
-                    </div>
+                    <div>{packageId}</div>
                 </div>
                 <br></br>
                 <div>
-                    <div><h4>Package JSON</h4></div>
+                    <div>
+                        <h4>Package JSON</h4>
+                    </div>
                     <div className="new-package-content">
                         <form className="new-package-form">
                             <FormControl
