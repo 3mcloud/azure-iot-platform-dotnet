@@ -23,6 +23,8 @@ export const toDeviceModel = (device = {}) => {
             "properties.reported.telemetry": "telemetry",
             "properties.reported.type": "type",
             "properties.reported.firmware.currentFwVersion": "currentFwVersion",
+            "previousProperties.reported.firmware.currentFwVersion":
+                "previousFwVersion",
             "properties.reported.firmware.lastFwUpdateStartTime":
                 "lastFwUpdateStartTime",
             "properties.reported.firmware.lastFwUpdateEndTime":
@@ -55,6 +57,11 @@ export const toDeviceModel = (device = {}) => {
             $set: modelData.currentFwVersion
                 ? modelData.currentFwVersion
                 : dot.pick("Properties.Reported.Firmware", device),
+        },
+        previousFirmware: {
+            $set: modelData.previousFwVersion
+                ? modelData.previousFwVersion
+                : dot.pick("PreviousProperties.Reported.Firmware", device),
         },
     });
 };
@@ -294,13 +301,18 @@ export const toEdgeAgentsModel = (response = []) =>
 export const toDevicesDeploymentHistoryModel = (response = []) =>
     getItems(response).map(toDeviceDeploymentHistoryModel);
 
-export const toDeviceDeploymentHistoryModel = (twinServiceModel = {}) => {
-    if (twinServiceModel.Reported && twinServiceModel.Reported.firmware) {
+export const toDeviceDeploymentHistoryModel = (deploymentHistoryModel = {}) => {
+    if (
+        deploymentHistoryModel.twin.reportedProperties &&
+        deploymentHistoryModel.twin.reportedProperties.firmware
+    ) {
         var modelData = {
+            deploymentName: deploymentHistoryModel.deploymentName,
             firmwareVersion:
-                twinServiceModel.Reported.firmware.currentFwVersion,
-            startTime: twinServiceModel.Reported.firmware.lastFwUpdateStartTime,
-            endTime: twinServiceModel.Reported.firmware.lastFwUpdateEndTime,
+                deploymentHistoryModel.twin.reportedProperties.firmware
+                    .currentFwVersion,
+            lastUpdatedTime: deploymentHistoryModel.lastUpdatedDateTimeUtc,
+            deploymentId: deploymentHistoryModel.deploymentId,
         };
         return modelData;
     }

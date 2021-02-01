@@ -119,9 +119,9 @@ namespace Mmm.Iot.IoTHubManager.WebService.Controllers
 
         [HttpPost("Devices/{id}")]
         [Authorize("ReadAll")]
-        public async Task<DeviceListApiModel> GetDeploymentImpactedDevices(string id, [FromBody] string query, [FromQuery] bool isLatest = false)
+        public async Task<DeviceListApiModel> GetDeploymentImpactedDevices(string id, [FromBody] List<string> deviceIds)
         {
-            return new DeviceListApiModel(await this.deployments.GetDeviceListAsync(id, query, isLatest));
+            return new DeviceListApiModel(await this.deployments.GetDeviceListAsync(id, deviceIds, this.GetTenantId()));
         }
 
         [HttpPost("Modules/{id}")]
@@ -137,7 +137,7 @@ namespace Mmm.Iot.IoTHubManager.WebService.Controllers
         {
             List<DeviceDeploymentStatus> deviceDeploymentStatuses = new List<DeviceDeploymentStatus>();
 
-            var deploymentStatuses = await this.deployments.GetDeploymentStatusReport(id, isLatest);
+            var deploymentStatuses = await this.deployments.GetDeploymentStatusReport(id, this.GetTenantId(), isLatest);
 
             if (deploymentStatuses != null && deploymentStatuses.Count > 0)
             {
@@ -234,6 +234,7 @@ namespace Mmm.Iot.IoTHubManager.WebService.Controllers
             workRow.Append(OpenXMLHelper.CreateCell("Name", 2U));
             workRow.Append(OpenXMLHelper.CreateCell("Deployment Status", 2U));
             workRow.Append(OpenXMLHelper.CreateCell("Firmware", 2U));
+            workRow.Append(OpenXMLHelper.CreateCell("Previous Firmware", 2U));
             workRow.Append(OpenXMLHelper.CreateCell("Start", 2U));
             workRow.Append(OpenXMLHelper.CreateCell("End", 2U));
             return workRow;
@@ -245,6 +246,7 @@ namespace Mmm.Iot.IoTHubManager.WebService.Controllers
             tRow.Append(OpenXMLHelper.CreateCell(testmodel.Name));
             tRow.Append(OpenXMLHelper.CreateCell(testmodel.DeploymentStatus));
             tRow.Append(OpenXMLHelper.CreateCell(testmodel.Firmware));
+            tRow.Append(OpenXMLHelper.CreateCell(testmodel.PreviousFirmware));
             tRow.Append(OpenXMLHelper.CreateCell(testmodel.Start));
             tRow.Append(OpenXMLHelper.CreateCell(testmodel.End));
 

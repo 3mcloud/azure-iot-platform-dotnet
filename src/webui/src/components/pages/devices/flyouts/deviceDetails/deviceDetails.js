@@ -33,6 +33,7 @@ import {
     PropertyCell as Cell,
     SectionDesc,
     TimeSeriesInsightsLinkContainer,
+    Hyperlink,
 } from "components/shared";
 import { TimeIntervalDropdownContainer as TimeIntervalDropdown } from "components/shell/timeIntervalDropdown";
 import Flyout from "components/shared/flyout";
@@ -1035,10 +1036,15 @@ export class DeviceDetails extends Component {
                                             t(
                                                 "devices.flyouts.details.deviceDeployments.noneExist"
                                             )}
-                                        {deviceDeployments.length > 0 && (
+                                        {deviceDeployments.length >= 0 && (
                                             <Grid className="device-details-deviceDeployments">
                                                 <GridHeader>
                                                     <Row>
+                                                        <Cell className="col-4">
+                                                            {t(
+                                                                "devices.flyouts.details.deviceDeployments.deploymentName"
+                                                            )}
+                                                        </Cell>
                                                         <Cell className="col-4">
                                                             {t(
                                                                 "devices.flyouts.details.deviceDeployments.firmwareVersion"
@@ -1046,12 +1052,7 @@ export class DeviceDetails extends Component {
                                                         </Cell>
                                                         <Cell className="col-4">
                                                             {t(
-                                                                "devices.flyouts.details.deviceDeployments.startDate"
-                                                            )}
-                                                        </Cell>
-                                                        <Cell className="col-4">
-                                                            {t(
-                                                                "devices.flyouts.details.deviceDeployments.endDate"
+                                                                "devices.flyouts.details.deviceDeployments.lastUpdatedTime"
                                                             )}
                                                         </Cell>
                                                     </Row>
@@ -1061,18 +1062,23 @@ export class DeviceDetails extends Component {
                                                         (deployment, idx) => (
                                                             <Row key={idx}>
                                                                 <Cell className="col-4">
+                                                                    <Hyperlink
+                                                                        href={`/deployments/${deployment.deploymentId}/false`}
+                                                                        target="_blank"
+                                                                    >
+                                                                        {
+                                                                            deployment.deploymentName
+                                                                        }
+                                                                    </Hyperlink>
+                                                                </Cell>
+                                                                <Cell className="col-4">
                                                                     {
                                                                         deployment.firmwareVersion
                                                                     }
                                                                 </Cell>
                                                                 <Cell className="col-4">
                                                                     {formatTime(
-                                                                        deployment.startTime
-                                                                    )}
-                                                                </Cell>
-                                                                <Cell className="col-4">
-                                                                    {formatTime(
-                                                                        deployment.endTime
+                                                                        deployment.lastUpdatedTime
                                                                     )}
                                                                 </Cell>
                                                             </Row>

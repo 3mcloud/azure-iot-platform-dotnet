@@ -28,6 +28,11 @@ export const deploymentDetailsColumnDefs = {
         field: "firmware",
         valueFormatter: ({ value }) => checkForEmpty(value),
     },
+    previousFirmware: {
+        headerName: "deployments.details.grid.previousFirmware",
+        field: "previousFirmware",
+        valueFormatter: ({ value }) => checkForEmpty(value),
+    },
     lastMessage: {
         headerName: "deployments.details.grid.lastMessage",
         field: "code",

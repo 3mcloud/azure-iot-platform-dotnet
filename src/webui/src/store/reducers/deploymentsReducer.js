@@ -36,9 +36,12 @@ const handleError = (fromAction) => (error) =>
             .map((id) => `'${id}'`)
             .join();
     },
+    getDeployedDeviceIdsArray = (payload) => {
+        return Object.keys(dot.pick("deviceStatuses", payload)).map((id) => id);
+    },
     createEdgeAgentQuery = (ids) =>
-        `"deviceId IN [${ids}] AND moduleId = '$edgeAgent'"`,
-    createDevicesQuery = (ids) => `"deviceId IN [${ids}]"`;
+        `"deviceId IN [${ids}] AND moduleId = '$edgeAgent'"`;
+// createDevicesQuery = (ids) => `"deviceId IN [${ids}]"`;
 
 export const epics = createEpicScenario({
     /** Loads all Deployments */
@@ -78,10 +81,7 @@ export const epics = createEpicScenario({
             ) {
                 return IoTHubManagerService.getDevicesByQueryForDeployment(
                     fromAction.payload.id,
-                    createDevicesQuery(
-                        getDeployedDeviceIds(fromAction.payload)
-                    ),
-                    fromAction.payload.isLatest
+                    getDeployedDeviceIdsArray(fromAction.payload)
                 )
                     .map(
                         toActionCreator(
@@ -101,10 +101,7 @@ export const epics = createEpicScenario({
                 ),
                 IoTHubManagerService.getDevicesByQueryForDeployment(
                     fromAction.payload.id,
-                    createDevicesQuery(
-                        getDeployedDeviceIds(fromAction.payload)
-                    ),
-                    fromAction.payload.isLatest
+                    getDeployedDeviceIdsArray(fromAction.payload)
                 )
             )
                 .map(
@@ -254,6 +251,8 @@ const deploymentSchema = new schema.Entity("deployments"),
                             normalizedDevices[deviceId].lastFwUpdateStartTime,
                         end: normalizedDevices[deviceId].lastFwUpdateEndTime,
                         firmware: normalizedDevices[deviceId].firmware,
+                        previousFirmware:
+                            normalizedDevices[deviceId].previousFirmware,
                         device: normalizedDevices[deviceId],
                     },
                 }),

@@ -2,15 +2,16 @@
 // Copyright (c) 3M. All rights reserved.
 // </copyright>
 
+using System;
 using Microsoft.Azure.Documents;
 
 namespace Mmm.Iot.Functions.DeploymentSync.Shared
 {
     internal sealed class KeyValueDocument : Resource
     {
-        public KeyValueDocument(string collectionId, string key, string data)
+        public KeyValueDocument(string collectionId, string key, string data, Guid? id = null)
         {
-            this.Id = GenerateId(collectionId, key);
+            this.Id = id.HasValue ? id.ToString() : GenerateId(collectionId, key);
             this.CollectionId = collectionId;
             this.Key = key;
             this.Data = data;

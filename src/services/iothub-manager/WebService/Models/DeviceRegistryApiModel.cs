@@ -42,6 +42,11 @@ namespace Mmm.Iot.IoTHubManager.WebService.Models
                 this.Tags = device.Twin.Tags;
                 this.IsSimulated = device.Twin.IsSimulated;
             }
+
+            if (device.PreviousTwin != null)
+            {
+                this.PreviousProperties = new TwinPropertiesApiModel(device.PreviousTwin.DesiredProperties, device.PreviousTwin.ReportedProperties);
+            }
         }
 
         [JsonProperty(PropertyName = "ETag")]
@@ -78,6 +83,9 @@ namespace Mmm.Iot.IoTHubManager.WebService.Models
 
         [JsonProperty(PropertyName = "Properties", NullValueHandling = NullValueHandling.Ignore)]
         public TwinPropertiesApiModel Properties { get; set; }
+
+        [JsonProperty(PropertyName = "PreviousProperties", NullValueHandling = NullValueHandling.Ignore)]
+        public TwinPropertiesApiModel PreviousProperties { get; set; }
 
         [JsonProperty(PropertyName = "Tags", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, JToken> Tags { get; set; }

@@ -405,10 +405,9 @@ namespace Mmm.Iot.IoTHubManager.Services
             return new TwinServiceListModel(result, twins.ContinuationToken);
         }
 
-        public async Task<TwinServiceListModel> GetDeploymentHistoryAsync(string deviceId, string tenantId)
+        public async Task<DeploymentHistoryListModel> GetDeploymentHistoryAsync(string deviceId, string tenantId)
         {
-            var sql = QueryBuilder.GetDeviceDocumentsSqlByKey("Key", deviceId);
-
+            var sql = QueryBuilder.GetDeviceDocumentsSqlByKey($"deviceDeploymentHistory-{deviceId}", "CollectionId");
             FeedOptions queryOptions = new FeedOptions
             {
                 EnableCrossPartitionQuery = true,
@@ -422,12 +421,11 @@ namespace Mmm.Iot.IoTHubManager.Services
                 0,
                 1000);
 
-            var result = docs == null ?
-                new List<TwinServiceModel>() :
-                docs
-                    .Select(doc => new ValueServiceModel(doc)).Select(x => JsonConvert.DeserializeObject<TwinServiceModel>(x.Data))
-                    .ToList();
-            return new TwinServiceListModel(result, null);
+            return docs == null
+                 ? new DeploymentHistoryListModel(null)
+                 : new DeploymentHistoryListModel(docs
+                    .Select(doc => new ValueServiceModel(doc)).Select(x => JsonConvert.DeserializeObject<DeploymentHistoryModel>(x.Data))
+                    .ToList());
         }
 
         public async Task<DeviceStatisticsServiceModel> GetDeviceStatisticsAsync(string query)

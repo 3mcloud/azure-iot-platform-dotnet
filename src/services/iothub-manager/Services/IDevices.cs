@@ -29,7 +29,7 @@ namespace Mmm.Iot.IoTHubManager.Services
 
         Task<TwinServiceListModel> GetModuleTwinsByQueryAsync(string query, string continuationToken);
 
-        Task<TwinServiceListModel> GetDeploymentHistoryAsync(string deviceId, string tenantId);
+        Task<DeploymentHistoryListModel> GetDeploymentHistoryAsync(string deviceId, string tenantId);
 
         Task<DeviceServiceListModel> GetDeviceListAsync(string query, string continuationToken);
 

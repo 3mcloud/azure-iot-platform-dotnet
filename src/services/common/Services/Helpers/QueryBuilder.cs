@@ -174,8 +174,8 @@ namespace Mmm.Iot.Common.Services.Helpers
         }
 
         public static SqlQuerySpec GetDeviceDocumentsSqlByKey(
-            string key,
-            string keyProperty)
+            string keyProperty,
+            string key)
         {
             var sqlParameterCollection = new SqlParameterCollection();
             ValidateInput(ref key);
@@ -211,6 +211,27 @@ namespace Mmm.Iot.Common.Services.Helpers
             }
 
             queryBuilder.Append(" ORDER BY c[\"_ts\"] DESC");
+            return new SqlQuerySpec(queryBuilder.ToString(), sqlParameterCollection);
+        }
+
+        public static SqlQuerySpec GetDeploymentDeviceDocumentsSqlByKey(
+             string key,
+             string value)
+        {
+            var sqlParameterCollection = new SqlParameterCollection();
+            ValidateInput(ref key);
+            ValidateInput(ref value);
+
+            var queryBuilder = new StringBuilder("SELECT * FROM c");
+
+            if (!string.IsNullOrEmpty(value))
+            {
+                queryBuilder.Append($" WHERE c[@keyProperty] = @value ");
+                sqlParameterCollection.Add(new SqlParameter { Name = "@keyProperty", Value = key });
+                sqlParameterCollection.Add(new SqlParameter { Name = "@value", Value = value });
+            }
+
+            queryBuilder.Append(" AND c[\"CollectionId\"] like 'deviceDeploymentHistory-%' ORDER BY c[\"_ts\"] DESC");
             return new SqlQuerySpec(queryBuilder.ToString(), sqlParameterCollection);
         }
 

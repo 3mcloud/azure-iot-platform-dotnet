@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace Mmm.Iot.IoTHubManager.Services.Models
+namespace Mmm.Iot.Functions.DeploymentSync.Shared
 {
     public class DeploymentHistoryModel
     {

@@ -28,9 +28,9 @@ namespace Mmm.Iot.IoTHubManager.Services
 
         Task ReactivateDeploymentAsyc(string deploymentId, string userId, string tenantId);
 
-        Task<DeviceServiceListModel> GetDeviceListAsync(string deploymentId, string query, bool isLatest);
+        Task<DeviceServiceListModel> GetDeviceListAsync(string deploymentId, List<string> deviceIds, string tenantId);
 
-        Task<List<DeviceDeploymentStatusServiceModel>> GetDeploymentStatusReport(string id, bool isLatest = true);
+        Task<List<DeviceDeploymentStatusServiceModel>> GetDeploymentStatusReport(string id, string tenantId, bool isLatest = true);
 
         Task<TwinServiceListModel> GetModulesListAsync(string deploymentId, string query, bool isLatest);
 

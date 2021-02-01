@@ -1,0 +1,15 @@
+{
+  "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+        "DeploymentsDatabaseId": "pcs-storage",
+        "AppConfigurationConnectionString": "Endpoint=https://crsliot-appconfig-dev.azconfig.io;Id=Xgt/-l4-s0:pBH6Ix0z6nNK7DSSX7pQ;Secret=uMiLU1yD5LM6PZsxlZfHM3AOHidG8JAtojpBasrpuCQ=",
+        "TableStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=crsliotstorageacctdev;AccountKey=RI1nwejnaoWP92KlXtCwFAvqZyUsbEWbJwrxRTdb7TgyWdthCekQmLr72lw8qUmdDuOqYoDtOpAlymIcW9RO6g==;EndpointSuffix=core.windows.net",
+        "CosmosDbConnectionString": "AccountEndpoint=https://crsliot-cosmos-dev.documents.azure.com:443/;AccountKey=N2ZAnmE1Jv3jeFnnumLcO8McQ9t6cXckZWRzt7UhkxUmdzchFVmf3lRXMVNamqU7A6ZqCQafFC8LerB0SzP20Q==;",
+        "AzureStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=crsliotstorageacctdev;AccountKey=RI1nwejnaoWP92KlXtCwFAvqZyUsbEWbJwrxRTdb7TgyWdthCekQmLr72lw8qUmdDuOqYoDtOpAlymIcW9RO6g==;EndpointSuffix=core.windows.net",
+        "Cosmos1": "AccountEndpoint=https://ggkmmmcosmos.documents.azure.com:443/;AccountKey=tspiDYki14WD4U17DiUytNE4ADp2lpW8SU6D3cKqotzHqGDjjolssQkFm157Jcd7YHJMFrIBDfaBhPZlgjH9kg==;",
+        "DeviceDeploymentHistoryConsumerGroup": "DeviceDeploymentHistory",
+        "TwinChangeEventHubConnectionString": "Endpoint=sb://crsliot-eventhub-dev.servicebus.windows.net/;SharedAccessKeyName=iothubroutes;SharedAccessKey=4ZPCdNKm2sldpNmTVjWyTbOuUjDvftt65empBvCFdEE=;EntityPath=twin-change"
+    }
+}

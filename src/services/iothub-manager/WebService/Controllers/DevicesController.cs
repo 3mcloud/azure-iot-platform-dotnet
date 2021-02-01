@@ -15,6 +15,7 @@ using Mmm.Iot.Common.Services;
 using Mmm.Iot.Common.Services.Filters;
 using Mmm.Iot.Common.Services.Helpers;
 using Mmm.Iot.IoTHubManager.Services;
+using Mmm.Iot.IoTHubManager.Services.Models;
 using Mmm.Iot.IoTHubManager.WebService.Models;
 
 namespace Mmm.Iot.IoTHubManager.WebService.Controllers
@@ -70,9 +71,9 @@ namespace Mmm.Iot.IoTHubManager.WebService.Controllers
 
         [HttpGet("deploymentHistory/{id}")]
         [Authorize("ReadAll")]
-        public async Task<TwinPropertiesListApiModel> GetDeviceDeploymentAsync(string id)
+        public async Task<DeploymentHistoryListModel> GetDeviceDeploymentAsync(string id)
         {
-            return new TwinPropertiesListApiModel(await this.devices.GetDeploymentHistoryAsync(id, this.GetTenantId()));
+            return await this.devices.GetDeploymentHistoryAsync(id, this.GetTenantId());
         }
 
         [HttpGet("{id}")]

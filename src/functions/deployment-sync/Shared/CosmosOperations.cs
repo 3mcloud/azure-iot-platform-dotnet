@@ -110,13 +110,13 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
             }
         }
 
-        public async Task<ValueServiceModel> SaveDocumentAsync(string collectionId, string key, ValueServiceModel input, string collectionLink)
+        public async Task<ValueServiceModel> SaveDocumentAsync(string collectionId, string key, ValueServiceModel input, string collectionLink, Guid? id = null)
         {
             try
             {
                 var response = await this.client.UpsertDocumentAsync(
                     collectionLink,
-                    new KeyValueDocument(collectionId, key, input.Data),
+                    new KeyValueDocument(collectionId, key, input.Data, id),
                     IfMatch(input.ETag));
                 return new ValueServiceModel(response?.Resource);
             }

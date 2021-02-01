@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
+using Microsoft.CodeAnalysis.CodeActions;
 using Mmm.Iot.Functions.DeploymentSync.Shared.Exceptions;
 using Mmm.Iot.Functions.DeploymentSync.Shared.Helpers;
 using Newtonsoft.Json;
@@ -29,11 +31,16 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
         private const string ModuleQueryPrefix = "SELECT * FROM devices.modules";
         private const string DevicesConnectedQuery = "connectionState = 'Connected'";
         private const string DeploymentsCollection = "deployments";
-        private const string DeploymentDevicePropertiesCollection = "deploymentdevices-{0}";
         private const string CollectionKey = "pcs";
         private const string DeploymentEdgeModulePropertiesCollection = "deploymentedgemodules-{0}";
-        private const string DeploymentHistoryPropertiesCollection = "deploymentHistory-{0}_{1}";
         private const string DeploymentModuleHistoryPropertiesCollection = "deploymentModulesHistory-{0}_{1}";
+        private const string DeploymentHistoryCollection = "deviceDeploymentHistory-{0}";
+
+        private FeedOptions DefaultQueryOptions => new FeedOptions
+        {
+            EnableCrossPartitionQuery = true,
+            EnableScanInQuery = true,
+        };
 
         public async Task<List<DeploymentServiceModel>> GetDeploymentsToSync(string tenantId, IEnumerable<Configuration> configurations)
         {
@@ -105,20 +112,195 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
 
             if (devicesStatuses != null && devicesStatuses.Keys.Count > 0)
             {
-                var deviceTwins = await this.GetDeviceProperties(tenantId, deployment);
-                if (deviceTwins != null && deviceTwins.Count > 0)
-                {
-                    await this.SaveDeviceProperties(tenantId, deployment.Id, deviceTwins);
-                }
-
                 if (ConfigurationsHelper.IsEdgeDeployment(configuration))
                 {
+                    var deviceTwins = await this.GetDeviceProperties(tenantId, deployment);
+                    if (deviceTwins != null && deviceTwins.Count > 0)
+                    {
+                        await this.SaveDeploymentFromHub(tenantId, deployment, deviceTwins);
+                    }
+
                     var moduleTwins = await this.GetDeviceProperties(tenantId, deployment, PackageType.EdgeManifest);
                     await this.StoreModuleTwinsInStorage(tenantId, moduleTwins, deployment.Id);
+                }
+                else
+                {
+                    bool deviceDeploymentTwins = await this.DoesDeploymentTwinsExist(tenantId, deployment.Id);
+                    if (deviceDeploymentTwins)
+                    {
+                        var deviceTwins = await this.GetDeviceProperties(tenantId, deployment);
+                        if (deviceTwins != null && deviceTwins.Count > 0)
+                        {
+                            await this.SaveDeploymentFromHub(tenantId, deployment, deviceTwins);
+                        }
+                    }
                 }
             }
 
             return deployment;
+        }
+
+        public async Task<List<DeploymentServiceModel>> GetDeploymentsByIdFromStorage(string tenantId, string[] deploymentIds)
+        {
+            var sql = QueryBuilder.GetDocumentsSql(
+                "deployments",
+                null,
+                null,
+                null,
+                "_ts",
+                null,
+                "_ts",
+                "desc",
+                "_ts",
+                0,
+                100,
+                deploymentIds,
+                "Key");
+
+            List<Document> docs = new List<Document>();
+
+            try
+            {
+                CosmosOperations storageClient = await CosmosOperations.GetClientAsync();
+                docs = await storageClient.QueryDocumentsAsync(
+                   "pcs-storage",
+                   $"pcs-{tenantId}",
+                   this.DefaultQueryOptions,
+                   sql,
+                   0,
+                   100);
+
+                var result = docs.Select(doc => new ValueServiceModel(doc));
+                var deploymentFromStorage = result.Select(res => this.CreateDeploymentServiceModel(res)).ToList();
+
+                return deploymentFromStorage;
+            }
+            catch (ResourceNotFoundException e)
+            {
+                throw new ResourceNotFoundException($"No deployments exist in CosmosDb. The telemetry collection {$"pcs-{tenantId}"} does not exist.", e);
+            }
+        }
+
+        public async Task SaveDeploymentHistory(string tenantId, DeploymentServiceModel deploymentModel, Twin deviceTwin)
+        {
+            CosmosOperations storageClient = await CosmosOperations.GetClientAsync();
+
+            TwinServiceModel previousTwin = await this.GetPreviousFirmwareReportedProperties(tenantId, deviceTwin.DeviceId, deploymentModel.Id);
+            var deviceTwinServiceModel = new TwinServiceModel(deviceTwin);
+            DeploymentHistoryModel modelToSave = new DeploymentHistoryModel
+            {
+                DeploymentId = deploymentModel.Id,
+                DeploymentName = deploymentModel.Name,
+                DeviceId = deviceTwin.DeviceId,
+                PreviousFirmwareTwin = previousTwin,
+                LastUpdatedDateTimeUtc = DateTime.UtcNow,
+                Twin = deviceTwinServiceModel,
+            };
+
+            var value = JsonConvert.SerializeObject(
+                                        modelToSave,
+                                        Formatting.None,
+                                        new JsonSerializerSettings
+                                        {
+                                            NullValueHandling = NullValueHandling.Ignore,
+                                        });
+
+            await storageClient.SaveDocumentAsync(string.Format(DeploymentHistoryCollection, deviceTwin.DeviceId), deploymentModel.Id, new ValueServiceModel() { Data = value }, this.GenerateCollectionLink(tenantId), Guid.NewGuid());
+        }
+
+        public async Task SaveDeploymentFromHub(string tenantId, DeploymentServiceModel deploymentModel, List<TwinServiceModel> deviceTwins)
+        {
+            CosmosOperations storageClient = await CosmosOperations.GetClientAsync();
+
+            foreach (TwinServiceModel deviceTwin in deviceTwins)
+            {
+                DeploymentHistoryModel modelToSave = new DeploymentHistoryModel
+                {
+                    DeploymentId = deploymentModel.Id,
+                    DeploymentName = deploymentModel.Name,
+                    DeviceId = deviceTwin.DeviceId,
+                    PreviousFirmwareTwin = null,
+                    LastUpdatedDateTimeUtc = DateTime.UtcNow,
+                    Twin = deviceTwin,
+                };
+
+                var value = JsonConvert.SerializeObject(
+                                            modelToSave,
+                                            Formatting.None,
+                                            new JsonSerializerSettings
+                                            {
+                                                NullValueHandling = NullValueHandling.Ignore,
+                                            });
+
+                await storageClient.SaveDocumentAsync(string.Format(DeploymentHistoryCollection, deviceTwin.DeviceId), deploymentModel.Id, new ValueServiceModel() { Data = value }, this.GenerateCollectionLink(tenantId), Guid.NewGuid());
+            }
+        }
+
+        private async Task<TwinServiceModel> GetPreviousFirmwareReportedProperties(string tenantId, string deviceId, string deploymentId)
+        {
+            var sql = QueryBuilder.GetDocumentsSql(
+                $"deviceDeploymentHistory-{deviceId}",
+                null,
+                null,
+                null,
+                "_ts",
+                null,
+                "_ts",
+                "desc",
+                "_ts",
+                0,
+                100,
+                new string[] { deploymentId },
+                "Key");
+
+            List<Document> docs = new List<Document>();
+
+            try
+            {
+                CosmosOperations storageClient = await CosmosOperations.GetClientAsync();
+                docs = await storageClient.QueryDocumentsAsync(
+                   "pcs-storage",
+                   $"pcs-{tenantId}",
+                   this.DefaultQueryOptions,
+                   sql,
+                   0,
+                   100);
+
+                var result = docs.Select(doc => new ValueServiceModel(doc));
+                if (result != null && result.Count() > 0)
+                {
+                    var previousDeployment = JsonConvert.DeserializeObject<DeploymentHistoryModel>(result.FirstOrDefault()?.Data);
+                    var previousTwin = previousDeployment.Twin;
+                    return previousTwin != null ? previousTwin : null;
+                }
+
+                return null;
+            }
+            catch (ResourceNotFoundException e)
+            {
+                throw new ResourceNotFoundException($"No deployments exist in CosmosDb. The telemetry collection {$"pcs-{tenantId}"} does not exist.", e);
+            }
+        }
+
+        private async Task<bool> DoesDeploymentTwinsExist(string tenantId, string deploymentId)
+        {
+            var sql = QueryBuilder.GetDeploymentDeviceDocumentsSqlByKey("Key", deploymentId);
+            FeedOptions queryOptions = new FeedOptions
+            {
+                EnableCrossPartitionQuery = true,
+                EnableScanInQuery = true,
+            };
+
+            CosmosOperations storageClient = await CosmosOperations.GetClientAsync();
+            List<Document> docs = new List<Document>();
+            docs = await storageClient.QueryDocumentsAsync(
+               "pcs-storage",
+               $"pcs-{tenantId}",
+               this.DefaultQueryOptions,
+               sql,
+               0,
+               1);
+            return docs != null;
         }
 
         private bool CheckIfDeploymentWasMadeByRM(Configuration conf)
@@ -145,12 +327,6 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
                 deploymentIds.ToArray(),
                 "Key");
 
-            FeedOptions queryOptions = new FeedOptions
-            {
-                EnableCrossPartitionQuery = true,
-                EnableScanInQuery = true,
-            };
-
             List<Document> docs = new List<Document>();
 
             try
@@ -159,7 +335,7 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
                 docs = await storageClient.QueryDocumentsAsync(
                    "pcs-storage",
                    $"pcs-{tenantId}",
-                   queryOptions,
+                   this.DefaultQueryOptions,
                    sql,
                    0,
                    100);
@@ -178,11 +354,6 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
         private async Task<TwinServiceListModel> GetTwins(string tenantId, string collectionId)
         {
             var sql = CosmosOperations.GetDocumentsByCollectionId("CollectionId", collectionId);
-            FeedOptions queryOptions = new FeedOptions
-            {
-                EnableCrossPartitionQuery = true,
-                EnableScanInQuery = true,
-            };
 
             List<Document> docs = new List<Document>();
 
@@ -192,7 +363,7 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
                 docs = await storageClient.QueryAllDocumentsAsync(
                    "pcs-storage",
                    $"pcs-{tenantId}",
-                   queryOptions,
+                   this.DefaultQueryOptions,
                    sql);
 
                 var result = docs == null ?
@@ -221,77 +392,6 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
                                         });
 
             await storageClient.SaveDocumentAsync(DeploymentsCollection, deployment.Id, new ValueServiceModel() { Data = value, ETag = deployment.ETag }, this.GenerateCollectionLink(tenantId));
-        }
-
-        private async Task SaveDeviceTwins(string tenantId, string deploymentId, List<TwinServiceModel> deviceTwins)
-        {
-            if (deviceTwins != null)
-            {
-                CosmosOperations storageClient = await CosmosOperations.GetClientAsync();
-                foreach (var deviceTwin in deviceTwins)
-                {
-                    var value = JsonConvert.SerializeObject(
-                        deviceTwin,
-                        Formatting.Indented,
-                        new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Ignore,
-                        });
-
-                    try
-                    {
-                        await storageClient.SaveDocumentAsync(string.Format(DeploymentDevicePropertiesCollection, deploymentId), deviceTwin.DeviceId, new ValueServiceModel() { Data = value }, this.GenerateCollectionLink(tenantId));
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-            }
-        }
-
-        private async Task SaveDeviceProperties(string tenantId, string deploymentId, List<TwinServiceModel> deviceTwins)
-        {
-            if (deviceTwins != null)
-            {
-                TwinServiceListModel existingDeviceTwins = await this.GetTwins(tenantId, string.Format(DeploymentDevicePropertiesCollection, deploymentId));
-                if (existingDeviceTwins == null || (existingDeviceTwins != null && existingDeviceTwins.Items.Count == 0))
-                {
-                    await this.SaveDeviceTwins(tenantId, deploymentId, deviceTwins);
-                }
-                else
-                {
-                    foreach (var deviceTwin in deviceTwins)
-                    {
-                        CosmosOperations storageClient = await CosmosOperations.GetClientAsync();
-                        var existingDeviceTwin = existingDeviceTwins.Items.FirstOrDefault(x => x.DeviceId == deviceTwin.DeviceId);
-                        var value = JsonConvert.SerializeObject(
-                        deviceTwin,
-                        Formatting.Indented,
-                        new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Ignore,
-                        });
-
-                        try
-                        {
-                            await storageClient.SaveDocumentAsync(string.Format(DeploymentDevicePropertiesCollection, deploymentId), deviceTwin.DeviceId, new ValueServiceModel() { Data = value, ETag = existingDeviceTwin.ETag }, this.GenerateCollectionLink(tenantId));
-                        }
-                        catch (Exception)
-                        {
-                        }
-
-                        // archive exisiting Device Twin
-                        var archiveDeviceTwinValue = JsonConvert.SerializeObject(
-                            existingDeviceTwin,
-                            Formatting.Indented,
-                            new JsonSerializerSettings
-                            {
-                                NullValueHandling = NullValueHandling.Ignore,
-                            });
-                        await storageClient.SaveDocumentAsync(string.Format(DeploymentHistoryPropertiesCollection, deploymentId, Guid.NewGuid().ToString()), deviceTwin.DeviceId, new ValueServiceModel() { Data = archiveDeviceTwinValue }, this.GenerateCollectionLink(tenantId));
-                    }
-                }
-            }
         }
 
         private async Task SaveModuleTwin(string tenantId, string deploymentId, TwinServiceModel moduleTwin)

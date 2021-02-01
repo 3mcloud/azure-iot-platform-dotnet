@@ -95,6 +95,8 @@ namespace Mmm.Iot.IoTHubManager.Services.Models
 
         public TwinServiceModel Twin { get; set; }
 
+        public TwinServiceModel PreviousTwin { get; set; }
+
         public string IoTHubHostName { get; set; }
 
         public AuthenticationMechanismServiceModel Authentication { get; set; }

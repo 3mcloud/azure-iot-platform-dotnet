@@ -358,11 +358,11 @@ namespace Mmm.Iot.IoTHubManager.WebService.Test.Controllers
                 authentication: auth));
             }
 
-            this.deploymentsMock.Setup(x => x.GetDeviceListAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(
+            this.deploymentsMock.Setup(x => x.GetDeviceListAsync(It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<string>())).ReturnsAsync(
                 new DeviceServiceListModel(devices));
 
             // Act
-            var results = await this.controller.GetDeploymentImpactedDevices(deploymentId, string.Empty);
+            var results = await this.controller.GetDeploymentImpactedDevices(deploymentId, new List<string>());
 
             // Assert
             Assert.Equal(numDevices, results.Items.Count);

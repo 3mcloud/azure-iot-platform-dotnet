@@ -12,11 +12,21 @@ namespace Mmm.Iot.IoTHubManager.Services.Models
     {
         public const string DateFormat = "yyyy-MM-dd'T'HH:mm:sszzz";
 
-        public DeviceDeploymentStatusServiceModel(string deviceId, DeploymentStatus deploymentStatus, Dictionary<string, JValue> reportedProperties)
+        public DeviceDeploymentStatusServiceModel(string deviceId, DeploymentStatus deploymentStatus, Dictionary<string, JValue> reportedProperties, Dictionary<string, JValue> previousReportedProperties)
         {
             this.Name = deviceId;
             this.DeploymentStatus = deploymentStatus.ToString();
             this.Firmware = reportedProperties.ContainsKey("firmware.currentFwVersion") ? reportedProperties["firmware.currentFwVersion"].Value<string>() : string.Empty;
+
+            if (previousReportedProperties != null)
+            {
+                this.PreviousFirmware = previousReportedProperties.ContainsKey("firmware.currentFwVersion") ? previousReportedProperties["firmware.currentFwVersion"].Value<string>() : string.Empty;
+            }
+            else
+            {
+                this.PreviousFirmware = string.Empty;
+            }
+
             this.Start = reportedProperties.ContainsKey("firmware.lastFwUpdateStartTime") ? DateTimeHelper.FormatDate(reportedProperties["firmware.lastFwUpdateStartTime"], DateFormat) : string.Empty;
             this.End = reportedProperties.ContainsKey("firmware.lastFwUpdateEndTime") ? DateTimeHelper.FormatDate(reportedProperties["firmware.lastFwUpdateEndTime"], DateFormat) : string.Empty;
         }
@@ -30,6 +40,8 @@ namespace Mmm.Iot.IoTHubManager.Services.Models
         public string DeploymentStatus { get; set; }
 
         public string Firmware { get; set; }
+
+        public string PreviousFirmware { get; set; }
 
         public string Start { get; set; }
 

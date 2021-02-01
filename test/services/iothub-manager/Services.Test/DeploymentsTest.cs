@@ -13,6 +13,7 @@ using Microsoft.Azure.Devices.Shared;
 using Microsoft.Azure.Documents;
 using Microsoft.Extensions.Logging;
 using Mmm.Iot.Common.Services.Config;
+using Mmm.Iot.Common.Services.External.CosmosDb;
 using Mmm.Iot.Common.Services.External.StorageAdapter;
 using Mmm.Iot.Common.Services.Helpers;
 using Mmm.Iot.Common.Services.Models;
@@ -171,6 +172,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
         private Mock<IConfigClient> packageConfigClient;
         private Mock<IStorageAdapterClient> storageAdapterClient;
         private Mock<IDevices> devices;
+        private Mock<IStorageClient> storageClient;
         private string packageTypeLabel = "Type";
 
         public DeploymentsTest()
@@ -183,6 +185,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
             this.tenantHelper.Setup(e => e.GetRegistry()).Returns(this.registry.Object);
             TelemetryClient mockTelemetryClient = this.InitializeMockTelemetryChannel();
             this.devices = new Mock<IDevices>();
+            this.storageClient = new Mock<IStorageClient>();
 
             MockIdentity.MockClaims("one");
             this.deployments = new Deployments(
@@ -199,7 +202,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Test
                 this.packageConfigClient.Object,
                 this.storageAdapterClient.Object,
                 this.devices.Object,
-                null,
+                this.storageClient.Object,
                 null);
         }
 

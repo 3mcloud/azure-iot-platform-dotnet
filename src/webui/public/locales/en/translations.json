@@ -497,9 +497,9 @@
                     "title": "Device Deployments",
                     "description": "Deployment History of device",
                     "noneExist": "No history present for this device",
+                    "deploymentName": "Deployment name",
                     "firmwareVersion": "Firmware Version",
-                    "startDate": "Start Date Time",
-                    "endDate": "End Date Time"
+                    "lastUpdatedTime": "Last Updated Time"
                 }
             },
             "delete": {
@@ -953,6 +953,7 @@
                 "name": "Name",
                 "deploymentStatus": "Deployment Status",
                 "firmware": "Firmware",
+                "previousFirmware": "Previous Firmware",
                 "lastMessage": "Last Message",
                 "start": "Start",
                 "end": "End"

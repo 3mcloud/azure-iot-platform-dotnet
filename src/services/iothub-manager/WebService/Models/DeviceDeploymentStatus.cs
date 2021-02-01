@@ -16,6 +16,7 @@ namespace Mmm.Iot.IoTHubManager.WebService.Models
             this.Name = deviceDeploymentStatusServiceModel.Name;
             this.DeploymentStatus = deviceDeploymentStatusServiceModel.DeploymentStatus;
             this.Firmware = deviceDeploymentStatusServiceModel.Firmware;
+            this.PreviousFirmware = deviceDeploymentStatusServiceModel.PreviousFirmware;
             this.Start = deviceDeploymentStatusServiceModel.Start;
             this.End = deviceDeploymentStatusServiceModel.End;
         }
@@ -29,6 +30,8 @@ namespace Mmm.Iot.IoTHubManager.WebService.Models
         public string DeploymentStatus { get; set; }
 
         public string Firmware { get; set; }
+
+        public string PreviousFirmware { get; set; }
 
         public string Start { get; set; }
 
