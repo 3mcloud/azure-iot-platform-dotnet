@@ -10,6 +10,18 @@ git log --oneline --no-decorate --topo-order ^<previousRelease> master
 where <previousRelease> is the release name e.g 5.1.0
 -->
 
+## [5.4.3] - 2020-02-02
+### Add
+ - Download data in Device Explorer and Device Search
+ - Show Previous Firmware Version in Deployment History
+ - Links between Device History (or firmware updates) and Deployments
+ - New Firmware Template Variables for use in Packages
+
+### Fix
+ - Resolved issues with Device History data
+ - Renamed 3rd column in Device History to Date instead of Last Update Date
+ - Ensurced ssh-keygen to generate keys in PEM format in CI/CD
+
 ## [5.4.2] - 2020-01-18
 ### Add
 - UI now supports unlimited devices
@@ -26,8 +38,7 @@ where <previousRelease> is the release name e.g 5.1.0
 - Improvements to cToken changes
 - Fixed add rule issue in WebUI
 - Readers can now change Device Group
-- Json web keys now use=sig
-
+- JSON web keys now use=sig
 
 ## [5.4.1] - 2020-10-14
 ### Fix
@@ -151,6 +162,7 @@ where <previousRelease> is the release name e.g 5.1.0
 - Application configuration uses Azure App Configuration service in addition to Azure Key Vault
 - Code base rearchitected to use common library and reduce duplication
 
+[5.4.3]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.4.3
 [5.4.2]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.4.2
 [5.4.1]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.4.1
 [5.4.0]: https://github.com/3mcloud/azure-iot-platform-dotnet/releases/tag/5.4.0
