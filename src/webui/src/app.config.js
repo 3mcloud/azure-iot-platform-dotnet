@@ -26,7 +26,7 @@ const baseUrl = process.env.REACT_APP_BASE_SERVICE_URL || "",
             exploreTimeSeries:
                 "https://docs.microsoft.com/azure/iot-accelerators/iot-accelerators-remote-monitoring-rbac-tsi",
             deploymentPriority:
-                "https://docs.microsoft.com/en-us/azure/iot-edge/module-deployment-monitoring#priority",
+                "https://docs.microsoft.com/en-us/azure/iot-edge/module-deployment-monitoring#priority",co
         },
         // Constants
         showWalkthroughExamples: false,
