@@ -500,7 +500,7 @@
                     "noneExist": "No history present for this device",
                     "deploymentName": "Deployment name",
                     "firmwareVersion": "Firmware Version",
-                    "lastUpdatedTime": "Last Updated Time"
+                    "date": "Date"
                 }
             },
             "delete": {

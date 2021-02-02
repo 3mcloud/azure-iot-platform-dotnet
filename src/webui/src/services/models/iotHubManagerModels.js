@@ -302,20 +302,29 @@ export const toDevicesDeploymentHistoryModel = (response = []) =>
     getItems(response).map(toDeviceDeploymentHistoryModel);
 
 export const toDeviceDeploymentHistoryModel = (deploymentHistoryModel = {}) => {
-    if (
-        deploymentHistoryModel.twin.reportedProperties &&
-        deploymentHistoryModel.twin.reportedProperties.firmware
-    ) {
-        var modelData = {
-            deploymentName: deploymentHistoryModel.deploymentName,
-            firmwareVersion:
-                deploymentHistoryModel.twin.reportedProperties.firmware
-                    .currentFwVersion,
-            lastUpdatedTime: deploymentHistoryModel.lastUpdatedDateTimeUtc,
-            deploymentId: deploymentHistoryModel.deploymentId,
-        };
-        return modelData;
-    }
+    const modelData = camelCaseReshape(deploymentHistoryModel, {
+        deploymentName: "deploymentName",
+        deploymentId: "deploymentId",
+        "twin.reportedProperties.firmware.currentFwVersion": "currentFwVersion",
+        "twin.reportedProperties.firmware.lastFwUpdateEndTime":
+            "lastFwUpdateEndTime",
+    });
+
+    return update(modelData, {
+        firmwareVersion: {
+            $set: modelData.currentFwVersion
+                ? modelData.currentFwVersion
+                : dot.pick(
+                      "twin.reportedProperties.firmware",
+                      deploymentHistoryModel
+                  ),
+        },
+        date: {
+            $set: modelData.lastFwUpdateEndTime
+                ? modelData.lastFwUpdateEndTime
+                : dot.pick("lastUpdatedDateTimeUtc", deploymentHistoryModel),
+        },
+    });
 };
 
 export const toDeviceStatisticsModel = (response = {}) =>

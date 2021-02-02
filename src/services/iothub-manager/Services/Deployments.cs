@@ -528,8 +528,6 @@ namespace Mmm.Iot.IoTHubManager.Services
 
                     query = $" deviceId IN [{deviceListValue}]";
 
-                    int countOfDevicestoFetch = string.IsNullOrWhiteSpace(deviceListValue) ? 1000 : deviceIds.Count();
-
                     var devices = await this.devices.GetListAsync(query, null);
 
                     allDevices.Items.AddRange(devices.Items);
