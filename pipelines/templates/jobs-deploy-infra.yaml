@@ -246,7 +246,7 @@ jobs:
           azureResourceGroup: $(resourceGroupName)
           kubernetesCluster: $(aksName)
           command: apply
-          arguments: --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/v$(certManagerVersion)/deploy/manifests/00-crds.yaml
+          arguments: --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v$(certManagerVersion)/cert-manager.yaml
           outputFormat: name
 
       - task: Kubernetes@1
@@ -1045,6 +1045,7 @@ jobs:
                 "AppConfigurationConnectionString"="$appConfigurationConnectionString" \
                 "TableStorageConnectionString"="$blobStorageConnString" \
                 "AzureStorageConnectionString"="$blobStorageConnString" \
+                "TwinChangeEventHubConnectionString"="$twinchangeEvConn" \
                 "DeviceDeploymentHistoryConsumerGroup"="devicedeploymenthistory" \
                 "DeploymentsDatabaseId"="pcs-storage" \
               --resource-group $(resourceGroupName)
