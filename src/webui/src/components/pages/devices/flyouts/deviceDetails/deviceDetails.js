@@ -225,6 +225,7 @@ export class DeviceDetails extends Component {
             this.resetTelemetry$.next(deviceId);
             this.fetchAlerts(deviceId);
             this.fetchDeviceUploads(deviceId);
+            this.fetchDeviceDeployments(deviceId);
         } else if (
             !moduleStatus &&
             !isDeviceModuleStatusPending &&
