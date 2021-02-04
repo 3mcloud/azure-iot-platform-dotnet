@@ -37,7 +37,7 @@ stages:
           applicationCode: chimiot
           applicationShortCode: chim
           environmentCategory: dev
-          kubernetesVersion: 1.16.10
+          kubernetesVersion: 1.19.3
           sendgridEmail: blinzie@mmm.com
           azureDevOpsProjectId: AzurePlatform
           testPipelineId: 453
