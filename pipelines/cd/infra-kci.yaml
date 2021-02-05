@@ -35,7 +35,7 @@ stages:
           applicationShortCode: kci
           environmentCategory: dev
           environmentName: IoT_KCI_Environment_DEV
-          kubernetesVersion: 1.18.2
+          kubernetesVersion: 1.19.3
           sendgridEmail: aarkhzz@mmm.com
           azureDevOpsProjectId: AzurePlatform
           testPipelineId: 453
