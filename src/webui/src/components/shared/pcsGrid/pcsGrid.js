@@ -111,6 +111,7 @@ export class PcsGrid extends Component {
      */
     refreshRows = () => {
         if (this.gridApi && isFunc(this.gridApi.updateRowData)) {
+            this.gridApi.setQuickFilter("");
             this.gridApi.updateRowData({ update: [] });
         }
     };

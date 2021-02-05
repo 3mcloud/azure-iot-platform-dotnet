@@ -50,6 +50,7 @@ export class AdvanceSearch extends LinkedComponent {
             deviceQueryConditions: [],
             isPending: false,
             error: undefined,
+            enableDownload: false,
         };
 
         // State to input links
@@ -95,6 +96,7 @@ export class AdvanceSearch extends LinkedComponent {
     apply = (event) => {
         this.props.logEvent(toDiagnosticsModel("CreateDeviceQuery_Create", {}));
         event.preventDefault();
+        this.setState({ enableDownload: true });
         this.queryDevices()
             .then(() => {
                 this.setState({ error: undefined, isPending: false });
@@ -147,6 +149,7 @@ export class AdvanceSearch extends LinkedComponent {
     onReset = () => {
         this.props.logEvent(toDiagnosticsModel("CreateDeviceQuery_Reset", {}));
         this.props.resetDeviceByCondition();
+        this.setState({ enableDownload: false });
         this.resetFlyoutAndDevices()
             .then(() => {
                 this.setState({ error: undefined, isPending: false });
@@ -380,6 +383,7 @@ export class AdvanceSearch extends LinkedComponent {
                                 svg={svgs.upload}
                                 className="download-deviceQueryReport"
                                 disabled={
+                                    !this.state.enableDownload ||
                                     !this.formIsValid() ||
                                     conditionHasErrors ||
                                     this.state.isPending ||

@@ -2,6 +2,7 @@
 // Copyright (c) 3M. All rights reserved.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using Mmm.Iot.Common.Services.Helpers;
 using Newtonsoft.Json;
@@ -17,7 +18,7 @@ namespace Mmm.Iot.IoTHubManager.Services.Models
         {
             this.NormalizedReportedProperties(deviceServiceModel?.Twin?.ReportedProperties);
             this.DeviceName = deviceServiceModel.Id;
-            this.LastActivity = deviceServiceModel.LastActivity.ToString(DateFormat);
+            this.LastActivity = deviceServiceModel.LastActivity == default(DateTime) ? string.Empty : deviceServiceModel.LastActivity.ToString(DateFormat);
             this.Connected = deviceServiceModel.Connected;
             this.DeviceType = this.GetValue("type");
             this.Firmware = this.GetValue("firmware.currentFwVersion");
