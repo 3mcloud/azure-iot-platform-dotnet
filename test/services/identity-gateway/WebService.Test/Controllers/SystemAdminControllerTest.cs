@@ -118,7 +118,7 @@ namespace Mmm.Iot.IdentityGateway.WebService.Test.Controllers
             this.mockUserTenantContainer = new Mock<UserTenantContainer>(this.userLogger.Object);
             this.mockHttpContext = new Mock<HttpContext> { DefaultValue = DefaultValue.Mock };
             this.mockHttpRequest = new Mock<HttpRequest> { DefaultValue = DefaultValue.Mock };
-            this.controller = new SystemAdminController(this.mockSystemAdminContainer.Object, this.mockUserTenantContainer.Object)
+            this.controller = new SystemAdminController(this.mockSystemAdminContainer.Object, this.mockUserTenantContainer.Object, null)
             {
                 ControllerContext = new ControllerContext()
                 {

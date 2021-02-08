@@ -4,9 +4,9 @@
 
 using Newtonsoft.Json;
 
-namespace Mmm.Iot.IdentityGateway.WebService.Models
+namespace Mmm.Iot.IdentityGateway.Services.Models
 {
-    /*public class ClientCredentialInput
+    public class ClientCredentialInput
     {
         [JsonProperty("client_id")]
         public string ClientId { get; set; }
@@ -16,5 +16,5 @@ namespace Mmm.Iot.IdentityGateway.WebService.Models
 
         [JsonProperty("scope")]
         public string Scope { get; set; }
-    }*/
+    }
 }

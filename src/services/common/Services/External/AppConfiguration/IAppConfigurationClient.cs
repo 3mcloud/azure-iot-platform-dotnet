@@ -12,6 +12,8 @@ namespace Mmm.Iot.Common.Services.External.AppConfiguration
 
         string GetValue(string key);
 
+        string GetValueFromAppConfig(string key);
+
         Task DeleteKeyAsync(string key);
     }
 }

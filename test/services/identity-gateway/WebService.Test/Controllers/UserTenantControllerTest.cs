@@ -47,6 +47,7 @@ namespace Mmm.Iot.IdentityGateway.WebService.Test.Controllers
         private Mock<ISendGridClientFactory> mockSendGridClientFactory;
         private Mock<ISendGridClient> mockSendGridClient;
         private Mock<IInviteHelpers> mockInviteHelper;
+        private Mock<GraphUserContainer> mockGraphUserContainer;
         private Invitation someInvitation = new Invitation { Role = SomeRole };
         private JwtSecurityToken someSecurityToken;
         private Guid someTenant = Guid.NewGuid();
@@ -245,8 +246,9 @@ namespace Mmm.Iot.IdentityGateway.WebService.Test.Controllers
             this.mockSendGridClientFactory = new Mock<ISendGridClientFactory> { DefaultValue = DefaultValue.Mock };
             this.mockSendGridClient = new Mock<ISendGridClient> { DefaultValue = DefaultValue.Mock };
             this.mockInviteHelper = new Mock<IInviteHelpers>();
+            this.mockGraphUserContainer = new Mock<GraphUserContainer>();
 
-            this.controller = new UserTenantController(this.mockUserTenantContainer.Object, this.mockJwtHelper.Object, this.mockSendGridClientFactory.Object, this.mockInviteHelper.Object, this.mockUserSettingsContainer.Object)
+            this.controller = new UserTenantController(this.mockUserTenantContainer.Object, this.mockJwtHelper.Object, this.mockSendGridClientFactory.Object, this.mockInviteHelper.Object, this.mockUserSettingsContainer.Object, this.mockGraphUserContainer.Object)
             {
                 ControllerContext = new ControllerContext()
                 {

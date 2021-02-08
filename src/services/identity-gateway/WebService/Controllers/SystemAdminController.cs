@@ -22,11 +22,13 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
         private const string AdminRole = "admin";
         private SystemAdminContainer container;
         private UserTenantContainer userTenantcontainer;
+        private AuthorizeContainer authorizeContainer;
 
-        public SystemAdminController(SystemAdminContainer container, UserTenantContainer userTenantcontainer)
+        public SystemAdminController(SystemAdminContainer container, UserTenantContainer userTenantcontainer, AuthorizeContainer authorizeContainer)
         {
             this.container = container;
             this.userTenantcontainer = userTenantcontainer;
+            this.authorizeContainer = authorizeContainer;
         }
 
         [HttpPost]
@@ -98,6 +100,13 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
                 UserId = userId,
             };
             return await this.container.DeleteAsync(systemAdminInput);
+        }
+
+        [HttpPost("AuthProvider/{authProvider}")]
+        [Authorize("ReadAll")]
+        public async Task<bool> UpdateAuthProvider(string authProvider)
+        {
+            return await this.authorizeContainer.UpdateAuthProvider(authProvider);
         }
 
         private async Task AddUserForPendingTenants(SystemAdminModel result)

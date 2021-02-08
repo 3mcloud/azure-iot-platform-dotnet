@@ -32,14 +32,16 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
         private IJwtHelpers jwtHelper;
         private IInviteHelpers inviteHelper;
         private UserSettingsContainer settingsContainer;
+        private GraphUserContainer graphUserContainer;
 
-        public UserTenantController(UserTenantContainer container, IJwtHelpers jwtHelper, ISendGridClientFactory sendGridClientFactory, IInviteHelpers inviteHelper, UserSettingsContainer settingsContainer)
+        public UserTenantController(UserTenantContainer container, IJwtHelpers jwtHelper, ISendGridClientFactory sendGridClientFactory, IInviteHelpers inviteHelper, UserSettingsContainer settingsContainer, GraphUserContainer graphUserContainer)
         {
             this.container = container;
             this.jwtHelper = jwtHelper;
             this.sendGridClientFactory = sendGridClientFactory;
             this.inviteHelper = inviteHelper;
             this.settingsContainer = settingsContainer;
+            this.graphUserContainer = graphUserContainer;
         }
 
         [HttpGet("users")]
@@ -52,6 +54,25 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
                 Tenant = this.GetTenantId(),
             };
             return await this.container.GetAllUsersAsync(input);
+        }
+
+        [HttpGet("users/info")]
+        [Authorize("ReadAll")]
+        public async Task<UserTenantListModel> GetUsersInfoForTenantAsync()
+        {
+            UserTenantInput input = new UserTenantInput
+            {
+                UserId = null,
+                Tenant = this.GetTenantId(),
+            };
+            return await this.graphUserContainer.GetAllUsersAsync(input);
+        }
+
+        [HttpPut("users/{userId}")]
+        [Authorize("ReadAll")]
+        public async Task<object> UpdateUserInfo(string userId, [FromBody] UserInfoPatch model)
+        {
+            return await this.graphUserContainer.UpdateUser(userId, model);
         }
 
         [HttpGet("all")]

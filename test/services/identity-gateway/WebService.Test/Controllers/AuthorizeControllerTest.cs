@@ -19,7 +19,6 @@ using Mmm.Iot.IdentityGateway.Controllers;
 using Mmm.Iot.IdentityGateway.Services;
 using Mmm.Iot.IdentityGateway.Services.Helpers;
 using Mmm.Iot.IdentityGateway.Services.Models;
-using Mmm.Iot.IdentityGateway.WebService.Models;
 using Moq;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -289,7 +288,7 @@ namespace Mmm.Iot.IdentityGateway.WebService.Test.Controllers
             this.mockAuthContext = new Mock<IAuthenticationContext> { DefaultValue = DefaultValue.Mock };
             this.mockHttpContext = new Mock<HttpContext> { DefaultValue = DefaultValue.Mock };
             this.mockOpenIdProviderConfiguration = new Mock<IOpenIdProviderConfiguration> { DefaultValue = DefaultValue.Mock };
-            this.controller = new AuthorizeController(this.mockAppConfig.Object, this.mockUserTenantContainer.Object, this.mockUserSettingsContainer.Object as UserSettingsContainer, this.mockJwtHelper.Object, this.mockOpenIdProviderConfiguration.Object, this.mockAuthContext.Object)
+            this.controller = new AuthorizeController(this.mockAppConfig.Object, this.mockUserTenantContainer.Object, this.mockUserSettingsContainer.Object as UserSettingsContainer, this.mockJwtHelper.Object, this.mockOpenIdProviderConfiguration.Object, this.mockAuthContext.Object, null)
             {
                 ControllerContext = new ControllerContext()
                 {

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -18,7 +19,6 @@ using Mmm.Iot.Common.Services.Filters;
 using Mmm.Iot.IdentityGateway.Services;
 using Mmm.Iot.IdentityGateway.Services.Helpers;
 using Mmm.Iot.IdentityGateway.Services.Models;
-using Mmm.Iot.IdentityGateway.WebService.Models;
 using Newtonsoft.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -34,8 +34,9 @@ namespace Mmm.Iot.IdentityGateway.Controllers
         private IAuthenticationContext authenticationContext;
         private UserTenantContainer userTenantContainer;
         private UserSettingsContainer userSettingsContainer;
+        private AuthorizeContainer authorizeContainer;
 
-        public AuthorizeController(AppConfig config, UserTenantContainer userTenantContainer, UserSettingsContainer userSettingsContainer, IJwtHelpers jwtHelper, IOpenIdProviderConfiguration openIdProviderConfiguration, IAuthenticationContext authenticationContext)
+        public AuthorizeController(AppConfig config, UserTenantContainer userTenantContainer, UserSettingsContainer userSettingsContainer, IJwtHelpers jwtHelper, IOpenIdProviderConfiguration openIdProviderConfiguration, IAuthenticationContext authenticationContext, AuthorizeContainer authorizeContainer)
         {
             this.config = config;
             this.userTenantContainer = userTenantContainer;
@@ -43,6 +44,7 @@ namespace Mmm.Iot.IdentityGateway.Controllers
             this.jwtHelper = jwtHelper;
             this.openIdProviderConfiguration = openIdProviderConfiguration;
             this.authenticationContext = authenticationContext;
+            this.authorizeContainer = authorizeContainer;
         }
 
         [HttpGet]
@@ -69,15 +71,9 @@ namespace Mmm.Iot.IdentityGateway.Controllers
                 throw new Exception("Tenant is not valid!");
             }
 
-            var uri = new UriBuilder(this.config.Global.AzureB2cBaseUri);
+            var authorizeRedirectrUri = this.authorizeContainer.GetAuthorizationRedirectUrl(redirect_uri, state, clientId, nonce, tenant, invite);
 
-            // Need to build Query carefully to not clobber other query items -- just injecting state
-            var query = HttpUtility.ParseQueryString(uri.Query);
-            query["state"] = JsonConvert.SerializeObject(new AuthState
-            { ReturnUrl = redirect_uri, State = state, Tenant = tenant, Nonce = nonce, ClientId = clientId, Invitation = invite });
-            query["redirect_uri"] = this.openIdProviderConfiguration.Issuer + "/connect/callback"; // must be https for B2C
-            uri.Query = query.ToString();
-            return this.Redirect(uri.Uri.ToString());
+            return this.Redirect(authorizeRedirectrUri.Uri.ToString());
         }
 
         [HttpPost]
@@ -85,12 +81,9 @@ namespace Mmm.Iot.IdentityGateway.Controllers
         public async Task<IActionResult> PostTokenAsync(
             [FromBody] ClientCredentialInput input)
         {
-            string resourceUri = "https://graph.microsoft.com/";
-            ClientCredential clientCredential = new ClientCredential(input.ClientId, input.ClientSecret);
-
             try
             {
-                AuthenticationResult token = await this.authenticationContext.AcquireTokenAsync(resourceUri, clientCredential);
+                var isTokenAcquired = await this.authorizeContainer.AcquireTokenAndValidate(input);
             }
             catch (Exception e)
             {
@@ -131,16 +124,10 @@ namespace Mmm.Iot.IdentityGateway.Controllers
         [Route("connect/logout")]
         public IActionResult Get([FromQuery] string post_logout_redirect_uri)
         {
-            // Validate Input
-            if (!Uri.IsWellFormedUriString(post_logout_redirect_uri, UriKind.Absolute))
-            {
-                throw new Exception("Redirect Uri is not valid!");
-            }
-
-            var uri = new UriBuilder(post_logout_redirect_uri);
+            var logoutUri = this.authorizeContainer.GetLogoutRedirectUrl(post_logout_redirect_uri);
 
             return this.Redirect(
-                uri.Uri.ToString());
+                logoutUri.Uri.ToString());
         }
 
         [HttpPost("connect/switch/{tenant}")]
@@ -212,7 +199,7 @@ namespace Mmm.Iot.IdentityGateway.Controllers
             // Bring over Subject and Name
             var jwtHandler = new JwtSecurityTokenHandler();
             var jwt = jwtHandler.ReadJwtToken(id_token);
-            var claims = jwt.Claims.Where(t => new List<string> { "sub", "name" }.Contains(t.Type)).ToList();
+            var claims = this.authorizeContainer.GetClaims(jwt);
             string invitedTenant = authState.Tenant;
             string userNameOrEmail = string.Empty;
 
@@ -292,8 +279,8 @@ namespace Mmm.Iot.IdentityGateway.Controllers
             string accessTokenString = jwtHandler.WriteToken(await this.jwtHelper.GetIdentityToken(claims.Select(t => (Claim)t.Clone()).ToList(), invitedTenant, originalAudience, expirationTime));
             claims.Add(new Claim("at_hash", this.jwtHelper.AtHash(accessTokenString)));
             string idTokenString =
-                jwtHandler.WriteToken(
-                    await this.jwtHelper.GetIdentityToken(claims, invitedTenant, originalAudience, expirationTime));
+              jwtHandler.WriteToken(
+                  await this.jwtHelper.GetIdentityToken(claims, invitedTenant, originalAudience, expirationTime));
 
             // Build Return Uri
             var returnUri = new UriBuilder(authState.ReturnUrl);
@@ -303,10 +290,10 @@ namespace Mmm.Iot.IdentityGateway.Controllers
             // query["state"] = HttpUtility.UrlEncode(authState.state);
             // returnUri.Query = query.ToString();
             returnUri.Fragment =
-                "id_token=" + idTokenString + "&state=" +
-                HttpUtility.UrlEncode(authState
-                    .State) // pass token in Fragment for more security (Browser wont forward...)
-                + "&access_token=" + accessTokenString;
+               "id_token=" + idTokenString + "&state=" +
+               HttpUtility.UrlEncode(authState
+                   .State) // pass token in Fragment for more security (Browser wont forward...)
+               + "&access_token=" + accessTokenString;
             return this.Redirect(returnUri.Uri.ToString());
         }
     }

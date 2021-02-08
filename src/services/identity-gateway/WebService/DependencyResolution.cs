@@ -18,6 +18,10 @@ namespace Mmm.Iot.IdentityGateway.WebService
             builder.RegisterType<UserSettingsContainer>().SingleInstance();
             builder.RegisterType<UserTenantContainer>().SingleInstance();
             builder.RegisterType<SystemAdminContainer>().SingleInstance();
+            builder.RegisterType<AuthorizeContainer>().SingleInstance();
+            builder.RegisterType<GraphUserContainer>().SingleInstance();
+            /*builder.RegisterType<ADB2CConnect>().As<IADB2CConnect>().SingleInstance();
+            builder.RegisterType<Auth0Connect>().As<IAuth0Connect>().SingleInstance();*/
         }
     }
 }
