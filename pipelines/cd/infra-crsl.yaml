@@ -109,7 +109,7 @@ stages:
           applicationShortCode: crsl
           environmentCategory: wkbnch
           kubernetesVersion: 1.18.1
-          aksAgentVmSize: Standard_DS1_v2
+          aksAgentVmSize: Standard_DS2_v2
           sendgridEmail: aschmidt4@mmm.com
           azureDevOpsProjectId: AzurePlatform
           testPipelineId: 453
