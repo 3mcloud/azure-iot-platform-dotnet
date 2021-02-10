@@ -46,16 +46,14 @@ export class Packages extends Component {
     }
 
     componentWillMount() {
-        if (this.props.location.search) {
-            const tenantId = getTenantIdParam(this.props.location.search);
+        if (this.props.location && this.props.location.search) {
+            const tenantId = getTenantIdParam(this.props.location);
             this.props.checkTenantAndSwitch({
                 tenantId: tenantId,
                 redirectUrl: window.location.href,
             });
             this.setState({
-                selectedDeviceGroupId: getDeviceGroupParam(
-                    this.props.location.search
-                ),
+                selectedDeviceGroupId: getDeviceGroupParam(this.props.location),
             });
         }
         IdentityGatewayService.VerifyAndRefreshCache();
@@ -83,12 +81,12 @@ export class Packages extends Component {
 
     getDefaultFlyout(rowData) {
         const { location } = this.props;
-        const selectedPackageId = getParamByName(location.search, "packageId"),
+        const selectedPackageId = getParamByName(location, "packageId"),
             selectedPackage = rowData.find((p) => p.id === selectedPackageId);
-        if (location.search && selectedPackage) {
+        if (location && location.search && selectedPackage) {
             this.setState({
                 packageJson: selectedPackage.content,
-                openFlyoutName: getFlyoutNameParam(location.search),
+                openFlyoutName: getFlyoutNameParam(location),
                 flyoutLink: window.location.href + location.search,
             });
             this.selectRows(selectedPackageId);
@@ -105,7 +103,7 @@ export class Packages extends Component {
     }
 
     componentDidMount() {
-        if (this.state.selectedDeviceGroupId) {
+        if (this.state.selectedDeviceGroupId && this.props.location) {
             window.history.replaceState(
                 {},
                 document.title,
@@ -115,7 +113,9 @@ export class Packages extends Component {
     }
 
     closeFlyout = () => {
-        this.props.location.search = undefined;
+        if (this.props.location && this.props.location.search) {
+            this.props.location.search = undefined;
+        }
         this.props.logEvent(toDiagnosticsModel("Packages_NewClose", {}));
         this.setState(closedFlyoutState);
     };

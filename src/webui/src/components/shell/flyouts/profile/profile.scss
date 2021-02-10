@@ -47,7 +47,6 @@ a > p, .pcs-renderer-cell > p {
 }
 
 .pcs-renderer-cell {
-  height: auto;
   @include themify($themes) {
     .pcs-renderer-icon svg { fill: themed('colorWarning'); }
   }

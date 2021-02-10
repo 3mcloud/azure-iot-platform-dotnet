@@ -69,13 +69,13 @@ class TenantGrid extends React.Component {
                     <Cell>
                         {tenant.displayName === this.props.currentTenant ? (
                             <div className="pcs-renderer-cell">
-                                <p>
+                                <span>
                                     {tenant.displayName}
                                     <Svg
                                         path={svgs.star}
                                         className="pcs-renderer-icon"
                                     />
-                                </p>
+                                </span>
                             </div>
                         ) : (
                             <a
@@ -84,23 +84,23 @@ class TenantGrid extends React.Component {
                                 }
                                 href="#"
                             >
-                                <p>{tenant.displayName}</p>
+                                <span>{tenant.displayName}</span>
                             </a>
                         )}
-                        <p className="iotHub-Name">{tenant.iotHubName}</p>
+                        <span className="iotHub-Name">{tenant.iotHubName}</span>
                     </Cell>
                 )}
                 {this.state.isEdit && this.state.tenantId !== tenant.id && (
                     <Cell>
                         {tenant.displayName === this.props.currentTenant ? (
                             <div className="pcs-renderer-cell">
-                                <p>
+                                <span>
                                     {tenant.displayName}{" "}
                                     <Svg
                                         path={svgs.star}
                                         className="pcs-renderer-icon"
                                     />{" "}
-                                </p>
+                                </span>
                             </div>
                         ) : (
                             <a
@@ -109,10 +109,10 @@ class TenantGrid extends React.Component {
                                 }
                                 href="#"
                             >
-                                <p>{tenant.displayName} </p>
+                                <span>{tenant.displayName} </span>
                             </a>
                         )}
-                        <p className="iotHub-Name">{tenant.iotHubName}</p>
+                        <span className="iotHub-Name">{tenant.iotHubName}</span>
                     </Cell>
                 )}
                 {this.state.isEdit && this.state.tenantId === tenant.id && (
@@ -122,7 +122,7 @@ class TenantGrid extends React.Component {
                             type="text"
                             onChange={this.handleChange}
                         />
-                        <p className="iotHub-Name">{tenant.iotHubName}</p>
+                        <span className="iotHub-Name">{tenant.iotHubName}</span>
                     </div>
                 )}
                 <Cell>{tenant.role}</Cell>
