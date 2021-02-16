@@ -176,6 +176,22 @@ stages:
           blueGreen: true
           subscriptionId: 1d0a4e20-e44d-43b5-97b0-9b577f5bf048
 
+  - stage: psdTest
+    displayName: PSD Test
+    dependsOn:
+      - crslWkbnch
+    jobs:
+      - template: ../templates/jobs-deploy-code.yaml
+        parameters:
+          environmentName: IoT_PSD_Environment_QA
+          subscriptionName: 3M-ASDT05-PSD-CS-IOT-QA
+          applicationCode: psdiot
+          applicationShortCode: psd
+          environmentCategory:  test
+          imageTag: $(_imageTag)
+          blueGreen: true
+          subscriptionId: 8c550fc0-24e0-43cb-8237-5fbb168c1071
+
   - stage: psdQa
     displayName: PSD QA
     dependsOn:

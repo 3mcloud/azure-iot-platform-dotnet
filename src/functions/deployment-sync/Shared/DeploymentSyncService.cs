@@ -185,7 +185,7 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
         {
             CosmosOperations storageClient = await CosmosOperations.GetClientAsync();
 
-            TwinServiceModel previousTwin = await this.GetPreviousFirmwareReportedProperties(tenantId, deviceTwin.DeviceId, deploymentModel.Id);
+            TwinServiceModel previousTwin = await this.GetPreviousFirmwareReportedProperties(tenantId, deviceTwin.DeviceId);
             var deviceTwinServiceModel = new TwinServiceModel(deviceTwin);
             DeploymentHistoryModel modelToSave = new DeploymentHistoryModel
             {
@@ -236,22 +236,9 @@ namespace Mmm.Iot.Functions.DeploymentSync.Shared
             }
         }
 
-        private async Task<TwinServiceModel> GetPreviousFirmwareReportedProperties(string tenantId, string deviceId, string deploymentId)
+        private async Task<TwinServiceModel> GetPreviousFirmwareReportedProperties(string tenantId, string deviceId)
         {
-            var sql = QueryBuilder.GetDocumentsSql(
-                $"deviceDeploymentHistory-{deviceId}",
-                null,
-                null,
-                null,
-                "_ts",
-                null,
-                "_ts",
-                "desc",
-                "_ts",
-                0,
-                100,
-                new string[] { deploymentId },
-                "Key");
+            var sql = QueryBuilder.GetDeploymentDeviceDocumentsSqlByKey("CollectionId", $"deviceDeploymentHistory-{deviceId}");
 
             List<Document> docs = new List<Document>();
 
