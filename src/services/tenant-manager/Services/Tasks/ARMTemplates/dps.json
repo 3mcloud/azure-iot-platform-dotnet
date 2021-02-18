@@ -17,7 +17,6 @@
             "properties": {{
                 "iotHubs": [
                     {{
-                        "applyAllocationPolicy": false,
                         "connectionString": "{2}",
                         "location": "{1}"
                     }}
