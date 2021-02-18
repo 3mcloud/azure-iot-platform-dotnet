@@ -8,10 +8,7 @@ import {
     getUser,
     getUserCurrentTenant,
 } from "store/reducers/appReducer";
-import {
-    epics as devicesEpics,
-    getDevicesByConditionPendingStatus,
-} from "store/reducers/devicesReducer";
+import { epics as devicesEpics } from "store/reducers/devicesReducer";
 
 const mapStateToProps = (state) => ({
         activeDeviceGroupId: getActiveDeviceGroupId(state),
