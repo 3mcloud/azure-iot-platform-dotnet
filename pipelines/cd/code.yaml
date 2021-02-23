@@ -205,7 +205,7 @@ stages:
           applicationShortCode: psd
           environmentCategory:  qa
           imageTag: $(_imageTag)
-          blueGreen: false
+          blueGreen: true
           subscriptionId: 8c550fc0-24e0-43cb-8237-5fbb168c1071
 
   - stage: psdEu

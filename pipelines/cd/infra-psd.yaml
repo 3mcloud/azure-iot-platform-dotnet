@@ -60,7 +60,7 @@ stages:
           applicationShortCode: psd
           environmentCategory: test
           environmentName: IoT_PSD_Environment_QA
-          kubernetesVersion: 1.19.3
+          kubernetesVersion: 1.19.6
           sendgridEmail: lluppes@mmm.com
           azureDevOpsProjectId: AzurePlatform
           testPipelineId: 453
@@ -83,7 +83,7 @@ stages:
           applicationShortCode: psd
           environmentCategory: qa
           environmentName: IoT_PSD_Environment_QA
-          kubernetesVersion: 1.16.8
+          kubernetesVersion: 1.19.6
           sendgridEmail: lluppes@mmm.com
           azureDevOpsProjectId: AzurePlatform
           testPipelineId: 453
