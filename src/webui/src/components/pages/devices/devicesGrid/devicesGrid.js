@@ -82,7 +82,11 @@ export class DevicesGrid extends Component {
     }
 
     componentWillMount() {
-        if (this.props && this.props.location.pathname === "/deviceSearch") {
+        if (
+            this.props &&
+            this.props.location &&
+            this.props.location.pathname === "/deviceSearch"
+        ) {
             this.setState({
                 isDeviceSearch: true,
             });
@@ -108,7 +112,7 @@ export class DevicesGrid extends Component {
 
     getDefaultFlyout(rowData) {
         const { location, userPermissions } = this.props;
-        const flyoutName = getFlyoutNameParam(location.search);
+        const flyoutName = getFlyoutNameParam(location);
         var isUserHasPermission = true;
         if (
             flyoutName === "jobs" &&
@@ -117,7 +121,7 @@ export class DevicesGrid extends Component {
             isUserHasPermission = false;
         }
         const deviceIds = this.getDeviceIdsArray(
-            getParamByName(location.search, "deviceId")
+            getParamByName(location, "deviceId")
         );
         let devices = deviceIds
             ? rowData.filter((device) => deviceIds.includes(device.id))
@@ -136,6 +140,7 @@ export class DevicesGrid extends Component {
             this.setState({ flyoutOpened: false });
         }
         if (
+            location &&
             location.search &&
             !this.state.softSelectedDeviceId &&
             devices &&
@@ -262,7 +267,9 @@ export class DevicesGrid extends Component {
     };
 
     closeFlyout = () => {
-        this.props.location.search = undefined;
+        if (this.props.location && this.props.location.search) {
+            this.props.location.search = undefined;
+        }
         this.setState(closedFlyoutState);
     };
 

@@ -89,22 +89,20 @@ export class RuleDetails extends Component {
     }
 
     componentWillMount() {
-        if (this.props.location.search) {
-            const tenantId = getTenantIdParam(this.props.location.search);
+        if (this.props.location && this.props.location.search) {
+            const tenantId = getTenantIdParam(this.props.location);
             this.props.checkTenantAndSwitch({
                 tenantId: tenantId,
                 redirectUrl: window.location.href,
             });
             this.setState({
-                selectedDeviceGroupId: getDeviceGroupParam(
-                    this.props.location.search
-                ),
+                selectedDeviceGroupId: getDeviceGroupParam(this.props.location),
             });
         }
     }
 
     componentDidMount() {
-        if (this.state.selectedDeviceGroupId) {
+        if (this.state.selectedDeviceGroupId && this.props.location) {
             window.history.replaceState(
                 {},
                 document.title,
@@ -532,6 +530,13 @@ export class RuleDetails extends Component {
                                 pagination={false}
                                 refresh={this.props.fetchRules}
                                 logEvent={this.props.logEvent}
+                                currentTenantId={this.props.currentTenantId}
+                                activeDeviceGroupId={
+                                    this.props.activeDeviceGroupId
+                                }
+                                location={this.props.location}
+                                rulesGridApi={this.ruleGridApi}
+                                userPermissions={this.props.userPermissions}
                             />
 
                             <h4 className="sub-heading">
@@ -598,6 +603,7 @@ export class RuleDetails extends Component {
                                         onHardSelectChange={this.onHardSelectChange(
                                             "devices"
                                         )}
+                                        location={this.props.location}
                                     />
                                 </ComponentArray>
                             )}

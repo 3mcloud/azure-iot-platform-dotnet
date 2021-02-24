@@ -56,16 +56,14 @@ export class Deployments extends Component {
     }
 
     componentWillMount() {
-        if (this.props.location.search) {
-            const tenantId = getTenantIdParam(this.props.location.search);
+        if (this.props.location && this.props.location.search) {
+            const tenantId = getTenantIdParam(this.props.location);
             this.props.checkTenantAndSwitch({
                 tenantId: tenantId,
                 redirectUrl: window.location.href,
             });
             this.setState({
-                selectedDeviceGroupId: getDeviceGroupParam(
-                    this.props.location.search
-                ),
+                selectedDeviceGroupId: getDeviceGroupParam(this.props.location),
             });
         }
         IdentityGatewayService.VerifyAndRefreshCache();
@@ -82,7 +80,7 @@ export class Deployments extends Component {
     }
 
     componentDidMount() {
-        if (this.state.selectedDeviceGroupId) {
+        if (this.state.selectedDeviceGroupId && this.props.location) {
             window.history.replaceState(
                 {},
                 document.title,
@@ -103,9 +101,14 @@ export class Deployments extends Component {
 
     getDefaultFlyout(rowData) {
         const { location } = this.props;
-        const deploymentId = getParamByName(location.search, "deploymentId"),
+        const deploymentId = getParamByName(location, "deploymentId"),
             deployment = rowData.find((dep) => dep.id === deploymentId);
-        if (location.search && !this.state.deployment && deployment) {
+        if (
+            location &&
+            location.search &&
+            !this.state.deployment &&
+            deployment
+        ) {
             this.setState({
                 deployment: deployment,
                 relatedDeployments: rowData.filter(
@@ -113,7 +116,7 @@ export class Deployments extends Component {
                         x.deviceGroupId === deployment.deviceGroupId &&
                         x.id !== deployment.id
                 ),
-                openFlyoutName: getFlyoutNameParam(location.search),
+                openFlyoutName: getFlyoutNameParam(location),
                 flyoutLink: window.location.href + location.search,
             });
             this.selectRows(deploymentId);
@@ -128,7 +131,9 @@ export class Deployments extends Component {
     }
 
     closeFlyout = () => {
-        this.props.location.search = undefined;
+        if (this.props.location && this.props.location.search) {
+            this.props.location.search = undefined;
+        }
         this.setState(closedFlyoutState);
     };
 

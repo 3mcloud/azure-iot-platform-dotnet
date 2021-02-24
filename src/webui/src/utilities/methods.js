@@ -352,22 +352,22 @@ export const base64toHEX = (base64) => {
     return HEX.toUpperCase();
 };
 
-export const getParamByName = (url, paramName) => {
-    const urlParams = new URLSearchParams(url);
+export const getParamByName = (location, paramName) => {
+    const urlParams = new URLSearchParams(location ? location.search : "");
     let param = urlParams.get(paramName);
     return param;
 };
 
-export const getDeviceGroupParam = (url) => {
-    return getParamByName(url, "deviceGroupId");
+export const getDeviceGroupParam = (location) => {
+    return getParamByName(location, "deviceGroupId");
 };
 
-export const getFlyoutNameParam = (url) => {
-    return getParamByName(url, "flyout");
+export const getFlyoutNameParam = (location) => {
+    return getParamByName(location, "flyout");
 };
 
-export const getTenantIdParam = (url) => {
-    return getParamByName(url, "tenantId");
+export const getTenantIdParam = (location) => {
+    return getParamByName(location, "tenantId");
 };
 
 export const getFlyoutLink = (
