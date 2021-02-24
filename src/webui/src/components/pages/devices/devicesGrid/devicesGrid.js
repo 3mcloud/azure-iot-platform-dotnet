@@ -82,7 +82,11 @@ export class DevicesGrid extends Component {
     }
 
     componentWillMount() {
-        if (this.props && this.props.location.pathname === "/deviceSearch") {
+        if (
+            this.props &&
+            this.props.location &&
+            this.props.location.pathname === "/deviceSearch"
+        ) {
             this.setState({
                 isDeviceSearch: true,
             });
@@ -99,9 +103,16 @@ export class DevicesGrid extends Component {
         }
     };
 
+    componentWillReceiveProps(nextProps) {
+        if (this.state.flyoutOpened === false) {
+            this.setState({ flyoutOpened: true });
+            this.getDefaultFlyout(nextProps.rowData);
+        }
+    }
+
     getDefaultFlyout(rowData) {
         const { location, userPermissions } = this.props;
-        const flyoutName = getFlyoutNameParam(location.search);
+        const flyoutName = getFlyoutNameParam(location);
         var isUserHasPermission = true;
         if (
             flyoutName === "jobs" &&
@@ -110,15 +121,31 @@ export class DevicesGrid extends Component {
             isUserHasPermission = false;
         }
         const deviceIds = this.getDeviceIdsArray(
-                getParamByName(location.search, "deviceId")
-            ),
-            devices = deviceIds
-                ? rowData.filter((device) => deviceIds.includes(device.id))
-                : undefined;
+            getParamByName(location, "deviceId")
+        );
+        let devices = deviceIds
+            ? rowData.filter((device) => deviceIds.includes(device.id))
+            : undefined;
+
+        if (deviceIds && deviceIds.length > devices.length) {
+            const conditions = this.createCondition(
+                deviceIds,
+                "deviceId",
+                deviceIds.length > 1 ? "LK" : "EQ"
+            );
+            this.props.fetchDevicesByCondition({
+                data: conditions,
+                insertIntoGrid: true,
+            });
+            this.setState({ flyoutOpened: false });
+        }
         if (
+            location &&
             location.search &&
             !this.state.softSelectedDeviceId &&
             devices &&
+            devices.length > 0 &&
+            deviceIds.length === devices.length &&
             isUserHasPermission
         ) {
             this.setState({
@@ -128,6 +155,18 @@ export class DevicesGrid extends Component {
             });
             this.selectRows(deviceIds);
         }
+    }
+
+    createCondition(deviceIDs, key, operator) {
+        let data = [];
+        deviceIDs.forEach((element) => {
+            data.push({
+                key: key,
+                operator: operator,
+                value: element,
+            });
+        });
+        return data;
     }
 
     getDeviceIdsArray(deviceIdString) {
@@ -228,7 +267,9 @@ export class DevicesGrid extends Component {
     };
 
     closeFlyout = () => {
-        this.props.location.search = undefined;
+        if (this.props.location && this.props.location.search) {
+            this.props.location.search = undefined;
+        }
         this.setState(closedFlyoutState);
     };
 

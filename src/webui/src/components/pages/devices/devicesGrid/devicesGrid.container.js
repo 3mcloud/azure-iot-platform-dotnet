@@ -8,6 +8,7 @@ import {
     getUser,
     getUserCurrentTenant,
 } from "store/reducers/appReducer";
+import { epics as devicesEpics } from "store/reducers/devicesReducer";
 
 const mapStateToProps = (state) => ({
         activeDeviceGroupId: getActiveDeviceGroupId(state),
@@ -18,6 +19,8 @@ const mapStateToProps = (state) => ({
     mapDispatchToProps = (dispatch) => ({
         logEvent: (diagnosticsModel) =>
             dispatch(appEpics.actions.logEvent(diagnosticsModel)),
+        fetchDevicesByCondition: (data) =>
+            dispatch(devicesEpics.actions.fetchDevicesByCondition(data)),
     });
 
 export const DevicesGridContainer = connect(

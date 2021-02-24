@@ -80,11 +80,11 @@ export class AdvanceSearch extends LinkedComponent {
                             return !this.conditionIsNew(condition);
                         }
                     );
-                    this.props.fetchDevicesByCondition(
-                        rawQueryConditions.map((condition) => {
+                    this.props.fetchDevicesByCondition({
+                        data: rawQueryConditions.map((condition) => {
                             return toDeviceConditionModel(condition);
-                        })
-                    );
+                        }),
+                    });
                     resolve();
                 });
             } catch (error) {

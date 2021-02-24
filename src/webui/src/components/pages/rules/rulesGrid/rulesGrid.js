@@ -137,7 +137,7 @@ export class RulesGrid extends Component {
 
     getDefaultFlyout(rowData) {
         const { location, userPermissions } = this.props;
-        const flyoutName = getFlyoutNameParam(location.search);
+        const flyoutName = getFlyoutNameParam(location);
         var isUserHasPermission = true;
         if (
             flyoutName === "edit" &&
@@ -145,9 +145,10 @@ export class RulesGrid extends Component {
         ) {
             isUserHasPermission = false;
         }
-        const ruleId = getParamByName(location.search, "ruleId"),
+        const ruleId = getParamByName(location, "ruleId"),
             rule = rowData.find((rule) => rule.id === ruleId);
         if (
+            location &&
             location.search &&
             !this.state.softSelectedRuleId &&
             rule &&
@@ -310,7 +311,9 @@ export class RulesGrid extends Component {
     getSoftSelectId = ({ id } = "") => id;
 
     closeFlyout = () => {
-        this.props.location.search = undefined;
+        if (this.props.location && this.props.location.search) {
+            this.props.location.search = undefined;
+        }
         this.setState(closedFlyoutState);
     };
 

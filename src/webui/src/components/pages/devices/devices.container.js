@@ -42,8 +42,6 @@ const mapStateToProps = (state) => ({
     // Wrap the dispatch method
     mapDispatchToProps = (dispatch) => ({
         fetchDevices: () => dispatch(devicesEpics.actions.fetchDevices()),
-        fetchDevicesByCondition: () =>
-            dispatch(devicesEpics.actions.fetchDevicesByCondition()),
         fetchDevicesByCToken: () =>
             dispatch(devicesEpics.actions.fetchDevicesByCToken()),
         updateCurrentWindow: (currentWindow) =>
