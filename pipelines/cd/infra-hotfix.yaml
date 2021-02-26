@@ -59,6 +59,8 @@ stages:
               echo "Environment category: '$(environmentCategory)'"
               if [ -z "$(environmentCategory)" ]
               then
+
+              
                 echo "A value for the 'environmentCategory' variable must be provided" > /dev/stderr
                 exit 1
               fi
