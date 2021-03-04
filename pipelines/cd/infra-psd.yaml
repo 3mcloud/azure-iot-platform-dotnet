@@ -1,0 +1,161 @@
+trigger: none
+pr: none
+pool:
+  vmImage: ubuntu-latest
+variables:
+  locationName: centralus
+stages:
+  - stage: checkParameters
+    displayName: Check parameters
+    dependsOn: []
+    jobs:
+     - job: checkParameters
+       displayName: Check parameters
+       steps:
+         - checkout: none
+
+         - script: |-
+                set -Eeuxo pipefail
+                echo "testPipelineRunId : '$(testPipelineRunId)'"
+                if [ -z "$(testPipelineRunId)" ]
+                then
+                echo "A value for the 'testPipelineRunId' variable must be provided" > /dev/stderr
+                exit 1
+                fi
+
+  - stage: psdDev
+    displayName: PSD dev
+    dependsOn: checkParameters
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation)
+          subscriptionId: $(subscriptionId)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName)
+          kubernetesVersion: $(kubernetesVersion)
+          sendgridEmail: $(sendgridEmail)
+          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          testPipelineId: $(testPipelineId)
+          runVersion: $(runVersion)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins)
+          
+  - stage: psdTest
+    displayName: PSD Test
+    dependsOn:
+      - psdDev
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation)
+          subscriptionId: $(subscriptionId)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName)
+          kubernetesVersion: $(kubernetesVersion)
+          sendgridEmail: $(sendgridEmail)
+          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          testPipelineId: $(testPipelineId)
+          runVersion: $(runVersion)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins)
+
+  - stage: psdQa
+    displayName: PSD QA
+    dependsOn:
+      - psdDev
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation)
+          subscriptionId: $(subscriptionId)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName)
+          kubernetesVersion: $(kubernetesVersion)
+          sendgridEmail: $(sendgridEmail)
+          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          testPipelineId: $(testPipelineId)
+          runVersion: $(runVersion)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins)
+
+  - stage: psdEu
+    displayName: PSD EU
+    dependsOn:
+      - psdDev
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation)
+          subscriptionId: $(subscriptionId)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName)
+          kubernetesVersion: $(kubernetesVersion)
+          sendgridEmail: $(sendgridEmail)
+          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          testPipelineId: $(testPipelineId)
+          runVersion: $(runVersion)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins)
+
+  - stage: psdStg
+    displayName: PSD staging
+    dependsOn:
+      - psdDev
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation)
+          subscriptionId: $(subscriptionId)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName)
+          kubernetesVersion: $(kubernetesVersion)
+          sendgridEmail: $(sendgridEmail)
+          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          testPipelineId: $(testPipelineId)
+          runVersion: $(runVersion)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins)
+
+  - stage: psdProd
+    displayName: PSD Prod
+    dependsOn:
+      - psdDev
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation)
+          subscriptionId: $(subscriptionId)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName)
+          kubernetesVersion: $(kubernetesVersion)
+          sendgridEmail: $(sendgridEmail)
+          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          testPipelineId: $(testPipelineId)
+          runVersion: $(runVersion)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins)
