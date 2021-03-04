@@ -116,7 +116,7 @@ resources:
     - repository: azure-iot-functional-tests
       name: MMM/azure-iot-functional-tests
       type: githubenterprise
-      endpoint: GithubMMM
+      endpoint: MMMGithub
       ref: master
 stages:
   - stage: build
