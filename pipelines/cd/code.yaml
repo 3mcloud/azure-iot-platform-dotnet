@@ -95,7 +95,7 @@ stages:
           applicationShortCode: $(applicationShortCode)
           environmentCategory: $(environmentCategory)
           imageTag: $(_imageTag)
-          blueGreen: true
+          blueGreen: false
           subscriptionId: $(subscriptionId)
 
   - stage: crslWkbnch
