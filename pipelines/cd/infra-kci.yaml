@@ -3,7 +3,12 @@ pr: none
 pool:
   vmImage: ubuntu-latest
 variables:
-  locationName: centralus
+- group: kciDev
+- group: kciQa 
+- group: kciCt
+- group: kciPr
+- name: locationName
+  value: centralus
 stages:
   - stage: checkParameters
     displayName: Check parameters
@@ -23,6 +28,8 @@ stages:
                 fi
   - stage: kciDev
     displayName: KCI dev
+    variables:
+    - group: kciDev
     dependsOn: checkParameters
     jobs:
       - template: ../templates/jobs-deploy-infra.yaml
@@ -45,6 +52,8 @@ stages:
 
   - stage: kciQa
     displayName: KCI QA
+    variables:
+    - group: kciQa
     dependsOn:
       - kciDev
     jobs:
@@ -68,6 +77,8 @@ stages:
           
   - stage: kciCt
     displayName: KCI CT
+    variables:
+    - group: kciCt
     dependsOn:
       - kciQa
     jobs:
@@ -91,6 +102,8 @@ stages:
 
   - stage: kciPr
     displayName: KCI PR
+    variables:
+    - group: kciPr
     dependsOn:
       - kciCt
     jobs:

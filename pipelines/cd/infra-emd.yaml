@@ -3,7 +3,11 @@ pr: none
 pool:
   vmImage: ubuntu-latest
 variables:
-  locationName: centralus
+- group: emdDev
+- group: emdQa
+- group: emdCt
+- name: locationName
+  value: centralus
 stages:
   - stage: checkParameters
     displayName: Check parameters
@@ -25,6 +29,8 @@ stages:
 
   - stage: emdDev
     displayName: EMD dev
+    variables:
+    - group: emdDev
     dependsOn: checkParameters
     jobs:
       - template: ../templates/jobs-deploy-infra.yaml
@@ -47,6 +53,8 @@ stages:
 
   - stage: emdQa
     displayName: EMD QA
+    variables:
+    - group: emdQa
     dependsOn:
       - emdDev
     jobs:
@@ -70,6 +78,8 @@ stages:
 
   - stage: emdCt
     displayName: EMD CT
+    variables:
+    - group: emdCt
     dependsOn:
       - emdQa
     jobs:

@@ -12,6 +12,24 @@ pool:
 variables:
 - group: crslDev
 - group: acsDev
+- group: crslQa
+- group: crslWkbnch
+- group: chimDev
+- group: chimQa
+- group: chimProd
+- group: psdDev
+- group: psdTest
+- group: psdQa
+- group: psdEu
+- group: psdStg
+- group: psdProd
+- group: emdDev
+- group: emdQa
+- group: emdCt
+- group: kciDev
+- group: kciQa 
+- group: kciCt
+- group: kciPr
 - template: ../templates/imageTagVariable.yaml
 stages:
   - stage: checkParameters
@@ -84,6 +102,8 @@ stages:
 
   - stage: crslQa
     displayName: CRSL QA
+    variables:
+    - group: crslQa
     dependsOn:
       - crslDev
     jobs:
@@ -100,6 +120,8 @@ stages:
 
   - stage: crslWkbnch
     displayName: CRSL workbench
+    variables:
+    - group: crslWkbnch
     dependsOn:
       - crslQa
     jobs:
@@ -116,6 +138,8 @@ stages:
 
   - stage: chimDev
     displayName: CHIM dev
+    variables:
+    - group: chimDev
     dependsOn:
       - crslWkbnch
     jobs:
@@ -132,6 +156,8 @@ stages:
 
   - stage: chimQa
     displayName: CHIM QA
+    variables:
+    - group: chimQa
     dependsOn:
       - chimDev
     jobs:
@@ -148,6 +174,8 @@ stages:
 
   - stage: chimProd
     displayName: CHIM prod
+    variables:
+    - group: chimProd
     dependsOn:
       - chimQa
     jobs:
@@ -164,6 +192,8 @@ stages:
 
   - stage: psdDev
     displayName: PSD dev
+    variables:
+    - group: psdDev
     dependsOn:
       - crslWkbnch
     jobs:
@@ -180,6 +210,8 @@ stages:
           
   - stage: psdTest
     displayName: PSD Test
+    variables:
+    - group: psdTest
     dependsOn:
       - crslWkbnch
     jobs:
@@ -196,6 +228,8 @@ stages:
 
   - stage: psdQa
     displayName: PSD QA
+    variables:
+    - group: psdQa
     dependsOn:
       - psdDev
     jobs:
@@ -212,6 +246,8 @@ stages:
 
   - stage: psdEu
     displayName: PSD EU
+    variables:
+    - group: psdEu
     dependsOn:
       - psdDev
     jobs:
@@ -228,6 +264,8 @@ stages:
 
   - stage: psdStg
     displayName: PSD staging
+    variables:
+    - group: psdStg
     dependsOn:
       - psdDev
     jobs:
@@ -244,6 +282,8 @@ stages:
 
   - stage: psdProd
     displayName: PSD Prod
+    variables:
+    - group: psdProd
     dependsOn:
       - psdDev
     jobs:
@@ -260,6 +300,8 @@ stages:
 
   - stage: emdDev
     displayName: EMD dev
+    variables:
+    - group: emdDev
     dependsOn:
       - crslWkbnch
     jobs:
@@ -276,6 +318,8 @@ stages:
 
   - stage: emdQa
     displayName: EMD QA
+    variables:
+    - group: emdQa
     dependsOn:
       - emdDev
     jobs:
@@ -292,6 +336,8 @@ stages:
 
   - stage: emdCt
     displayName: EMD CT
+    variables:
+    - group: emdCt
     dependsOn:
       - emdQa
     jobs:
@@ -308,6 +354,8 @@ stages:
 
   - stage: kciDev
     displayName: KCI dev
+    variables:
+    - group: kciDev
     dependsOn:
       - crslWkbnch
     jobs:
@@ -324,6 +372,8 @@ stages:
 
   - stage: kciQa
     displayName: KCI qa
+    variables:
+    - group: kciQa
     dependsOn:
       - kciDev
     jobs:
@@ -340,6 +390,8 @@ stages:
 
   - stage: kciCt
     displayName: KCI ct
+    variables:
+    - group: kciCt
     dependsOn:
       - kciQa
     jobs:
@@ -356,6 +408,8 @@ stages:
 
   - stage: kciPr
     displayName: KCI Pr
+    variables:
+    - group: kciPr
     dependsOn:
       - kciCt
     jobs:

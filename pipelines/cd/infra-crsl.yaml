@@ -5,6 +5,8 @@ pool:
 variables:
 - group: crslDev
 - group: acsDev
+- group: crslQa
+- group: crslWkbnch
 - name: locationName
   value: centralus
 stages:
@@ -79,6 +81,8 @@ stages:
 
   - stage: crslQa
     displayName: CRSL QA
+    variables:
+    - group: crslQa
     dependsOn:
       - crslDev
     jobs:
@@ -103,6 +107,8 @@ stages:
           
   - stage: crslWkbnch
     displayName: CRSL workbench
+    variables:
+    - group: crslWkbnch
     dependsOn:
       - crslQa
     jobs:

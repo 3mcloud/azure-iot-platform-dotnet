@@ -3,7 +3,14 @@ pr: none
 pool:
   vmImage: ubuntu-latest
 variables:
-  locationName: centralus
+- group: psdDev
+- group: psdTest
+- group: psdQa
+- group: psdEu
+- group: psdStg
+- group: psdProd
+- name: locationName
+  value: centralus
 stages:
   - stage: checkParameters
     displayName: Check parameters
@@ -25,6 +32,8 @@ stages:
 
   - stage: psdDev
     displayName: PSD dev
+    variables:
+    - group: psdDev
     dependsOn: checkParameters
     jobs:
       - template: ../templates/jobs-deploy-infra.yaml
@@ -47,6 +56,8 @@ stages:
           
   - stage: psdTest
     displayName: PSD Test
+    variables:
+    - group: psdTest
     dependsOn:
       - psdDev
     jobs:
@@ -70,6 +81,8 @@ stages:
 
   - stage: psdQa
     displayName: PSD QA
+    variables:
+    - group: psdQa
     dependsOn:
       - psdDev
     jobs:
@@ -93,6 +106,8 @@ stages:
 
   - stage: psdEu
     displayName: PSD EU
+    variables:
+    - group: psdEu
     dependsOn:
       - psdDev
     jobs:
@@ -116,6 +131,8 @@ stages:
 
   - stage: psdStg
     displayName: PSD staging
+    variables:
+    - group: psdStg
     dependsOn:
       - psdDev
     jobs:
@@ -139,6 +156,8 @@ stages:
 
   - stage: psdProd
     displayName: PSD Prod
+    variables:
+    - group: psdProd
     dependsOn:
       - psdDev
     jobs:
