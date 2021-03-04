@@ -1,0 +1,92 @@
+trigger: none
+pr: none
+pool:
+  vmImage: ubuntu-latest
+variables:
+  locationName: centralus
+stages:
+  - stage: checkParameters
+    displayName: Check parameters
+    dependsOn: []
+    jobs:
+     - job: checkParameters
+       displayName: Check parameters
+       steps:
+         - checkout: none
+
+         - script: |-
+                set -Eeuxo pipefail
+                echo "testPipelineRunId : '$(testPipelineRunId)'"
+                if [ -z "$(testPipelineRunId)" ]
+                then
+                echo "A value for the 'testPipelineRunId' variable must be provided" > /dev/stderr
+                exit 1
+                fi
+
+  - stage: chimDev
+    displayName: CHIM dev
+    dependsOn: checkParameters
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation)
+          environmentName: $(environmentName)
+          subscriptionId: $(subscriptionId)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          kubernetesVersion: $(kubernetesVersion)
+          sendgridEmail: $(sendgridEmail)
+          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          testPipelineId: $(testPipelineId)
+          runVersion: $(runVersion)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins)
+
+  - stage: chimQa
+    displayName: CHIM QA
+    dependsOn:
+      - chimDev
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation)
+          environmentName: $(environmentName)
+          subscriptionId: $(subscriptionId)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          kubernetesVersion: $(kubernetesVersion)
+          sendgridEmail: $(sendgridEmail)
+          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          testPipelineId: $(testPipelineId)
+          runVersion: $(runVersion)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins)
+          
+  - stage: chimProd
+    displayName: CHIM prod
+    dependsOn:
+      - chimQa
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation)
+          environmentName: $(environmentName)
+          subscriptionId: $(subscriptionId)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          kubernetesVersion: $(kubernetesVersion)
+          sendgridEmail: $(sendgridEmail)
+          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          testPipelineId: $(testPipelineId)
+          runVersion: $(runVersion)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins)

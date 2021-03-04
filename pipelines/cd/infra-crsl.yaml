@@ -1,0 +1,126 @@
+trigger: none
+pr: none
+pool:
+  vmImage: ubuntu-latest
+variables:
+- group: crslDev
+- group: acsDev
+- name: locationName
+  value: centralus
+stages:
+  - stage: checkParameters
+    displayName: Check parameters
+    dependsOn: []
+    jobs:
+     - job: checkParameters
+       displayName: Check parameters
+       steps:
+         - checkout: none
+
+         - script: |-
+                set -Eeuxo pipefail
+                echo "testPipelineRunId : '$(testPipelineRunId)'"
+                if [ -z "$(testPipelineRunId)" ]
+                then
+                echo "A value for the 'testPipelineRunId' variable must be provided" > /dev/stderr
+                exit 1
+                fi
+
+  - stage: crslDev
+    displayName: CRSL dev
+    variables:
+    - group: crslDev
+    dependsOn: checkParameters
+    condition: eq(variables['runCrslDevStage'], 'true')
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation)
+          environmentName: $(environmentName)
+          subscriptionId: $(subscriptionId)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          kubernetesVersion: $(kubernetesVersion)
+          sendgridEmail: $(sendgridEmail)
+          aksAgentVmSize: $(aksAgentVmSize)
+          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          testPipelineId: $(testPipelineId)
+          runVersion: $(runVersion)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins)
+
+  - stage: acsDev
+    displayName: ACS dev
+    variables:
+    - group: acsDev
+    dependsOn: checkParameters
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation)
+          environmentName: $(environmentName)
+          subscriptionId: $(subscriptionId)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          kubernetesVersion: $(kubernetesVersion)
+          sendgridEmail: $(sendgridEmail)
+          aksAgentVmSize: $(aksAgentVmSize)
+          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          testPipelineId: $(testPipelineId)
+          runVersion: $(runVersion)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins)
+
+  - stage: crslQa
+    displayName: CRSL QA
+    dependsOn:
+      - crslDev
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation)
+          environmentName: $(environmentName)
+          subscriptionId: $(subscriptionId)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          kubernetesVersion: $(kubernetesVersion)
+          sendgridEmail: $(sendgridEmail)
+          aksAgentVmSize: $(aksAgentVmSize)
+          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          testPipelineId: $(testPipelineId)
+          runVersion: $(runVersion)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins)
+          
+  - stage: crslWkbnch
+    displayName: CRSL workbench
+    dependsOn:
+      - crslQa
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation)
+          environmentName: $(environmentName)
+          subscriptionId: $(subscriptionId)
+          applicationCode: $(applicationCode)
+          applicationShortCode: $(applicationShortCode)
+          environmentCategory: $(environmentCategory)
+          kubernetesVersion: $(kubernetesVersion)
+          sendgridEmail: $(sendgridEmail)
+          aksAgentVmSize: $(aksAgentVmSize)
+          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          testPipelineId: $(testPipelineId)
+          runVersion: $(runVersion)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins)
