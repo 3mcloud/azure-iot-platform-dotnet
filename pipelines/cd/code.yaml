@@ -10,25 +10,6 @@ resources:
 pool:
   vmImage: ubuntu-latest
 variables:
-- group: crslDev
-- group: acsDev
-- group: crslQa
-- group: chimDev
-- group: chimQa
-- group: chimProd
-- group: psdDev
-- group: psdTest
-- group: psdQa
-- group: psdEu
-- group: psdStg
-- group: psdProd
-- group: emdDev
-- group: emdQa
-- group: emdCt
-- group: kciDev
-- group: kciQa 
-- group: kciCt
-- group: kciPr
 - template: ../templates/imageTagVariable.yaml
 stages:
   - stage: checkParameters
