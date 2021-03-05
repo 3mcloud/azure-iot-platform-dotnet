@@ -119,7 +119,7 @@ stages:
           environmentName: $(environmentName-kciPr)
           kubernetesVersion: $(kubernetesVersion-kciPr)
           sendgridEmail: $(sendgridEmail-kciPr)
-          azureDevOpsProjectId: $(azureDevOpsProjectId)
+          azureDevOpsProjectId: $(azureDevOpsProjectId-kciPr)
           testPipelineId: $(testPipelineId-kciPr)
           runVersion: $(runVersion-kciPr)
           testPipelineRunId: $(testPipelineRunId)
