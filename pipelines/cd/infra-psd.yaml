@@ -114,7 +114,7 @@ stages:
       - template: ../templates/jobs-deploy-infra.yaml
         parameters:
           subscriptionName: $(subscriptionName-psdEu)
-          locationName: $(locationName)
+          locationName: $(locationName-psdEu)
           appInsightsLocation: $(appInsightsLocation-psdEu)
           subscriptionId: $(subscriptionId-psdEu)
           applicationCode: $(applicationCode-psdEu)
