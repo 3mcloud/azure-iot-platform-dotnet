@@ -127,14 +127,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-crslWkbnch)
+          subscriptionName: $(subscriptionName-crslWkbnch)
+          applicationCode: $(applicationCode-crslWkbnch)
+          applicationShortCode: $(applicationShortCode-crslWkbnch)
+          environmentCategory: $(environmentCategory-crslWkbnch)
           imageTag: $(_imageTag)
           blueGreen: false
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-crslWkbnch)
 
   - stage: chimDev
     displayName: CHIM dev
@@ -145,14 +145,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-chimDev)
+          subscriptionName: $(subscriptionName-chimDev)
+          applicationCode: $(applicationCode-chimDev)
+          applicationShortCode: $(applicationShortCode-chimDev)
+          environmentCategory: $(environmentCategory-chimDev)
           imageTag: $(_imageTag)
           blueGreen: true
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-chimDev)
 
   - stage: chimQa
     displayName: CHIM QA
@@ -163,14 +163,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-chimQa)
+          subscriptionName: $(subscriptionName-chimQa)
+          applicationCode: $(applicationCode-chimQa)
+          applicationShortCode: $(applicationShortCode-chimQa)
+          environmentCategory: $(environmentCategory-chimQa)
           imageTag: $(_imageTag)
           blueGreen: true
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-chimQa)
 
   - stage: chimProd
     displayName: CHIM prod
@@ -181,14 +181,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-chimProd)
+          subscriptionName: $(subscriptionName-chimProd)
+          applicationCode: $(applicationCode-chimProd)
+          applicationShortCode: $(applicationShortCode-chimProd)
+          environmentCategory: $(environmentCategory-chimProd)
           imageTag: $(_imageTag)
           blueGreen: true
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-chimProd)
 
   - stage: psdDev
     displayName: PSD dev
@@ -199,14 +199,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-psdDev)
+          subscriptionName: $(subscriptionName-psdDev)
+          applicationCode: $(applicationCode-psdDev)
+          applicationShortCode: $(applicationShortCode-psdDev)
+          environmentCategory: $(environmentCategory-psdDev)
           imageTag: $(_imageTag)
           blueGreen: true
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-psdDev)
           
   - stage: psdTest
     displayName: PSD Test
@@ -217,14 +217,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-psdTest)
+          subscriptionName: $(subscriptionName-psdTest)
+          applicationCode: $(applicationCode-psdTest)
+          applicationShortCode: $(applicationShortCode-psdTest)
+          environmentCategory: $(environmentCategory-psdTest)
           imageTag: $(_imageTag)
           blueGreen: true
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-psdTest)
 
   - stage: psdQa
     displayName: PSD QA
@@ -235,14 +235,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-psdQa)
+          subscriptionName: $(subscriptionName-psdQa)
+          applicationCode: $(applicationCode-psdQa)
+          applicationShortCode: $(applicationShortCode-psdQa)
+          environmentCategory: $(environmentCategory-psdQa)
           imageTag: $(_imageTag)
           blueGreen: true
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-psdQa)
 
   - stage: psdEu
     displayName: PSD EU
@@ -253,14 +253,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-psdEu)
+          subscriptionName: $(subscriptionName-psdEu)
+          applicationCode: $(applicationCode-psdEu)
+          applicationShortCode: $(applicationShortCode-psdEu)
+          environmentCategory: $(environmentCategory-psdEu)
           imageTag: $(_imageTag)
           blueGreen: false
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-psdEu)
 
   - stage: psdStg
     displayName: PSD staging
@@ -271,14 +271,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-psdStg)
+          subscriptionName: $(subscriptionName-psdStg)
+          applicationCode: $(applicationCode-psdStg)
+          applicationShortCode: $(applicationShortCode-psdStg)
+          environmentCategory: $(environmentCategory-psdStg)
           imageTag: $(_imageTag)
           blueGreen: false
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-psdStg)
 
   - stage: psdProd
     displayName: PSD Prod
@@ -289,14 +289,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-psdProd)
+          subscriptionName: $(subscriptionName-psdProd)
+          applicationCode: $(applicationCode-psdProd)
+          applicationShortCode: $(applicationShortCode-psdProd)
+          environmentCategory: $(environmentCategory-psdProd)
           imageTag: $(_imageTag)
           blueGreen: false
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-psdProd)
 
   - stage: emdDev
     displayName: EMD dev
@@ -307,14 +307,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-emdDev)
+          subscriptionName: $(subscriptionName-emdDev)
+          applicationCode: $(applicationCode-emdDev)
+          applicationShortCode: $(applicationShortCode-emdDev)
+          environmentCategory: $(environmentCategory-emdDev)
           imageTag: $(_imageTag)
           blueGreen: false
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-emdDev)
 
   - stage: emdQa
     displayName: EMD QA
@@ -325,14 +325,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-emdQa)
+          subscriptionName: $(subscriptionName-emdQa)
+          applicationCode: $(applicationCode-emdQa)
+          applicationShortCode: $(applicationShortCode-emdQa)
+          environmentCategory: $(environmentCategory-emdQa)
           imageTag: $(_imageTag)
           blueGreen: false
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-emdQa)
 
   - stage: emdCt
     displayName: EMD CT
@@ -343,14 +343,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-emdCt)
+          subscriptionName: $(subscriptionName-emdCt)
+          applicationCode: $(applicationCode-emdCt)
+          applicationShortCode: $(applicationShortCode-emdCt)
+          environmentCategory: $(environmentCategory-emdCt)
           imageTag: $(_imageTag)
           blueGreen: false
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-emdCt)
 
   - stage: kciDev
     displayName: KCI dev
@@ -361,14 +361,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-kciDev)
+          subscriptionName: $(subscriptionName-kciDev)
+          applicationCode: $(applicationCode-kciDev)
+          applicationShortCode: $(applicationShortCode-kciDev)
+          environmentCategory: $(environmentCategory-kciDev)
           imageTag: $(_imageTag)
           blueGreen: true
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-kciDev)
 
   - stage: kciQa
     displayName: KCI qa
@@ -379,14 +379,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters: 
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-kciQa)
+          subscriptionName: $(subscriptionName-kciQa)
+          applicationCode: $(applicationCode-kciQa)
+          applicationShortCode: $(applicationShortCode-kciQa)
+          environmentCategory: $(environmentCategory-kciQa)
           imageTag: $(_imageTag)
           blueGreen: true
-          subscriptionId: $(subscriptionId)  
+          subscriptionId: $(subscriptionId-kciQa)  
 
   - stage: kciCt
     displayName: KCI ct
@@ -397,14 +397,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-kciCt)
+          subscriptionName: $(subscriptionName-kciCt)
+          applicationCode: $(applicationCode-kciCt)
+          applicationShortCode: $(applicationShortCode-kciCt)
+          environmentCategory: $(environmentCategory-kciCt)
           imageTag: $(_imageTag)
           blueGreen: true
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-kciCt)
 
   - stage: kciPr
     displayName: KCI Pr
@@ -415,11 +415,11 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-kciPr)
+          subscriptionName: $(subscriptionName-kciPr)
+          applicationCode: $(applicationCode-kciPr)
+          applicationShortCode: $(applicationShortCode-kciPr)
+          environmentCategory: $(environmentCategory-kciPr)
           imageTag: $(_imageTag)
           blueGreen: true
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-kciPr)
