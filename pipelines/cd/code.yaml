@@ -13,6 +13,7 @@ variables:
 - group: crslDev
 - group: acsDev
 - group: crslQa
+- group: crslWkbnch
 - group: chimDev
 - group: chimQa
 - group: chimProd
@@ -72,14 +73,14 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-crslDev)
+          subscriptionName: $(subscriptionName-crslDev)
+          applicationCode: $(applicationCode-crslDev)
+          applicationShortCode: $(applicationShortCode-crslDev)
+          environmentCategory: $(environmentCategory-crslDev)
           imageTag: $(_imageTag)
           blueGreen: true
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-crslDev)
 
   - stage: acsDev
     displayName: ACS dev
@@ -108,19 +109,19 @@ stages:
     jobs:
       - template: ../templates/jobs-deploy-code.yaml
         parameters:
-          environmentName: $(environmentName)
-          subscriptionName: $(subscriptionName)
-          applicationCode: $(applicationCode)
-          applicationShortCode: $(applicationShortCode)
-          environmentCategory: $(environmentCategory)
+          environmentName: $(environmentName-crslQa)
+          subscriptionName: $(subscriptionName-crslQa)
+          applicationCode: $(applicationCode-crslQa)
+          applicationShortCode: $(applicationShortCode-crslQa)
+          environmentCategory: $(environmentCategory-crslQa)
           imageTag: $(_imageTag)
           blueGreen: false
-          subscriptionId: $(subscriptionId)
+          subscriptionId: $(subscriptionId-crslQa)
 
   - stage: crslWkbnch
     displayName: CRSL workbench
     variables:
-    - group: crslDev
+    - group: crslWkbnch
     dependsOn:
       - crslQa
     jobs:
