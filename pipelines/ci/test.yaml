@@ -74,7 +74,7 @@ variables:
   - name: mmmIotPlatformIngressHelmChartReleaseName
     value: ingress-$(buildId)
   - name: serenityDevTenantId
-    value: 233a1ca2-6855-43c5-8b9c-c7f85a1dd520
+    value: 01881b16-2c18-49b5-b6c0-645a30866896
   - name: testPipelineDomain
     value: iot.cld.3m.com
   - name: testPipelineFqdn
