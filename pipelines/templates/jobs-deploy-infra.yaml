@@ -694,7 +694,6 @@ jobs:
             az appconfig kv set --key Global:Limits:ProcessIOTHubBeyondLimit      --value $(processIOTHubBeyondLimit) --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:ClientAuth:Jwt:AadAppId              --value $servicePrincipalId --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:AzureActiveDirectory:AppId           --value $servicePrincipalId --name $(appConfigurationName) --yes
-            az appconfig kv set --key Global:AzureActiveDirectory:AppSecret       --value $servicePrincipalKey --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:ResourceGroup                        --value $(resourceGroupName) --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:SubscriptionId                       --value ${{parameters.subscriptionId}} --name $(appConfigurationName) --yes
             az appconfig kv set --key Global:StorageAccount:Name                  --value $(storageAccountName) --name $(appConfigurationName) --yes
