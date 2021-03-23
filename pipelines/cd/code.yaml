@@ -443,7 +443,7 @@ stages:
           applicationShortCode: $(applicationShortCode-psdfireDev)
           environmentCategory: $(environmentCategory-psdfireDev)
           imageTag: $(_imageTag)
-          blueGreen: true
+          blueGreen: false
           subscriptionId: $(subscriptionId-psdfireDev)
 
   - stage: psdfireQa
@@ -461,7 +461,7 @@ stages:
           applicationShortCode: $(applicationShortCode-psdfireQa)
           environmentCategory: $(environmentCategory-psdfireQa)
           imageTag: $(_imageTag)
-          blueGreen: true
+          blueGreen: false
           subscriptionId: $(subscriptionId-psdfireQa)
 
   - stage: psdfireCt
@@ -479,7 +479,7 @@ stages:
           applicationShortCode: $(applicationShortCode-psdfireCt)
           environmentCategory: $(environmentCategory-psdfireCt)
           imageTag: $(_imageTag)
-          blueGreen: true
+          blueGreen: false
           subscriptionId: $(subscriptionId-psdfireCt)
 
   - stage: psdfireProd
@@ -497,5 +497,5 @@ stages:
           applicationShortCode: $(applicationShortCode-psdfireProd)
           environmentCategory: $(environmentCategory-psdfireProd)
           imageTag: $(_imageTag)
-          blueGreen: true
+          blueGreen: false
           subscriptionId: $(subscriptionId-psdfireProd)
