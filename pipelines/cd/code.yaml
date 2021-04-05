@@ -30,6 +30,10 @@ variables:
 - group: kciQa 
 - group: kciCt
 - group: kciPr
+- group: psdfireDev
+- group: psdfireQa
+- group: psdfireCt
+- group: psdfireProd
 - template: ../templates/imageTagVariable.yaml
 stages:
   - stage: checkParameters
@@ -423,3 +427,75 @@ stages:
           imageTag: $(_imageTag)
           blueGreen: true
           subscriptionId: $(subscriptionId-kciPr)
+
+  - stage: psdfireDev
+    displayName: PSDFire Dev
+    variables:
+    - group: psdfireDev
+    dependsOn:
+      - crslWkbnch
+    jobs:
+      - template: ../templates/jobs-deploy-code.yaml
+        parameters:
+          environmentName: $(environmentName-psdfireDev)
+          subscriptionName: $(subscriptionName-psdfireDev)
+          applicationCode: $(applicationCode-psdfireDev)
+          applicationShortCode: $(applicationShortCode-psdfireDev)
+          environmentCategory: $(environmentCategory-psdfireDev)
+          imageTag: $(_imageTag)
+          blueGreen: false
+          subscriptionId: $(subscriptionId-psdfireDev)
+
+  - stage: psdfireQa
+    displayName: PSDFire QA
+    variables:
+    - group: psdfireQa
+    dependsOn:
+      - psdfireDev
+    jobs:
+      - template: ../templates/jobs-deploy-code.yaml
+        parameters:
+          environmentName: $(environmentName-psdfireQa)
+          subscriptionName: $(subscriptionName-psdfireQa)
+          applicationCode: $(applicationCode-psdfireQa)
+          applicationShortCode: $(applicationShortCode-psdfireQa)
+          environmentCategory: $(environmentCategory-psdfireQa)
+          imageTag: $(_imageTag)
+          blueGreen: false
+          subscriptionId: $(subscriptionId-psdfireQa)
+
+  - stage: psdfireCt
+    displayName: PSDFire CT
+    variables:
+    - group: psdfireCt
+    dependsOn:
+      - psdfireQa
+    jobs:
+      - template: ../templates/jobs-deploy-code.yaml
+        parameters:
+          environmentName: $(environmentName-psdfireCt)
+          subscriptionName: $(subscriptionName-psdfireCt)
+          applicationCode: $(applicationCode-psdfireCt)
+          applicationShortCode: $(applicationShortCode-psdfireCt)
+          environmentCategory: $(environmentCategory-psdfireCt)
+          imageTag: $(_imageTag)
+          blueGreen: false
+          subscriptionId: $(subscriptionId-psdfireCt)
+
+  - stage: psdfireProd
+    displayName: PSDFire Prod
+    variables:
+    - group: psdfireProd
+    dependsOn:
+      - psdfireCt
+    jobs:
+      - template: ../templates/jobs-deploy-code.yaml
+        parameters:
+          environmentName: $(environmentName-psdfireProd)
+          subscriptionName: $(subscriptionName-psdfireProd)
+          applicationCode: $(applicationCode-psdfireProd)
+          applicationShortCode: $(applicationShortCode-psdfireProd)
+          environmentCategory: $(environmentCategory-psdfireProd)
+          imageTag: $(_imageTag)
+          blueGreen: false
+          subscriptionId: $(subscriptionId-psdfireProd)

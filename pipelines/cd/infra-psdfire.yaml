@@ -1,0 +1,126 @@
+trigger: none
+pr: none
+pool:
+  vmImage: ubuntu-latest
+variables:
+- group: psdfireDev
+- group: psdfireQa
+- group: psdfireCt
+- group: psdfireProd
+- name: locationName
+  value: centralus
+stages:
+  - stage: checkParameters
+    displayName: Check parameters
+    dependsOn: []
+    jobs:
+     - job: checkParameters
+       displayName: Check parameters
+       steps:
+         - checkout: none
+
+         - script: |-
+                set -Eeuxo pipefail
+                echo "testPipelineRunId : '$(testPipelineRunId)'"
+                if [ -z "$(testPipelineRunId)" ]
+                then
+                echo "A value for the 'testPipelineRunId' variable must be provided" > /dev/stderr
+                exit 1
+                fi
+
+  - stage: psdfireDev
+    displayName: PSDFire dev
+    variables:
+    - group: psdfireDev
+    dependsOn: checkParameters
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName-psdfireDev)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation-psdfireDev)
+          subscriptionId: $(subscriptionId-psdfireDev)
+          applicationCode: $(applicationCode-psdfireDev)
+          applicationShortCode: $(applicationShortCode-psdfireDev)
+          environmentCategory: $(environmentCategory-psdfireDev)
+          environmentName: $(environmentName-psdfireDev)
+          kubernetesVersion: $(kubernetesVersion-psdfireDev)
+          sendgridEmail: $(sendgridEmail-psdfireDev)
+          azureDevOpsProjectId: $(azureDevOpsProjectId-psdfireDev)
+          testPipelineId: $(testPipelineId-psdfireDev)
+          runVersion: $(runVersion-psdfireDev)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins-psdfireDev)
+
+  - stage: psdfireQa
+    displayName: PSDFire Qa
+    variables:
+    - group: psdfireQa
+    dependsOn: psdfireDev
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName-psdfireQa)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation-psdfireQa)
+          subscriptionId: $(subscriptionId-psdfireQa)
+          applicationCode: $(applicationCode-psdfireQa)
+          applicationShortCode: $(applicationShortCode-psdfireQa)
+          environmentCategory: $(environmentCategory-psdfireQa)
+          environmentName: $(environmentName-psdfireQa)
+          kubernetesVersion: $(kubernetesVersion-psdfireQa)
+          sendgridEmail: $(sendgridEmail-psdfireQa)
+          azureDevOpsProjectId: $(azureDevOpsProjectId-psdfireQa)
+          testPipelineId: $(testPipelineId-psdfireQa)
+          runVersion: $(runVersion-psdfireQa)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins-psdfireQa)
+
+  - stage: psdfireCt
+    displayName: PSDFire CT
+    variables:
+    - group: psdfireCt
+    dependsOn: psdfireQa
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName-psdfireCt)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation-psdfireCt)
+          subscriptionId: $(subscriptionId-psdfireCt)
+          applicationCode: $(applicationCode-psdfireCt)
+          applicationShortCode: $(applicationShortCode-psdfireCt)
+          environmentCategory: $(environmentCategory-psdfireCt)
+          environmentName: $(environmentName-psdfireCt)
+          kubernetesVersion: $(kubernetesVersion-psdfireCt)
+          sendgridEmail: $(sendgridEmail-psdfireCt)
+          azureDevOpsProjectId: $(azureDevOpsProjectId-psdfireCt)
+          testPipelineId: $(testPipelineId-psdfireCt)
+          runVersion: $(runVersion-psdfireCt)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins-psdfireCt)
+    
+  - stage: psdfireProd
+    displayName: PSDFire Prod
+    variables:
+    - group: psdfireProd
+    dependsOn: psdfireCt
+    jobs:
+      - template: ../templates/jobs-deploy-infra.yaml
+        parameters:
+          subscriptionName: $(subscriptionName-psdfireProd)
+          locationName: $(locationName)
+          appInsightsLocation: $(appInsightsLocation-psdfireProd)
+          subscriptionId: $(subscriptionId-psdfireProd)
+          applicationCode: $(applicationCode-psdfireProd)
+          applicationShortCode: $(applicationShortCode-psdfireProd)
+          environmentCategory: $(environmentCategory-psdfireProd)
+          environmentName: $(environmentName-psdfireProd)
+          kubernetesVersion: $(kubernetesVersion-psdfireProd)
+          sendgridEmail: $(sendgridEmail-psdfireProd)
+          azureDevOpsProjectId: $(azureDevOpsProjectId-psdfireProd)
+          testPipelineId: $(testPipelineId-psdfireProd)
+          runVersion: $(runVersion-psdfireProd)
+          testPipelineRunId: $(testPipelineRunId)
+          sysAdmins: $(sysAdmins-psdfireProd)
+          
