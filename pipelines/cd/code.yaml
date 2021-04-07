@@ -299,7 +299,7 @@ stages:
           applicationShortCode: $(applicationShortCode-psdProd)
           environmentCategory: $(environmentCategory-psdProd)
           imageTag: $(_imageTag)
-          blueGreen: false
+          blueGreen: true
           subscriptionId: $(subscriptionId-psdProd)
 
   - stage: emdDev
