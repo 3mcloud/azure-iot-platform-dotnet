@@ -263,7 +263,7 @@ stages:
           applicationShortCode: $(applicationShortCode-psdEu)
           environmentCategory: $(environmentCategory-psdEu)
           imageTag: $(_imageTag)
-          blueGreen: false
+          blueGreen: true
           subscriptionId: $(subscriptionId-psdEu)
 
   - stage: psdStg
