@@ -109,7 +109,7 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
                 Name = model.Name,
                 Type = string.IsNullOrWhiteSpace(model.Type) ? "Member" : model.Type,
                 CreatedTime = DateTime.UtcNow,
-                CreatedBy = model.CreatedBy,
+                CreatedBy = !string.IsNullOrWhiteSpace(model.CreatedBy) ? model.CreatedBy : this.GetCreatedBy(),
             };
             return await this.container.CreateAsync(input);
         }
@@ -267,6 +267,18 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
             }
 
             return false;
+        }
+
+        private string GetCreatedBy()
+        {
+            try
+            {
+                return this.GetClaimsUserDetails();
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
     }
 }
