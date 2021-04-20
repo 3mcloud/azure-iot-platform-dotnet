@@ -249,7 +249,6 @@ stages:
             artifact: $(functionsArtifactName)
             displayName: Publish Azure Functions artifacts
 
-
   # - stage: whiteSourceBolt
   #   displayName: WhiteSource Bolt
   #   dependsOn:
