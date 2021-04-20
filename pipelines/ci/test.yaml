@@ -156,6 +156,12 @@ stages:
           - checkout: self
             displayName: Checkout repository
 
+          - task: UseDotNet@2
+            inputs:
+              packageType: 'runtime'
+              version: '3.1.14'
+              includePreviewVersions: true
+
           - script: >-
               dotnet restore
               --force
@@ -206,6 +212,12 @@ stages:
         steps:
           - checkout: self
             displayName: Checkout repository
+
+          - task: UseDotNet@2
+            inputs:
+              packageType: 'runtime'
+              version: '3.1.14'
+              includePreviewVersions: true
 
           - script: >-
               dotnet restore
@@ -389,6 +401,12 @@ stages:
               artifact: $(publishedFilesArtifactName)
               path: $(Build.SourcesDirectory)
 
+          - task: UseDotNet@2
+            inputs:
+              packageType: 'runtime'
+              version: '3.1.14'
+              includePreviewVersions: true
+              
           - task: DotNetCoreCLI@2
             displayName: Run unit tests
             inputs:
