@@ -158,7 +158,7 @@ stages:
 
           - task: UseDotNet@2
             inputs:
-              packageType: 'runtime'
+              packageType: 'sdk'
               version: '3.1.x'
               includePreviewVersions: true
 
@@ -215,7 +215,7 @@ stages:
 
           - task: UseDotNet@2
             inputs:
-              packageType: 'runtime'
+              packageType: 'sdk'
               version: '3.1.x'
               includePreviewVersions: true
 
@@ -402,7 +402,7 @@ stages:
 
           - task: UseDotNet@2
             inputs:
-              packageType: 'runtime'
+              packageType: 'sdk'
               version: '3.1.x'
               includePreviewVersions: true
 
