@@ -25,6 +25,7 @@ namespace Mmm.Iot.IdentityGateway.WebService.Test.Controllers
     {
         private const string SomeUserId = "someUserId";
         private const string SomeSub = "someSub";
+        private const string SomeName = "someName";
         private const string SomeSetting = "someSetting";
         private const string SomeValue = "someValue";
         private bool disposedValue = false;
@@ -141,7 +142,11 @@ namespace Mmm.Iot.IdentityGateway.WebService.Test.Controllers
             {
                 {
                     RequestExtension.ContextKeyUserClaims,
-                    new List<Claim> { new Claim(RequestExtension.UserObjectIdClaimType, SomeSub) }
+                    new List<Claim>
+                    {
+                        new Claim(RequestExtension.UserObjectIdClaimType, SomeSub),
+                        new Claim(RequestExtension.ClaimKeyUserName, SomeName),
+                    }
                 },
             };
             this.mockHttpContext.Setup(m => m.Items).Returns(this.contextItems);
