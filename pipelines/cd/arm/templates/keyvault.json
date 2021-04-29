@@ -20,7 +20,13 @@
         "metadata": {
           "description": "Object Id of the Application to be added to Access policy"
         }
-      }
+      },
+      "enableSoftDelete": {
+        "type": "bool"
+    },  
+    "softDeleteRetentionInDays": {
+       "type": "int"
+    }
     },
     "variables": {
       "location": "[resourceGroup().location]"
@@ -37,6 +43,8 @@
             "family": "A",
             "name": "standard"
           },
+          "enableSoftDelete": "[parameters('enableSoftDelete')]",
+          "softDeleteRetentionInDays": "[parameters('softDeleteRetentionInDays')]",
           "tenantId": "[subscription().tenantId]",
           "accessPolicies": [
             {
