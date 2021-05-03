@@ -7,6 +7,8 @@ import { HttpClient } from "utilities/httpClient";
 import { toUserModel, authDisabledUser } from "./models";
 import { Policies } from "utilities";
 
+const jwt_decode = require("jwt-decode");
+
 export class AuthService {
     static authContext; // Created on AuthService.initialize()
     static authEnabled = true;
@@ -36,6 +38,9 @@ export class AuthService {
             loadUserInfo: false,
         };
         AuthService._userManager = new UserManager(AuthService.settings);
+        // AuthService._userManager.events.addAccessTokenExpiring(function () {
+        //     console.log("token expiring...");
+        // });
     }
 
     static isInvitation(hash) {
@@ -77,6 +82,9 @@ export class AuthService {
             };
             AuthService._userManager = new UserManager(AuthService.settings);
             console.log("Invitation detected: redirecting for authentication");
+            // AuthService._userManager.events.addAccessTokenExpiring(function () {
+            //     console.log("token expiring...");
+            // });
             AuthService._userManager.signinRedirect();
         }
 
@@ -154,12 +162,13 @@ export class AuthService {
 
         return Observable.create((observer) => {
             return AuthService._userManager.getUser().then((user) => {
+                console.log(user);
                 if (user) {
                     // Following two should be Arrays but claims will return a string if only one value.
                     let roles =
-                            typeof user.profile.role === "string"
-                                ? [user.profile.role.toLowerCase()]
-                                : user.profile.role,
+                        typeof user.profile.role === "string"
+                            ? [user.profile.role.toLowerCase()]
+                            : user.profile.role,
                         availableTenants =
                             typeof user.profile.available_tenants === "string"
                                 ? [user.profile.available_tenants]
@@ -207,6 +216,19 @@ export class AuthService {
     }
 
     /**
+     * Returns true if the token is not expired.
+     */
+    static checkTokenValidity(token) {
+        if (token) {
+            const decodedToken = jwt_decode(token);
+            return (
+                decodedToken && decodedToken.exp * 1000 > new Date().getTime()
+            );
+        }
+        return true;
+    }
+
+    /**
      * Acquires token from the cache if it is not expired.
      * Otherwise sends request to AAD to obtain a new token.
      */
@@ -218,7 +240,11 @@ export class AuthService {
         return Observable.create((observer) => {
             return AuthService._userManager.getUser().then((user) => {
                 if (user) {
-                    observer.next(user.id_token);
+                    if (this.checkTokenValidity(user.id_token)) {
+                        observer.next(user.id_token);
+                    } else {
+                        this.logout();
+                    }
                 } else {
                     console.log(
                         "Authentication Error while Aquiring Access Token"
@@ -227,7 +253,6 @@ export class AuthService {
                         "Authentication Error while Aquiring Access Token"
                     );
                 }
-                observer.complete();
             });
         });
     }
