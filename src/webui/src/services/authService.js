@@ -38,9 +38,6 @@ export class AuthService {
             loadUserInfo: false,
         };
         AuthService._userManager = new UserManager(AuthService.settings);
-        // AuthService._userManager.events.addAccessTokenExpiring(function () {
-        //     console.log("token expiring...");
-        // });
     }
 
     static isInvitation(hash) {
@@ -82,9 +79,6 @@ export class AuthService {
             };
             AuthService._userManager = new UserManager(AuthService.settings);
             console.log("Invitation detected: redirecting for authentication");
-            // AuthService._userManager.events.addAccessTokenExpiring(function () {
-            //     console.log("token expiring...");
-            // });
             AuthService._userManager.signinRedirect();
         }
 
@@ -216,7 +210,7 @@ export class AuthService {
     }
 
     /**
-     * Returns true if the token is not expired.
+     * Returns true if the token is not expired. Else, it returns false and enforces Logout.
      */
     static checkTokenValidity(token) {
         if (token) {
