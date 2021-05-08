@@ -22,7 +22,7 @@
         "jwt-decode": "^2.2.0",
         "moment": "^2.22.2",
         "njwt": "^1.0.0",
-        "node-sass": "4.11.0",
+        "node-sass": "6.0.0",
         "normalizr": "3.3.0",
         "oidc-client": "^1.9.0",
         "prop-types": "15.6.2",
