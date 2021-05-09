@@ -159,9 +159,9 @@ export class AuthService {
                 if (user) {
                     // Following two should be Arrays but claims will return a string if only one value.
                     let roles =
-                        typeof user.profile.role === "string"
-                            ? [user.profile.role.toLowerCase()]
-                            : user.profile.role,
+                            typeof user.profile.role === "string"
+                                ? [user.profile.role.toLowerCase()]
+                                : user.profile.role,
                         availableTenants =
                             typeof user.profile.available_tenants === "string"
                                 ? [user.profile.available_tenants]
