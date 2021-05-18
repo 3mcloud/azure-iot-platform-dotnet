@@ -20,7 +20,7 @@ namespace Mmm.Iot.IdentityGateway.Services.Helpers
     public class InviteHelpers : IInviteHelpers
     {
         private const string ResourceName = "Mmm.Iot.IdentityGateway.Services.files.InviteEmail.html";
-        private const string DefaultFromEmail = "iotplatformnoreply@iot.cld.3m.com";
+        private const string DefaultFromEmail = "iotnoreply@mmm.com";
         private const string DefaultFromMessage = "3M IoT Platform Team";
         private const string DefaultSubject = "Invitation to IoT Platform";
         private const string DefaultMessageBody = "Tap the button below to accept this invitation. If you did not expect an invitation, you can delete this email.";
