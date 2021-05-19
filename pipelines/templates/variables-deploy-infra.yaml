@@ -60,7 +60,7 @@ variables:
   - name: tableStorageName
     value: SystemAdmin
   - name: inviteEmail
-    value: iotnoreply@mmm.com
+    value: iotplatformnoreply@mmm.com
   - name: maxDeviceCount
     value: 5000
   - name: processIOTHubBeyondLimit
