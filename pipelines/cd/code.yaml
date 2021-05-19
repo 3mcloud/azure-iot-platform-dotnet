@@ -2,11 +2,6 @@ trigger: none
 pr: none
 resources:
   pipelines:
-    - pipeline: test
-      source: azure-iot-platform-dotnet.ci.test
-      trigger:
-        branches:
-          - master
     - pipeline: test-v3
       source: azure-iot-platform-dotnet.ci.test-v3
       trigger:
@@ -108,7 +103,7 @@ stages:
           environmentCategory: $(environmentCategory-acsDev)
           imageTag: $(_imageTag)
           blueGreen: false
-          isHelmVersion3: true          
+          isHelmVersion3: false          
           subscriptionId: $(subscriptionId-acsDev)
 
   - stage: crslQa

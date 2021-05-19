@@ -22,9 +22,9 @@ variables:
   - name: buildId
     value: build-$(Build.BuildId)  
   - name: applicationCode
-    value: acshyd
+    value: crsliot
   - name: applicationShortCode
-    value: acs
+    value: crsl
   - name: environmentCategory
     value: dev
   - name: subscriptionName
@@ -76,7 +76,7 @@ variables:
   - name: mmmIotPlatformIngressHelmChartReleaseName
     value: ingress-$(buildId) 
   - name: serenityDevTenantId
-    value: 45c0bd89-ff0a-4fce-9b2a-3f8380b6ea55
+    value: 01881b16-2c18-49b5-b6c0-645a30866896
   - name: testPipelineDomain
     value: iot.cld.3m.com
   - name: testPipelineFqdn
@@ -655,7 +655,8 @@ stages:
                 $ingressControllerIpAddress = kubectl get services --namespace $(kubernetesNamespace) --selector=app=nginx-ingress,component=controller --output=jsonpath='{.items[*].status.loadBalancer.ingress[*].ip}'
                 $tagsHashtable = Get-Content $(tagsFile) | ConvertFrom-Json -Depth 100 -AsHashtable
                 $tags = ($tagsHashtable.Keys | ForEach-Object { "$_=`"$($tagsHashtable[$_])`"" }) -join ','
-                az network dns record-set a add-record --record-set-name $(buildId) --resource-group "rg-iot-crsl-dev" --zone-name $(testPipelineDomain) --ipv4-address $ingressControllerIpAddress --if-none-match
+                az network dns zone create --name $(testPipelineDomain) --resource-group $(resourceGroupName) --if-none-match --tags $tags
+                az network dns record-set a add-record --record-set-name $(buildId) --resource-group $(resourceGroupName) --zone-name $(testPipelineDomain) --ipv4-address $ingressControllerIpAddress --if-none-match
                 $certificateIsReady = kubectl get certificates --namespace $(kubernetesNamespace) --output jsonpath="{.items[0].status.conditions[?(@.type=='Ready')].status}"
                 while ([System.String]::IsNullOrEmpty($certificateIsready) -or 'true' -ne  $certificateIsReady.ToLower()) {
                   Write-Host Waiting for certificate to be ready...

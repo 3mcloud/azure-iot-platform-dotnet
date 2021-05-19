@@ -22,9 +22,9 @@ variables:
   - name: buildId
     value: build-$(Build.BuildId)
   - name: applicationCode
-    value: crsliot
+    value: acshyd
   - name: applicationShortCode
-    value: crsl
+    value: acs
   - name: environmentCategory
     value: dev
   - name: subscriptionName
@@ -76,7 +76,7 @@ variables:
   - name: mmmIotPlatformIngressHelmChartReleaseName
     value: ingress-$(buildId)
   - name: serenityDevTenantId
-    value: 01881b16-2c18-49b5-b6c0-645a30866896
+    value: 23365407-2e58-47d5-b998-eebbff753332
   - name: testPipelineDomain
     value: iot.cld.3m.com
   - name: testPipelineFqdn
