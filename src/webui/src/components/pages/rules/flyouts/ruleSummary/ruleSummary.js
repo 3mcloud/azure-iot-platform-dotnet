@@ -10,7 +10,7 @@ import {
     SummarySection,
     Svg,
 } from "components/shared";
-import { svgs, joinClasses } from "utilities";
+import { svgs } from "utilities";
 import { IoTHubManagerService } from "services";
 
 const classnames = require("classnames/bind");
@@ -95,10 +95,7 @@ export class RuleSummary extends Component {
         return (
             <SummarySection
                 key={rule.id}
-                className={joinClasses(
-                    ruleSummaryCss("padded-bottom"),
-                    className
-                )}
+                className={ruleSummaryCss("padded-bottom", className)}
             >
                 {includeRuleInfo && <SectionHeader>{rule.name}</SectionHeader>}
                 {includeRuleInfo && <FormLabel>{rule.description}</FormLabel>}
