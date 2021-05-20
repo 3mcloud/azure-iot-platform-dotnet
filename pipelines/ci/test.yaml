@@ -956,9 +956,9 @@ stages:
               scriptType: pscore
               scriptLocation: inlineScript
               inlineScript: |-
-                $recordSetCount = az network dns record-set a list --zone-name $(testPipelineDomain) --resource-group $(resourceGroupName) --query '[?name==`$(buildId)`] | length(@)'
+                $recordSetCount = az network dns record-set a list --zone-name $(testPipelineDomain) --resource-group "rg-iot-crsl-dev" --query '[?name==`$(buildId)`] | length(@)'
                 if ($recordSetCount -gt 0) {
-                  az network dns record-set a delete --name $(buildId) --zone-name $(testPipelineDomain) --resource-group $(resourceGroupName) --yes
+                  az network dns record-set a delete --name $(buildId) --zone-name $(testPipelineDomain) --resource-group "rg-iot-crsl-dev" --yes
                 }
       - job: uninstallServicesChart
         displayName: Uninstall services Helm chart
