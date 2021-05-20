@@ -769,6 +769,7 @@ stages:
                 az appconfig kv set --key TestUserCredentials:Readonly:UserEmail --value $(testUserEmail) --name $(appConfigurationName)  --yes
                 az appconfig kv set --key TestUserCredentials:SystemAdmin:Password --value $(testSystemAdminPasskey) --name $(appConfigurationName)  --yes
                 az appconfig kv set --key TestUserCredentials:SystemAdmin:UserEmail --value $(testSystemAdminEmail) --name $(appConfigurationName)  --yes          
+
           
         - task: AzurePowerShell@5
           displayName: Verify and add Test Account in the User Table
