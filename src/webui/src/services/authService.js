@@ -7,8 +7,7 @@ import { HttpClient } from "utilities/httpClient";
 import { toUserModel, authDisabledUser } from "./models";
 import { Policies } from "utilities";
 import { map } from "rxjs/operators";
-
-const jwt_decode = require("jwt-decode");
+import jwt_decode from "jwt-decode";
 
 export class AuthService {
     static authContext; // Created on AuthService.initialize()
