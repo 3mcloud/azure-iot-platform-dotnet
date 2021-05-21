@@ -108,6 +108,8 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
                 Roles = model.Roles,
                 Name = model.Name,
                 Type = string.IsNullOrWhiteSpace(model.Type) ? "Member" : model.Type,
+                CreatedTime = DateTime.UtcNow,
+                CreatedBy = !string.IsNullOrWhiteSpace(model.CreatedBy) ? model.CreatedBy : this.GetCreatedBy(),
             };
             return await this.container.CreateAsync(input);
         }
@@ -196,6 +198,7 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
                 new Claim("role", invitation.Role),
                 new Claim("tenant", this.GetTenantId()),
                 new Claim("userId", input.UserId),
+                new Claim("invitedby", this.GetClaimsUserDetails()),
             };
 
             string forwardedFor = null;
@@ -220,6 +223,10 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
             // Send email
             var client = this.sendGridClientFactory.CreateSendGridClient();
             var response = await client.SendEmailAsync(msg);
+
+            // Add Audit Data,i.e, who invited the user
+            input.CreatedBy = this.GetClaimsUserDetails();
+            input.CreatedTime = DateTime.UtcNow;
 
             return await this.container.CreateAsync(input);
         }
@@ -260,6 +267,18 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
             }
 
             return false;
+        }
+
+        private string GetCreatedBy()
+        {
+            try
+            {
+                return this.GetClaimsUserDetails();
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
     }
 }

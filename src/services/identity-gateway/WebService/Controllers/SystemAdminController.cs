@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Mmm.Iot.Common.Services;
 using Mmm.Iot.Common.Services.Filters;
 using Mmm.Iot.IdentityGateway.Services;
 using Mmm.Iot.IdentityGateway.Services.Models;
@@ -42,7 +43,7 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
             var result = await this.container.CreateAsync(systemAdminInput);
             if (result != null)
             {
-                await this.AddUserForPendingTenants(result);
+                await this.AddUserForPendingTenants(result, this.GetClaimsUserDetails());
             }
 
             return result;
@@ -100,7 +101,7 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
             return await this.container.DeleteAsync(systemAdminInput);
         }
 
-        private async Task AddUserForPendingTenants(SystemAdminModel result)
+        private async Task AddUserForPendingTenants(SystemAdminModel result, string createdBy)
         {
             if (result != null)
             {
@@ -124,6 +125,10 @@ namespace Mmm.Iot.IdentityGateway.WebService.Controllers
                             if (existingTenants != null && existingTenants.Models != null &&
                                 existingTenants.Models.FirstOrDefault(x => x.UserId == userInput.UserId && x.TenantId == userInput.Tenant) == null)
                             {
+                                // Adding Audit Data
+                                userInput.CreatedBy = createdBy;
+                                userInput.CreatedTime = DateTime.UtcNow;
+
                                 var createdUser = await this.userTenantcontainer.CreateAsync(userInput);
                             }
                         }

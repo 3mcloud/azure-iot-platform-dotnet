@@ -2,6 +2,7 @@
 
 import Config from "app.config";
 import { gridValueFormatters } from "components/shared/pcsGrid/pcsGridConfig";
+import { TimeRenderer } from "components/shared/cellRenderers";
 
 const { checkForEmpty } = gridValueFormatters;
 
@@ -26,6 +27,16 @@ export const userColumnDefs = {
     type: {
         headerName: "users.grid.userType",
         field: "type",
+        valueFormatter: ({ value }) => checkForEmpty(value),
+    },
+    dateCreated: {
+        headerName: "users.grid.dateCreated",
+        field: "dateCreated",
+        cellRendererFramework: TimeRenderer,
+    },
+    createdBy: {
+        headerName: "users.grid.createdBy",
+        field: "createdBy",
         valueFormatter: ({ value }) => checkForEmpty(value),
     },
 };

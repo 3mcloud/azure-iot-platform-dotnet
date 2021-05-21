@@ -7,6 +7,8 @@ export const toUserTenantModel = (response = []) =>
             name: "name",
             type: "type",
             roleList: "role",
+            createdBy: "createdBy",
+            createdTime: "dateCreated",
         });
         user.role = user.role
             .map(

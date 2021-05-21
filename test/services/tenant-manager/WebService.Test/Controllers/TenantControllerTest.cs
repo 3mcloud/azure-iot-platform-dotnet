@@ -43,6 +43,7 @@ namespace Mmm.Iot.TenantManager.WebService.Test.Controllers
             this.mockHttpContext.Setup(m => m.Request).Returns(this.mockHttpRequest.Object);
             this.claims = new List<Claim>();
             this.claims.Add(new Claim("sub", "Admin"));
+            this.claims.Add(new Claim("name", "Admin"));
             this.controller = new TenantController(this.mockTenantContainer.Object, this.mockLogger.Object)
             {
                 ControllerContext = new ControllerContext()
@@ -100,12 +101,12 @@ namespace Mmm.Iot.TenantManager.WebService.Test.Controllers
 
             if (expectException)
             {
-                this.mockTenantContainer.Setup(x => x.CreateTenantAsync(It.IsAny<string>(), It.IsAny<string>()))
+                this.mockTenantContainer.Setup(x => x.CreateTenantAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                                                 .ThrowsAsync(new Exception());
             }
             else
             {
-                this.mockTenantContainer.Setup(x => x.CreateTenantAsync(It.IsAny<string>(), It.IsAny<string>()))
+                this.mockTenantContainer.Setup(x => x.CreateTenantAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                                                 .ReturnsAsync(tenantModel);
             }
 

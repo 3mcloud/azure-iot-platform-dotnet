@@ -169,7 +169,7 @@
                     "deployment": {
                         "id": "When deploying your package, this value will be replaced by the ID of your deployment"
                     },
-                    "uniqueId":"Parent only. UniqueId used to attach to a Firmware Package creation."
+                    "uniqueId": "Parent only. UniqueId used to attach to a Firmware Package creation."
                 }
             }
         }
@@ -347,7 +347,9 @@
             "userName": "Name",
             "userType": "Type",
             "userId": "Guid",
-            "userRole": "Role"
+            "userRole": "Role",
+            "createdBy": "Created By",
+            "dateCreated": "Date Created"
         },
         "flyouts": {
             "new": {

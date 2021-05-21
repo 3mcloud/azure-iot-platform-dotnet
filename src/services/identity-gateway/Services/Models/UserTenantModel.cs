@@ -2,6 +2,7 @@
 // Copyright (c) 3M. All rights reserved.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using Microsoft.Azure.Cosmos.Table;
 using Newtonsoft.Json;
@@ -35,6 +36,8 @@ namespace Mmm.Iot.IdentityGateway.Services.Models
             this.Roles = input.Roles;
             this.Name = input.Name;
             this.Type = input.Type;
+            this.CreatedBy = input.CreatedBy;
+            this.CreatedTime = input.CreatedTime;
         }
 
         public UserTenantModel(DynamicTableEntity tableEntity)
@@ -51,6 +54,10 @@ namespace Mmm.Iot.IdentityGateway.Services.Models
         public string Name { get; set; }
 
         public string Type { get; set; }
+
+        public string CreatedBy { get; set; }
+
+        public DateTimeOffset? CreatedTime { get; set; }
 
         public string UserId
         {

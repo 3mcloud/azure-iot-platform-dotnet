@@ -156,6 +156,12 @@ stages:
           - checkout: self
             displayName: Checkout repository
 
+          - task: UseDotNet@2
+            inputs:
+              packageType: 'sdk'
+              version: '3.1.x'
+              includePreviewVersions: true
+
           - script: >-
               dotnet restore
               --force
@@ -207,6 +213,12 @@ stages:
           - checkout: self
             displayName: Checkout repository
 
+          - task: UseDotNet@2
+            inputs:
+              packageType: 'sdk'
+              version: '3.1.x'
+              includePreviewVersions: true
+
           - script: >-
               dotnet restore
               --force
@@ -237,40 +249,40 @@ stages:
             artifact: $(functionsArtifactName)
             displayName: Publish Azure Functions artifacts
 
-  - stage: whiteSourceBolt
-    displayName: WhiteSource Bolt
-    dependsOn:
-      - build
-      - buildFrontEndContainers
-    jobs:
-      - job: whiteSourceBolt
-        displayName: WhiteSource Bolt
-        steps:
-          - checkout: none
+  # - stage: whiteSourceBolt
+  #   displayName: WhiteSource Bolt
+  #   dependsOn:
+  #     - build
+  #     - buildFrontEndContainers
+  #   jobs:
+  #     - job: whiteSourceBolt
+  #       displayName: WhiteSource Bolt
+  #       steps:
+  #         - checkout: none
 
-          - task: DownloadPipelineArtifact@2
-            displayName: Download service artifacts
-            inputs:
-              source: current
-              artifact: $(publishedFilesArtifactName)
-              path: $(Build.SourcesDirectory)/$(publishedFilesArtifactName)
+  #         - task: DownloadPipelineArtifact@2
+  #           displayName: Download service artifacts
+  #           inputs:
+  #             source: current
+  #             artifact: $(publishedFilesArtifactName)
+  #             path: $(Build.SourcesDirectory)/$(publishedFilesArtifactName)
 
-          - task: DownloadPipelineArtifact@2
-            displayName: Download functions artifacts
-            inputs:
-              source: current
-              artifact: $(functionsArtifactName)
-              path: $(Build.SourcesDirectory)/$(functionsArtifactName)
+  #         - task: DownloadPipelineArtifact@2
+  #           displayName: Download functions artifacts
+  #           inputs:
+  #             source: current
+  #             artifact: $(functionsArtifactName)
+  #             path: $(Build.SourcesDirectory)/$(functionsArtifactName)
 
-          - task: DownloadPipelineArtifact@2
-            displayName: Download webui artifacts
-            inputs:
-              source: current
-              artifact: $(webuiArtifactName)
-              path: $(Build.SourcesDirectory)/$(webuiArtifactName)
+  #         - task: DownloadPipelineArtifact@2
+  #           displayName: Download webui artifacts
+  #           inputs:
+  #             source: current
+  #             artifact: $(webuiArtifactName)
+  #             path: $(Build.SourcesDirectory)/$(webuiArtifactName)
 
-          - task: WhiteSource Bolt@19
-            displayName: 'WhiteSource Bolt'
+  #         - task: WhiteSource Bolt@19
+  #           displayName: 'WhiteSource Bolt'
 
   - stage: listCommitsSinceLastRelease
     displayName: List commits since last release
@@ -387,6 +399,13 @@ stages:
               source: current
               artifact: $(publishedFilesArtifactName)
               path: $(Build.SourcesDirectory)
+
+          - task: UseDotNet@2
+            inputs:
+              packageType: 'sdk'
+              version: '3.1.x'
+              includePreviewVersions: true
+
 
           - task: DotNetCoreCLI@2
             displayName: Run unit tests

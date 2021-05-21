@@ -8,6 +8,8 @@ import { toUserModel, authDisabledUser } from "./models";
 import { Policies } from "utilities";
 import { map } from "rxjs/operators";
 
+const jwt_decode = require("jwt-decode");
+
 export class AuthService {
     static authContext; // Created on AuthService.initialize()
     static authEnabled = true;
@@ -210,6 +212,19 @@ export class AuthService {
     }
 
     /**
+     * Returns true if the token is not expired. Else, it returns false and enforces Logout.
+     */
+    static checkTokenValidity(token) {
+        if (token) {
+            const decodedToken = jwt_decode(token);
+            return (
+                decodedToken && decodedToken.exp * 1000 > new Date().getTime()
+            );
+        }
+        return false;
+    }
+
+    /**
      * Acquires token from the cache if it is not expired.
      * Otherwise sends request to AAD to obtain a new token.
      */
@@ -220,9 +235,10 @@ export class AuthService {
 
         return new Observable((observer) => {
             return AuthService._userManager.getUser().then((user) => {
-                if (user) {
+                if (user && this.checkTokenValidity(user.id_token)) {
                     observer.next(user.id_token);
                 } else {
+                    this.logout(); //Logging out because The User obj is empty.
                     console.log(
                         "Authentication Error while Aquiring Access Token"
                     );

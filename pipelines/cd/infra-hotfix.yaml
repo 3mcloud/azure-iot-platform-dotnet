@@ -97,6 +97,13 @@ stages:
                 echo "A value for the 'testPipelineRunId' variable must be provided" > /dev/stderr
                 exit 1
               fi
+
+              echo "appInsightsLocation: '$(appInsightsLocation)'"
+              if [ -z "$(appInsightsLocation)" ]
+              then
+                echo "A value for the 'appInsightsLocation' variable must be provided" > /dev/stderr
+                exit 1
+              fi
             displayName: Check parameters
 
   - stage: deployInfrastructure
@@ -108,7 +115,7 @@ stages:
         parameters:
           subscriptionName: $(subscriptionName)
           locationName: $(locationName)
-          appInsightsLocation: eastus
+          appInsightsLocation: $(appInsightsLocation)
           environmentName: $(environmentName)
           subscriptionId: $(subscriptionId)
           applicationCode: $(applicationCode)

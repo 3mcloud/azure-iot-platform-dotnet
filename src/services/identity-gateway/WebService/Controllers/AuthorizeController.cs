@@ -223,6 +223,7 @@ namespace Mmm.Iot.IdentityGateway.Controllers
                 string inviteUserId = inviteJWT.Claims.Where(c => c.Type == "userId").First().Value;
                 string newUserId = claims.Where(c => c.Type == "sub").First().Value;
                 invitedTenant = inviteJWT.Claims.Where(c => c.Type == "tenant").First().Value;
+                string invitedBy = inviteJWT.Claims.Where(c => c.Type == "invitedby").First().Value;
 
                 // Extract first email
                 var emailClaim = jwt.Claims.Where(t => t.Type == "emails").FirstOrDefault();
@@ -249,6 +250,8 @@ namespace Mmm.Iot.IdentityGateway.Controllers
                     Roles = JsonConvert.SerializeObject(inviteJWT.Claims.Where(c => c.Type == "role").Select(c => c.Value).ToList()),
                     Type = "Member",
                     Name = userNameOrEmail,
+                    CreatedBy = invitedBy,
+                    CreatedTime = DateTime.UtcNow,
                 };
                 await this.userTenantContainer.UpdateAsync(userTenant);
 

@@ -2,6 +2,7 @@
 // Copyright (c) 3M. All rights reserved.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using Microsoft.Azure.Cosmos.Table;
 using Newtonsoft.Json;
@@ -36,6 +37,10 @@ namespace Mmm.Iot.TenantManager.Services.Models
         }
 
         public string Roles { get; set; }
+
+        public string CreatedBy { get; set; }
+
+        public DateTimeOffset CreatedTime { get; set; }
 
         // Define aliases for the partition and row keys
         public string UserId

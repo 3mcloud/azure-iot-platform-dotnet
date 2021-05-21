@@ -35,6 +35,8 @@ export class UsersGrid extends Component {
             userColumnDefs.name,
             userColumnDefs.role,
             userColumnDefs.type,
+            userColumnDefs.createdBy,
+            userColumnDefs.dateCreated,
         ];
 
         this.contextBtns = (

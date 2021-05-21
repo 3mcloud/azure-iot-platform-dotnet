@@ -85,7 +85,7 @@ namespace Mmm.Iot.TenantManager.Services
             return tenant != null && tenant.IsIotHubDeployed;  // True if the tenant's IoTHub is fully deployed, false otherwise
         }
 
-        public async Task<CreateTenantModel> CreateTenantAsync(string tenantId, string userId)
+        public async Task<CreateTenantModel> CreateTenantAsync(string tenantId, string userId, string createdBy)
         {
             /* Creates a new tenant */
             string iotHubName = this.FormatResourceName(this.iotHubNameFormat, tenantId);
@@ -100,7 +100,7 @@ namespace Mmm.Iot.TenantManager.Services
             // Give the requesting user an admin role to the new tenant
             try
             {
-                await this.identityGatewayClient.AddTenantForUserAsync(userId, tenantId, CreatedRole);
+                await this.identityGatewayClient.AddTenantForUserAsync(userId, tenantId, CreatedRole, null, createdBy);
             }
             catch (Exception e)
             {
@@ -141,7 +141,7 @@ namespace Mmm.Iot.TenantManager.Services
                 {
                     if (systemAdmin.UserId != userId)
                     {
-                        await this.identityGatewayClient.AddTenantForUserAsync(systemAdmin.UserId, tenantId, CreatedRole, systemAdmin.Name);
+                        await this.identityGatewayClient.AddTenantForUserAsync(systemAdmin.UserId, tenantId, CreatedRole, systemAdmin.Name, createdBy);
                     }
                 }
             }
