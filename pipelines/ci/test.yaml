@@ -527,6 +527,7 @@ stages:
               tags: |-
                 $(Build.BuildId)
                 $(Build.SourceVersion)
+                
   - stage: addAuthenticationCallbackUrl
     displayName: Add auth callback URL
     dependsOn: []
