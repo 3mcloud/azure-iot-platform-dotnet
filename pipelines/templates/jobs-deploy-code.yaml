@@ -145,7 +145,6 @@ jobs:
               helmVersion: $(helmVersion3)
               imageTag: ${{parameters.imageTag}}              
 
-
   - job: addKey
     displayName: Update Application Configuration with BuildNumber
     variables:
