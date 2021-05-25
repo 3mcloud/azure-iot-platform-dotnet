@@ -146,6 +146,7 @@ stages:
                   az storage table create --name $(tableStorageName) --account-name $(storageAccountName)
                 }
                 az storage entity insert --entity PartitionKey=$(tableStoragePartition) RowKey=$(tableStorageRowKeyPrefix)$(tableStorageAppConfigurationConnectionStringRowKey) Content="$appConfigurationConnectionString" --table-name $(tableStorageName) --account-name $(storageAccountName)
+
       - job: build
         displayName: Build Services
         dependsOn:
