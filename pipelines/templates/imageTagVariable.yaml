@@ -1,5 +1,5 @@
 variables:
   ${{ if eq(variables['Build.Reason'], 'ResourceTrigger') }}:
-    _imageTag: $(resources.pipeline.test.runID)
+    _imageTag: $(resources.pipeline.testV3.runID)
   ${{ if ne(variables['Build.Reason'], 'ResourceTrigger') }}:
     _imageTag: $(imageTag)

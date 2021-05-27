@@ -53,7 +53,7 @@ stages:
           runVersion: $(runVersion-crslDev)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-crslDev)
-          isHelmVersion3: false
+          isHelmVersion3: true
 
   - stage: acsDev
     displayName: ACS dev
