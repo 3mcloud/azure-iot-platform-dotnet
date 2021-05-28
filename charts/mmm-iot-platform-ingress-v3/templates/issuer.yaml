@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: {{ include "mmm-iot-platform-ingress.issuerName" . }}
+spec:
+  acme:
+    email: {{ required "Error: missing required value .Values.acmeServerAccountEmail" .Values.acmeServerAccountEmail }}
+    privateKeySecretRef:
+      name: {{ include "mmm-iot-platform-ingress.issuerName" . }}
+    server: {{ include "mmm-iot-platform-ingress.letsEncryptEnvironmentUrl" . }}
+    solvers:
+      - http01:
+          ingress:
+            class: {{ required "Error: missing required value .Values.subdomain" .Values.subdomain }}
+        selector:
+          dnsZones:
+            - {{ .Values.domain }}

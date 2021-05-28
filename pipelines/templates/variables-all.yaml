@@ -1,6 +1,8 @@
 variables:
-  helmVersion: 2.16.7
+  helmVersion2: 2.16.7
   certManagerVersion: 0.13.1
+  helmVersion3: 3.4.0
+  certManagerVersion3: 1.1.0
   dotnetBuildConfiguration: Release
   dotnetCoreRuntimeVersion: 3.1
   dotnetProductionRuntimeId: linux-musl-x64

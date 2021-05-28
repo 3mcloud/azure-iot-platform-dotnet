@@ -1,0 +1,193 @@
+parameters:
+  subscriptionName:
+  locationName:
+  environmentName:
+  subscriptionId:
+  applicationCode:
+  applicationShortCode: 
+  environmentCategory:
+
+jobs:
+  - template: get-approval.yaml
+    parameters:
+      environmentName: ${{parameters.environmentName}}
+
+  - job: printVariables
+    displayName: Print variables
+    dependsOn:
+      - getApproval
+    variables:
+      - template: variables-deploy-infra.yaml
+        parameters:
+          subscriptionName: ${{parameters.subscriptionName}}
+          locationName: ${{parameters.locationName}}
+          environmentName: ${{parameters.environmentName}}
+          subscriptionId: ${{parameters.subscriptionId}}
+          applicationCode: ${{parameters.applicationCode}}
+          applicationShortCode: ${{parameters.applicationShortCode}}
+          environmentCategory: ${{parameters.environmentCategory}}
+    steps:
+      - checkout: none
+
+      - template: print-pipeline-resource-variables.yaml
+        parameters:
+          pipelineResourceName: test
+
+      - script: |-
+          echo "parameter: subscriptionName: ${{parameters.subscriptionName}}"
+          echo "parameter: locationName: ${{parameters.locationName}}"
+          echo "parameter: environmentName: ${{parameters.environmentName}}"
+          echo "parameter: subscriptionId: ${{parameters.subscriptionId}}"
+          echo "parameter: applicationCode: ${{parameters.applicationCode}}"
+          echo "parameter: applicationShortCode: ${{parameters.applicationShortCode}}"
+          echo "parameter: environmentCategory: ${{parameters.environmentCategory}}"
+          echo "variable: aksName: $(aksName)"
+          echo "variable: resourceGroupName: $(resourceGroupName)"
+        displayName: Print variables
+
+  - job: migratehelmversion
+    displayName: Migrate Helm v2 to v3
+    variables:
+      - template: variables-deploy-infra.yaml
+        parameters:
+          subscriptionName: ${{parameters.subscriptionName}}
+          locationName: ${{parameters.locationName}}
+          environmentName: ${{parameters.environmentName}}
+          subscriptionId: ${{parameters.subscriptionId}}
+          applicationCode: ${{parameters.applicationCode}}
+          applicationShortCode: ${{parameters.applicationShortCode}}
+          environmentCategory: ${{parameters.environmentCategory}}
+    steps:
+      - checkout: self
+        displayName: Checkout repository
+
+      - task: HelmInstaller@1
+        displayName: Install Helm
+        inputs:
+          helmVersionToInstall: $(helmVersion2)
+
+      - task: HelmDeploy@0
+        displayName: Initialize Helm
+        inputs:
+          connectionType: Azure Resource Manager
+          azureSubscription: ${{parameters.subscriptionName}}
+          azureResourceGroup: $(resourceGroupName)
+          kubernetesCluster: $(aksName)
+          namespace: default
+          command: init
+          arguments: --force-upgrade
+
+      - task: AzureCLI@2
+        displayName: Install Helm 3
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          scriptLocation: inlineScript
+          scriptType: bash
+          inlineScript: |-
+              set -Eeuxo pipefail
+              wget https://get.helm.sh/helm-v3.4.2-linux-amd64.tar.gz
+
+      - task: AzureCLI@2
+        displayName: Set the root directory for helm3
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          scriptLocation: inlineScript
+          scriptType: bash
+          inlineScript: |-
+              set -Eeuxo pipefail
+              tar zxf helm-v3.4.2-linux-amd64.tar.gz
+              sudo mv $(Agent.BuildDirectory)/s/linux-amd64/helm /usr/local/bin/helm3
+              
+      - task: AzureCLI@2
+        displayName: Install helm2to3 plugin
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          scriptLocation: inlineScript
+          scriptType: bash
+          inlineScript: |-
+              set -Eeuxo pipefail
+              az aks get-credentials -n $(aksName) -g $(resourceGroupName) --overwrite-existing
+              helm3 plugin install https://github.com/helm/helm-2to3
+              helm3 plugin list
+              helm3 version --short
+              which helm3
+
+      - task: AzureCLI@2
+        displayName: Migration of  Helm 2 Configurations to Helm 3
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          scriptLocation: inlineScript
+          scriptType: bash
+          inlineScript: |-
+              set -Eeuxo pipefail
+              az aks get-credentials -n $(aksName) -g $(resourceGroupName) --overwrite-existing
+              echo "y" | helm3 2to3 move config --dry-run
+              echo "y" | helm3 2to3 move config
+              helm3 repo list
+
+      - task: ShellScript@2
+        inputs:
+          scriptPath: pipelines/cd/helm2_to_3_convert.sh
+
+      - task: AzureCLI@2
+        displayName: Cleanup Helm v2 releases and configurations
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          scriptLocation: inlineScript
+          scriptType: bash
+          inlineScript: |-
+              set -Eeuxo pipefail
+              az aks get-credentials -n $(aksName) -g $(resourceGroupName) --overwrite-existing
+              echo "y" | helm3 2to3 cleanup --dry-run
+              echo "y" | helm3 2to3 cleanup
+
+      - task: AzureCLI@2
+        displayName: Upgrade cert-manager
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          scriptLocation: inlineScript
+          scriptType: bash
+          inlineScript: |-
+            set -Eeuxo pipefail
+            az aks get-credentials -n $(aksName) -g $(resourceGroupName) --overwrite-existing
+            isChallengePresent=$(kubectl get challenge --output json | jq -j '.items | length')            
+            if [ $isChallengePresent -gt 0 ]
+            then
+                challengeToBePatched = $(kubectl get Challenges -o=jsonpath='{.items[0].metadata.name}')
+                kubectl patch $challengeToBePatched --type=merge --patch '{"metadata":{"finalizers":[]}}'                 
+            fi
+            helm3 uninstall cert-manager --namespace cert-manager           
+            kubectl get Issuers,ClusterIssuers,Certificates,CertificateRequests,Orders,Challenges --all-namespaces
+            kubectl delete -f https://raw.githubusercontent.com/jetstack/cert-manager/v$(certManagerVersion)/deploy/manifests/00-crds.yaml
+            kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.crds.yaml
+            helm3 repo remove stable
+            helm3 repo add "stable" "https://charts.helm.sh/stable" --force-update
+            helm3 repo add jetstack https://charts.jetstack.io
+            helm3 repo update
+            helm3 upgrade cert-manager jetstack/cert-manager   --namespace cert-manager  --version v1.1.0  --create-namespace --install
+
+  - job: clusterissuer
+    displayName: Create a Cluster Issuer
+    dependsOn: 
+      - migratehelmversion
+    variables:
+      - template: variables-deploy-infra.yaml
+        parameters:
+          subscriptionName: ${{parameters.subscriptionName}}
+          locationName: ${{parameters.locationName}}
+          environmentName: ${{parameters.environmentName}}
+          subscriptionId: ${{parameters.subscriptionId}}
+          applicationCode: ${{parameters.applicationCode}}
+          applicationShortCode: ${{parameters.applicationShortCode}}
+          environmentCategory: ${{parameters.environmentCategory}}    
+    steps:
+      - task: Kubernetes@1
+        displayName: Create Cluster Issuer
+        inputs:
+          connectionType: Azure Resource Manager
+          azureSubscriptionEndpoint: ${{parameters.subscriptionName}}
+          azureResourceGroup: $(resourceGroupName)
+          kubernetesCluster: $(aksName)
+          command: apply
+          useConfigurationFile: true
+          configuration: charts/ingress/cluster-issuer-prod.yaml

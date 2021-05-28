@@ -1,0 +1,8 @@
+parameters:
+  helmVersion:
+
+steps:
+  - task: HelmInstaller@1
+    displayName: Install Helm V3
+    inputs:
+      helmVersionToInstall: $(helmVersion)

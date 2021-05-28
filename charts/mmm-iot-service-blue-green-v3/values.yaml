@@ -1,0 +1,25 @@
+appVersion:
+service:
+  port: 80
+deployment:
+  affinity: {}
+  tolerations: []
+  nodeSelector: {}
+  resources: {}
+  secretsRef:
+  - AppConfigurationConnectionString
+  probes:
+    enabled: true
+    livenessPath: /v1/status/ping
+    readinessPath: /v1/status
+  port:
+    http: 80
+    https: 443
+  imagePullSecrets: []
+  replicaCount: 1
+  image:
+    repository: 
+    tag: 
+    pullPolicy: Always
+ingress:
+  enabled: false

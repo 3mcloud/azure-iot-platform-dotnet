@@ -50,6 +50,7 @@ stages:
           runVersion: $(runVersion-emdDev)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-emdDev)
+          isHelmVersion3: false
 
   - stage: emdQa
     displayName: EMD QA
@@ -75,6 +76,7 @@ stages:
           runVersion: $(runVersion-emdQa)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-emdQa)
+          isHelmVersion3: false
 
   - stage: emdCt
     displayName: EMD CT
@@ -100,4 +102,5 @@ stages:
           runVersion: $(runVersion-emdCt)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-emdCt)
+          isHelmVersion3: false
           

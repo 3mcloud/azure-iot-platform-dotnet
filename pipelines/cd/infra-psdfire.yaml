@@ -51,6 +51,7 @@ stages:
           runVersion: $(runVersion-psdfireDev)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-psdfireDev)
+          isHelmVersion3: false
 
   - stage: psdfireQa
     displayName: PSDFire Qa
@@ -75,6 +76,7 @@ stages:
           runVersion: $(runVersion-psdfireQa)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-psdfireQa)
+          isHelmVersion3: false
 
   - stage: psdfireCt
     displayName: PSDFire CT
@@ -99,6 +101,7 @@ stages:
           runVersion: $(runVersion-psdfireCt)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-psdfireCt)
+          isHelmVersion3: false
     
   - stage: psdfireProd
     displayName: PSDFire Prod
@@ -123,4 +126,5 @@ stages:
           runVersion: $(runVersion-psdfireProd)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-psdfireProd)
+          isHelmVersion3: false
           

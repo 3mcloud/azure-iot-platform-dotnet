@@ -53,6 +53,7 @@ stages:
           runVersion: $(runVersion-psdDev)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-psdDev)
+          isHelmVersion3: false
           
   - stage: psdTest
     displayName: PSD Test
@@ -78,6 +79,7 @@ stages:
           runVersion: $(runVersion-psdTest)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-psdTest)
+          isHelmVersion3: false
 
   - stage: psdQa
     displayName: PSD QA
@@ -103,6 +105,7 @@ stages:
           runVersion: $(runVersion-psdQa)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-psdQa)
+          isHelmVersion3: false
 
   - stage: psdEu
     displayName: PSD EU
@@ -128,6 +131,7 @@ stages:
           runVersion: $(runVersion-psdEu)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-psdEu)
+          isHelmVersion3: false
 
   - stage: psdStg
     displayName: PSD staging
@@ -153,6 +157,7 @@ stages:
           runVersion: $(runVersion-psdStg)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-psdStg)
+          isHelmVersion3: false
 
   - stage: psdProd
     displayName: PSD Prod
@@ -178,3 +183,4 @@ stages:
           runVersion: $(runVersion-psdProd)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-psdProd)
+          isHelmVersion3: false

@@ -1,0 +1,46 @@
+parameters:
+  aksName:
+  resourceGroupName:
+  subscriptionName:
+  serviceName:
+  servicePort:
+  serviceProbesEnabled:
+  helmVersion:
+  imageTag:
+
+steps:
+  - script: |-
+      echo "aksName: ${{parameters.aksName}}"
+      echo "resourceGroupName: ${{parameters.resourceGroupName}}"
+      echo "subscriptionName: ${{parameters.subscriptionName}}"
+      echo "serviceName: ${{parameters.serviceName}}"
+      echo "servicePort: ${{parameters.servicePort}}"
+      echo "serviceProbesEnabled: ${{parameters.serviceProbesEnabled}}"
+      echo "helmVersion: ${{parameters.helmVersion}}"
+    displayName: Print step variables
+  - checkout: self
+    displayName: Checkout repository
+
+  - task: HelmInstaller@1
+    displayName: Install Helm
+    inputs:
+      helmVersionToInstall: ${{parameters.helmVersion}}
+
+  - task: HelmDeploy@0
+    inputs:
+      connectionType: Azure Resource Manager
+      azureSubscription: ${{parameters.subscriptionName}}
+      azureResourceGroup: ${{parameters.resourceGroupName}}
+      kubernetesCluster: ${{parameters.aksName}}
+      useClusterAdmin: false
+      namespace: default
+      command: upgrade
+      chartType: FilePath
+      chartPath: charts/mmm-iot-service-v3
+      releaseName: ${{parameters.serviceName}}
+      overrideValues: deployment.image.tag=${{parameters.imageTag}},nameOverride=${{parameters.serviceName}},service.port=${{parameters.servicePort}},deployment.port.http=${{parameters.servicePort}},deployment.probes.enabled=${{parameters.serviceProbesEnabled}}
+      force: false
+      install: true
+      arguments: --cleanup-on-fail --set-string gitSha=$(Build.SourceVersion)
+      waitForExecution: true
+      

@@ -15,6 +15,7 @@ parameters:
   testPipelineId:
   runVersion:
   testPipelineRunId:
+  isHelmVersion3:
 
 jobs:
   - template: get-approval.yaml
@@ -88,6 +89,7 @@ jobs:
           echo "variable: omsWorkspaceName: $(omsWorkspaceName)"
           echo "variable: resourceGroupName: $(resourceGroupName)"
           echo "variable: storageAccountName: $(storageAccountName)"
+          echo "variable: isHelmVersion3:  ${{parameters.isHelmVersion3}}"
         displayName: Print variables
 
   - job: resourceGroup
@@ -139,6 +141,7 @@ jobs:
 
   - job: aks
     displayName: Provision AKS
+    condition: and(true,eq('${{parameters.isHelmVersion3}}',false))
     dependsOn:
       - resourceGroup
     variables:
@@ -266,6 +269,103 @@ jobs:
               name: cert-manager
               labels:
                 cert-manager.io/disable-validation: "true"
+
+  - job: aksV3
+    displayName: Provision AKS V3
+    dependsOn:
+      - resourceGroup
+    condition: and(true,eq('${{parameters.isHelmVersion3}}',true))
+    variables:
+      - template: variables-deploy-infra.yaml
+        parameters:
+          subscriptionName: ${{parameters.subscriptionName}}
+          locationName: ${{parameters.locationName}}
+          environmentName: ${{parameters.environmentName}}
+          subscriptionId: ${{parameters.subscriptionId}}
+          applicationCode: ${{parameters.applicationCode}}
+          applicationShortCode: ${{parameters.applicationShortCode}}
+          environmentCategory: ${{parameters.environmentCategory}}
+    steps:
+      - checkout: self
+        displayName: Checkout repository
+
+      - template: apply-arm-tags.yaml
+        parameters:
+          environment: ${{parameters.environmentName}}
+
+      - task: AzureResourceGroupDeployment@2
+        displayName: Provision Azure Log Analytics
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          action: Create Or Update Resource Group
+          resourceGroupName: $(resourceGroupName)
+          location: ${{parameters.locationName}}
+          templateLocation: Linked artifact
+          csmFile: $(armTemplatesDirectory)/loganalytics.json
+          csmParametersFile: $(armParametersDirectory)/loganalytics.json
+          overrideParameters: -omsWorkspaceName $(omsWorkspaceName)
+          deploymentMode: Incremental
+          addSpnToEnvironment: true
+
+      - template: steps-delete-oldest-deployment.yaml
+        parameters:
+          subscriptionName: ${{parameters.subscriptionName}}
+          deploymentPartialName: $(omsWorkspacePartialName)
+          resourceGroupName: $(resourceGroupName)
+
+      - task: AzureCLI@2
+        displayName: Update the service principal key for AKS
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          scriptLocation: inlineScript
+          scriptType: bash
+          inlineScript: |-
+            set -Eeuxo pipefail
+            aksInstanceCount=`az aks list --query "[?name=='$(aksName)'] | length(@)"`
+            if [ "$aksInstanceCount" != "0" ]
+            then
+              az aks update-credentials --resource-group $(resourceGroupName) --name $(aksName) --reset-service-principal --service-principal $servicePrincipalId --client-secret $servicePrincipalKey
+            fi
+          addSpnToEnvironment: true
+
+      - task: AzureResourceGroupDeployment@2
+        displayName: Provision Azure Kubernetes Service
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          action: Create Or Update Resource Group
+          resourceGroupName: $(resourceGroupName)
+          location: ${{parameters.locationName}}
+          templateLocation: Linked artifact
+          csmFile: $(armTemplatesDirectory)/$(aksPartialName).json
+          csmParametersFile: $(armParametersDirectory)/$(aksPartialName).json
+          overrideParameters: >-
+            -resourceName $(aksName)
+            -location ${{parameters.locationName}}
+            -dnsPrefix $(aksName)-dns
+            -servicePrincipalClientId $servicePrincipalId
+            -servicePrincipalClientSecret $servicePrincipalKey
+            -omsWorkspaceName $(omsWorkspaceName)
+            -kubernetesVersion ${{parameters.kubernetesVersion}}
+            -agentVMSize ${{parameters.aksAgentVmSize}}
+          deploymentMode: Incremental
+          addSpnToEnvironment: true
+
+      - template: steps-delete-oldest-deployment.yaml
+        parameters:
+          subscriptionName: ${{parameters.subscriptionName}}
+          deploymentPartialName: $(aksPartialName)
+          resourceGroupName: $(resourceGroupName)
+
+      - task: Kubernetes@1
+        displayName: Install the K8s Custom Resource Definition
+        inputs:
+          connectionType: Azure Resource Manager
+          azureSubscriptionEndpoint: ${{parameters.subscriptionName}}
+          azureResourceGroup: $(resourceGroupName)
+          kubernetesCluster: $(aksName)
+          command: apply
+          arguments: --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v$(certManagerVersion3)/cert-manager.crds.yaml
+          outputFormat: name
 
   - job: storageAccount
     displayName: Provision Storage Account
@@ -564,6 +664,36 @@ jobs:
             az aks get-credentials -n $(aksName) -g $(resourceGroupName)
             appConfigurationConnectionString=$(az appconfig credential list --name $(appConfigurationName) -g $(resourceGroupName) | jq -r .[0].connectionString)
             kubectl create secret generic --namespace=default globalsecrets --from-literal=AppConfigurationConnectionString=$appConfigurationConnectionString --dry-run -o yaml | kubectl apply -f -
+
+  - job: globalsecretsV3
+    displayName: Create K8s secrets
+    dependsOn:
+      - appConfiguration
+      - aksV3
+    variables:
+      - template: variables-deploy-infra.yaml
+        parameters:
+          subscriptionName: ${{parameters.subscriptionName}}
+          locationName: ${{parameters.locationName}}
+          environmentName: ${{parameters.environmentName}}
+          subscriptionId: ${{parameters.subscriptionId}}
+          applicationCode: ${{parameters.applicationCode}}
+          applicationShortCode: ${{parameters.applicationShortCode}}
+          environmentCategory: ${{parameters.environmentCategory}}
+    steps:
+      - checkout: none
+
+      - task: AzureCLI@2
+        displayName: Create K8s globalsecrets secret
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          scriptLocation: inlineScript
+          scriptType: bash
+          inlineScript: |-
+            az aks get-credentials -n $(aksName) -g $(resourceGroupName)
+            appConfigurationConnectionString=$(az appconfig credential list --name $(appConfigurationName) -g $(resourceGroupName) | jq -r .[0].connectionString)
+            kubectl create secret generic --namespace=default globalsecrets --from-literal=AppConfigurationConnectionString=$appConfigurationConnectionString --dry-run -o yaml | kubectl apply -f -
+
 
   - job: appInsights
     displayName: Provision Application Insights
@@ -1191,8 +1321,81 @@ jobs:
           ScriptArguments: -location ${{parameters.locationName}} -resourceGroup $(resourceGroupName) -resourceName $(sendgridAccountName) -keyvaultName $(keyVaultName) -email ${{parameters.sendgridEmail}}
           azurePowerShellVersion: LatestVersion
 
+  - job: automationAccountV3
+    displayName: Provision Azure Automation and Sendgrid accounts
+    dependsOn:
+      - aksV3
+      - keyVault
+    variables:
+      - template: variables-deploy-infra.yaml
+        parameters:
+          subscriptionName: ${{parameters.subscriptionName}}
+          locationName: ${{parameters.locationName}}
+          environmentName: ${{parameters.environmentName}}
+          subscriptionId: ${{parameters.subscriptionId}}
+          applicationCode: ${{parameters.applicationCode}}
+          applicationShortCode: ${{parameters.applicationShortCode}}
+          environmentCategory: ${{parameters.environmentCategory}}
+    pool:
+      vmImage: windows-latest
+    steps:
+      - checkout: self
+        displayName: Checkout repository
+
+      - template: apply-arm-tags.yaml
+        parameters:
+          environment: ${{parameters.environmentName}}
+
+      - task: AzureResourceGroupDeployment@2
+        displayName: Provision Azure Automation account
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          action: Create Or Update Resource Group
+          resourceGroupName: $(resourceGroupName)
+          location: ${{parameters.locationName}}
+          templateLocation: Linked artifact
+          csmFile: $(armTemplatesDirectory)/automationacct.json
+          csmParametersFile: $(armParametersDirectory)/automationacct.json
+          overrideParameters: -automationAccountName $(automationName) -location ${{parameters.locationName}}
+          deploymentMode: Incremental
+          addSpnToEnvironment: true
+
+      - template: steps-delete-oldest-deployment.yaml
+        parameters:
+          subscriptionName: ${{parameters.subscriptionName}}
+          deploymentPartialName: $(automationPartialName)
+          resourceGroupName: $(resourceGroupName)
+
+      - task: AzurePowerShell@3
+        displayName: Create certificate and connections on Azure Automation Account
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          ScriptType: FilePath
+          ScriptPath: pipelines/cd/automationAcctCert.ps1
+          ScriptArguments: -accountName $(automationName) -resourceGroup $(resourceGroupName) -subscriptionId ${{parameters.subscriptionId}} -tenantId $(tenantId) -keyvaultName $(keyVaultName)
+          azurePowerShellVersion: LatestVersion
+
+      - task: AzurePowerShell@3
+        displayName: Import runbook code and create webhook
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          ScriptType: FilePath
+          ScriptPath: pipelines/cd/automationAcct.ps1
+          ScriptArguments: -accountName $(automationName) -resourceGroup $(resourceGroupName) -scriptFolder $(System.DefaultWorkingDirectory)/src/services/tenant-manager/RunBookCode -keyvaultName $(keyVaultName)
+          azurePowerShellVersion: LatestVersion
+
+      - task: AzurePowerShell@3
+        displayName: Create SendGrid Acct and API Key
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          ScriptType: FilePath
+          ScriptPath: pipelines/cd/sendgridAcct.ps1
+          ScriptArguments: -location ${{parameters.locationName}} -resourceGroup $(resourceGroupName) -resourceName $(sendgridAccountName) -keyvaultName $(keyVaultName) -email ${{parameters.sendgridEmail}}
+          azurePowerShellVersion: LatestVersion
+
   - job: ingress
     displayName: Create K8s ingress
+    condition: and(true,eq('${{parameters.isHelmVersion3}}',false))
     dependsOn:
       - aks
     variables:
@@ -1212,7 +1415,7 @@ jobs:
       - task: HelmInstaller@1
         displayName: Install Helm
         inputs:
-          helmVersionToInstall: $(helmVersion)
+          helmVersionToInstall: $(helmVersion2)
 
       - task: HelmDeploy@0
         displayName: Initialize Helm
@@ -1291,6 +1494,134 @@ jobs:
           releaseName: cert-manager
           chartName: jetstack/cert-manager
           arguments: --version v$(certManagerVersion) --install --force
+
+      - task: Kubernetes@1
+        displayName: Create Cluster Issuer
+        inputs:
+          connectionType: Azure Resource Manager
+          azureSubscriptionEndpoint: ${{parameters.subscriptionName}}
+          azureResourceGroup: $(resourceGroupName)
+          kubernetesCluster: $(aksName)
+          command: apply
+          useConfigurationFile: true
+          configuration: charts/ingress/cluster-issuer-prod.yaml
+
+      - task: Kubernetes@1
+        displayName: Create Ingress
+        inputs:
+          connectionType: Azure Resource Manager
+          azureSubscriptionEndpoint: ${{parameters.subscriptionName}}
+          azureResourceGroup: $(resourceGroupName)
+          kubernetesCluster: $(aksName)
+          command: apply
+          useConfigurationFile: true
+          configurationType: inline
+          inline: |
+            apiVersion: networking.k8s.io/v1beta1
+            kind: Ingress
+            metadata:
+              name: $(aksName)
+              namespace: default
+              annotations:
+                kubernetes.io/ingress.class: nginx
+                cert-manager.io/cluster-issuer: letsencrypt-prod
+                nginx.ingress.kubernetes.io/rewrite-target: /$1
+                nginx.ingress.kubernetes.io/proxy-body-size: 200m
+            spec:
+              tls:
+              - hosts:
+                - $(aksName).$(locationName).cloudapp.azure.com
+                secretName: tls-prod
+              rules:
+              - host: $(aksName).$(locationName).cloudapp.azure.com
+                http:
+                  paths:
+                  - backend:
+                      serviceName: reverse-proxy
+                      servicePort: 10080
+                    path: /(.*)
+
+  - job: ingressV3
+    displayName: Create K8s ingress V3
+    dependsOn:
+      - aksV3
+    condition: and(true,eq('${{parameters.isHelmVersion3}}',true))
+    variables:
+      - template: variables-deploy-infra.yaml
+        parameters:
+          subscriptionName: ${{parameters.subscriptionName}}
+          locationName: ${{parameters.locationName}}
+          environmentName: ${{parameters.environmentName}}
+          subscriptionId: ${{parameters.subscriptionId}}
+          applicationCode: ${{parameters.applicationCode}}
+          applicationShortCode: ${{parameters.applicationShortCode}}
+          environmentCategory: ${{parameters.environmentCategory}}
+    steps:
+      - checkout: self
+        displayName: Checkout repository
+
+      - task: HelmInstaller@1
+        displayName: Install Helm V3
+        inputs:
+          helmVersionToInstall: $(helmVersion3)
+
+
+      - task: AzureCLI@2
+        displayName: Install K8s Ingress Controller
+        inputs:
+          azureSubscription: ${{parameters.subscriptionName}}
+          scriptLocation: inlineScript
+          scriptType: bash
+          inlineScript: |-
+            helm version
+            helm repo add stable https://charts.helm.sh/stable
+            helm repo update
+            n=0
+            until [ $n -ge 5 ]
+            do
+              az aks get-credentials -n $(aksName) -g $(resourceGroupName)
+              # Use Helm to deploy an NGINX ingress controller
+              helm upgrade ingress-controller stable/nginx-ingress \
+                  --install \
+                  --namespace ingress-basic \
+                  --set controller.replicaCount=2 \
+                  --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
+                  --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux \
+                  --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="$(aksName)" \
+                  --wait \
+                  --create-namespace \
+                2>&1 && break
+              n=$[$n+1]
+              sleep 1m
+            done
+            if [ $n -ge 5 ]
+            then
+              echo "Error Deploying ingress controller" 1>&2
+              exit 64
+            fi
+
+      - task: Bash@3
+        displayName: Install jetstack Helm repository
+        inputs:
+          targetType: inline
+          script: |-
+            # Add the Jetstack Helm repository
+            helm repo add jetstack https://charts.jetstack.io
+            # Update your local Helm chart repository cache
+            helm repo update
+      - task: HelmDeploy@0
+        displayName: Deploy cert-manager
+        inputs:
+          connectionType: Azure Resource Manager
+          azureSubscription: ${{parameters.subscriptionName}}
+          azureResourceGroup: $(resourceGroupName)
+          kubernetesCluster: $(aksName)
+          namespace: cert-manager
+          command: upgrade
+          chartType: Name
+          releaseName: cert-manager
+          chartName: jetstack/cert-manager
+          arguments: --version v$(certManagerVersion3) --install --create-namespace
 
       - task: Kubernetes@1
         displayName: Create Cluster Issuer

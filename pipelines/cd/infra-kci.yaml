@@ -49,6 +49,7 @@ stages:
           runVersion: $(runVersion-kciDev)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-kciDev)
+          isHelmVersion3: false
 
   - stage: kciQa
     displayName: KCI QA
@@ -74,6 +75,7 @@ stages:
           runVersion: $(runVersion-kciQa)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-kciQa)
+          isHelmVersion3: false
           
   - stage: kciCt
     displayName: KCI CT
@@ -99,6 +101,7 @@ stages:
           runVersion: $(runVersion-kciCt)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-kciCt)
+          isHelmVersion3: false
 
   - stage: kciPr
     displayName: KCI PR
@@ -124,4 +127,5 @@ stages:
           runVersion: $(runVersion-kciPr)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-kciPr)
+          isHelmVersion3: false
           

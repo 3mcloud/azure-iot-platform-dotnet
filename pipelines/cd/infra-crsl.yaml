@@ -53,6 +53,7 @@ stages:
           runVersion: $(runVersion-crslDev)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-crslDev)
+          isHelmVersion3: true
 
   - stage: acsDev
     displayName: ACS dev
@@ -77,6 +78,7 @@ stages:
           runVersion: $(runVersion-acsDev)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-acsDev)
+          isHelmVersion3: false
 
   - stage: crslQa
     displayName: CRSL QA
@@ -103,7 +105,9 @@ stages:
           runVersion: $(runVersion-crslQa)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-crslQa)
+          isHelmVersion3: false
           
+    
   - stage: crslWkbnch
     displayName: CRSL workbench
     variables:
@@ -129,3 +133,4 @@ stages:
           runVersion: $(runVersion-crslWkbnch)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-crslWkbnch)
+          isHelmVersion3: false

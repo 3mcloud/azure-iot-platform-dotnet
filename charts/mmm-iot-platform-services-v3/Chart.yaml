@@ -1,0 +1,47 @@
+apiVersion: v2
+name: mmm-iot-platform-services-v3
+description: A Helm chart that deploys the 3M IoT platform microservices
+type: application
+version: 0.1.0
+appVersion: 1.16.0
+dependencies:
+  - name: mmm-iot-service-v3
+    version: 0.1.0
+    repository: file://../mmm-iot-service-v3
+    alias: asa-manager
+  - name: mmm-iot-service-v3
+    version: 0.1.0
+    repository: file://../mmm-iot-service-v3
+    alias: config
+  - name: mmm-iot-service-v3
+    version: 0.1.0
+    repository: file://../mmm-iot-service-v3
+    alias: device-telemetry
+  - name: mmm-iot-service-v3
+    version: 0.1.0
+    repository: file://../mmm-iot-service-v3
+    alias: diagnostics
+  - name: mmm-iot-service-v3
+    version: 0.1.0
+    repository: file://../mmm-iot-service-v3
+    alias: identity-gateway
+  - name: mmm-iot-service-v3
+    version: 0.1.0
+    repository: file://../mmm-iot-service-v3
+    alias: iothub-manager
+  - name: mmm-iot-service-v3
+    version: 0.1.0
+    repository: file://../mmm-iot-service-v3
+    alias: reverse-proxy
+  - name: mmm-iot-service-v3
+    version: 0.1.0
+    repository: file://../mmm-iot-service-v3
+    alias: storage-adapter
+  - name: mmm-iot-service-v3
+    version: 0.1.0
+    repository: file://../mmm-iot-service-v3
+    alias: tenant-manager
+  - name: mmm-iot-service-v3
+    version: 0.1.0
+    repository: file://../mmm-iot-service-v3/
+    alias: webui

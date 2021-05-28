@@ -1,0 +1,4 @@
+domain: iot.cld.3m.com
+subdomain:
+letsEncryptEnvironment: prod
+acmeServerAccountEmail: a90q9zz@mmm.com

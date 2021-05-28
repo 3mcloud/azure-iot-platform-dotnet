@@ -50,6 +50,7 @@ stages:
           runVersion: $(runVersion-chimDev)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-chimDev)
+          isHelmVersion3: false          
 
   - stage: chimQa
     displayName: CHIM QA
@@ -75,7 +76,8 @@ stages:
           runVersion: $(runVersion-chimQa)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-chimQa)
-          
+          isHelmVersion3: false
+
   - stage: chimProd
     displayName: CHIM prod
     variables:
@@ -100,3 +102,4 @@ stages:
           runVersion: $(runVersion-chimProd)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-chimProd)
+          isHelmVersion3: false
