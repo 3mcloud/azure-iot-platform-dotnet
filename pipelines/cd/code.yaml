@@ -122,7 +122,7 @@ stages:
           environmentCategory: $(environmentCategory-crslQa)
           imageTag: $(_imageTag)
           blueGreen: false
-          isHelmVersion3: false          
+          isHelmVersion3: true          
           subscriptionId: $(subscriptionId-crslQa)
 
   - stage: crslWkbnch
@@ -160,7 +160,7 @@ stages:
           environmentCategory: $(environmentCategory-chimDev)
           imageTag: $(_imageTag)
           blueGreen: true
-          isHelmVersion3: false
+          isHelmVersion3: true
           subscriptionId: $(subscriptionId-chimDev)
 
   - stage: chimQa
@@ -217,7 +217,7 @@ stages:
           environmentCategory: $(environmentCategory-psdDev)
           imageTag: $(_imageTag)
           blueGreen: true
-          isHelmVersion3: false
+          isHelmVersion3: true
           subscriptionId: $(subscriptionId-psdDev)
           
   - stage: psdTest
@@ -331,7 +331,7 @@ stages:
           environmentCategory: $(environmentCategory-emdDev)
           imageTag: $(_imageTag)
           blueGreen: true
-          isHelmVersion3: false
+          isHelmVersion3: true
           subscriptionId: $(subscriptionId-emdDev)
 
   - stage: emdQa
@@ -388,7 +388,7 @@ stages:
           environmentCategory: $(environmentCategory-kciDev)
           imageTag: $(_imageTag)
           blueGreen: true
-          isHelmVersion3: false
+          isHelmVersion3: true
           subscriptionId: $(subscriptionId-kciDev)
 
   - stage: kciQa
@@ -464,7 +464,7 @@ stages:
           environmentCategory: $(environmentCategory-psdfireDev)
           imageTag: $(_imageTag)
           blueGreen: false
-          isHelmVersion3: false
+          isHelmVersion3: true
           subscriptionId: $(subscriptionId-psdfireDev)
 
   - stage: psdfireQa
