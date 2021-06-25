@@ -1,0 +1,9 @@
+version: 2
+updates:
+- package-ecosystem: docker
+  directory: "/src/services"
+  schedule:
+    interval: daily
+    time: "11:00"
+  open-pull-requests-limit: 40
+  target-branch: dependabot-docker-dependencies
