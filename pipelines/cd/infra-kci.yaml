@@ -49,7 +49,7 @@ stages:
           runVersion: $(runVersion-kciDev)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-kciDev)
-          isHelmVersion3: false
+          isHelmVersion3: true
 
   - stage: kciQa
     displayName: KCI QA

@@ -53,7 +53,8 @@ stages:
           runVersion: $(runVersion-psdDev)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-psdDev)
-          isHelmVersion3: false
+          isHelmVersion3: true
+
           
   - stage: psdTest
     displayName: PSD Test

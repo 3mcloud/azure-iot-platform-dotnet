@@ -51,7 +51,7 @@ stages:
           runVersion: $(runVersion-psdfireDev)
           testPipelineRunId: $(testPipelineRunId)
           sysAdmins: $(sysAdmins-psdfireDev)
-          isHelmVersion3: false
+          isHelmVersion3: true
 
   - stage: psdfireQa
     displayName: PSDFire Qa
