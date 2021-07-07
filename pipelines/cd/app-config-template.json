@@ -81,6 +81,9 @@
       "Name": "OVERWRITTEN_IN_DEPLOYMENT"
     },
     "Location": "centralus",
+    "Limits":{
+      "FileUploadLimit": 209715200
+    },
     "PackageSharedAccessExpiryTime": "24:00:00",
     "ResourceGroup": "OVERWRITTEN_IN_DEPLOYMENT",
     "FixedSamplingPercentage": 20,

@@ -29,7 +29,12 @@ namespace Mmm.Iot.Common.Services
             {
                 options.ValidateScopes = context.HostingEnvironment.EnvironmentName == EnvironmentName.Development;
             });
-            builder.UseKestrel(options => { options.AddServerHeader = false; });
+            builder.UseKestrel(options =>
+            {
+                options.AddServerHeader = false;
+                options.Limits.MaxRequestBodySize = azureAppConfig.Global.Limits.FileUploadLimit;
+
+            });
             builder.UseIISIntegration();
             return builder;
         }
